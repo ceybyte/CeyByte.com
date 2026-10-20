@@ -53,7 +53,7 @@ Major versions are locked. Upgrading a major version or swapping a library requi
 | Storage | Cloudflare R2 (`UPLOADS` binding) + `aws4fetch` for presigning | Slips, crash logs, blog covers |
 | Installer CDN | GitHub Releases on `ceybyte/cbpos-releases` | Manifest: `https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json` |
 | Cache/KV | Workers KV (`CACHE_KV`) + Cache API | Geo snapshot, docs search index |
-| Styling | `tailwindcss@4` (CSS-first `@theme`), `shadcn/ui`, Radix UI, `vaul`, `lucide-react` | No `tailwind.config.js`; tokens live in `src/app/globals.css` |
+| Styling | `tailwindcss@4` (CSS-first `@theme`), `shadcn/ui`, Radix UI, `vaul`, `lucide-react`, `sonner` (toasts), `next-themes` | No `tailwind.config.js`; tokens live in `src/app/globals.css` |
 | Motion | `motion` (import from `motion/react`), `gsap` + `ScrollTrigger`, `lenis`, `@rive-app/react-canvas`, `@lucasmarkes/hairline` | See `03-DESIGN.md §9`; `hairline` must be verified before install (`07 Phase 1`) |
 | Maps | `maplibre-gl` (native GeoJSON clustering, which uses Supercluster internally) | CARTO Dark Matter / Positron styles, bounded to Sri Lanka |
 | Docs | `fumadocs-ui`, `fumadocs-core` + unified/remark/rehype pipeline | Content in D1, rendered without eval (`02-TRD.md §8`) |
