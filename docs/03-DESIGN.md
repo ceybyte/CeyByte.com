@@ -18,6 +18,7 @@
 4. **Three scripts, one rhythm.** Sinhala and Tamil are first-class. The layout absorbs taller line-heights and longer words without breaking.
 5. **Keyboard-first like the product.** Visible focus everywhere, `<kbd>` hints on interactive elements, shortcuts (`⌘K`, `/`, `Esc`).
 6. **Motion explains state.** Animation shows what changed (step advanced, offline toggled, tax computed), never only that something exists.
+7. **Every decision passes the skill gates.** Tokens, layouts, components, motion and copy in this doc are inputs to `hallmark`, `impeccable` and `emil-design-eng`, not a substitute for running them (`CLAUDE.md §7`). When a skill's finding changes something here, update this doc in the same PR.
 
 ---
 
@@ -263,7 +264,7 @@ const tamil = Noto_Sans_Tamil({ subsets: ["tamil"], weight: ["400", "500", "600"
 | Role | Family | Weights |
 |---|---|---|
 | Display / headlines | **Geist** (fallback choice: Space Grotesk; pick one, never both) | 800 (ExtraBold), 700 |
-| Body / UI | **Inter** | 400, 500, 600 |
+| Body / UI | **Inter** (brand requirement; impeccable flags it as a generic default, accepted in ADR-0010) | 400, 500, 600 |
 | Sinhala | **Noto Sans Sinhala** | 400–700 |
 | Tamil | **Noto Sans Tamil** | 400–700 |
 | Numbers, prices, tax maths, hashes, versions, `<kbd>` | **JetBrains Mono** | 400, 500, 700 |
@@ -353,7 +354,7 @@ Rules, applied once in `globals.css` and never per component:
 ### 5.2 Grid
 - Container: `max-w-[var(--content-max)] mx-auto px-[var(--gutter)]`.
 - 12 columns, `gap-6` (desktop) / 4 columns `gap-4` (mobile).
-- Breakpoints (Tailwind v4 defaults): `sm 640`, `md 768`, `lg 1024`, `xl 1280`, `2xl 1536`. The design is checked at 360, 390, 768, 1024, 1280 and 1440.
+- Breakpoints (Tailwind v4 defaults): `sm 640`, `md 768`, `lg 1024`, `xl 1280`, `2xl 1536`. The design is checked at 320, 375, 414, 768, 1024, 1280 and 1440 (hallmark's mobile floor is 320/375/414/768). Headings are always `font-style: normal`; italics only in running body text.
 
 ### 5.3 Architectural grid canvas (`<GridCanvas />`)
 - A full-bleed background behind sections: 1px `--hairline-grid` lines every `--grid-cell` (64px), drawn with CSS `background-image: linear-gradient(...)`, masked with a radial fade (`mask-image: radial-gradient(ellipse at center, #000 40%, transparent 85%)`).
@@ -385,7 +386,7 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 | Hardware hub | `Printer`, `ScanBarcode`, `Scale`, `Usb` |
 | Trilingual receipts | `Languages`, `ReceiptText` |
 | Weighing & backups | `Scale`, `ArchiveRestore`, `ShieldCheck` |
-| Cloud Sync (optional) | `RefreshCw`, `Server` |
+| Multiple tills (LAN Sync, network mode) | `Network`, `Server` |
 | Map | `MapPin`, `Map` |
 | Supporter | `Award` (gold) |
 | Docs | `BookOpen`, `Search` |
@@ -396,9 +397,10 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 
 ### 6.2 Product photography & mockups
 - **Backdrop:** `#18181B` studio black, seamless, no horizon line.
-- **Content:** real CB-POS screens (billing screen with Sri Lankan items such as "Samba Rice 5kg", "Anchor Milk Powder 400g", "Sunlight Soap"; Rs. prices; VAT/SSCL lines; Sinhala and Tamil receipts).
+- **Content:** real CB-POS screens only. None exist yet [L1], so they're captured for launch (UR-20): install the current release, choose **Load Demo Data** (80 Sri Lankan products with EN/SI/TA names, customers, 15 days of sales [I2]), turn on VAT registration and the tax breakdown, then capture the sales screen, payment dialog (split payment), receipt preview, Tax Liability report and Settings › Hardware in each UI language at 1920×1080. Thermal receipt photos come from a real 80 mm printer. Their Sinhala/Tamil text is genuine, and their item names print in English, as the app does [F2].
+- **App brand overlap:** the app's own colours are navy `#001F3F` and the same cyan `#00BCEB` [L1]. Its logo and monogram files can be used for the download page and favicon fallback, but the site wordmark stays `[CB-POS]` (see PRD OQ-3).
 - **Treatment:** borderless screens floating at a slight isometric angle (rotateX 8°, rotateY −12° for the hero), cyan rim glow, no device frames, no browser chrome, no reflections, no gradient overlays.
-- **Hardware shots:** a real 80mm thermal printer, barcode scanner and digital scale, photographed on the same backdrop with a single cyan rim light. If no real photos exist, use a Hairline wireframe illustration (§10) instead. Never stock photos.
+- **Hardware shots:** a real 80mm thermal printer, barcode scanner and digital scale, photographed on the same backdrop with a single cyan rim light. If no real photos exist, use a Hairline figure (§9.6) instead. Never stock photos, and never an agent-drawn imitation of the CB-POS UI.
 - **Formats:** AVIF + WebP fallback, pre-sized at build (`640/960/1280/1920`). Hero poster ≤ 120 KB.
 - **Alt text:** describes the actual screen ("CB-POS billing screen showing 1.250 kg Samba rice, VAT Rs. 45.76"), translated per locale.
 
@@ -487,6 +489,8 @@ Radix Accordion, `type="single" collapsible`. Trigger: `text-h4` (si/ta: line-he
 - **Pin (supporter):** a 12px circle `--gold`, with a gold halo.
 - **Cluster:** a circle with a radius stepped by count (18 / 24 / 32 px at <10 / <100 / ≥100), `--surface-elevated` fill, 1px `--cyan` stroke, count label in JetBrains Mono 12px `--text`. If `supporters > 0`, the stroke becomes 2px `--gold`.
 - **Popup:** `bg-surface border-hairline rounded-md p-4 w-64`. Content order: shop name (`text-h4`), category · city (muted), "CB-POS user since Aug 2026" (mono xs), Supporter badge, "Get directions →" link.
+- **Basemap:** self-hosted Protomaps tiles (`sri-lanka.pmtiles`) with `@protomaps/basemaps` flavours: `dark` recoloured so land = `--canvas`, water = `#141414`, roads = `--hairline`, boundaries = `--hairline-grid`, labels = `--text-muted`; and `light` for the light theme. Labels use Latin-script names (`lang: "en"`) in every locale, because MapLibre can't shape Sinhala or Tamil conjuncts yet. Localized names appear in the panel and popups (HTML text, shaped by the browser).
+- **Attribution:** `© OpenStreetMap contributors · Protomaps`, always visible.
 - **Map chrome:** zoom controls restyled (`surface`, hairline, 32px), attribution kept and legible (`text-xs muted`), and a compass hidden (no rotation: `dragRotate: false`, `pitchWithRotate: false`).
 
 ### 8.10 Header & footer
@@ -548,10 +552,10 @@ Rules (following the `emilkowalski/skills` guidance in `CLAUDE.md §7`):
 | Bento card | hover/focus-within | Border colour to cyan 40% (CSS 180 ms). Demo area starts its interaction. No card lift |
 | Kbd | matching key down | `y 1`, border cyan, `spring.snappy`. Release returns |
 | Telemetry numbers | in view, once | `useSpring(spring.number)` from 0 to the value, displayed with `Intl.NumberFormat`. Done in ≤ 900 ms |
-| Offline toggle (bento) | click/Space | Wi-Fi icon swaps with a `scale .8→1` crossfade. The bill list keeps adding items (a new item every 700 ms, `layout` animation) to prove billing continues. Switching back on shows a small `RefreshCw` → `Check` "Synced" chip (cyan, 600 ms) for the optional Cloud Sync |
-| Dual-tax calculator | input change | Base/VAT values crossfade digits (each digit `y ±6`, 140 ms), mono |
-| Receipt language tabs | tab change | Receipt paper `clipPath: inset(0 0 100% 0) → inset(0)` 320 ms, like a printer feed |
-| Weighing scale | in view | Readout ticks `0.000 → 1.250 kg` over 800 ms with 3 overshoots settling (`spring.gentle`) |
+| Offline toggle (bento) | click/Space | Wi-Fi icon swaps with a `scale .8→1` crossfade. The bill list keeps adding items (a new item every 700 ms, `layout` animation) to prove billing continues |
+| Dual-tax calculator | input change | Before-VAT, VAT and SSCL values crossfade digits (each digit `y ±6`, 140 ms), mono. Maths uses round-half-even to match the app [C1] |
+| Receipt language tabs | tab change | Receipt paper `clipPath: inset(0 0 100% 0) → inset(0)` 320 ms, like a printer feed. Headings and totals change language; item names stay English [F2] |
+| Scale label | in view | A label barcode `20 00042 01250 C` slides under a scan line; the cart line appears with `1.250 kg` (`spring.gentle`, 400 ms). No live-scale readout, because the app reads weight only from labels [E3] |
 | FAQ accordion | open/close | CSS grid-rows 220 ms + Plus icon rotate 45° (`spring.snappy`) |
 | Download gate step change | Continue/Back | Direction-aware: next = `x 24→0, opacity 0→1`; back = `x −24→0`. `AnimatePresence mode="popLayout"`, 240 ms |
 | Gate → What Next | submit success | Container `layout` (`spring.modal`) resizes. Content crossfades. A Rive `success_check` plays once |
@@ -620,7 +624,7 @@ Runtime: `@rive-app/react-canvas` with self-hosted WASM (`/rive/rive.wasm`), loa
 
 | File | Artboard | State machine | Inputs | Behaviour |
 |---|---|---|---|---|
-| `hero-pos.riv` | `Terminal` | `HeroSM` | `hover: boolean`, `scan: trigger`, `lang: number (0 en, 1 si, 2 ta)` | An isometric CB-POS terminal. Idle: the cursor blinks on the billing screen. `scan` adds an item line and the total ticks up. `hover` brightens the rim light. `lang` changes the receipt language |
+| `hero-pos.riv` | `Terminal` | `HeroSM` | `hover: boolean`, `scan: trigger`, `lang: number (0 en, 1 si, 2 ta)` | The real CB-POS sales screen, rebuilt from the UR-20 captures (no invented UI). Idle: the cursor blinks in the search box. `scan` adds an item line and the total ticks up. `hover` brightens the rim light. `lang` switches the app UI language, which CB-POS supports in all three [F1]. Until captures exist, the hero uses a static capture or the Hairline `Keyboard` figure |
 | `bento-offline.riv` | `Offline` | `OfflineSM` | `online: boolean` | A Wi-Fi glyph and router LED. With `online=false`, the LED goes red and the bill keeps printing |
 | `bento-receipt.riv` | `Receipt` | `ReceiptSM` | `lang: number` | Thermal printer feeding the receipt in EN/SI/TA (the text is baked from real CB-POS receipts) |
 | `success-check.riv` | `Check` | `CheckSM` | `play: trigger` | 600 ms check draw for "Download started" |
@@ -629,17 +633,40 @@ The client wires `hero-pos` `lang` to the current locale. `scan` fires every 4 s
 
 ### 9.6 Hairline isometric figures
 
-**Package:** `@lucasmarkes/hairline`, for pointer-reactive isometric wireframes. **Phase 1 gate:** verify the package exists on npm, check its licence, bundle size and maintenance, and record the result in ADR-0007. If it fails the check, use the fallback below. The usage spec is the same either way.
+**Package:** `@lucasmarkes/hairline` v0.5.x (npm, MIT, no dependencies, ESM, optional React ≥ 18 peer). Verified on 2026-10-21 (ADR-0007). It ships 33 fixed figures; it can't draw custom shapes, so each place below uses the figure whose behaviour matches the message. Import from `@lucasmarkes/hairline/react`, load lazily per figure, and run each choice past `hallmark` and `emil-design-eng` like any other visual.
 
-**Usage**
+**Theme mapping** (set once on `.hairline-scope` in `globals.css`; light mode follows the tokens automatically):
 
-| Place | Figure | Pointer reaction |
+```css
+.hairline-scope {
+  --hairline-plate: var(--canvas);
+  --hairline-hi: var(--cyan);          /* what is lit */
+  --hairline-edge: var(--text-muted);  /* silhouettes */
+  --hairline-mid: var(--hairline);     /* other strokes */
+  --hairline-lo: var(--hairline-grid); /* what recedes */
+  --hairline-stroke: 0.9;
+}
+```
+
+**Placement** (at most one figure per viewport; `play={false}` everywhere, so figures move only when the pointer or focus arrives):
+
+| Place | Figure | Why this one |
 |---|---|---|
-| Hero background (behind the mockup, right side) | Isometric wireframe of a POS counter: terminal, printer, scale, cash drawer | Tilt ±6° following the pointer (spring.gentle), lines `--hairline-grid`; nodes at intersections glow cyan within 120px of the pointer |
-| How It Works steps | 3 small figures: installer box, wizard window, plugged printer | Tilt ±4° on card hover/focus |
-| Empty states, 404 | A single object wireframe (open drawer / unplugged cable) | None |
+| Hero, behind/beside the product capture | `Keyboard` (60 keys; the key under the pointer sinks) | Keyboard-first cashiering, the product's core claim [B1] |
+| How It Works step 1, Download | `Exploded` (an app window in layers) | "The app" arriving on your PC |
+| How It Works step 2, Setup | `Padlock` (shackle swings open near the pointer) | Setting the admin PIN [I1] |
+| How It Works step 3, Plug in and bill | `Patch` (patch panel; cables lift) | Plugging in printer, scanner, drawer [E1], [E4] |
+| Bento "Weighing & Backups", backup half | `Vault` (dial and bolts) | AES-encrypted backups with a password [G2] |
+| Docs › Multiple tills hub | `Hub` (tiles on links to a hub) | Main PC + terminals in LAN Sync [G4] |
+| Releases page header | `Branches` (commit graph) | Version history |
+| 404 page | `Plug` (plug rises toward the socket, falls short) | A link that doesn't connect |
+| Empty search/filter results | `Basket` (tilts to show a bare floor) | Nothing here |
+| Feedback board empty state | `Query` (question mark) | Ask or report something |
+| Offline banner illustration | `Router` (antennas lean toward the pointer) | Connection state |
 
-**Fallback implementation:** inline SVG paths drawn in an isometric projection (30°). A `motion.svg` with `rotateX/rotateY` driven by `useMotionValue` from `pointermove` (throttled with rAF). Strokes `vector-effect: non-scaling-stroke` at 1px. Under reduced motion the figure is static. On touch devices it reacts to `deviceorientation` only if permission is already granted (never prompt).
+**Props:** `intensity` 0.4 (hero 0.5); `label` / `aria-label` from `messages/*.json` (the package's default label is English); `onRead` unused. Figures are decorative next to text that carries the meaning, so wrappers use `aria-hidden` unless the figure is the only content (404, empty states).
+
+**Reduced motion and touch:** under `prefers-reduced-motion`, render the figure with `intensity={0}` (static drawing). On touch devices it answers to touch only, with no device-orientation tricks.
 
 ### 9.7 Reduced motion matrix
 
@@ -649,7 +676,7 @@ The client wires `hero-pos` `lang` to the current locale. `scan` fires every 4 s
 | GSAP scrubs/parallax | on | off. Final states are rendered |
 | Section reveals | y + opacity | opacity only, 0.01 s |
 | Rive | autoplay in view | poster image. Plays on explicit click only |
-| Hairline pointer tilt | on | off |
+| Hairline figures | answer the pointer | static drawing (`intensity` 0) |
 | Number tickers | count-up | final value |
 | Logo pulse dot | pulse | static dot |
 | Modal / drawer | springs | opacity only, 120 ms |
