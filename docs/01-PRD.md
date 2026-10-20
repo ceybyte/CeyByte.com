@@ -28,7 +28,7 @@
 2. **Distribute:** serve the latest signed installer from GitHub Releases, with published SHA-256 hashes.
 3. **Support:** host the trilingual docs and a public bug/feature tracker, so support doesn't depend on phone calls.
 4. **Prove:** show real adoption on a live Sri Lanka Merchant Map, without exposing shop owners' phone numbers.
-5. **Sustain:** collect local donations (LankaQR, bank deposit, PayHere card) and reward supporters with a gold map pin.
+5. **Sustain:** collect donations by bank transfer and reward supporters with a gold map pin.
 
 **Constraint:** the platform runs at **Rs. 0 / month** on free tiers (Cloudflare Workers, D1, R2, KV, Turnstile; PostHog; Resend; GitHub) until product-market fit.
 
@@ -103,7 +103,7 @@ Personas are written without gendered pronouns on purpose.
 - Influence: one installer brings 10–50 shops. Very likely to opt shops into the public map.
 
 ### P4 — Dilani, supporter (Kandy, or diaspora in Melbourne)
-- Wants to fund a local free tool. Pays by LankaQR (local) or card via PayHere (diaspora).
+- Wants to fund a local free tool. Pays by online bank transfer from a Sri Lankan account (or through family in Sri Lanka when overseas).
 - Needs: fast payment, visible recognition (gold pin if Dilani has a shop listing; a supporters list otherwise), confirmation the money arrived.
 
 ### P5 — Ceybyte maintainer (Admin)
@@ -432,16 +432,16 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 ### F-11 — Donations & Supporter Badges
 
-**Goal:** let local and diaspora supporters fund CB-POS easily, with transparent verification.
+**Goal:** let supporters fund CB-POS with a plain bank transfer, verified by an admin.
 
-**Tiers**
-| Tier | Method | Verification |
+**Payment method (v1): bank transfer only**
+| Method | How the donor pays | Verification |
 |---|---|---|
-| 1 | **LankaQR**: scan with FriMi, Flash, BOC SmartPay, ComBank Q+, iPay or any LankaQR-enabled app | Donor enters amount + transaction reference; admin reconciles against the account statement |
-| 2 | **Direct bank deposit / transfer**: bank details shown with copy buttons | Donor uploads the slip (JPG/PNG/PDF ≤ 5 MB) to R2 via a presigned URL; admin approves |
-| 3 | **Card via PayHere**: LKR checkout | Automatic, via the PayHere `notify_url` webhook (MD5 signature verified) |
+| **Bank transfer / deposit** | Online banking, a mobile banking app, CEFT, or a cash deposit at a branch, into the Ceybyte account. Bank details are shown with copy buttons | The donor uploads the slip or a screenshot of the transfer (JPG/PNG/PDF ≤ 5 MB) to R2 through a presigned URL. An admin checks it against the account statement and approves it |
 
-**LankaQR note:** generating a *dynamic* (amount-encoded) LankaQR needs a merchant acquirer API. v1 shows the acquirer-issued **static** LankaQR and the payer enters the amount in their app. Dynamic QR is a P2 upgrade once an acquirer API is available at no cost. A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put it in the payment remark.
+A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put it in the transfer remark.
+
+**Future payment methods (out of scope for v1):** a payment gateway (card and/or LankaQR) will be chosen and added later through an ADR. The schema keeps `donations.method` as an extensible enum. No gateway code, secrets, routes or CSP entries are added until then.
 
 **Functional requirements**
 - FR-11.1 Donation form fields:
@@ -451,19 +451,19 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
   - optional contact (private)
   - optional "Link to my shop listing": automatic if signed in, otherwise enter the listing phone number, matched privately
   - Turnstile
-- FR-11.2 Creating a donation returns a `reference_code`. For bank transfers, the upload dropzone accepts JPG/PNG/PDF ≤ 5 MB, verified server-side after upload (TRD §9).
-- FR-11.3 PayHere: the server builds the checkout payload with the `hash` (merchant secret stays server-side). The webhook verifies `md5sig`, is idempotent on `order_id`, and sets status by `status_code` (`2` approved, `0` pending, `-1` cancelled, `-2` failed, `-3` charged back → `refunded`).
-- FR-11.4 On approval:
+- FR-11.2 Creating a donation returns a `reference_code` and shows the bank details. The upload dropzone accepts JPG/PNG/PDF ≤ 5 MB, verified server-side after upload (TRD §9). The donor may also type the bank's transaction reference (optional) to speed up matching.
+- FR-11.3 A donor who leaves before uploading can resume from a link (`/donate?ref=…`) on the same browser, for up to 14 days.
+- FR-11.4 On admin approval:
   - the linked merchant gets `is_supporter = true` and `supporter_since`
   - the gold pin and badge appear on the map
-  - the donor appears on the public supporters wall (display name or "Anonymous", tier icon, month, with no amount unless the donor opts in)
+  - the donor appears on the public supporters wall (display name or "Anonymous", month, with no amount unless the donor opts in)
 - FR-11.5 Transparency block: a monthly total of approved donations (aggregate only) and what it funds (code-signing certificate, hardware for testing).
 - FR-11.6 Copy states clearly that donations are voluntary, give no software benefits, and are not tax-deductible.
 
 **Acceptance criteria**
 - AC-11.1 Uploading an 8 MB PDF is rejected before upload (client) and after upload (server `head` check → object deleted, error `FILE_TOO_LARGE`).
-- AC-11.2 Replaying a PayHere webhook with the same `order_id` doesn't create a second donation or change an approved one.
-- AC-11.3 A webhook with an invalid `md5sig` returns 400 and changes nothing.
+- AC-11.2 A donation stays `pending_review` until an admin acts. Nothing on the public site (supporters wall, gold pin, monthly total) changes before approval.
+- AC-11.3 A slip whose first bytes don't match its declared type (e.g. an `.exe` renamed to `.pdf`) is rejected with `FILE_TYPE_NOT_ALLOWED` and deleted from R2.
 
 ---
 
@@ -475,7 +475,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 | Slug | Content |
 |---|---|
 | `terms` | Terms of use for the website and CB-POS software licence summary: free, as-is, no warranty, limitation of liability |
-| `privacy` | PDPA-aligned privacy notice: what is collected (gate, tickets, donations, auth), purpose, retention, public map fields, processors (Cloudflare, PostHog, Resend, PayHere, GitHub), rights (access, correction, deletion), contact |
+| `privacy` | PDPA-aligned privacy notice: what is collected (gate, tickets, donations, auth), purpose, retention, public map fields, processors (Cloudflare, PostHog, Resend, GitHub), rights (access, correction, deletion), contact |
 | `tax-disclaimer` | CB-POS calculates VAT 18% (backward from MRP) and SSCL 2.5% per configured rates. It is not certified, approved or endorsed by the IRD. Merchants are responsible for verifying rates, registration thresholds and filings with a qualified accountant. Rates can change by law, so update CB-POS and check settings |
 | `data-safety` | CB-POS stores data locally in SQLite on the shop PC. Ceybyte has no access to it and can't recover it. Merchants must take regular encrypted `.ZIP` backups to external media. Lost passwords for encrypted backups can't be recovered |
 | `cookies` | Cookies used: locale, gate, claim, auth session, PostHog (with consent banner choices) |
@@ -510,8 +510,8 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 ## 6. Dependencies & assumptions
 
 - A1. `ceybyte/cbpos-releases` is a public GitHub repo with a `latest.json` on `main` and GitHub Release assets per version.
-- A2. A Ceybyte bank account and an acquirer-issued static LankaQR exist before F-11 ships.
-- A3. A PayHere merchant account is approved for donations. If PayHere declines donation use, Tier 3 is hidden behind a feature flag (`FEATURE_PAYHERE=false`) and Tiers 1–2 still ship.
+- A2. A Ceybyte bank account for donations exists before F-11 ships. Its details are set as environment variables, not hardcoded.
+- A3. No payment gateway is integrated in v1. Choosing one (card and/or LankaQR) is a future ADR.
 - A4. Native Sinhala and Tamil translators are available for UI strings and legal pages before launch.
 - A5. The installer is currently unsigned. A code-signing certificate is the first funding goal. Until then, SmartScreen guidance is mandatory in the "What Next?" step and the FAQ.
 - A6. Real CB-POS screenshots in all three receipt languages are available for mockups.
@@ -533,7 +533,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 |---|---|
 | **M1 — Public launch** | F-01, F-02, F-03, F-04, F-05, F-06, F-08 (Merchants, Docs, Releases, Overview, Audit), F-12 |
 | **M2 — Community** | F-07, F-09, F-11, F-08 (Feedback, Donations, Users) |
-| **M3 — Content** | F-10, F-08 (Blog), dynamic LankaQR, docs video embeds |
+| **M3 — Content** | F-10, F-08 (Blog), docs video embeds |
 
 ## 9. Open questions
 

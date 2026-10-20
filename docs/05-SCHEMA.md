@@ -103,9 +103,10 @@ export const TICKET_STATUSES = [
 ] as const;
 export const TICKET_SEVERITIES = ["crash", "blocks_billing", "wrong_output", "cosmetic"] as const;
 
-export const DONATION_METHODS = ["lankaqr", "bank_transfer", "payhere"] as const;
+// v1 is bank transfer only. A future gateway adds a value here (+ migration) via ADR.
+export const DONATION_METHODS = ["bank_transfer"] as const;
 export const DONATION_STATUSES = [
-  "awaiting_payment", "pending_review", "approved", "rejected", "failed", "cancelled", "refunded",
+  "awaiting_payment", "pending_review", "approved", "rejected", "cancelled", "refunded",
 ] as const;
 
 export const AUDIT_LEVELS = ["info", "warn"] as const;
@@ -579,7 +580,7 @@ export const feedbackVotes = sqliteTable(
 export const donations = sqliteTable(
   "donations",
   {
-    id: pk(),                                    // also used as PayHere order_id
+    id: pk(),
     referenceCode: text("reference_code").notNull(), // "CB-DN-7K3Q9P"
     method: text("method", { enum: DONATION_METHODS }).notNull(),
     amountCents: integer("amount_cents").notNull(),
@@ -597,9 +598,7 @@ export const donations = sqliteTable(
     slipKey: text("slip_key"),
     slipMime: text("slip_mime"),
     slipSize: integer("slip_size"),
-    txnReference: text("txn_reference"),         // LankaQR / bank reference typed by donor
-    payherePaymentId: text("payhere_payment_id"),
-    payhereStatusCode: integer("payhere_status_code"),
+    txnReference: text("txn_reference"),         // optional bank transaction reference typed by donor
 
     merchantId: text("merchant_id").references(() => merchants.id, { onDelete: "set null" }),
     userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
@@ -613,7 +612,6 @@ export const donations = sqliteTable(
   },
   (t) => [
     uniqueIndex("donations_reference_uq").on(t.referenceCode),
-    uniqueIndex("donations_payhere_payment_uq").on(t.payherePaymentId),
     index("donations_queue_idx").on(t.status, t.createdAt),
     index("donations_merchant_idx").on(t.merchantId, t.status),
     check("donations_amount_min", sql`${t.amountCents} >= 10000`), // Rs. 100.00
@@ -816,12 +814,10 @@ One row per (version, channel). The partial unique index guarantees at most one 
 stateDiagram-v2
   [*] --> awaiting_payment
   awaiting_payment --> pending_review: slip uploaded / txn ref entered
-  awaiting_payment --> approved: PayHere status 2
-  awaiting_payment --> failed: PayHere -2
-  awaiting_payment --> cancelled: PayHere -1 / 14-day timeout
+  awaiting_payment --> cancelled: 14-day timeout
   pending_review --> approved: admin
   pending_review --> rejected: admin
-  approved --> refunded: PayHere -3 / admin
+  approved --> refunded: admin (money returned)
 ```
 
 - The supporter flag is **derived**: `is_supporter = EXISTS(approved donation for merchant)`. `recomputeSupporter(merchantId)` runs on every donation status change.
@@ -918,7 +914,7 @@ export const merchants = pgTable("merchants", {
 | donations.display_name (if not anonymous), month, method icon | — | ✅ supporters wall | ✅ own | ✅ | ❌ | ❌ |
 | donations.amount_cents | — | Only if `show_amount_publicly`; aggregate monthly total always | ✅ own | ✅ | band only | ❌ |
 | donations.public_message | — | Only if `message_approved` | ✅ own | ✅ | ❌ | ❌ |
-| donations.contact_private / slip_* / txn_reference / payhere_* / submit_secret_hash | — | ❌ | status only | ✅ (slip via presigned GET) | ❌ | ❌ |
+| donations.contact_private / slip_* / txn_reference / submit_secret_hash | — | ❌ | status only | ✅ (slip via presigned GET) | ❌ | ❌ |
 | users.email | — | ❌ | ✅ own | ✅ | ❌ | ❌ |
 | users.name | — | ❌ (tickets show "Community member") | ✅ | ✅ | ❌ | ❌ |
 
@@ -1138,8 +1134,6 @@ export default defineSchema({
     submitSecretHash: v.string(),
     slip: v.optional(v.object({ key: v.string(), mime: v.string(), size: v.number() })),
     txnReference: v.optional(v.string()),
-    payherePaymentId: v.optional(v.string()),
-    payhereStatusCode: v.optional(v.number()),
     merchantId: v.optional(v.id("merchants")),
     userId: v.optional(v.string()),
     status: lit(DONATION_STATUSES),

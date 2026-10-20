@@ -48,7 +48,7 @@ Prepend this block to every screen prompt in §4 when generating with Google Sti
 | S06 | Releases | `/{locale}/releases` | public | F-06 | Download (via gate) | LatestReleaseCard, HashBlock ×2, VerifyExpander, Changelog |
 | S07 | Feedback Board | `/{locale}/feedback` | public | F-07 | Report a bug / Request a feature | Tabs, Filters, TicketRow, VoteButton |
 | S08 | Ticket Submit & Detail | `/{locale}/feedback/new`, `/{locale}/feedback/{CB-0142}` | public | F-07 | Send ticket / Vote | TypePicker, SimilarList, FileDrop, StatusTimeline |
-| S09 | Donate | `/{locale}/donate` (+ `/thanks`) | public | F-11 | Donate | TierTabs, AmountChips, LankaQR card, BankDetails, FileDrop, PayHere button, SupportersWall, Transparency |
+| S09 | Donate | `/{locale}/donate` (+ `?ref=` resume) | public | F-11 | Get payment details → Send for confirmation | AmountChips, BankDetails, FileDrop, SupportersWall, Transparency |
 | S10 | Blog (index + post) | `/{locale}/blog`, `/{locale}/blog/{slug}` | public | F-10 | Read post | PostCard, TagFilter, ArticleBody |
 | S11 | Legal Center | `/{locale}/legal/{terms\|privacy\|tax-disclaimer\|data-safety\|cookies}` | public | F-12 | — | LegalNav, VersionStamp, ArticleBody |
 | S12 | Sign in / Sign up | `/{locale}/login` | public | F-09 | Continue | AuthTabs, EmailOTP, Google button |
@@ -496,10 +496,8 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `donate.lead` | CB-POS has no subscription and no ads. Donations from shops and supporters pay for development, testing hardware and a code-signing certificate. |
 | `donate.funds.title` | What your donation pays for |
 | `donate.funds.items` | Code-signing certificate (no more SmartScreen warnings) · Printers, scanners and scales for testing · Sinhala and Tamil translation · Hosting beyond free tiers |
-| `donate.tier.lankaqr` | LankaQR |
-| `donate.tier.lankaqr.help` | Scan with FriMi, Flash, BOC SmartPay, ComBank Q+, iPay or any LankaQR app. |
-| `donate.tier.bank` | Bank deposit |
-| `donate.tier.card` | Card (PayHere) |
+| `donate.method.title` | Donate by bank transfer |
+| `donate.method.help` | Online banking, your banking app, CEFT, or a cash deposit at any branch. |
 | `donate.amount.label` | Amount |
 | `donate.amount.chips` | Rs. 500 · Rs. 1,000 · Rs. 2,500 · Rs. 5,000 · Other |
 | `donate.amount.min` | Minimum Rs. 100.00 |
@@ -512,13 +510,13 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `donate.contact.label` | Email or phone for receipt questions (optional, private) |
 | `donate.create` | Get payment details |
 | `donate.ref.title` | Your reference: {ref} |
-| `donate.ref.help` | Add this reference in the payment remark so we can match your donation. |
-| `donate.bank.details` | Account name · Account number · Bank · Branch (each with a copy button) |
-| `donate.qr.enterRef` | Transaction reference from your app |
-| `donate.slip.label` | Upload your deposit slip |
+| `donate.ref.help` | Add this reference in the transfer remark so we can match your donation. |
+| `donate.bank.details` | Account name · Account number · Bank · Branch (each with a copy button; values from `DONATION_*` env vars) |
+| `donate.slip.label` | Upload your deposit slip or transfer screenshot |
 | `donate.slip.help` | JPG, PNG or PDF, up to 5 MB. |
+| `donate.txnRef.label` | Bank transaction reference (optional) |
+| `donate.txnRef.help` | Helps us match your transfer faster. |
 | `donate.submit` | Send for confirmation |
-| `donate.card.cta` | Donate Rs. {amount} by card |
 | `donate.pending.title` | Thank you. We'll confirm within 48 hours. |
 | `donate.pending.body` | Once confirmed, your name appears on the supporters wall, and your shop pin turns gold if you linked it. |
 | `donate.approved.title` | Thank you. Your donation is confirmed. |
@@ -530,7 +528,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `donate.legal` | Donations are voluntary, don't unlock any software features, aren't tax-deductible, and are non-refundable except where required by law. |
 
 **Stitch prompt:**
-> A dark donation page. Left: headline "Keep CB-POS free for every shop in Sri Lanka.", a muted lead, and a list "What your donation pays for" with four hairline-separated rows with icons. Right: a donation card (#252526, 6px radius) with three tabs "LankaQR | Bank deposit | Card (PayHere)" (LankaQR active with a gold underline), amount chips in mono "Rs. 500, Rs. 1,000, Rs. 2,500, Rs. 5,000, Other" (one selected in cyan), a name input with an "Donate anonymously" checkbox, an optional message input with a "0/140" counter, a checkbox "Link to my shop on the map" with a small gold badge preview, and a gold #FFD700 button "Get payment details" with dark text. Show the next state below the card: a white-framed LankaQR code on the dark card, a mono reference "CB-DN-7K3Q9P" with a copy button, and a field "Transaction reference from your app". Below the main area: a "Supporters" wall grid of small hairline cards (name or "Anonymous supporter", month in mono, a gold award icon on some) and a transparency strip "Donations this month: Rs. 48,500.00 from 23 supporters". Small legal text at the bottom. No green on this page; gold is the accent.
+> A dark donation page. Left: headline "Keep CB-POS free for every shop in Sri Lanka.", a muted lead, and a list "What your donation pays for" with four hairline-separated rows with icons. Right: a donation card (#252526, 6px radius) titled "Donate by bank transfer" with a muted line "Online banking, your banking app, CEFT, or a cash deposit at any branch.", amount chips in mono "Rs. 500, Rs. 1,000, Rs. 2,500, Rs. 5,000, Other" (one selected in cyan), a name input with an "Donate anonymously" checkbox, an optional message input with a "0/140" counter, a checkbox "Link to my shop on the map" with a small gold badge preview, and a gold #FFD700 button "Get payment details" with dark text. Show the next state below the card: a mono reference "CB-DN-7K3Q9P" with a copy button, a key-value list of bank details (Account name, Account number in mono, Bank, Branch) each with a copy icon, a dashed dropzone "Upload your deposit slip or transfer screenshot" (JPG, PNG or PDF, up to 5 MB), an optional input "Bank transaction reference", and a gold "Send for confirmation" button. Below the main area: a "Supporters" wall grid of small hairline cards (name or "Anonymous supporter", month in mono, a gold award icon on some) and a transparency strip "Donations this month: Rs. 48,500.00 from 23 supporters". Small legal text at the bottom. No green on this page; gold is the accent.
 
 ---
 

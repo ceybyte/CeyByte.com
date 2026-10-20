@@ -135,7 +135,7 @@ pnpm --filter release-sync deploy  # deploy cron worker
 │   ├── features/                  # vertical slices: download-gate, merchants, releases,
 │   │                              # docs, feedback, donations, blog, admin
 │   ├── server/                    # server-only: db, auth, r2, turnstile, ratelimit,
-│   │                              # geo-cache, payhere, github, markdown
+│   │                              # geo-cache, github, markdown
 │   └── lib/                       # isomorphic: env, money, phone, sri-lanka, analytics
 ├── open-next.config.ts
 ├── wrangler.jsonc

@@ -65,7 +65,7 @@ gantt
 - [ ] Confirm drizzle-kit emits partial unique indexes (`.where()`) and `check()` for SQLite.
 - [ ] Confirm CARTO basemap terms for this use. Choose fallback styles (OpenFreeMap) and set `MAP_STYLE_*`.
 - [ ] Confirm `@lucasmarkes/hairline` exists on npm, and check its licence, size and maintenance → ADR-0007 (adopt or use the fallback, `03 §9.6`).
-- [ ] Confirm PayHere accepts donation use for the Ceybyte merchant account (else `FEATURE_PAYHERE=false` for M2).
+- [ ] Confirm the Ceybyte donation bank account details and set the `DONATION_*` vars (needed before M2).
 
 ### 0.2 Scaffold
 - [ ] `pnpm create next-app@15` with TypeScript, App Router, `src/`, ESLint and Tailwind v4, using `--import-alias "@/*"`.
@@ -124,7 +124,7 @@ gantt
 - [ ] `src/lib/phone.ts` (normalise, validate mobile/landline, format), `src/lib/money.ts` (cents ↔ `Rs. 1,250.00`), `src/lib/tax.ts` (display-only VAT/SSCL example maths), `src/lib/sri-lanka.ts` (bounds, haversine, nearest city).
 - [ ] `public/data/lk-districts.json` (25 districts: slug, names en/si/ta, province, centroid, bbox) and `public/data/lk-cities.json` (≥ 300 towns: name en/si/ta, district, lat, lng). Source: an OSM extract (ODbL attribution in the footer credits).
 - [ ] `scripts/seed.ts` (`05 §9`) → `pnpm db:seed:local`.
-- [ ] Unit tests: phone, money, tax, sri-lanka, iphash, PayHere hash and GitHub HMAC helpers (test vectors). **Contract test `geo.contract.test.ts`.**
+- [ ] Unit tests: phone, money, tax, sri-lanka, iphash, slip magic-byte check and GitHub HMAC helpers (test vectors). **Contract test `geo.contract.test.ts`.**
 - [ ] Fill in the `no-bare-merchant-select` lint rule.
 
 **Verify:** `pnpm test` is green, including the contract test. Sign up, sign in with OTP, and sign in with Google on preview. `make-admin` promotes a user, `/admin` renders a placeholder for the admin, and a merchant user gets a 404.
@@ -331,19 +331,18 @@ gantt
 
 ## Phase 11 — Donations (Sprint 10) → **M2**
 
-**Goal:** F-11 with all three tiers (PayHere behind its flag).
+**Goal:** F-11 with bank-transfer donations verified by admins.
 
 - [ ] `src/features/donations/schema.ts`. `POST /api/donations` (reference code, submit secret cookie, private merchant link by phone). `POST /api/donations/[ref]/submit`. `GET /api/donations/[ref]/status`.
 - [ ] Upload purpose `donation_slip` (ref + secret auth, magic-byte check).
-- [ ] S09: tiers, amount chips (cents), LankaQR card (static QR asset from the acquirer), bank details with copy buttons, slip dropzone, pending/approved states, resume link, supporters wall (ISR `supporters`), transparency block (monthly aggregate), legal line.
-- [ ] PayHere: `/api/donations/payhere/checkout` (hash), auto-submit form, `/api/webhooks/payhere` (md5sig, merchant/amount/currency checks, idempotent, status mapping), `/donate/thanks` polling. Sandbox end-to-end first, then live keys.
+- [ ] S09: amount chips (cents), bank details with copy buttons (from `DONATION_*` vars), optional bank txn reference, slip dropzone, pending/approved states, resume link, supporters wall (ISR `supporters`), transparency block (monthly aggregate), legal line.
 - [ ] Admin Donations queue: slip preview via presigned GET in a sandboxed iframe/img, approve/reject with reasons, `recomputeSupporter`, `bumpGeoVersion`, `revalidateTag('supporters','home-stats')`, message moderation.
 - [ ] Cron: `awaiting_payment` > 14 days → `cancelled`. Rejected slips purged after 90 days.
 - [ ] Dashboard "My donations" wired up.
 
-**Verify:** E2E `05-donation.spec.ts` (bank slip → admin approve → gold pin; PayHere replay idempotent; bad signature 400; 8 MB PDF rejected client + server).
+**Verify:** E2E `05-donation.spec.ts` (bank slip → admin approve → gold pin; nothing public changes while pending; 8 MB PDF rejected client + server; renamed `.exe` rejected by magic bytes).
 
-**Exit criteria (M2):** AC-11.1–AC-11.3 and AC-08.2 pass, and the M2 features run in production with real LankaQR/bank details.
+**Exit criteria (M2):** AC-11.1–AC-11.3 and AC-08.2 pass, and the M2 features run in production with the real bank details.
 
 ---
 
@@ -357,7 +356,7 @@ gantt
 - [ ] RSS per locale. Sitemap includes posts.
 - [ ] Cron: hourly `blog` revalidation for scheduled posts (add the cron `0 * * * *`, still within the 5-trigger limit).
 - [ ] Docs video embeds (`::video` directive with R2-hosted MP4, captions required).
-- [ ] Dynamic LankaQR: only if a free acquirer API exists (else record "deferred" in ADR).
+- [ ] Payment gateway ADR: compare gateway options (card and/or LankaQR) on fees, donation eligibility and webhook security. Build only after the ADR is approved.
 - [ ] Launch posts: "CB-POS is free", "How CB-POS calculates VAT from MRP" (with the disclaimer), and a first merchant story (with written consent).
 
 **Verify:** AC-10.1. RSS validates. A scheduled post appears within an hour of `published_at`.

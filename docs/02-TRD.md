@@ -36,7 +36,6 @@ flowchart LR
     GH["GitHub: ceybyte/cbpos-releases<br/>latest.json + Release assets"]
     PHS["PostHog Cloud (EU/US)"]
     RS["Resend (auth email)"]
-    PAY["PayHere checkout + notify"]
     CARTO["CARTO basemap tiles"]
     TSV["Turnstile siteverify"]
   end
@@ -51,7 +50,6 @@ flowchart LR
   W --> R2
   W --> TSV
   W --> RS
-  PAY -->|notify_url| W
   GH -->|release webhook| W
   CRON -->|fetch latest.json| GH
   CRON --> D1 & KV
@@ -128,8 +126,10 @@ flowchart LR
     "POSTHOG_HOST": "https://eu.i.posthog.com",
     "MAP_STYLE_DARK": "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
     "MAP_STYLE_LIGHT": "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-    "FEATURE_PAYHERE": "false",
-    "PAYHERE_MODE": "sandbox",
+    "DONATION_BANK_NAME": "<bank>",
+    "DONATION_BANK_BRANCH": "<branch>",
+    "DONATION_ACCOUNT_NAME": "<account name>",
+    "DONATION_ACCOUNT_NUMBER": "<account number>",
     "LOCALES_ENABLED": "en,si,ta"
   }
 }
@@ -149,7 +149,6 @@ flowchart LR
 | `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Presigning R2 URLs (S3 API token scoped to `cbpos-uploads`, Object Read & Write) |
 | `GITHUB_WEBHOOK_SECRET` | HMAC verification of release webhooks |
 | `GITHUB_TOKEN` (optional, fine-grained, read-only public repo) | Raises the GitHub API rate limit for the sync worker |
-| `PAYHERE_MERCHANT_ID`, `PAYHERE_MERCHANT_SECRET` | Checkout hash + notify verification |
 | `IP_HASH_PEPPER` | Base for the daily IP-hash salt |
 | `CLAIM_TOKEN_SECRET` | HMAC for claim cookies |
 | `INTERNAL_SECRET` | Shared by `cbpos-web` and `cbpos-release-sync` for `/api/internal/*` calls |
@@ -216,7 +215,6 @@ All public routes live under `src/app/[locale]/`. `locale ∈ {en, si, ta}`.
 | `/{locale}/feedback/new` | S08 (submit) | F-07 | SSG | — |
 | `/{locale}/feedback/[number]` | S08 Ticket Detail | F-07 | ISR | `ticket:{id}` |
 | `/{locale}/donate` | S09 Donate | F-11 | SSG + ISR | `supporters`; 600 s |
-| `/{locale}/donate/thanks` | S09 state | F-11 | dynamic (reads `order_id`) | — |
 | `/{locale}/blog` | S10 Blog Index | F-10 | SSG + ISR | `blog` |
 | `/{locale}/blog/[slug]` | S10 Blog Post | F-10 | SSG + ISR | `blog`, `post:{translationKey}` |
 | `/{locale}/blog/rss.xml` | — | F-10 | route handler, ISR | `blog` |
@@ -246,11 +244,9 @@ All public routes live under `src/app/[locale]/`. `locale ∈ {en, si, ta}`.
 | `POST /api/feedback` | public | Turnstile, `RL_FORMS`, zod | Create ticket |
 | `GET /api/feedback/similar?q=` | public | `RL_READ` | Top 3 similar titles |
 | `POST /api/feedback/[id]/vote` | public | `RL_VOTES`, voter-hash dedupe | Toggle vote |
-| `POST /api/donations` | public | Turnstile, `RL_FORMS`, zod | Create donation (`lankaqr` / `bank_transfer`) → reference code |
-| `POST /api/donations/[ref]/submit` | public (ref + secret) | `RL_FORMS` | Mark LankaQR paid with txn ref, or bank slip uploaded → `pending_review` |
-| `GET /api/donations/[ref]/status` | public (ref + `cb_dn_{ref}` cookie secret) | `RL_READ` | Poll status on the PayHere thanks page (returns `status` only) |
-| `POST /api/donations/payhere/checkout` | public | Turnstile, `RL_FORMS`, `FEATURE_PAYHERE` | Create `awaiting_payment` donation + signed PayHere form fields |
-| `POST /api/webhooks/payhere` | PayHere | `md5sig` verify, idempotent | Update donation status |
+| `POST /api/donations` | public | Turnstile, `RL_FORMS`, zod | Create a `bank_transfer` donation → reference code + bank details |
+| `POST /api/donations/[ref]/submit` | public (ref + secret) | `RL_FORMS` | Confirm the uploaded slip (+ optional bank txn reference) → `pending_review` |
+| `GET /api/donations/[ref]/status` | public (ref + `cb_dn_{ref}` cookie secret) | `RL_READ` | Resume view on `/donate?ref=…`: returns `status` only |
 | `POST /api/webhooks/github` | GitHub | `X-Hub-Signature-256` HMAC | On `release` `published`/`edited`/`deleted` → sync |
 | `POST /api/internal/revalidate` | `X-Internal-Secret` | constant-time compare | `revalidateTag()` for tags sent by the cron worker |
 | `GET/POST /api/auth/[...all]` | — | `RL_AUTH` on sign-in/up | Better Auth handler |
@@ -628,10 +624,10 @@ Content-Security-Policy:
   img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://avatars.githubusercontent.com;
   font-src 'self';
   connect-src 'self' https://*.r2.cloudflarestorage.com https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://tiles.basemaps.cartocdn.com;
-  frame-src https://challenges.cloudflare.com https://www.payhere.lk https://sandbox.payhere.lk;
+  frame-src https://challenges.cloudflare.com;
   worker-src 'self' blob:;
   child-src blob:;
-  form-action 'self' https://www.payhere.lk https://sandbox.payhere.lk;
+  form-action 'self';
   frame-ancestors 'none';
   base-uri 'self';
   upgrade-insecure-requests
@@ -648,7 +644,7 @@ Cross-Origin-Opener-Policy: same-origin
 
 ### 12.4 Webhook verification
 - **GitHub:** `X-Hub-Signature-256 = "sha256=" + HMAC_SHA256(GITHUB_WEBHOOK_SECRET, rawBody)`, compared in constant time with `crypto.subtle.timingSafeEqual`.
-- **PayHere:** `md5sig = UPPER(MD5(merchant_id + order_id + payhere_amount + payhere_currency + status_code + UPPER(MD5(merchant_secret))))`. Workers' `crypto.subtle.digest("MD5", …)` supports MD5 (a non-standard extension available in workerd). Checkout hash: `UPPER(MD5(merchant_id + order_id + amount(2dp, no commas) + currency + UPPER(MD5(merchant_secret))))`. Also check that `merchant_id` matches ours and that `payhere_amount`/`payhere_currency` match the stored donation. The handler is idempotent on `order_id`.
+- **Payment gateways:** none in v1 (donations are bank transfers verified by an admin). Whichever gateway is chosen later must have its webhook signature verification, idempotency key and CSP entries specified in its ADR before any code is written.
 
 ### 12.5 Data protection
 - IPs are hashed (§11). Raw IPs are never stored.
@@ -709,7 +705,7 @@ Fonts: `next/font/google` with `display: "swap"` and subsets (`latin` for Inter/
 
 | Level | Tool | Scope |
 |---|---|---|
-| Unit | vitest | `money`, `phone`, `tax` display maths, `sri-lanka` (bounds, nearest city), masking projections, manifest zod, PayHere hash, GitHub HMAC |
+| Unit | vitest | `money`, `phone`, `tax` display maths, `sri-lanka` (bounds, nearest city), masking projections, manifest zod, slip magic-byte check, GitHub HMAC |
 | Contract | vitest | `geo.contract.test.ts` (whitelist), API envelopes, error codes ↔ message keys |
 | Integration | vitest + Miniflare (`@cloudflare/vitest-pool-workers`) | Route handlers against local D1/R2/KV; webhook idempotency |
 | E2E | Playwright against `pnpm preview` | The 6 flows in `04-APP_FLOW.md` × 3 locales; mobile (Pixel 7) + desktop |

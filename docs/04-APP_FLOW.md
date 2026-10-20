@@ -290,13 +290,12 @@ stateDiagram-v2
 
 ```mermaid
 flowchart TD
-  A["/{locale}/donate (S09)"] --> B["Pick tier: LankaQR · Bank deposit · Card (PayHere)"]
-  B -- "Bank deposit" --> C["Amount chips / custom (≥ Rs. 100)"]
+  A["/{locale}/donate (S09)"] --> C["Amount chips / custom (≥ Rs. 100)"]
   C --> D["Display name or Anonymous, optional message,<br/>optional contact, optional 'Link to my shop'"]
   D --> E["Turnstile → POST /api/donations {method: bank_transfer}"]
   E --> F["Show reference CB-DN-7K3Q9P + bank details (copy buttons)<br/>status = awaiting_payment"]
   F --> G["User pays at bank / app, returns (same tab or link from cookie)"]
-  G --> H["Upload slip: presign → PUT R2 → confirm (head + magic bytes)"]
+  G --> H["Upload slip or transfer screenshot: presign → PUT R2 → confirm (head + magic bytes)<br/>optional bank txn reference"]
   H --> I{"Valid?"}
   I -- no --> J["Error: FILE_TOO_LARGE / FILE_TYPE_NOT_ALLOWED"] --> H
   I -- yes --> K["POST /api/donations/{ref}/submit → status = pending_review"]
@@ -314,21 +313,20 @@ flowchart TD
 
 | # | Actor | Action | System | Event |
 |---|---|---|---|---|
-| 1 | Donor | Opens `/donate` | Tiers, transparency block (monthly total), supporters wall | `donate_viewed` |
-| 2 | Donor | Picks Bank deposit + amount | Form validation. Amount in integer cents | `donate_method_selected {method}` |
+| 1 | Donor | Opens `/donate` | Pitch, bank-transfer donation card, transparency block (monthly total), supporters wall | `donate_viewed` |
+| 2 | Donor | Picks an amount | Form validation. Amount in integer cents | `donate_amount_selected {amountBand}` |
 | 3 | Donor | "Link to my shop" | If signed in: own merchant auto-selected. Otherwise: enter the listing phone. Matched server-side; the response never says whether it matched | — |
-| 4 | Donor | Create donation | `POST /api/donations` → `{ referenceCode, donationId, submitSecret }`. The secret is kept in an httpOnly cookie `cb_dn_{ref}` (7 days) and also shown as a resume link | `donation_created {method, amountBand}` |
-| 5 | Donor | Pays at the bank | — (offline) | — |
-| 6 | Donor | Uploads the slip | Presign (`purpose: donation_slip`, ref + secret) → PUT → confirm | `donation_slip_uploaded` |
+| 4 | Donor | Create donation | `POST /api/donations` → `{ referenceCode, donationId, submitSecret }`. The secret is kept in an httpOnly cookie `cb_dn_{ref}` (14 days) and also shown as a resume link | `donation_created {method, amountBand}` |
+| 5 | Donor | Transfers the money (online banking, banking app, CEFT, or branch deposit) | — (outside the site) | — |
+| 6 | Donor | Uploads the slip or screenshot, optionally types the bank txn reference | Presign (`purpose: donation_slip`, ref + secret) → PUT → confirm | `donation_slip_uploaded` |
 | 7 | Donor | Confirms | Status `pending_review` | `donation_submitted {method}` |
 | 8 | Admin | Opens the queue (`g d`) | Oldest first. Shows amount, reference, date, name, slip preview | — |
 | 9 | Admin | Approve `a` / Reject `r` | `db.batch`: donation status + `reviewed_by/at` + merchant supporter flag + audit log. `bumpGeoVersion()`, `revalidateTag('supporters','home-stats')` | `donation_reviewed {result}` (server) |
 
 `amountBand` buckets: `<1k`, `1k–5k`, `5k–25k`, `>25k`. The exact amount never goes to analytics.
 
-### 5.2 Other tiers (same flow shape)
-- **LankaQR:** step 4 shows the static LankaQR image + reference. Step 6 is replaced by "Enter the transaction reference from your app" (text, 4–40 chars) → `pending_review`. Admin reconciles against the account statement.
-- **PayHere:** step 4 → `POST /api/donations/payhere/checkout` → auto-submitting form POST to PayHere (`return_url=/{locale}/donate/thanks?order={id}`, `cancel_url=/{locale}/donate?cancelled=1`, `notify_url=/api/webhooks/payhere`). The webhook sets the status (`2` → `approved` automatically, with no admin step). The thanks page polls `GET /api/donations/{ref}/status` (every 3 s, max 60 s) because the webhook may arrive after the redirect.
+### 5.2 Future payment methods
+Bank transfer is the only method in v1. When a payment gateway (card and/or LankaQR) is chosen through an ADR, it gets its own branch in this flow. Gateway payments that are confirmed by a verified webhook may skip admin review, but must still go through `recomputeSupporter`.
 
 ### 5.3 Edge cases
 
@@ -339,11 +337,11 @@ flowchart TD
 | Link-to-shop phone doesn't match | The donation proceeds without a merchant link. The admin can link manually during review |
 | Merchant already a supporter | Approval keeps `supporter_since` (the earliest date) |
 | Rejected donation that had a link | The supporter flag is untouched unless no other approved donations exist for that merchant (then it's cleared) |
-| PayHere `-3` chargeback after approval | Status → `refunded`. Supporter flag recomputed |
+| Money returned to the donor after approval (bank reversal or donor request) | Admin sets the status to `refunded` with a note. Supporter flag recomputed |
 
 ### 5.4 Acceptance (E2E `e2e/flows/05-donation.spec.ts`)
 - Full bank-slip path with a seeded admin approving → the merchant's geo feature has `isSupporter: true`.
-- PayHere sandbox webhook replay is idempotent. A bad signature → 400.
+- Nothing public changes while the donation is `pending_review`. A renamed `.exe` uploaded as a `.pdf` is rejected (`FILE_TYPE_NOT_ALLOWED`).
 
 ---
 
@@ -425,7 +423,7 @@ flowchart TD
 | `doc_feedback` | client | `slug`, `helpful` |
 | `shortcuts_printed` | client | — |
 | `ticket_form_opened` / `ticket_similar_shown` / `ticket_duplicate_avoided` / `ticket_attachment_uploaded` / `ticket_submitted` / `ticket_voted` | client | `type`, `source`, `count`, `kind`, `severity`, `hasAttachment`, `direction` |
-| `donate_viewed` / `donate_method_selected` / `donation_created` / `donation_slip_uploaded` / `donation_submitted` | client | `method`, `amountBand` |
+| `donate_viewed` / `donate_amount_selected` / `donation_created` / `donation_slip_uploaded` / `donation_submitted` | client | `method`, `amountBand` |
 | `donation_reviewed` | server | `result`, `method` |
 | `auth_viewed` / `auth_completed` | client | `claim`, `method` |
 | `listing_claimed` | server | — |

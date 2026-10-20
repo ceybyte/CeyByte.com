@@ -64,7 +64,7 @@
 ### 2.2 Accent budget per viewport
 - `#39FF14`: at most **one** element (the primary CTA). The sticky header CTA hides while the hero CTA is in view (IntersectionObserver).
 - `#00BCEB`: focus rings, links, one ambient glow, map pins, small data highlights.
-- `#FFD700`: only supporter pins, supporter badges and the donate page's tier-1 highlight.
+- `#FFD700`: only supporter pins, supporter badges and the donate page's primary button.
 
 ---
 
@@ -436,7 +436,7 @@ Each component's file, variants, states, and the rules it has to follow. shadcn 
 | `ghost` | transparent | `--text` | none | `surface-elevated` | `scale(.98)` |
 | `link` | transparent | `--cyan-text` | none | underline (offset 4px) | — |
 | `destructive` | transparent | `--error` | `--error` | fill `--error`, text white | `scale(.98)` |
-| `gold` (donate tier 1 only) | `--gold` | `#121212` | none | brightness 1.05 | `scale(.97)` |
+| `gold` (donate page primary only) | `--gold` | `#121212` | none | brightness 1.05 | `scale(.97)` |
 
 Sizes: `sm` (min-h 32, px-3, text-sm), `md` (min-h 40, px-4), `lg` (min-h 48, px-6, text-base), `xl` (min-h 56, px-8, text-lg, hero only). Mobile tap targets are ≥ 44px.
 
