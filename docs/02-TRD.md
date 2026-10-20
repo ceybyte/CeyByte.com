@@ -393,7 +393,7 @@ sequenceDiagram
       CR->>D1: insert admin_audit_log(level=warn, action=release_sync_invalid)
     else valid
       CR->>GH: GET /repos/{repo}/releases/tags/v{version} (body → notes_md)
-      CR->>D1: batch: upsert releases; set is_latest=0 for channel; set is_latest=1 for version
+      CR->>D1: batch(upsert release, clear is_latest for channel, set is_latest on version)
       CR->>KV: put release:latest:{channel} (JSON)
       CR->>KV: put sync:etag
       CR->>WH: POST /api/internal/revalidate {tags:[release-latest, releases]} (shared secret)
@@ -560,15 +560,15 @@ The properties whitelist is defined once in `05-SCHEMA.md §7` and in code as `P
 
 ```mermaid
 flowchart TD
-  A[GET /api/merchants/geo] --> RL{RL_READ ok?}
-  RL -- no --> R429[429]
-  RL -- yes --> V[KV get geo:version → n]
-  V --> C{Cache API match<br/>key https://cache.internal/geo/v&#123;n&#125;}
-  C -- hit --> OUT[200 + ETag W/"geo-n"]
-  C -- miss --> K{KV get geo:snapshot:v&#123;n&#125;}
-  K -- hit --> PUT1[cache.put s-maxage=300] --> OUT
-  K -- miss --> DB[D1 SELECT PUBLIC_GEO_COLUMNS<br/>WHERE status='listed' AND is_public_on_map=1 AND deleted_at IS NULL]
-  DB --> BUILD[Build FeatureCollection] --> KVW[KV put geo:snapshot:v&#123;n&#125; ttl 7d] --> PUT1
+  A["GET /api/merchants/geo"] --> RL{"RL_READ ok?"}
+  RL -- no --> R429["429"]
+  RL -- yes --> V["KV get geo:version → n"]
+  V --> C{"Cache API match<br/>key cache.internal/geo/v{n}"}
+  C -- hit --> OUT["200 + ETag W/geo-n"]
+  C -- miss --> K{"KV get geo:snapshot:v{n}"}
+  K -- hit --> PUT1["cache.put s-maxage=300"] --> OUT
+  K -- miss --> DB["D1 SELECT PUBLIC_GEO_COLUMNS<br/>WHERE status = listed AND is_public_on_map = 1<br/>AND deleted_at IS NULL"]
+  DB --> BUILD["Build FeatureCollection"] --> KVW["KV put geo:snapshot:v{n} ttl 7d"] --> PUT1
 ```
 
 - **Conditional requests:** if `If-None-Match` equals `W/"geo-{n}"`, return `304`.
