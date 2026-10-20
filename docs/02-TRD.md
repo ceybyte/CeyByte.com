@@ -677,7 +677,7 @@ Cross-Origin-Opener-Policy: same-origin
 | Workers requests | 100,000 / day | ~6,000 / day | > 60k/day sustained |
 | Workers CPU | 10 ms / invocation | SSG/ISR pages < 5 ms | Any route p95 > 8 ms → optimise or move to Workers Paid ($5) |
 | Worker size | 3 MiB gzip (free) | Target ≤ 2.5 MiB | CI `bundle:check` fails > 2.8 MiB |
-| D1 | 5 M rows read/day, 100 k rows written/day, 5 GB | < 50 k reads/day | Reads > 1 M/day |
+| D1 | 5 M rows read/day, 100 k rows written/day, 500 MB per database (5 GB per account) | < 50 k reads/day, < 50 MB | Reads > 1 M/day or DB > 300 MB |
 | KV | 100 k reads/day, 1 k writes/day | ~10 k reads, < 100 writes | Writes > 600/day |
 | R2 | 10 GB, 1 M Class A, 10 M Class B / month | < 1 GB | > 7 GB |
 | Durable Objects (SQLite-backed) | Free plan allowance | Revalidation queue only | — |
