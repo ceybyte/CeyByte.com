@@ -11,21 +11,23 @@ English copy below is final. It goes into `messages/en.json` under the keys show
 
 ---
 
-## 0. Product facts to confirm before launch
+## 0. Product facts behind the copy
 
-The copy depends on facts about the CB-POS desktop app. The values below are the v1 spec. The CB-POS team signs off on each one in the Phase 9 checklist (`07 §Phase 9`). If a fact differs, update the copy here first, then the messages.
+Every product claim below carries the fact ID it rests on, in brackets after the copy (`[C2]` = `docs/00-CBPOS_FACTS.md` § C2). The brackets are for reviewers and aren't part of the string. If the facts change (re-audit on each tagged CB-POS release), update the copy here first, then `messages/*.json`.
 
-| # | Fact used in copy | Value assumed | Where it appears |
-|---|---|---|---|
-| PF-1 | Supported OS | Windows 10 and 11, 64-bit | Hero subtext, FAQ, Releases |
-| PF-2 | Cashier keymap | `F2` search item · `Enter` add · `F4` qty · `F8` hold · `F12` pay · `Esc` cancel | Bento card 1, shortcut docs |
-| PF-3 | Receipt language switch | Per shop default, overridable per bill | Bento card 5 |
-| PF-4 | Printer widths | 58mm and 80mm ESC/POS (USB, network) | Bento 4, FAQ 5 |
-| PF-5 | Scale interface | USB and serial (RS-232) scales with continuous output | Bento 4/6, FAQ 5 |
-| PF-6 | Setup wizard length | ~2 minutes, 4 steps (shop, tax, receipt, printer) | How It Works |
-| PF-7 | Backup format | AES-encrypted `.ZIP`, manual + scheduled | Bento 6, data-safety page |
-| PF-8 | Installer is unsigned | True until a code-signing certificate is bought | What Next, FAQ 4 |
-| PF-9 | Cloud Sync | Optional. Syncs to a merchant-hosted PostgreSQL (version range to confirm) over TLS. Local SQLite stays primary. Changes queue while offline and sync when the connection returns. Conflict rules and multi-terminal support to confirm | Bento 2, FAQ 2, Cloud Sync docs, data-safety page |
+Corrections from the audit that changed this doc:
+
+| Old assumption | What the app actually does | Fact |
+|---|---|---|
+| Windows 10/11 64-bit | Windows 10 or later; the installer runs in 32-bit mode, so don't say "64-bit" | [A2] |
+| `F2` search, `F12` pay | `F3` search, `F5`/`F10` pay, `F12` quick exact cash, `F2` customer, `F6`/`F7` hold/recall, `F1` help | [B1] |
+| Receipt language per bill | Per till (Settings › Receipt); item names print in English on thermal receipts | [F2] |
+| Live USB/serial scales | Weight-embedded scale labels only (EAN-13, prefix 20) | [E3] |
+| 2-minute, 4-step wizard | 3 setup screens (shop, hardware, admin PIN) + demo/fresh choice; may be skipped on fresh installs (UR-01) | [I1] |
+| Scheduled backups | Manual, after shift close, and automatic on app close; needs a backup password | [G2] |
+| Cloud Sync | Doesn't exist. LAN Sync and PostgreSQL network mode, both on the shop's own network | [H] |
+| Works 100% offline | Bills offline; checks GitHub for updates on every launch | [A7] |
+| SSCL on gross MRP | SSCL on the VAT-exclusive base; VAT/SSCL off until VAT registration is ticked | [C1], [C2] |
 
 ---
 
@@ -77,16 +79,16 @@ System states (not counted as screens): `not-found` (Hairline "unplugged cable" 
 │ +                                                                      + │
 │  FREE WINDOWS POS · SRI LANKA                ╭──────────────────────╮    │
 │                                              │                      │    │
-│  Bill every customer.                        │   3D CB-POS mockup   │    │
+│  Bill every customer.                        │ real CB-POS capture  │    │
 │  Even when the internet                      │   (Rive, cyan rim)   │    │
 │  doesn't show up.                            │                      │    │
 │                                              ╰──────────────────────╯    │
-│  Lead paragraph …                             hairline iso counter       │
+│  Lead paragraph …                             Hairline keyboard figure   │
 │                                                                          │
 │  [ ⬇ Download CB-POS — Free ]   See how it works →                       │
-│  Windows 10/11 · 64-bit · v1.4.2 · 80.3 MB                               │
+│  Windows 10 or later · v{version} · {size} MB                            │
 │                                                                          │
-│  ✓ No monthly fee   ✓ Works fully offline   ✓ Your data stays yours     │
+│  ✓ No monthly fee   ✓ Bills without internet  ✓ Sales stay on your PC  │
 │ +                                                                      + │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -95,14 +97,14 @@ System states (not counted as screens): `not-found` (Hairline "unplugged cable" 
 |---|---|
 | `home.hero.eyebrow` | FREE WINDOWS POS · SRI LANKA |
 | `home.hero.title` | Bill every customer. Even when the internet doesn't show up. |
-| `home.hero.lead` | CB-POS is a free point of sale for Sri Lankan shops. It calculates 18% VAT and 2.5% SSCL from your MRP, prints receipts in Sinhala, Tamil and English, and saves every sale on your own PC. |
+| `home.hero.lead` | CB-POS is free point-of-sale software for Sri Lankan shops. It works out VAT and SSCL from your MRP, prints receipts in Sinhala, Tamil or English, and saves every sale on your own PC. [C1] [C2] [E2] [G1] |
 | `home.hero.cta` | Download CB-POS — Free |
-| `home.hero.ctaMeta` | Windows 10/11 · 64-bit · v{version} · {sizeMb} MB |
+| `home.hero.ctaMeta` | Windows 10 or later · v{version} · {sizeMb} MB [A2] |
 | `home.hero.secondary` | See how it works |
 | `home.hero.assurance.1` | No monthly fee, ever |
-| `home.hero.assurance.2` | Works fully offline |
-| `home.hero.assurance.3` | Your data stays under your control |
-| `home.hero.mockupAlt` | CB-POS billing screen with Samba Rice 1.250 kg and the VAT total in rupees |
+| `home.hero.assurance.2` | Bills without internet [A8] |
+| `home.hero.assurance.3` | Your sales stay on your PC [G1] |
+| `home.hero.mockupAlt` | CB-POS sales screen with Samba Rice 1.250 kg in the cart and the bill total in rupees (real capture, UR-20) |
 
 Layout: desktop 12-col, copy cols 1–6, mockup cols 7–12. Mobile: copy first, mockup below the CTA (the poster image is the LCP). The `h1` is the only `text-display` on the page.
 
@@ -110,10 +112,10 @@ Layout: desktop 12-col, copy cols 1–6, mockup cols 7–12. Mobile: copy first,
 
 | Key | Value (live) | Label |
 |---|---|---|
-| `home.stats.lag` | `0 ms` | Network lag. Every sale saves to your PC, not a server. |
+| `home.stats.lag` | `0 ms` | Waiting on a network. Each sale saves to the PC's own database first. [G1] |
 | `home.stats.price` | `Rs. 0 / mo` | No subscription. No paid plan. No trial that ends. |
 | `home.stats.districts` | `{covered}/25` | Districts with CB-POS shops on the map |
-| `home.stats.tax` | `18% + 2.5%` | VAT and SSCL calculated from MRP* |
+| `home.stats.tax` | `18% + 2.5%` | VAT and SSCL worked out from MRP when VAT registration is on* [C1] [C2] |
 | `home.stats.taxNote` | * Calculation only, not IRD-certified. Read the tax disclaimer. | |
 | `home.mapTeaser.title` | {shops} shops. {covered} districts. Live. | |
 | `home.mapTeaser.cta` | Open the merchant map | |
@@ -155,27 +157,27 @@ Desktop layout (3 columns × 3 rows, hairline-separated):
 | `home.solution.eyebrow` | 02 / THE SOLUTION |
 | `home.solution.title` | Built for the counter, not the cloud. |
 | **Card 1** `home.bento.keyboard.title` | Bill without touching the mouse. |
-| `home.bento.keyboard.body` | Every action has a key. Cashiers learn it in a day and bill faster from day two. |
-| `home.bento.keyboard.demo` | Try it: press F2, Enter, F12 |
+| `home.bento.keyboard.body` | Every action has a key: F3 to search, F5 to pay, F12 for exact cash, F6 to hold a bill. Press F1 in the app for the full list. [B1] |
+| `home.bento.keyboard.demo` | Try it: press F3, Enter, F5 |
 | **Card 2** `home.bento.offline.title` | No internet. No problem. |
-| `home.bento.offline.body` | Every sale is written to a local SQLite database in milliseconds. Switch the Wi-Fi off and keep billing. Want an off-site copy? Turn on Cloud Sync to your own PostgreSQL server. |
+| `home.bento.offline.body` | Every sale is written to a SQLite database on the PC in milliseconds. Switch the Wi-Fi off and keep billing. [G1] [A8] |
 | `home.bento.offline.toggleOn` | Wi-Fi: on |
 | `home.bento.offline.toggleOff` | Wi-Fi: off — still billing |
-| `home.bento.offline.synced` | Back online — synced to your PostgreSQL |
-| **Card 3** `home.bento.tax.title` | 18% VAT and 2.5% SSCL, worked out for you. |
-| `home.bento.tax.body` | Type the shelf MRP. CB-POS works backward to the price before VAT and the VAT amount, and tracks SSCL on your turnover. |
+| **Card 3** `home.bento.tax.title` | VAT and SSCL, worked out from the MRP. |
+| `home.bento.tax.body` | Type the shelf MRP. CB-POS works backward to the price before VAT, the 18% VAT, and the 2.5% SSCL on half of that base. Your customer still pays the MRP. [C1] [C2] |
 | `home.bento.tax.inputLabel` | MRP |
 | `home.bento.tax.base` | Price before VAT |
 | `home.bento.tax.vat` | VAT (18%) |
-| `home.bento.tax.formula` | base = MRP ÷ 1.18 |
-| `home.bento.tax.note` | Example only. Confirm rates with your accountant. Tax disclaimer → |
-| **Card 4** `home.bento.hardware.title` | Plug in what you already own. |
-| `home.bento.hardware.body` | ESC/POS thermal printers (58mm and 80mm), USB barcode scanners, cash drawers and digital scales. |
+| `home.bento.tax.sscl` | SSCL (2.5% on 50%) |
+| `home.bento.tax.formula` | before VAT = MRP ÷ 1.18 · SSCL = before VAT × 50% × 2.5% |
+| `home.bento.tax.note` | Applies once VAT registration is on in Settings. Example only; confirm rates with your accountant. Tax disclaimer → [C1] |
+| **Card 4** `home.bento.hardware.title` | Use the printer and scanner you already have. |
+| `home.bento.hardware.body` | 58mm or 80mm ESC/POS receipt printers over Windows, your network or USB. Any keyboard-style barcode scanner. Cash drawers that open through the printer. [E1] [E4] |
 | `home.bento.hardware.status` | Connected |
-| **Card 5** `home.bento.receipts.title` | Receipts in Sinhala, Tamil and English. |
-| `home.bento.receipts.body` | Print in your customer's language. Set it per shop, change it per bill. |
-| **Card 6** `home.bento.weigh.title` | 1.250 kg means 1.250 kg. |
-| `home.bento.weigh.body` | Sell rice, dhal and vegetables to three decimals, with AVCO costing behind every item. Back up everything to an encrypted .ZIP on a USB drive. |
+| **Card 5** `home.bento.receipts.title` | Receipt text in Sinhala, Tamil or English. |
+| `home.bento.receipts.body` | Choose the receipt language for each till in Settings. Sinhala and Tamil print as images, so they come out right on ordinary thermal printers. [E2] [F2] |
+| **Card 6** `home.bento.weigh.title` | Scan the scale label. Get 1.250 kg. |
+| `home.bento.weigh.body` | Weighed goods sell to three decimals. Scan the barcode label your scale prints and CB-POS reads the weight. Back up everything to a password-protected, AES-encrypted .ZIP. [D2] [E3] [G2] |
 
 Tax demo default: MRP `1,180.00` → base `1,000.00`, VAT `180.00`. Rounding is half-up to 2 dp, display only.
 
@@ -184,13 +186,13 @@ Tax demo default: MRP `1,180.00` → base `1,000.00`, VAT `180.00`. Rounding is 
 | Key | Copy |
 |---|---|
 | `home.how.eyebrow` | 03 / HOW IT WORKS |
-| `home.how.title` | From download to first bill in minutes. |
+| `home.how.title` | From download to first bill. |
 | `home.how.1.title` | Download the .EXE |
-| `home.how.1.body` | One free installer, about {sizeMb} MB. No account, no card. |
-| `home.how.2.title` | Run the 2-minute setup wizard |
-| `home.how.2.body` | Shop name, VAT settings, receipt language, printer. That's the whole setup. |
+| `home.how.1.body` | One free installer, about {sizeMb} MB. Windows asks for administrator permission to install. No account, no card. [A3] [A4] |
+| `home.how.2.title` | Fill in the setup screens |
+| `home.how.2.body` | Shop details, receipt printer and paper width, admin PIN. Then load demo data to practise, or start fresh. [I1] [I2] |
 | `home.how.3.title` | Plug in and bill |
-| `home.how.3.body` | Connect your printer and scanner, press F2, make the first sale. |
+| `home.how.3.body` | Connect your printer and scanner, press F3 to find an item and F5 to take payment. [B1] [E1] |
 | `home.how.cta` | Read the full setup guide |
 
 ### 3.6 Section 6 — FAQs
@@ -198,10 +200,10 @@ Tax demo default: MRP `1,180.00` → base `1,000.00`, VAT `180.00`. Rounding is 
 | Key | Question | Answer |
 |---|---|---|
 | `home.faq.1` | Is CB-POS really free? What's the catch? | Yes, it's free. No subscription, no trial period, no locked features, no ads. CB-POS is funded by voluntary donations from Sri Lankan shops and supporters. |
-| `home.faq.2` | What happens to my sales if the internet goes down? | Nothing. CB-POS never needs the internet to bill. Every sale saves to a SQLite database on your own PC first. If you turn on Cloud Sync, CB-POS copies your data to a PostgreSQL database that you choose and host, and catches up automatically when the internet returns. Ceybyte never hosts or sees your data, so keep encrypted .ZIP backups too. |
+| `home.faq.2` | What happens to my sales if the internet goes down? | Nothing. CB-POS bills without the internet and saves every sale to a database on your own PC. The only thing it does online by itself is check GitHub for a new version when it starts, and it sends no shop data. Ceybyte can't see or recover your data, so set a backup password and keep encrypted .ZIP backups on a USB drive. [A7] [G1] [G2] |
 | `home.faq.3` | Is CB-POS approved by the IRD? | No. CB-POS calculates 18% VAT and 2.5% SSCL from your MRP using the rates you set, but it is not certified or endorsed by the Inland Revenue Department. Your tax filings are your responsibility, so check your settings with your accountant. **Read the tax disclaimer.** |
-| `home.faq.4` | Windows says the installer isn't safe. Is it a virus? | No. Windows SmartScreen warns about new apps that aren't code-signed yet. Check the SHA-256 hash on the download page matches your file, then click **More info → Run anyway**. Buying a code-signing certificate is our first funding goal. |
-| `home.faq.5` | Will it work with my printer, scanner and scale? | Most ESC/POS thermal printers (58mm and 80mm, USB or network), USB barcode scanners, cash drawers and USB/serial scales work. Check the tested hardware list, or ask in the WhatsApp community. |
+| `home.faq.4` | Windows says the installer isn't safe. Is it a virus? | No. Windows SmartScreen warns about new apps that aren't code-signed yet. Check that the SHA-256 on the download page matches your `CBPOSSetup` file, then click **More info → Run anyway**. Buying a code-signing certificate is our first funding goal. [A5] |
+| `home.faq.5` | Will it work with my printer, scanner and scale? | Receipt printers: 58mm or 80mm ESC/POS, connected as a Windows printer, over the network, or by USB. Scanners: any that type like a keyboard. Cash drawers: the kind that open through the receipt printer. Scales: CB-POS reads the barcode labels your scale prints, not a live cable connection. [E1] [E3] [E4] |
 | `home.faq.title` | Questions shop owners ask before installing. | |
 | `home.faq.eyebrow` | 04 / FAQ | |
 
@@ -220,13 +222,13 @@ Full-width `surface` band with a hairline top and bottom, crosshairs at all 4 co
 
 | Key | Copy |
 |---|---|
-| `footer.mission` | Free, offline, keyboard-first POS for Sri Lankan retail. Built in Sri Lanka. |
+| `footer.mission` | Free, offline-first, keyboard-first POS for Sri Lankan retail. Made in Sri Lanka by Ceylon Byte. |
 | `footer.latest` | Latest: v{version} · {channel} |
 | `footer.col.product` | Product — Download · Releases · Docs · Keyboard shortcuts |
 | `footer.col.community` | Community — Merchant map · Feedback · Donate · WhatsApp community · Blog |
 | `footer.col.legal` | Legal — Terms · Privacy · Tax disclaimer · Data safety · Cookies |
 | `footer.legalLine` | CB-POS is provided as-is, without warranty. Tax calculations are not IRD-certified. You are responsible for backing up your data. |
-| `footer.copyright` | © {year} Ceybyte. Made in Sri Lanka. |
+| `footer.copyright` | © {year} Ceylon Byte. Made in Sri Lanka. |
 | `footer.build` | build {sha} |
 
 ---
@@ -239,7 +241,7 @@ Each blueprint lists the layout, components, states and key copy. Each Stitch pr
 Blueprint: §3 above. States: stats loading → skeleton tiles; `shops = 0` → empty teaser copy; release unavailable → CTA still opens the gate, meta line hidden.
 
 **Stitch prompt (desktop, 1440 wide):**
-> Landing page for "CB-POS", a free offline Windows point-of-sale for Sri Lankan shops. Sticky header: "[CB-POS]" mono logo with a cyan dot at left; nav "Product, Map, Docs, Releases, Donate"; right side a compact language switcher "EN · සිං · தமி", a moon icon, and nothing else. **Hero:** left half has a small mono uppercase eyebrow "FREE WINDOWS POS · SRI LANKA", a huge Geist ExtraBold headline "Bill every customer. Even when the internet doesn't show up.", a muted lead paragraph about 18% VAT, 2.5% SSCL, Sinhala/Tamil/English receipts, then a large neon green #39FF14 button "Download CB-POS — Free" with a download icon, a ghost link "See how it works →", a tiny mono line "Windows 10/11 · 64-bit · v1.4.2 · 80.3 MB", and three small check items. Right half: a borderless, slightly isometric screenshot of a dark Windows POS billing screen (items: Samba Rice 1.250 kg, Anchor Milk Powder 400g; totals in Rs.) floating on a #18181B backdrop with a soft cyan rim glow; faint isometric wireframe lines of a shop counter behind it. Below: a telemetry strip of four mono stats separated by vertical hairlines: "0 ms", "Rs. 0 / mo", "17/25", "18% + 2.5%" each with a short muted label, plus a small dark map thumbnail of Sri Lanka with cyan dots and the line "412 shops. 17 districts. Live." Then a section "01 / THE PROBLEM" with three hairline-bordered cards each with a thin red line across the top; a "02 / THE SOLUTION" bento grid of six cards (keyboard keycaps, Wi-Fi toggle, MRP→VAT calculator in mono, hardware list with cyan "Connected" dots, receipt with EN/SI/TA tabs, a scale reading "1.250 kg"); "03 / HOW IT WORKS" with three numbered steps joined by a hairline; "04 / FAQ" accordion with plus icons; a full-width final banner "Your next bill can be on CB-POS." with the green button; and a dark #18181B four-column footer with crosshair marks at grid intersections.
+> Landing page for "CB-POS", a free offline Windows point-of-sale for Sri Lankan shops. Sticky header: "[CB-POS]" mono logo with a cyan dot at left; nav "Product, Map, Docs, Releases, Donate"; right side a compact language switcher "EN · සිං · தமி", a moon icon, and nothing else. **Hero:** left half has a small mono uppercase eyebrow "FREE WINDOWS POS · SRI LANKA", a huge Geist ExtraBold headline "Bill every customer. Even when the internet doesn't show up.", a muted lead paragraph about 18% VAT, 2.5% SSCL, Sinhala/Tamil/English receipts, then a large neon green #39FF14 button "Download CB-POS — Free" with a download icon, a ghost link "See how it works →", a tiny mono line "Windows 10 or later · v1.3.0 · — MB", and three small check items. Right half: an empty borderless #18181B frame labelled in small mono text "real CB-POS capture" with a soft cyan rim glow (the real screenshot is dropped in later; do not draw a fake POS interface), and a fine isometric line drawing of a 60-key keyboard behind it. Below: a telemetry strip of four mono stats separated by vertical hairlines: "0 ms", "Rs. 0 / mo", "—/25", "18% + 2.5%" each with a short muted label, plus a small dark map thumbnail of Sri Lanka with cyan dots and the line "— shops. — districts. Live." (dashes stand for live numbers; never invent them) Then a section "01 / THE PROBLEM" with three hairline-bordered cards each with a thin red line across the top; a "02 / THE SOLUTION" bento grid of six cards (keyboard keycaps F3 / Enter / F5, Wi-Fi toggle, MRP→VAT→SSCL calculator in mono, printer connection types with cyan dots, receipt with EN/SI/TA tabs, a scale label barcode becoming a "1.250 kg" cart line); "03 / HOW IT WORKS" with three numbered steps joined by a hairline; "04 / FAQ" accordion with plus icons; a full-width final banner "Your next bill can be on CB-POS." with the green button; and a dark #18181B four-column footer with crosshair marks at grid intersections.
 
 **Stitch prompt (mobile, 390 wide):**
 > Same CB-POS landing page at 390px wide. Header shows only the logo, a language button and a hamburger. Hero stacks: eyebrow, headline over 4 lines, lead, full-width green "Download CB-POS — Free" button (56px tall), the mono meta line, three check items, then the product screenshot below. The telemetry strip becomes a 2×2 grid of stats followed by a full-width map thumbnail card. Problem cards stack. The bento grid becomes a single column of six cards, each with its small interactive demo. Steps are vertical with a vertical hairline connecting numbers 1–3. FAQ is a full-width accordion. The footer stacks its four columns with hairline separators. 16px side padding, no horizontal scroll.
@@ -300,9 +302,9 @@ Blueprint: §3 above. States: stats loading → skeleton tiles; `shops = 0` → 
 | `gate.done.smartscreen.title` | If Windows says "Windows protected your PC" |
 | `gate.done.smartscreen.body` | Click **More info**, then **Run anyway**. This warning appears because CB-POS isn't code-signed yet, not because something is wrong. |
 | `gate.done.steps.title` | Next steps |
-| `gate.done.steps.1` | Open the downloaded file and follow the installer. |
-| `gate.done.steps.2` | Complete the setup wizard: shop name, VAT, receipt language, printer. |
-| `gate.done.steps.3` | Plug in your printer and scanner, then press F2 to make your first sale. |
+| `gate.done.steps.1` | Open the downloaded file. Windows asks for administrator permission, then the installer runs. [A4] |
+| `gate.done.steps.2` | Fill in the setup screens: shop details, printer, admin PIN. If they don't appear, log in with PIN **1234** and change it straight away in Users. [I1] |
+| `gate.done.steps.3` | Plug in your printer and scanner, then press F3 to find an item and F5 to take payment. [B1] |
 | `gate.done.whatsapp` | Join the CB-POS WhatsApp community |
 | `gate.done.claim.title` | Save your listing |
 | `gate.done.claim.body` | Create a free account to edit your shop details or remove them at any time. |
@@ -349,7 +351,7 @@ Blueprint: §3 above. States: stats loading → skeleton tiles; `shops = 0` → 
 States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, filtered-empty ("No shops match. Clear filters").
 
 **Stitch prompt:**
-> A full-screen dark map page for "CB-POS Merchant Map". The left panel is 360px wide, #252526, with a hairline right border: title "CB-POS shops across Sri Lanka", a mono subtitle "412 shops in 17/25 districts", a search input "Search shop or town", two selects "All districts" and "All business types", a toggle "Gold Supporters only", a 5×5 grid of small square cells labelled with district abbreviations (lit cells have a cyan border, unlit cells are dim), then a scrolling list of shops (shop name, category · town in muted text, a small gold "Gold Supporter" badge on some). The right side is a dark CARTO Dark Matter map tightly framed on Sri Lanka, with cyan cluster circles showing counts in mono, individual cyan dots with soft halos, and a few gold dots. One popup is open on a gold pin: shop name "Perera Stores", "Grocery · Kurunegala", mono "CB-POS user since Aug 2026", a gold badge, and a cyan "Get directions →" link. Minimal square zoom controls with hairline borders. Small attribution text at the bottom right. No phone numbers anywhere.
+> A full-screen dark map page for "CB-POS Merchant Map". The left panel is 360px wide, #252526, with a hairline right border: title "CB-POS shops across Sri Lanka", a mono subtitle "— shops in —/25 districts" (live numbers), a search input "Search shop or town", two selects "All districts" and "All business types", a toggle "Gold Supporters only", a 5×5 grid of small square cells labelled with district abbreviations (lit cells have a cyan border, unlit cells are dim), then a scrolling list of shops (shop name, category · town in muted text, a small gold "Gold Supporter" badge on some). The right side is a dark CARTO Dark Matter map tightly framed on Sri Lanka, with cyan cluster circles showing counts in mono, individual cyan dots with soft halos, and a few gold dots. One popup is open on a gold pin: shop name "Perera Stores", "Grocery · Kurunegala", mono "CB-POS user since Aug 2026", a gold badge, and a cyan "Get directions →" link. Minimal square zoom controls with hairline borders. Small attribution text at the bottom right. No phone numbers anywhere.
 
 ---
 
@@ -362,13 +364,13 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `docs.search.trigger` | Search the docs |
 | `docs.search.hint` | ⌘K |
 | `docs.startHere` | Start here |
-| `docs.startHere.items` | Install CB-POS · Get past Windows SmartScreen · Make your first sale · Connect a thermal printer |
-| `docs.categories` | Getting Started · Cashiering · Products & Inventory · Tax · Hardware · Receipts · Backup & Restore · Cloud Sync · Troubleshooting · Release Notes |
+| `docs.startHere.items` | Install CB-POS · Get past Windows SmartScreen · First login and the default PIN · Connect a receipt printer |
+| `docs.categories` | Getting Started · Cashiering · Products & Inventory · Tax · Hardware · Receipts · Backup & Restore · Multiple tills · Troubleshooting · Release Notes |
 | `docs.help.title` | Can't find it? |
 | `docs.help.body` | Ask the community on WhatsApp or open a question ticket. |
 
 **Stitch prompt:**
-> A documentation home page in the CB-POS dark style. Top: title "CB-POS documentation", a muted lead, and a wide search field-button "Search the docs" with a "⌘K" keycap on the right. A "Start here" row of four compact link cards with Lucide icons (download, shield, receipt, printer). Below, a 5×2 grid of category cards separated by shared 1px hairlines (no gaps), each with a small icon, a title (Getting Started, Cashiering, Products & Inventory, Tax, Hardware, Receipts, Backup & Restore, Cloud Sync, Troubleshooting, Release Notes) and an article count in mono. The Tax card has a small yellow "Disclaimer" tag. A footer help strip: "Can't find it?" with links to the WhatsApp community and "Open a question ticket". Crosshair marks at the grid corners.
+> A documentation home page in the CB-POS dark style. Top: title "CB-POS documentation", a muted lead, and a wide search field-button "Search the docs" with a "⌘K" keycap on the right. A "Start here" row of four compact link cards with Lucide icons (download, shield, key, printer). Below, a 5×2 grid of category cards separated by shared 1px hairlines (no gaps), each with a small icon, a title (Getting Started, Cashiering, Products & Inventory, Tax, Hardware, Receipts, Backup & Restore, Multiple tills, Troubleshooting, Release Notes) and an article count in mono. The Tax card has a small yellow "Disclaimer" tag. A footer help strip: "Can't find it?" with links to the WhatsApp community and "Open a question ticket". Crosshair marks at the grid corners.
 
 ---
 
@@ -408,19 +410,18 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `releases.latest` | Latest stable |
 | `releases.published` | Released {date} |
 | `releases.download.exe` | Download installer (.EXE) |
-| `releases.download.zip` | Download portable (.ZIP) |
 | `releases.verify.title` | Verify your download |
 | `releases.verify.body` | Open PowerShell in your Downloads folder and run the command. The result must match the hash above exactly. |
+| `releases.verify.file` | Your file is called `CBPOSSetup-{version}.exe`. [A3] |
 | `releases.verify.ps` | `Get-FileHash .\{fileName} -Algorithm SHA256` |
 | `releases.verify.cmd` | `certutil -hashfile {fileName} SHA256` |
-| `releases.beta.toggle` | Show beta releases |
 | `releases.yanked` | Withdrawn. Don't install this version. |
 | `releases.changelog` | Changelog |
 | `releases.asIs` | CB-POS is provided as-is, without warranty. Back up your data before updating. |
 | `releases.unavailable` | Release information is temporarily unavailable. |
 
 **Stitch prompt:**
-> A dark "Releases" page. At the top, a large card for the latest stable version: mono "v1.4.2", the title "Faster weighed-item entry", "Released 1 Oct 2026", "Windows 10/11 · 64-bit", and two buttons: green "Download installer (.EXE) — 80.3 MB" and secondary "Download portable (.ZIP)". Under it are two SHA-256 hash boxes in mono with copy icons, then a collapsible "Verify your download" panel showing PowerShell and certutil commands in code blocks. A small muted as-is warning line. Below, a "Changelog" timeline: a vertical hairline with version nodes, each a mono version, date, and markdown notes with "Added / Fixed / Changed" subheadings. One older version is shown struck through with a red "Withdrawn" tag. A toggle "Show beta releases" sits at the top right of the changelog.
+> A dark "Releases" page. At the top, a large card for the latest stable version: mono "v1.3.0", "Released 27 Sep 2026", "Windows 10 or later", and one green button "Download installer (.EXE) — — MB". Under it is one SHA-256 hash box in mono with copy icons, then a collapsible "Verify your download" panel showing PowerShell and certutil commands in code blocks. A small muted as-is warning line. Below, a "Changelog" timeline: a vertical hairline with version nodes, each a mono version, date, and markdown notes with "Added / Fixed / Changed" subheadings. One older version is shown struck through with a red "Withdrawn" tag. There is no beta toggle; CB-POS has one stable channel.
 
 ---
 
@@ -470,7 +471,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `ticket.severity.label` | How bad is it? |
 | `ticket.severity.options` | App crashes · Can't bill · Wrong numbers or output · Looks wrong |
 | `ticket.log.label` | Crash log (optional) |
-| `ticket.log.help` | In CB-POS: Help → Export logs. .LOG, .TXT or .ZIP, up to 5 MB. Logs are private. Remove any database passwords or Cloud Sync connection strings before uploading. |
+| `ticket.log.help` | In CB-POS: Settings › Admin Tools › Error Logs › Export Logs (saves `cbpos_logs.txt`). Up to 5 MB. Logs are private. Remove any passwords or network addresses before uploading. [J1] [H9] |
 | `ticket.shot.label` | Screenshot (optional) |
 | `ticket.shot.help` | PNG or JPG, up to 5 MB. Kept private unless we mark it safe to show. |
 | `ticket.contact.label` | Email or phone (optional) |
@@ -484,7 +485,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 **Detail (`/feedback/CB-0142`)**: title, number, type, status timeline (Open → Triaged → Planned → In progress → Shipped, with dates), body (Markdown), version/Windows/severity chips, public screenshot (if approved), the "Ceybyte team" response block (cyan left border), and a vote button.
 
 **Stitch prompt:**
-> Two dark screens side by side. **Left: "Send a ticket" form.** Three large selectable option cards in a row ("Something is broken" with a bug icon, "I want something new" with a lightbulb, "I have a question" with a message icon; the first is selected with a cyan border). A "Short title" input. Below it, a muted panel "Is it one of these?" listing two similar tickets, each with a mono vote count and a link "Vote for this instead". A Markdown textarea "Describe it", selects for "CB-POS version" and "Windows version", a severity radio group, two dashed-border dropzones "Crash log (optional)" and "Screenshot (optional)" (one showing an upload progress bar in cyan at 64%), an optional contact input, and a secondary-styled "Send ticket" button (no green). **Right: ticket detail "CB-0142".** Mono number, title, a horizontal status timeline with five steps (three completed in cyan), chips "v1.4.2", "Windows 11", "Can't bill", the description text, and a response block with a cyan left border labelled "Ceybyte team". A vote box with a count.
+> Two dark screens side by side. **Left: "Send a ticket" form.** Three large selectable option cards in a row ("Something is broken" with a bug icon, "I want something new" with a lightbulb, "I have a question" with a message icon; the first is selected with a cyan border). A "Short title" input. Below it, a muted panel "Is it one of these?" listing two similar tickets, each with a mono vote count and a link "Vote for this instead". A Markdown textarea "Describe it", selects for "CB-POS version" and "Windows version", a severity radio group, two dashed-border dropzones "Crash log (optional)" and "Screenshot (optional)" (one showing an upload progress bar in cyan at 64%), an optional contact input, and a secondary-styled "Send ticket" button (no green). **Right: ticket detail "CB-0142".** Mono number, title, a horizontal status timeline with five steps (three completed in cyan), chips "v1.3.0", "Windows 11", "Can't bill", the description text, and a response block with a cyan left border labelled "Ceybyte team". A vote box with a count.
 
 ---
 
@@ -530,7 +531,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `donate.legal` | Donations are voluntary, don't unlock any software features, aren't tax-deductible, and are non-refundable except where required by law. |
 
 **Stitch prompt:**
-> A dark donation page. Left: headline "Keep CB-POS free for every shop in Sri Lanka.", a muted lead, and a list "What your donation pays for" with four hairline-separated rows with icons. Right: a donation card (#252526, 6px radius) titled "Donate by bank transfer" with a muted line "Online banking, your banking app, CEFT, or a cash deposit at any branch.", amount chips in mono "Rs. 500, Rs. 1,000, Rs. 2,500, Rs. 5,000, Other" (one selected in cyan), a name input with an "Donate anonymously" checkbox, an optional message input with a "0/140" counter, a checkbox "Link to my shop on the map" with a small gold badge preview, and a gold #FFD700 button "Get payment details" with dark text. Show the next state below the card: a mono reference "CB-DN-7K3Q9P" with a copy button, a key-value list of bank details (Account name, Account number in mono, Bank, Branch) each with a copy icon, a dashed dropzone "Upload your deposit slip or transfer screenshot" (JPG, PNG or PDF, up to 5 MB), an optional input "Bank transaction reference", and a gold "Send for confirmation" button. Below the main area: a "Supporters" wall grid of small hairline cards (name or "Anonymous supporter", month in mono, a gold award icon on some) and a transparency strip "Donations this month: Rs. 48,500.00 from 23 supporters". Small legal text at the bottom. No green on this page; gold is the accent.
+> A dark donation page. Left: headline "Keep CB-POS free for every shop in Sri Lanka.", a muted lead, and a list "What your donation pays for" with four hairline-separated rows with icons. Right: a donation card (#252526, 6px radius) titled "Donate by bank transfer" with a muted line "Online banking, your banking app, CEFT, or a cash deposit at any branch.", amount chips in mono "Rs. 500, Rs. 1,000, Rs. 2,500, Rs. 5,000, Other" (one selected in cyan), a name input with an "Donate anonymously" checkbox, an optional message input with a "0/140" counter, a checkbox "Link to my shop on the map" with a small gold badge preview, and a gold #FFD700 button "Get payment details" with dark text. Show the next state below the card: a mono reference "CB-DN-7K3Q9P" with a copy button, a key-value list of bank details (Account name, Account number in mono, Bank, Branch) each with a copy icon, a dashed dropzone "Upload your deposit slip or transfer screenshot" (JPG, PNG or PDF, up to 5 MB), an optional input "Bank transaction reference", and a gold "Send for confirmation" button. Below the main area: a "Supporters" wall grid of small hairline cards (name or "Anonymous supporter", month in mono, a gold award icon on some) and a transparency strip "Donations this month: Rs. — from — supporters" (live numbers). Small legal text at the bottom. No green on this page; gold is the accent.
 
 ---
 
@@ -556,13 +557,13 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 
 | Key | Copy |
 |---|---|
-| `legal.nav` | Terms · Privacy · Tax disclaimer · Data safety · Cookies |
+| `legal.nav` | Terms · EULA · Privacy · Tax disclaimer · Data safety · Cookies |
 | `legal.updated` | Last updated {date} · Version {version} |
 | `legal.prevails` | If translations differ, the English version applies. |
-| `legal.tax.summary` | CB-POS calculates VAT (18%, backward from MRP) and SSCL (2.5%) from the rates you configure. It is not certified, approved or endorsed by the Inland Revenue Department. You are responsible for checking rates, registration thresholds and filings with a qualified accountant. Tax law can change, so keep CB-POS updated and check your settings. |
-| `legal.data.summary` | CB-POS stores your data on your PC in a SQLite database. If you turn on Cloud Sync, it's also copied to a PostgreSQL database you choose and host. You're responsible for that server's security, backups and costs. Ceybyte has no access to either copy and can't recover them. Take regular encrypted .ZIP backups to a USB drive or another computer. If you forget a backup password, the backup can't be opened. |
-| `legal.asIs.summary` | CB-POS is free software provided "as is", without warranty of any kind. Ceybyte is not liable for losses from its use, including lost data, incorrect tax calculations or business interruption, to the extent permitted by Sri Lankan law. |
-| `legal.privacy.summary` | We collect what each feature needs: shop details from the download form, tickets you send, donations you make, and account details if you sign up. Phone numbers are never public. You can ask us to correct or delete your data at any time. |
+| `legal.tax.summary` | When you turn on VAT registration, CB-POS works out VAT backward from the MRP (price before VAT = MRP ÷ 1.18 at 18%) and SSCL at 2.5% on 50% of that price before VAT, using the rates you set. Amounts are rounded to the cent with round-half-even. CB-POS is not certified, approved or endorsed by the Inland Revenue Department. You're responsible for checking rates, registration thresholds and filings with a qualified accountant. [C1] [C2] [C5] |
+| `legal.data.summary` | CB-POS keeps your data in a SQLite file on your PC. The file isn't encrypted, so protect the Windows account it lives in. Backups are AES-encrypted .ZIP files that need a backup password; without one, automatic backups don't run. Ceybyte can't see or recover your data. If you use network mode, your PostgreSQL server holds the data and CB-POS backups don't cover it. [G1] [G2] [G4] |
+| `legal.asIs.summary` | CB-POS is free, proprietary software by Ceylon Byte, provided "as is" without warranty of any kind. You may use it for free but not copy, modify or redistribute it. Ceylon Byte isn't liable for losses from its use, including lost data, incorrect tax calculations or business interruption, to the extent Sri Lankan law allows. [K1] |
+| `legal.privacy.summary` | We collect what each feature needs: shop details from the download form, tickets you send, donations you make, and account details if you sign up. Phone numbers are never public. The CB-POS app itself checks GitHub for updates each time it starts, sending no shop data, and sends nothing else unless you set up email, LAN Sync, a network database or a network printer. You can ask us to correct or delete your data at any time. [A7] [A8] |
 
 Each page has a "Summary" box (`surface-legal`, hairline) at the top in plain language, then the full text. The page uses `surface-legal` as its background tone.
 
@@ -626,7 +627,7 @@ Each page has a "Summary" box (`surface-legal`, hairline) at the top in plain la
 | `dash.settings.delete.cta` | Delete permanently |
 
 **Stitch prompt:**
-> A dark merchant dashboard. Left nav (#252526, hairline right border): logo, then "Overview, My listing, My tickets, My donations, Settings" with the active item marked by a cyan left border. Main area "Your shop": a summary card with shop name "Perera Stores", "Grocery · Kurunegala", a status pill "Listed on the map" with a cyan dot, a gold "Gold Supporter since Aug 2026" badge, and an info strip "CB-POS v1.4.2 is available. See what's new". Below it, the "My listing" form: shop name, business type, district and town selects, a 240px dark mini-map with a draggable cyan pin, a toggle "Show my shop on the public map", and a secondary "Save changes" button. At the bottom of Settings, a "Danger zone" card with a red-outlined "Delete permanently" button.
+> A dark merchant dashboard. Left nav (#252526, hairline right border): logo, then "Overview, My listing, My tickets, My donations, Settings" with the active item marked by a cyan left border. Main area "Your shop": a summary card with shop name "Perera Stores", "Grocery · Kurunegala", a status pill "Listed on the map" with a cyan dot, a gold "Gold Supporter since Aug 2026" badge, and an info strip "CB-POS v1.3.1 is available. See what's new". Below it, the "My listing" form: shop name, business type, district and town selects, a 240px dark mini-map with a draggable cyan pin, a toggle "Show my shop on the public map", and a secondary "Save changes" button. At the bottom of Settings, a "Danger zone" card with a red-outlined "Delete permanently" button.
 
 ---
 
@@ -673,7 +674,7 @@ Each page has a "Summary" box (`surface-legal`, hairline) at the top in plain la
 | Loading | Present continuous, specific | "Starting download…", "Uploading slip… 64%" |
 | Rate limit | Fact + time | "Too many attempts. Try again in 45 seconds." |
 | Offline banner | Fact + reassurance | "You're offline. CB-POS works offline — this website doesn't." |
-| Numbers | Mono, Western digits, `Rs. 1,250.00`, `1.250 kg`, `v1.4.2`, `17/25` | — |
+| Numbers | Mono, Western digits, `Rs. 1,250.00`, `1.250 kg`, `v1.3.0`, `{covered}/25` | — |
 | Dates | `21 Oct 2026` (en). Localized month names in si/ta via `Intl` | — |
 
 **Banned words** (CI grep on `messages/en.json`): seamless, revolutionize, revolutionary, unlock, elevate, empower, cutting-edge, game-changer, robust, leverage, effortless, next-gen, world-class, IRD approved, IRD certified, officially compliant, guaranteed compliance.
