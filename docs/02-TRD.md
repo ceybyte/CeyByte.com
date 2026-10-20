@@ -248,9 +248,11 @@ All public routes live under `src/app/[locale]/`. `locale ∈ {en, si, ta}`.
 | `POST /api/feedback/[id]/vote` | public | `RL_VOTES`, voter-hash dedupe | Toggle vote |
 | `POST /api/donations` | public | Turnstile, `RL_FORMS`, zod | Create donation (`lankaqr` / `bank_transfer`) → reference code |
 | `POST /api/donations/[ref]/submit` | public (ref + secret) | `RL_FORMS` | Mark LankaQR paid with txn ref, or bank slip uploaded → `pending_review` |
+| `GET /api/donations/[ref]/status` | public (ref + `cb_dn_{ref}` cookie secret) | `RL_READ` | Poll status on the PayHere thanks page (returns `status` only) |
 | `POST /api/donations/payhere/checkout` | public | Turnstile, `RL_FORMS`, `FEATURE_PAYHERE` | Create `awaiting_payment` donation + signed PayHere form fields |
 | `POST /api/webhooks/payhere` | PayHere | `md5sig` verify, idempotent | Update donation status |
 | `POST /api/webhooks/github` | GitHub | `X-Hub-Signature-256` HMAC | On `release` `published`/`edited`/`deleted` → sync |
+| `POST /api/internal/revalidate` | `X-Internal-Secret` | constant-time compare | `revalidateTag()` for tags sent by the cron worker |
 | `GET/POST /api/auth/[...all]` | — | `RL_AUTH` on sign-in/up | Better Auth handler |
 | `GET /media/[...key]` | public | Allow-list prefixes `docs/`, `blog/`, `screenshots/public/` | Serve public R2 objects with immutable cache headers |
 | `/ingest/[...path]` | — | — | PostHog reverse proxy (rewrite in `next.config.ts`) |
