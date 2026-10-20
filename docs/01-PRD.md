@@ -437,7 +437,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Tiers**
 | Tier | Method | Verification |
 |---|---|---|
-| 1 | **LankaQR**: scan with FriMi, Genie, BOC SmartPay, ComBank Q+, Sampath WePay, iPay or any LankaQR-enabled app | Donor enters amount + transaction reference; admin reconciles against the account statement |
+| 1 | **LankaQR**: scan with FriMi, Flash, BOC SmartPay, ComBank Q+, iPay or any LankaQR-enabled app | Donor enters amount + transaction reference; admin reconciles against the account statement |
 | 2 | **Direct bank deposit / transfer**: bank details shown with copy buttons | Donor uploads the slip (JPG/PNG/PDF ≤ 5 MB) to R2 via a presigned URL; admin approves |
 | 3 | **Card via PayHere**: LKR checkout | Automatic, via the PayHere `notify_url` webhook (MD5 signature verified) |
 
