@@ -417,29 +417,33 @@ export const merchantLogs = sqliteTable(
 );
 
 /* =====================================================================
- * RELEASES (synced from ceybyte/cbpos-releases latest.json)
+ * RELEASES (synced from ceybyte/cbpos-releases latest.json + GitHub
+ * Releases API). latest.json has exactly six keys [A6]: version,
+ * release_date (YYYY-MM-DD), download_url, changelog (empty today),
+ * min_version (unused by the app), sha256. Size and publish time come
+ * from the GitHub API until UR-08 adds them to the manifest.
  * ===================================================================== */
 
 export const releases = sqliteTable(
   "releases",
   {
     id: pk(),
-    version: text("version").notNull(),             // semver "1.4.2"
+    version: text("version").notNull(),             // "1.3.0" (tag v*.*.*)
     channel: text("channel", { enum: RELEASE_CHANNELS }).notNull().default("stable"),
     title: text("title").notNull(),
     notesMd: text("notes_md").notNull().default(""),
     notesHast: text("notes_hast", { mode: "json" }).$type<unknown>(),
-    minOs: text("min_os").notNull(),
-    publishedAt: ts("published_at").notNull(),
+    minOs: text("min_os").notNull().default("Windows 10 or later"), // installer MinVersion=10.0 [A2]
+    releaseDate: text("release_date").notNull(),    // manifest release_date, YYYY-MM-DD
+    publishedAt: ts("published_at").notNull(),      // GitHub release published_at
+    minVersion: text("min_version"),                // manifest min_version (informational)
+    changelogRaw: text("changelog_raw"),            // manifest changelog (empty until UR-09)
 
-    exeName: text("exe_name").notNull(),
+    exeName: text("exe_name").notNull(),            // "CBPOSSetup-1.3.0.exe" [A3]
     exeUrl: text("exe_url").notNull(),
-    exeSize: integer("exe_size").notNull(),
+    exeSize: integer("exe_size").notNull(),         // GitHub asset size (bytes)
     exeSha256: text("exe_sha256").notNull(),
-    zipName: text("zip_name"),
-    zipUrl: text("zip_url"),
-    zipSize: integer("zip_size"),
-    zipSha256: text("zip_sha256"),
+    // No portable .zip build exists [A3]. Add columns via migration if one ships.
 
     isLatest: bool("is_latest").notNull().default(false),
     isYanked: bool("is_yanked").notNull().default(false),
@@ -832,7 +836,7 @@ Append-only. Kept indefinitely (small). `diff.before`/`diff.after` **must not** 
 
 ## 6. Postgres portability
 
-> This section covers **the website's own database** only. It's unrelated to CB-POS Cloud Sync, whose PostgreSQL schema belongs to the desktop app and lives on servers the merchants host.
+> This section covers **the website's own database** only. It's unrelated to the CB-POS app's own optional PostgreSQL network mode, whose schema belongs to the desktop app and lives on servers the shops run [H].
 
 The schema avoids SQLite-only features so it can move to Postgres (e.g. Neon or Supabase) with a mechanical rewrite of `sqlite-core` to `pg-core`, should D1 limits be outgrown.
 
@@ -1048,9 +1052,11 @@ export default defineSchema({
     title: v.string(),
     notesMd: v.string(),
     minOs: v.string(),
+    releaseDate: v.string(),
     publishedAt: v.number(),
+    minVersion: v.optional(v.string()),
+    changelogRaw: v.optional(v.string()),
     exe: v.object({ name: v.string(), url: v.string(), size: v.number(), sha256: v.string() }),
-    zip: v.optional(v.object({ name: v.string(), url: v.string(), size: v.number(), sha256: v.string() })),
     isLatest: v.boolean(),
     isYanked: v.boolean(),
     source: lit(RELEASE_SOURCES),
@@ -1189,8 +1195,8 @@ Masking rules (§7) apply equally to Convex: public `query` functions return the
 | Data | Source | Rows |
 |---|---|---|
 | Docs categories | The 10 categories in PRD F-05 with EN titles. SI/TA titles marked `[[TRANSLATE]]` until provided | 10 |
-| Docs articles | "Install CB-POS", "Windows SmartScreen", "First sale", "Keyboard shortcuts", "VAT 18% backward calculation", "SSCL 2.5% setting", "Connect a thermal printer", "Backups", "Set up Cloud Sync with your own PostgreSQL" (EN) | 9 |
-| Releases | One fixture release `0.0.0-dev` (local only) pointing at a test asset | 1 |
+| Docs articles | Written from `00-CBPOS_FACTS.md`, each citing its fact IDs: "Install CB-POS" [A2]–[A4], "Get past Windows SmartScreen" [A5], "First login and the default PIN" [I1], "Make your first sale" [B1], "Keyboard shortcuts" [B1], "Turn on VAT registration" [C1], "How VAT and SSCL are calculated" [C1], [C2], "Connect a receipt printer" [E1], "Scale-label barcodes" [E3], "Back up and restore" [G2], [G3], "Multiple tills: LAN Sync vs network mode" [G4], [H] (EN) | 11 |
+| Releases | Local/preview: one fixture `0.0.0-dev`. Production: none seeded; the first sync imports `v1.3.0` from GitHub | 1 |
 | Merchants (local/preview only) | 60 synthetic shops across all 25 districts with random coordinates inside district bboxes, fake phones `+9470000xxxx`, 10% supporters | 60 |
 | Admin user | From `SEED_ADMIN_EMAIL` | 1 |
 

@@ -56,7 +56,7 @@ flowchart TD
   N --> O{"Response"}
   O -- "422 / 403 / 429" --> P["Inline error, keep input"] --> H
   O -- "200" --> R["Set cb_gate + cb_claim cookies<br/>Start GET /api/download/latest → 302 GitHub"]
-  R --> S["Morph to What Next (S02-c):<br/>hash, SmartScreen steps, setup steps,<br/>WhatsApp link, Save your listing"]
+  R --> S["Morph to What Next (S02-c):<br/>hash, SmartScreen steps, setup screens,<br/>default PIN 1234 note, WhatsApp link, Save your listing"]
   S --> T{"Next action"}
   T -- "Save listing" --> U["/{locale}/login?claim=1 → Flow 6"]
   T -- "Read setup guide" --> V["/{locale}/docs/getting-started/install → Flow 3"]
@@ -165,7 +165,7 @@ flowchart TD
 ## Flow 3 — Docs Navigation (F-05)
 
 **Goal:** a merchant solves a setup or how-to problem without contacting support.
-**Entry points:** What Next "Read setup guide", header "Docs", search engines (`/si/docs/...`), `⌘K` from any docs page, in-app help links from CB-POS (`https://ceybyte.com/{locale}/docs/{slug}?utm_source=app`).
+**Entry points:** What Next "Read setup guide", header "Docs", search engines (`/si/docs/...`), `⌘K` from any docs page. The app has no help links today [J2]. When UR-07 ships, its Help menu opens `https://ceybyte.com/{locale}/docs?utm_source=app&v={version}`, and the docs hub reads `v` to show a "You're on v{version}" note.
 
 ```mermaid
 flowchart TD
@@ -190,7 +190,7 @@ flowchart TD
 
 | # | User action | System response | Event |
 |---|---|---|---|
-| 1 | Opens the docs hub | Category grid (10) + "Start here" (Install, First sale, Printer setup) + search | `$pageview` |
+| 1 | Opens the docs hub | Category grid (10) + "Start here" (Install, Get past SmartScreen, First sale, Connect a receipt printer) + search | `$pageview` |
 | 2 | Opens an article | SSG HTML from stored hast. TOC on the right (xl), collapsible on top (mobile). `app_version_min` badge | `doc_viewed {slug, locale, fallback}` |
 | 3 | `⌘K` / `Ctrl+K` / `/` | Dialog opens. The index (KV-versioned JSON, ~100–300 KB) loads once and is cached by the browser | `docs_search_opened` |
 | 4 | Types | Orama search, typo tolerance 1, boost title ×3, headings ×2 | `docs_searched {qLength, results}` (never the raw query if it looks like a phone number) |
@@ -213,7 +213,7 @@ flowchart TD
 ## Flow 4 — Bug / Feature Ticket Submission (F-07)
 
 **Goal:** a user reports a bug or requests a feature in under 2 minutes, avoiding duplicates, and can follow its status.
-**Entry points:** header/footer "Feedback", docs "Open a question ticket", map "Report listing", What Next "Something wrong?", CB-POS app "Report a bug" (`/{locale}/feedback/new?type=bug&v=1.4.2&os=win11`).
+**Entry points:** header/footer "Feedback", docs "Open a question ticket", map "Report listing", What Next "Something wrong?", and the `cbpos-releases` README, which today sends bugs to GitHub Issues [J2] and will point here instead. The app's "Report a bug" link (`/{locale}/feedback/new?type=bug&v={version}&os={winver}`) arrives with UR-07; the form already accepts those query params.
 
 ```mermaid
 flowchart TD
@@ -247,7 +247,7 @@ Ticket attachments are uploaded **before** the ticket exists. The client creates
 
 | # | User action | System response | Event |
 |---|---|---|---|
-| 1 | Opens new ticket | Query params prefill type, version and OS. Version select lists releases (newest first) + "Other / don't know" | `ticket_form_opened {type, source}` |
+| 1 | Opens new ticket | Query params prefill type, version and OS. Version select lists releases (newest first) + "Other / don't know". The help text says where to find the version: Settings › Admin Tools shows `v{version}` [A9] | `ticket_form_opened {type, source}` |
 | 2 | Types the title | Debounced 400 ms → `/api/feedback/similar` → ≤ 3 suggestions with vote counts | `ticket_similar_shown {count}` |
 | 3 | Picks a suggestion | Navigates to it, offers "Vote for this" | `ticket_duplicate_avoided` |
 | 4 | Attaches a file | Client checks type/size → presign → PUT with progress → confirm | `ticket_attachment_uploaded {kind}` |
