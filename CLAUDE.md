@@ -1,6 +1,6 @@
 # CLAUDE.md — Ceybyte.com Repository Constitution
 
-Ceybyte.com is the official web platform for **CB-POS**: a free, offline-first, keyboard-first Windows Point of Sale system for Sri Lankan retail shops, with optional Cloud Sync to a PostgreSQL database the merchant chooses and hosts. This site is where people see the product, download the installer, read the trilingual docs, report bugs, donate, and find shops that use it on the live Sri Lanka Merchant Map.
+Ceybyte.com is the official web platform for **CB-POS**: free (proprietary freeware), offline-first, keyboard-first Windows Point of Sale software for Sri Lankan retail shops, published by Ceylon Byte. Several tills can share data through **LAN Sync** or a shared **PostgreSQL network mode** that the shop hosts itself. There is no cloud service. This site is where people see the product, download the installer, read the trilingual docs, report bugs, donate, and find shops that use it on the live Sri Lanka Merchant Map.
 
 This file has the rules for every developer and AI agent working in this repo. If a rule here conflicts with what you would usually do, the rule here wins.
 
@@ -10,6 +10,8 @@ This file has the rules for every developer and AI agent working in this repo. I
 
 | Doc | Owns | Read when |
 |---|---|---|
+| `docs/00-CBPOS_FACTS.md` | **What the CB-POS app actually does**, audited from its source with `path:line` evidence | Before writing or reviewing any sentence about the product |
+| `docs/08-UPSTREAM_REQUESTS.md` | App changes the site depends on, with status | Before claiming a feature that isn't shipped yet |
 | `docs/01-PRD.md` | What we build and why. Features `F-01`–`F-12`, acceptance criteria | Before starting any feature |
 | `docs/02-TRD.md` | Architecture, routes, APIs, caching, security, free-tier budget | Before touching `src/app/api`, `src/server`, `wrangler.jsonc`, workers |
 | `docs/03-DESIGN.md` | Tokens, type scale, script rules, components, motion | Before writing any UI |
@@ -18,7 +20,7 @@ This file has the rules for every developer and AI agent working in this repo. I
 | `docs/06-SCREEN_BLUEPRINTS_AND_COPY.md` | 14 screens, final copy, Stitch prompts | Before building a screen or writing copy |
 | `docs/07-IMPLEMENTATION_PLAN.md` | Phase order, checklists, exit criteria | At the start of each work session |
 
-**Precedence when docs disagree:** `05-SCHEMA` > `02-TRD` > `01-PRD` > `03-DESIGN` > `06-SCREENS` > `04-APP_FLOW`. Fix the losing doc in the same PR. Never resolve a conflict silently in code.
+**Precedence when docs disagree:** `00-CBPOS_FACTS` (for anything about the app) > `05-SCHEMA` > `02-TRD` > `01-PRD` > `03-DESIGN` > `06-SCREENS` > `04-APP_FLOW`. Fix the losing doc in the same PR. Never resolve a conflict silently in code.
 
 **When a requirement is missing:** do not invent it. Add an `## Open Questions` entry to the relevant doc and choose the most conservative behaviour: least data collected, least exposed, least animated.
 
@@ -28,7 +30,8 @@ This file has the rules for every developer and AI agent working in this repo. I
 
 1. **$0/month until product-market fit.** Every service must fit its free tier (budget table in `02-TRD.md §14`). Adding anything that bills requires an ADR in `docs/adr/`.
 2. **Never leak merchant contact data.** `phone`, `whatsapp`, `telegram`, `full_name`, IP addresses and claim tokens never appear in any public response, page, cache entry, log line or analytics event. Public queries use the explicit projections in `src/server/db/projections.ts`. Never use `select()` without columns on `merchants`.
-3. **Never claim IRD approval or certification.** CB-POS *calculates* 18% VAT and 2.5% SSCL. It is not *certified*, *approved* or *endorsed* by the Inland Revenue Department. Every tax claim links to `/{locale}/legal/tax-disclaimer`.
+3. **Product truth.** Every claim about CB-POS (features, tax maths, hardware, shortcuts, privacy, file names) must match `docs/00-CBPOS_FACTS.md`. Copy tables in `06` cite the fact ID (`[C2]`). Features marked `open` in `08-UPSTREAM_REQUESTS.md` are never advertised. When the facts say UNKNOWN, the site says nothing.
+3a. **Never claim IRD approval or certification.** CB-POS *calculates* 18% VAT and 2.5% SSCL. It is not *certified*, *approved* or *endorsed* by the Inland Revenue Department. Every tax claim links to `/{locale}/legal/tax-disclaimer`.
 4. **Never fabricate numbers.** Telemetry figures (districts covered, shop count, downloads) come from D1 at request/revalidate time. If a number isn't live, it isn't shown.
 5. **Trilingual by construction.** No user-facing string is hardcoded in a component. Every string lives in `messages/{en,si,ta}.json`. A PR that adds an `en` key without matching `si` and `ta` keys fails CI (it may use the `[[TRANSLATE]]` marker, which blocks production deploys).
 6. **Sinhala and Tamil are written by native speakers, never machine-translated into production.** Agents may draft them but must mark them `[[TRANSLATE]]`.
@@ -196,17 +199,37 @@ Rules:
 
 ---
 
-## 7. AI design skills
+## 7. Design skills (mandatory gates)
 
-Load these skills when doing UI work. They advise; this repo's tokens and rules still win.
+Every design decision goes through these skills: layout, type, colour, spacing, component shape, motion and UI copy. They are how this repo avoids AI slop. All three were verified on GitHub on 2026-10-21.
 
-| Skill | Load when | What we take from it |
+### 7.1 Install (once per machine, project scope)
+
+```bash
+bunx skills add emilkowalski/skills     # MIT. emil-design-eng, animate, improve-animations, review-animations, animation-performance, find-animation-opportunities, pick-ui-library, ask-sonner, break-ui, …
+bunx skills add Nutlope/hallmark        # MIT. hallmark (default build + audit / redesign / study)
+bunx skills add pbakaus/impeccable      # Apache-2.0. impeccable (shape, craft, audit, critique, polish, animate, …)
+```
+
+Skills install into `.claude/skills/`. Commit the lockfile the installer writes, so every contributor and agent runs the same versions. Review a skill's diff before accepting an update.
+
+### 7.2 When each skill runs
+
+| Moment | Skill + invocation | Gate (must hold before merge) |
 |---|---|---|
-| `emilkowalski/skills` | Any animation, transition, gesture, drawer, toast | Motion has a purpose. Fast, interruptible, ease-out entrances. Never animate layout-thrashing properties. Reduced-motion fallback first |
-| `nutlope/hallmark` | Building a new page or section from scratch | Ship one strong, specific layout instead of generic templates. Verify it in the browser before calling it done |
-| `impeccable` (impeccable.style; installed locally as the `impeccable` skill) | Design critique, polish, audit passes, typography and colour review | Run an audit on every screen before PR. Fix hierarchy, spacing, contrast and copy issues it finds |
+| Starting a new page or section | `hallmark` (default build), then `impeccable shape` for the screen's visual plan | Hallmark pre-emit critique scores **≥ 3 on all six axes** (Philosophy, Hierarchy, Execution, Specificity, Restraint, Variety). Paste the score line in the PR |
+| Building or changing a component | `emil-design-eng` (component craft), `impeccable craft` | The component exists in `/_styleguide` with every state |
+| Adding or changing motion | `emil-design-eng` answers its four questions (is it necessary, what does it communicate, which easing, how fast) → `animate` → `animation-performance` | `review-animations` verdict is **approve**, pasted in the PR |
+| Before opening a PR touching UI | `hallmark audit <route>` and `impeccable audit` + `impeccable critique` | Zero hallmark slop-test gate failures. Every impeccable finding is fixed or logged as an accepted exception |
+| Final pass before launch of a screen | `impeccable polish` | Screenshot review in `en`, `si`, `ta`, light and dark, at 320 / 375 / 414 / 768 / 1280 px |
 
-If one of these skills isn't installed in your environment, say so in the PR description. Don't pretend you applied it. Apply the anti-slop checklists below either way.
+### 7.3 When a skill disagrees with this repo
+
+The brief and these docs set the brand. Skills set the craft. If a skill flags something the brand requires, keep the brand and record the exception in `docs/adr/` with the skill's finding quoted. Known exceptions:
+- **Inter for body text.** impeccable treats Inter as a generic default. It stays, because the brand specifies it and it pairs with Noto Sans Sinhala/Tamil metrics (ADR-0010).
+- **Fixed 8-section homepage order.** Hallmark pushes structural variety. The section *order* is fixed by PRD F-02, but each section's internal layout must follow hallmark's variety rules (no repeated card-grid rhythm between sections).
+
+If a skill isn't installed in your environment, stop and install it. Don't skip the gate, and don't claim you ran a skill you didn't run.
 
 ---
 
@@ -219,7 +242,8 @@ A PR fails review if any box can't be honestly ticked.
 - [ ] Every headline states a concrete outcome or number ("Bill in 0 ms network lag", not "Next-gen retail experience").
 - [ ] No exclamation marks in UI copy. No emoji in UI copy.
 - [ ] Prices are written `Rs. 1,250.00` (space after `Rs.`, comma thousands, 2 dp) in `font-mono`.
-- [ ] Data claims match how CB-POS works: never say "your data never leaves your PC", because Cloud Sync exists. Say "your data stays under your control", or "on your PC, and on your own PostgreSQL if you turn on Cloud Sync".
+- [ ] Product claims cite a fact ID from `00-CBPOS_FACTS.md` and match it exactly. Banned claims (each one is false or unshipped today): "100% offline" (the app checks GitHub for updates on every launch, [A7]); "Cloud Sync" or any cloud service ([H]); "IRD compliant" / "2026 mandate" ([C5]); email receipts ([A8]); expiry, batch or serial tracking ([D4]); live scale connection ([E3]); customer display ([E4]); SMS/WhatsApp receipts ([F3]); per-bill receipt language or Sinhala/Tamil item names on thermal receipts ([F2]); portable .ZIP build ([A3]); "64-bit installer" ([A2]).
+- [ ] Data claims: "Your sales are saved on your own PC" is true in standalone mode. When describing LAN Sync or network mode, say the data stays on the shop's own computers and server.
 - [ ] Tax claims say *calculates*, never *certified/approved/compliant-guaranteed*, and link the disclaimer.
 - [ ] Each string exists in `en`, `si` and `ta` (or carries `[[TRANSLATE]]`).
 - [ ] Button labels are verbs: "Download CB-POS", "Send ticket", "Upload slip". Never "Submit" or "Click here".
@@ -231,7 +255,9 @@ A PR fails review if any box can't be honestly ticked.
 - [ ] No stock photos, no illustrated people, no fake browser chrome, no lorem ipsum.
 - [ ] Icons are Lucide at `1.5` stroke, sized 16/20/24 only. No mixed icon sets.
 - [ ] Border radius comes only from the scale (`0`, `4px`, `6px`, `9999px` for pills and dots).
-- [ ] Layout holds at 360px width with 16px gutters, with no horizontal scroll.
+- [ ] Layout holds at 320, 375, 414 and 768 px with 16px gutters: no horizontal scroll (`overflow-x: clip` on `html` and `body`), no two-line buttons or nav links, image grid tracks use `minmax(0, 1fr)`, long headings wrap with `overflow-wrap: anywhere; min-width: 0` (hallmark gates 34, 49–53).
+- [ ] No italic headings or italic emphasis words inside headings (hallmark gate 38a).
+- [ ] Product imagery is real CB-POS screenshots ([L1]: none exist yet, UR-20) or Hairline figures. Never a mocked-up POS screen invented by an agent.
 - [ ] Sinhala and Tamil versions screenshotted and checked for diacritic clipping.
 - [ ] Contrast was checked in both light and dark themes.
 
@@ -255,11 +281,11 @@ A PR fails review if any box can't be honestly ticked.
 ## 9. Privacy & legal guardrails
 
 - **Sri Lanka PDPA (Personal Data Protection Act No. 9 of 2022):** collect only what a feature needs, state the purpose at collection, honour deletion requests (`/dashboard/settings` → delete listing; admin hard-delete within 30 days).
-- **Cloud Sync is out of this platform's scope.** The CB-POS app connects directly to the merchant's PostgreSQL. This site never hosts, proxies or stores sync databases, connection strings, credentials or sales data. Never add a form field, ticket field or upload purpose that collects a database URL or password. The ticket form warns users to strip credentials from logs.
+- **The site never touches shop data.** LAN Sync and PostgreSQL network mode run between the shop's own computers ([G4], [H]). The site never hosts, proxies or stores shop databases, connection strings, sync secrets or sales data. Never add a form field, ticket field or upload purpose that collects a database URL, password or LAN Sync secret. The ticket form warns users to remove these from logs before uploading ([H9]).
 - IP addresses are stored only as `sha256(ip + daily_salt)`. Raw IPs are never persisted.
 - PostHog runs with `maskAllInputs: true` and `mask_all_text: false`. Elements with `data-ph-no-capture` (contact fields, slips, dashboards) are never recorded. Merchant contact data is never sent as event properties.
 - Bank slips and crash logs live in private R2. They're served only through short-lived presigned GET URLs to admins.
-- Required disclaimers (copy in `06-SCREEN_BLUEPRINTS_AND_COPY.md`): **as-is software / no warranty**, **tax calculation is the merchant's responsibility, not IRD-certified**, **local SQLite backups are the merchant's responsibility**.
+- Required disclaimers (copy in `06-SCREEN_BLUEPRINTS_AND_COPY.md`): **as-is software / no warranty**, **tax calculation is the merchant's responsibility, not IRD-certified**, **backups are the merchant's responsibility** (the local database isn't encrypted at rest, and backups need a password, [G1], [G2]), plus the **EULA** for the app itself (none exists in the app yet, UR-06).
 
 ---
 

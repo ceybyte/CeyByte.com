@@ -13,20 +13,22 @@
 
 ## 1. Executive summary
 
-**CB-POS** is a free Windows Point of Sale system built for Sri Lankan retail shops. It is offline-first (local SQLite), keyboard-first, and handles the parts that make generic POS software painful here:
+**CB-POS** is free Windows Point of Sale software for Sri Lankan retail shops, published by Ceylon Byte as proprietary freeware. It is offline-first (local SQLite) and keyboard-first. Every product statement below comes from `00-CBPOS_FACTS.md`, with the fact ID in brackets:
 
-- backward 18% VAT from shelf MRP
-- 2.5% SSCL on 50% of revenue
-- AVCO inventory costing
-- 3-decimal weighed goods
-- ESC/POS thermal receipts in English, Sinhala and Tamil
-- optional **Cloud Sync** to a PostgreSQL database that the merchant chooses and hosts (their own server or a provider they pick). Local SQLite stays the primary store, so billing never waits for the network. Ceybyte doesn't host, see or manage these databases
-- encrypted `.ZIP` local backups
+- backward VAT from the shelf MRP (`base = MRP / 1.18` at the default 18%), plus SSCL at 2.5% on 50% of the VAT-exclusive base. Both switch on only when the shop ticks "Business is VAT Registered" [C1], [C2]
+- tax worked out per bill, shown on receipts and A4 tax invoices when enabled, and summarised in a Tax Liability report and a Tax Filing Summary [C1], [C4]
+- AVCO costing on goods receipts (GRN), suppliers, purchase orders, payables and stock take [D1], [D5]
+- 3-decimal quantities for weighed goods, entered by hand or by scanning weight-embedded labels from a label scale [D2], [E3]
+- ESC/POS thermal receipts (58mm/80mm) with receipt text in English, Sinhala or Tamil, drawn as images so the scripts print correctly. Sinhala and Tamil item names print on A4 invoices [E1], [E2], [F2]
+- full app UI in English, Sinhala and Tamil [F1]
+- keyboard-first cashiering: F3 search, F5/F10 pay, F12 quick cash, F6/F7 hold and recall, split payments, credit book and loyalty [B1], [B2]
+- AES-encrypted `.ZIP` backups (manual, after shift close, and automatically on app close once a backup password is set) [G2]
+- several tills on one shop's LAN through LAN Sync, or a shared PostgreSQL server the shop runs (network mode). Both are opt-in, and neither involves a Ceybyte server [G4], [H]
 
 **Ceybyte.com** is how shop owners find, trust, download and get help with CB-POS. It has five jobs:
 
 1. **Convert:** turn a visiting shop owner into an installed user in under 3 minutes, in their own language.
-2. **Distribute:** serve the latest signed installer from GitHub Releases, with published SHA-256 hashes.
+2. **Distribute:** serve the latest installer from GitHub Releases with its SHA-256 hash. The installer isn't code-signed yet [A5].
 3. **Support:** host the trilingual docs and a public bug/feature tracker, so support doesn't depend on phone calls.
 4. **Prove:** show real adoption on a live Sri Lanka Merchant Map, without exposing shop owners' phone numbers.
 5. **Sustain:** collect donations by bank transfer and reward supporters with a gold map pin.
@@ -43,7 +45,7 @@ Sri Lankan small retailers are stuck choosing between:
 
 ### 1.2 Why a web platform
 
-CB-POS is offline-first software. Its only network feature, Cloud Sync, talks to the merchant's own PostgreSQL database, never to Ceybyte. The website is Ceybyte's only online touchpoint, so it must carry trust (real UI, real hashes, real shops, honest disclaimers), handle onboarding (setup guide, docs) and build community (tracker, map, donations).
+CB-POS is offline-first software. Its only automatic network call is an update check to GitHub on launch, which sends no business data [A7]. Everything else that touches a network (LAN Sync, PostgreSQL network mode, SMTP email, network printers) is opt-in and stays between the shop's own machines and services [A8]. The website is Ceybyte's only online touchpoint, so it must carry trust (real UI, real hashes, real shops, honest disclaimers), handle onboarding (setup guide, docs) and build community (tracker, map, donations).
 
 ---
 
@@ -57,7 +59,7 @@ CB-POS is offline-first software. Its only network feature, Cloud Sync, talks to
 
 ### 2.2 Non-goals (v1)
 - Selling CB-POS, licences or subscriptions. CB-POS is free, permanently.
-- Hosting, provisioning or proxying Cloud Sync databases. CB-POS Cloud Sync connects straight to a PostgreSQL database the merchant chooses and hosts. The website never receives sales data, database URLs or database credentials, and has no telemetry from POS terminals.
+- Anything that touches shop data. LAN Sync and PostgreSQL network mode run between the shop's own computers [G4]. The website never receives sales data, database URLs, credentials or LAN Sync secrets, and the app sends it no telemetry [A8].
 - Remote sales dashboards on ceybyte.com.
 - Selling hardware (printers, scanners, scales). Docs may list tested hardware; no affiliate links in v1.
 - Native mobile apps.
@@ -96,12 +98,12 @@ Personas are written without gendered pronouns on purpose.
 
 ### P2 — Kavitha, pharmacy and mini-mart manager (Jaffna)
 - 34, Tamil-first, comfortable on a smartphone, runs a pharmacy counter plus a small grocery section that sells weighed goods (rice, dhal).
-- Pain: 3-decimal weights and expiry tracking; receipts must be in Tamil for customers.
-- Needs: Tamil docs with screenshots, weighing-scale setup guides, a way to report bugs without calling Colombo.
+- Pain: 3-decimal weights for loose goods; wants Tamil on receipts for customers. (CB-POS doesn't track expiry dates [D4], so the site must not imply it does.)
+- Needs: Tamil docs with screenshots, a guide to scale-label barcodes [E3], a way to report bugs without calling Colombo.
 
 ### P3 — Ravindu, POS installer and IT freelancer (Colombo / Gampaha)
 - 27, English-fluent power user. Sets up shops in exchange for a setup fee.
-- Needs: release notes, SHA-256 hashes, silent-install flags, a hardware compatibility list, keyboard-shortcut reference sheets, Cloud Sync setup guides for the PostgreSQL servers Ravindu runs for clients, and a bug tracker where reports get acknowledged.
+- Needs: release notes, SHA-256 hashes, silent-install switches (standard Inno Setup `/SILENT` and `/VERYSILENT`, not officially documented [A4]), a hardware setup reference, keyboard-shortcut reference sheets, LAN Sync and network-mode setup guides for multi-till shops, and a bug tracker where reports get acknowledged.
 - Influence: one installer brings 10–50 shops. Very likely to opt shops into the public map.
 
 ### P4 — Dilani, supporter (Kandy, or diaspora in Melbourne)
@@ -184,12 +186,12 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-02.3 The latest version and installer size come from F-06 (`releases.is_latest`). The CTA subtext reads `Windows 10/11 · 64-bit · v{version} · {size} MB`.
 - FR-02.4 Bento cards are interactive on hover and focus, and reachable by keyboard:
   - **Keyboard:** pressing the shown keys (`F2`, `Enter`, `Esc`) highlights the matching `<kbd>`.
-  - **Offline:** a Wi-Fi toggle keeps the bill running. Switching it back on shows a "Synced" indicator, labelled as optional Cloud Sync to the merchant's own PostgreSQL.
-  - **Dual-Tax:** typing an MRP shows base/VAT live.
-  - **Hardware:** a device list.
-  - **Receipts:** an EN/SI/TA tab switch.
-  - **Weighing:** a scale readout ticking to `1.250 kg`.
-- FR-02.5 The Dual-Tax card computes the display example as `base = mrp / 1.18`, `vat = mrp − base`, rounded half-up to 2 dp in display. It carries "Example only — see tax disclaimer".
+  - **Offline:** a Wi-Fi toggle that keeps the bill running when switched off [A8].
+  - **Dual-Tax:** typing an MRP shows the price before VAT, VAT and SSCL live [C1], [C2].
+  - **Hardware:** connection types that actually exist: Windows printer, network printer (port 9100), USB printer, keyboard-wedge scanner, cash drawer kicked through the printer, scale labels [E1], [E3], [E4].
+  - **Receipts:** an EN/SI/TA tab switch showing the same receipt's text in each language. Item names stay in English, as on real thermal receipts [F2].
+  - **Weighing:** scanning a scale label (`20 00042 01250 C`) adds `1.250 kg` [D2], [E3].
+- FR-02.5 The Dual-Tax card runs the same maths as the app [C1], [C2]: `base = mrp / 1.18`, `vat = mrp − base`, `sscl = base × 0.50 × 0.025`, each rounded to 2 dp with **round-half-even** (Python's default, which the app uses). The customer still pays the MRP; VAT and SSCL are backed out of it. Default example: MRP `1,180.00` → before VAT `1,000.00`, VAT `180.00`, SSCL `12.50`. The card says "Applies when VAT registration is on in Settings" and carries "Example only — see tax disclaimer".
 - FR-02.6 Every mockup is a real CB-POS screen capture (or a Rive rebuild from real captures). Fake data must look Sri Lankan (products like "Samba Rice 5kg", Rs. prices).
 - FR-02.7 The live map teaser is a static, pre-rendered SVG or PNG of the cluster map with the live count. Clicking it goes to F-04. It does not load MapLibre on the homepage.
 
@@ -232,7 +234,8 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 3. The modal morphs (shared-layout animation) into **"What Next?"**:
    - the download filename and SHA-256 hash, with a copy button
    - a Windows SmartScreen explainer ("More info → Run anyway") while the installer is unsigned
-   - 3 setup steps
+   - the first-run steps: install (Windows asks for administrator permission), then the setup screens (shop details, printer, admin PIN) [I1]
+   - "If the setup screens don't appear, log in with admin PIN **1234** and change it at once" (the wizard can be skipped on a fresh install, [I1], UR-01)
    - a WhatsApp community link
    - a "Save your listing" CTA (claim link → F-09)
    - a "Download didn't start?" manual link
@@ -259,7 +262,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Goal:** show CB-POS's real reach and let people find nearby shops using it, without exposing private contact data.
 
 **Functional requirements**
-- FR-04.1 MapLibre GL JS with the CARTO Dark Matter style in dark theme and Positron in light theme. Bounds are locked to Sri Lanka (`maxBounds` lng 79.5–82.0, lat 5.8–10.0). minZoom 6.5, maxZoom 16.
+- FR-04.1 MapLibre GL JS with **self-hosted Protomaps vector tiles** (a Sri Lanka extract of OpenStreetMap in one `.pmtiles` file), styled with the Protomaps `dark` flavour recoloured to our tokens (dark theme) and the `light` flavour (light theme). This gives the CARTO Dark Matter look without CARTO's commercial licence, which Ceybyte would need [ADR-0008]. Map labels use Latin-script names in every locale, because MapLibre doesn't shape Sinhala or Tamil text correctly yet. The side panel, filters and popups carry the localized names. Bounds are locked to Sri Lanka (`maxBounds` lng 79.5–82.0, lat 5.8–10.0). minZoom 6.5, maxZoom 16.
 - FR-04.2 Data comes from `GET /api/merchants/geo`: a GeoJSON FeatureCollection of public, listed merchants only, with the properties whitelist from `05-SCHEMA.md §7` (no phone, WhatsApp, Telegram or owner name).
 - FR-04.3 Clustering uses MapLibre's GeoJSON source (`cluster: true`, `clusterRadius: 50`, `clusterMaxZoom: 13`), which uses Supercluster internally, with `clusterProperties` that count supporters. Cluster bubbles show the count. A cluster containing a supporter gets a thin gold ring.
 - FR-04.4 Pins:
@@ -290,18 +293,17 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Goal:** trilingual, searchable docs that answer setup, hardware, tax-settings and backup questions without human support.
 
 **Information architecture (initial categories)**
-1. Getting Started — system requirements, install, SmartScreen, setup wizard, first sale
-2. Cashiering — keyboard shortcuts, returns, discounts, holds, split payment
-3. Products & Inventory — barcodes, AVCO costing, weighed items (3 dp), stock adjustments
-4. Tax — VAT 18% backward calculation, SSCL 2.5% settings, tax reports, disclaimer
-5. Hardware — thermal printers (58/80mm, ESC/POS), cash drawers, scanners, scales, tested hardware list
-6. Receipts — layouts, Sinhala/Tamil receipt fonts, logo printing
-7. Backup & Restore — encrypted `.ZIP` backups, restore, moving to a new PC
-8. Cloud Sync — what it does (and doesn't), choosing where to host PostgreSQL (self-hosted server or a managed provider), creating a least-privilege database user, requiring TLS, connecting CB-POS, sync status, troubleshooting, turning sync off
-9. Troubleshooting — printer not printing, scale not reading, database locked
+1. Getting Started — system requirements (Windows 10 or later, 4 GB RAM, 200 MB disk, 1024×768 [A2]), install, SmartScreen, setup screens, default PIN, first sale
+2. Cashiering — keyboard shortcuts [B1], split payments, credit book, loyalty, hold/recall, discounts and price overrides, voids, full-sale refunds, shifts and cash counts [B2]–[B4]
+3. Products & Inventory — barcodes and in-store EAN-13 codes, labels, weighed items (3 dp), AVCO on GRN, suppliers, purchase orders, payables, stock take [D1]–[D5]
+4. Tax — turning on VAT registration, VAT and SSCL formulas, category exemptions, tax receipts and A4 tax invoices, the two tax reports and their caveats, disclaimer [C1]–[C5]
+5. Hardware — receipt printer connection types (Windows / network / USB with WinUSB), 58 vs 80 mm, cash drawer pin 2/5, scanners, scale labels [E1]–[E4]
+6. Receipts — receipt language, header/footer, logo, QR code, tax breakdown, A4 tax invoice [F2]
+7. Backup & Restore — backup password, auto-backup on close, restore, moving to a new PC (re-enter SMTP and network secrets afterwards) [G2], [G3]
+8. Multiple tills — LAN Sync (Main PC + terminals) and PostgreSQL network mode: when to use which, setup, security limits, turning off [G4], [H]
+9. Troubleshooting — printer not printing, error logs and how to export them [J1], update problems, locked out of PIN
 10. Release Notes → links to F-06
 
-**Functional requirements**
 - FR-05.1 Fumadocs UI layout: sidebar tree, TOC, breadcrumb, prev/next, "Edit history", "Was this helpful? Yes/No" (→ PostHog event `doc_feedback`).
 - FR-05.2 `⌘K` / `Ctrl+K` and `/` open instant search over the current locale's index. The index is client-side, fetched lazily on first open, results in under 50 ms.
 - FR-05.3 Content is stored in D1 (`docs_articles`) as Markdown with a fixed directive whitelist (`:::callout{type=tip|warn|danger}`, `:kbd[F2]`, `::screenshot{src alt}`, `::video{src}`, `:::steps`). It's rendered without runtime eval (TRD §8).
@@ -309,7 +311,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-05.5 Articles carry `app_version_min`, shown as a badge ("Applies to v1.4+").
 - FR-05.6 Screenshots are stored in R2 under `docs/` and served by a public, cache-friendly path through the Worker (`/media/docs/...`).
 - FR-05.7 A printable keyboard-shortcut cheat sheet page (A4, print CSS).
-- FR-05.8 Cloud Sync articles stay provider-neutral: they cover self-hosting and managed PostgreSQL equally, never present a paid provider as required, and never ask readers to paste connection strings anywhere on the site.
+- FR-05.8 Multi-till articles state the security limits plainly: LAN Sync doesn't verify the Main PC's certificate, so use it only on a trusted shop network [H6]; PostgreSQL network mode has no TLS setting in the app UI and no automatic schema upgrades [H6], [H7]; backups don't include the PostgreSQL data [G4]. They never ask readers to paste connection strings anywhere on the site. Until UR-03 ships, LAN Sync articles carry a warning about the v1.3.0 data-loss bugs.
 
 **Acceptance criteria**
 - AC-05.1 Searching "printer" in `/si/docs` returns Sinhala articles first, then English fallbacks labelled `EN`.
@@ -323,13 +325,13 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Goal:** one trusted source for the current installer, its hash and what changed.
 
 **Functional requirements**
-- FR-06.1 The source of truth is the `latest.json` manifest in `ceybyte/cbpos-releases` (schema in TRD §7) plus GitHub Release bodies for notes. These are synced into D1 `releases` by the `release-sync` cron Worker (every 30 min) and immediately on the GitHub `release` webhook.
+- FR-06.1 The source of truth is `latest.json` in `ceybyte/cbpos-releases@main`, the same file the app reads for updates [A6], [A7]. Its six keys (`version`, `release_date`, `download_url`, `changelog`, `min_version`, `sha256`) must never change shape. The site reads it and the GitHub Releases API (asset size, publish time) and syncs them into `releases` every 30 min and on the release webhook. The release body is a fixed template today, so release notes come from `CHANGELOG.md` entries pasted into the admin console until UR-09 ships.
 - FR-06.2 The `/{locale}/releases` page shows:
-  - the latest stable release card: version, date, size, SHA-256 for `.exe` and `.zip`, download buttons (which go through the gate if the user hasn't completed it), and a "Verify your download" expander with PowerShell `Get-FileHash` and `certutil` commands
+  - the latest stable release card: version, date, size, SHA-256 for the `.exe`, the download button (which go through the gate if the user hasn't completed it), and a "Verify your download" expander with PowerShell `Get-FileHash` and `certutil` commands
   - the full changelog below, newest first, rendered from Markdown
-- FR-06.3 Channels: `stable` (default) and `beta` (listed under a toggle, never served by the default CTA).
+- FR-06.3 One channel: stable. The release pipeline has no beta channel and builds only the `.exe` installer (`CBPOSSetup-{version}.exe`), with no portable `.zip` [A3], [A6]. The schema keeps `channel` for later.
 - FR-06.4 An admin can mark a release `is_yanked`. A yanked release is never served and shows a warning in the changelog.
-- FR-06.5 `GET /api/releases/latest` returns the latest stable release as JSON. The CB-POS desktop app may use it for update checks (optional, anonymous, no identifiers).
+- FR-06.5 `GET /api/releases/latest` returns the latest release as JSON for the site's own pages. The desktop app doesn't use it; it reads GitHub directly [A7].
 - FR-06.6 Manifest URLs are accepted only when they match `https://github.com/ceybyte/cbpos-releases/releases/download/`.
 
 **Acceptance criteria**
@@ -478,10 +480,11 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 **Pages** (`/{locale}/legal/...`)
 | Slug | Content |
 |---|---|
-| `terms` | Terms of use for the website and CB-POS software licence summary: free, as-is, no warranty, limitation of liability |
-| `privacy` | PDPA-aligned privacy notice: what is collected (gate, tickets, donations, auth), purpose, retention, public map fields, processors (Cloudflare, PostHog, Resend, GitHub), rights (access, correction, deletion), contact |
+| `terms` | Terms of use for the website |
+| `eula` | CB-POS End User Licence Agreement: proprietary freeware by Ceylon Byte, free to use, no copying, modifying or redistributing, provided as-is, no warranty, limitation of liability. Nothing like this exists in the app today [K1], [K2], so the site publishes it and the gate links it (UR-06 adds it to the installer) |
+| `privacy` | PDPA-aligned privacy notice for the website: what is collected (gate, tickets, donations, auth), purpose, retention, public map fields, processors (Cloudflare, PostHog, Resend, GitHub), rights (access, correction, deletion), contact. Plus an **app network disclosure**: the update check to `raw.githubusercontent.com` on every launch (no business data), and the opt-in connections (SMTP, LAN Sync, PostgreSQL, network printers) [A7], [A8] |
 | `tax-disclaimer` | CB-POS calculates VAT 18% (backward from MRP) and SSCL 2.5% per configured rates. It is not certified, approved or endorsed by the IRD. Merchants are responsible for verifying rates, registration thresholds and filings with a qualified accountant. Rates can change by law, so update CB-POS and check settings |
-| `data-safety` | CB-POS stores data locally in SQLite on the shop PC. With Cloud Sync on, it's also copied to the PostgreSQL database the merchant chooses and hosts. Ceybyte has no access to either and can't recover them. The merchant is responsible for that server's security, availability, backups and costs. Merchants must take regular encrypted `.ZIP` backups to external media. Lost passwords for encrypted backups can't be recovered |
+| `data-safety` | The CB-POS database is a plain SQLite file in `%LOCALAPPDATA%\CB POS` and isn't encrypted at rest [G1]. Backups are AES-encrypted `.ZIP` files that need a backup password; without one, automatic backups are skipped [G2]. Ceybyte has no access to shop data and can't recover it. Lost backup passwords can't be recovered. In network mode the data lives on the shop's PostgreSQL server, which CB-POS backups don't cover [G4]. Moving to a new PC means re-entering email, network and sync passwords [G3] |
 | `cookies` | Cookies used: locale, gate, claim, auth session, PostHog (with consent banner choices) |
 
 **Functional requirements**
@@ -518,7 +521,8 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 - A3. No payment gateway is integrated in v1. Choosing one (card and/or LankaQR) is a future ADR.
 - A4. Native Sinhala and Tamil translators are available for UI strings and legal pages before launch.
 - A5. The installer is currently unsigned. A code-signing certificate is the first funding goal. Until then, SmartScreen guidance is mandatory in the "What Next?" step and the FAQ.
-- A6. Real CB-POS screenshots in all three receipt languages are available for mockups.
+- A6. No CB-POS screenshots exist yet [L1]. They must be captured from the app (UR-20) before the homepage ships. Brand assets (logo, monogram, icons, Noto fonts) exist in the app repo [L1].
+- A7. Product facts are re-audited against every tagged CB-POS release (`00-CBPOS_FACTS.md`). The audit at launch covers `v1.3.0` plus unreleased work up to `88a7858`.
 
 ## 7. Risks
 
@@ -527,9 +531,10 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 | Free Workers plan limits (10 ms CPU, 3 MiB bundle) | Pages fail or the deploy is rejected | SSG/ISR for all public pages; bundle gate in CI; escalation trigger to Workers Paid ($5/mo) documented in TRD §14 |
 | Fake or spam map listings | Map loses credibility | Turnstile, rate limits, phone dedupe, admin moderation queue, "Report listing" |
 | SmartScreen warnings scare users | Lower installs | Explicit "What Next?" guidance with screenshots; publish hashes; code-signing as funding goal #1 |
-| CARTO basemap terms or quota | Map tiles blocked | Attribution shown; fallback style URL via env (`MAP_STYLE_DARK`/`_LIGHT`) to OpenFreeMap or self-hosted Protomaps on R2 |
+| Self-hosted map tiles go stale or fail to load | Map out of date or blank | Rebuild the Sri Lanka extract quarterly (scripted). If tiles fail, fall back to list-only mode. `MAP_STYLE_*` env can point at another style |
 | Tax law changes | Incorrect claims on site | Rates live in one config (`src/lib/tax.ts`) + disclaimer; blog post per change |
-| Merchants expose a Cloud Sync PostgreSQL to the internet with weak settings | Shop data leaked | Cloud Sync docs include a security checklist (TLS required, least-privilege user, strong password, IP allow-listing, provider backups). The site never collects or stores connection details |
+| Shops misconfigure multi-till setups (LAN Sync without trusted network, PostgreSQL exposed to the internet) | Shop data leaked or lost | Multi-till docs carry the security limits from FR-05.8. The homepage doesn't promote multi-till until UR-03 ships |
+| Site copy drifts from what the app does | Broken trust, legal exposure | Every claim cites `00-CBPOS_FACTS.md`. Re-audit on every app release. CI greps banned claims (`CLAUDE.md §8.1`) |
 | Translator availability | Launch delay | `[[TRANSLATE]]` CI gate; launch `si`/`ta` only when complete (feature flag per locale) |
 
 ## 8. Release scope
@@ -544,4 +549,5 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 
 - OQ-1. Should the WhatsApp community link go to one group, or per-language groups (`en`/`si`/`ta`)? Default: one community with per-language groups.
 - OQ-2. Should supporters without a shop listing get a public profile? Default: supporters wall entry only.
-- OQ-3. Minimum supported Windows: 10 64-bit assumed. Confirm whether Windows 7/8.1 builds exist.
+- OQ-3. Brand name: the app calls itself **"CB POS"** (space) everywhere [K2], while this brief uses **"CB-POS"** with the `[CB-POS]` logo. Default: keep `CB-POS` on the website and ask the app team to align (or the reverse). Pick one before launch.
+- OQ-4. The app's installer runs in 32-bit mode and can't be called "64-bit" until UR-11 ships [A2]. Default: say "Windows 10 or later".
