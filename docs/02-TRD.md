@@ -1,11 +1,12 @@
-# 02 — Technical Requirements Document (TRD)
+# 02 — Technical Requirements Document (TRD) · branch `free`
 
 | | |
 |---|---|
-| Version | 1.0 |
+| Version | 2.0-free |
 | Date | 2026-10-21 |
 | Status | Approved for build |
-| Depends on | `01-PRD.md` (requirements), `05-SCHEMA.md` (data) |
+| Branch | `free`: $0/month architecture. The VPS architecture is on `main` |
+| Depends on | `00-CBPOS_FACTS.md` (product facts), `01-PRD.md` (requirements), `05-SCHEMA.md` (data) |
 
 ---
 
@@ -14,118 +15,120 @@
 ```mermaid
 flowchart LR
   subgraph Client["Browser (EN / SI / TA)"]
-    UI["Next.js RSC + client islands<br/>Motion · GSAP · Lenis · Rive · MapLibre"]
+    HTML["Static HTML + client islands<br/>Motion · GSAP · Lenis · Rive · MapLibre · Hairline"]
+    RQ["react-query → /api/*"]
     PH["posthog-js (after consent)"]
-    TS["Turnstile widget"]
   end
 
   subgraph CF["Cloudflare (free plan)"]
     direction TB
-    W["Worker: cbpos-web<br/>Next.js 15 via @opennextjs/cloudflare"]
-    SA["Static Assets<br/>(_next/static, public/)"]
+    SA["Workers Static Assets<br/>apps/web/out (free, unlimited)"]
+    W["Worker: cbpos<br/>Hono API + rewrites + cron"]
     D1[("D1: cbpos-db")]
-    R2[("R2: cbpos-uploads (private)<br/>R2: cbpos-cache (OpenNext ISR)")]
+    R2P[("R2: cbpos-uploads (private)")]
+    R2C[("R2: cbpos-public → cdn.ceybyte.com<br/>tiles, media, OG images")]
     KV[("KV: CACHE_KV")]
-    CA["Cache API (per colo)"]
     RL["Rate Limiting bindings"]
-    DO["Durable Object<br/>(OpenNext revalidation queue)"]
-    CRON["Worker: cbpos-release-sync<br/>cron */30 + daily cleanup"]
   end
 
-  subgraph Ext["External (free tiers)"]
-    GH["GitHub: ceybyte/cbpos-releases<br/>latest.json + Release assets"]
-    PHS["PostHog Cloud (EU/US)"]
-    RS["Resend (auth email)"]
-    CARTO["CARTO basemap tiles"]
+  subgraph GH["GitHub (free)"]
+    GA["Actions: build + deploy"]
+    REL["ceybyte/cbpos-releases<br/>latest.json + installer assets"]
+  end
+
+  subgraph Ext["Other free tiers"]
+    PHS["PostHog EU Cloud"]
+    RS["Resend"]
     TSV["Turnstile siteverify"]
   end
 
-  UI -->|HTML/RSC| W
-  UI -->|static| SA
-  UI -->|/ingest proxy| W --> PHS
-  UI -->|tiles| CARTO
-  UI -->|PUT presigned| R2
-  UI -->|302 → .exe stream| GH
-  W --> D1 & KV & CA & RL & DO
-  W --> R2
-  W --> TSV
-  W --> RS
-  GH -->|release webhook| W
-  CRON -->|fetch latest.json| GH
-  CRON --> D1 & KV
+  HTML --> SA
+  RQ --> W
+  PH -->|/ingest| W --> PHS
+  HTML -->|tiles, media| R2C
+  HTML -->|PUT presigned| R2P
+  HTML -->|302 → .exe| REL
+  W --> D1 & KV & RL & R2P & R2C
+  W --> TSV & RS
+  W -->|repository_dispatch| GA
+  GA -->|wrangler d1 execute| D1
+  GA -->|wrangler deploy| SA
+  REL -->|release webhook| W
+  W -->|cron: fetch latest.json| REL
 ```
 
-### 1.1 Key design decisions
+### 1.1 Key decisions
 
 | # | Decision | Why |
 |---|---|---|
-| D1 | **Cloudflare Workers + Static Assets via OpenNext**, not Cloudflare Pages | `@opennextjs/cloudflare` targets Workers. Pages' `next-on-pages` is deprecated for Next 15 App Router features. "Pages" in the brief is satisfied by Workers Static Assets serving all static files at zero CPU cost |
-| D2 | **Installer bytes never pass through our Worker.** `/api/download/latest` logs the event and returns `302` to the GitHub asset | Saves Worker CPU, bandwidth and request duration. GitHub's CDN streams large files reliably |
-| D3 | **Docs and blog content in D1 as Markdown, rendered with unified → `hast-util-to-jsx-runtime`** (no MDX eval) | The Workers runtime forbids `eval`/`new Function`, so runtime MDX can't work. Admin-editable content needs DB storage |
-| D4 | **SSG/ISR for every public page**; SSR only for dashboard and admin | The free plan's 10 ms CPU limit per request. Cached pages cost almost no CPU |
-| D5 | **Separate cron Worker** for release sync and retention jobs | Keeps the Next.js Worker bundle small. Cron triggers are simplest on a plain Worker |
-| D6 | **Geo endpoint served from a KV snapshot + Cache API**, rebuilt on write | Map reads far outnumber writes. Keeps D1 reads near zero on the hot path |
-| D7 | **Presigned PUT to R2 + server-side `head` verification** | R2 doesn't support presigned POST policies (no `content-length-range`), so size and type are enforced after upload |
-| D8 | **MapLibre native clustering** instead of a separate `supercluster` import | MapLibre's GeoJSON source uses Supercluster internally. `clusterProperties` covers supporter counts without extra JS |
-| D9 | **Shop data never touches this system.** CB-POS keeps data on the shop's PC, and its multi-till modes (LAN Sync, PostgreSQL network mode) run between the shop's own machines [G4], [H]. No route, binding or table touches them | Keeps Ceybyte out of the custody chain for sales data (PDPA, liability) and matches what the app actually does |
+| D1 | **Every page is static** (`next build`, `output: "export"`), served by Workers Static Assets. Only `/api/*` and a few rewrites invoke the Worker | Static asset requests are free and unlimited. The free plan caps a Worker at 10 ms CPU per request, which server-rendering React would regularly exceed. Worker size (64 MiB) is no longer a constraint (verified 2026-10-21) |
+| D2 | **One Hono Worker** serves the API, the routing rewrites and the cron jobs | One deploy, one set of bindings, cron in the same codebase. Hono's router is tiny and fast |
+| D3 | **Content (docs, blog, release notes) is rendered at build time** in GitHub Actions under Bun. Admin "Publish" triggers a rebuild | Markdown + Shiki rendering would blow the 10 ms CPU budget inside the Worker. Builds are free on GitHub Actions |
+| D4 | **Installer bytes never pass through the Worker.** `/api/download/latest` logs the event and returns `302` to the GitHub asset | Saves CPU and quota. GitHub's CDN serves large files reliably |
+| D5 | **Passwordless auth** (email OTP + Google). No email+password | Password hashing (scrypt) needs far more than 10 ms CPU. OTP and OAuth need almost none |
+| D6 | **Geo data from a KV snapshot + Cache API**, rebuilt on write | Map reads far outnumber writes. Keeps D1 reads near zero |
+| D7 | **Presigned PUT to R2 + `head` verification** | R2 has no presigned POST policy (no `content-length-range`), so size and type are checked after upload |
+| D8 | **MapLibre native clustering** (Supercluster inside the GeoJSON source) | No extra dependency. `clusterProperties` counts supporters |
+| D9 | **Shop data never touches this system.** CB-POS keeps data on the shop's PC. LAN Sync and PostgreSQL network mode run between the shop's own machines [G4], [H] | Keeps Ceybyte out of the custody chain for sales data |
+| D10 | **Self-hosted Protomaps tiles** (`sri-lanka.pmtiles`) on a public R2 bucket behind `cdn.ceybyte.com` | CARTO basemaps need a paid licence for commercial use. A Sri Lanka extract is small, and Cloudflare caches range requests at the edge |
+| D11 | **Bun for everything except the deployed Worker**: install, scripts, `next dev`/`next build`, unit tests, content build, tile build | Faster installs and builds, one tool. Production Worker code must run in `workerd` |
 
 ---
 
 ## 2. Runtime & deployment
 
-### 2.1 Workers
+### 2.1 Units
 
-| Worker | Entry | Purpose | Triggers |
+| Unit | Code | Runs on | Triggers |
 |---|---|---|---|
-| `cbpos-web` | `.open-next/worker.js` | Next.js app, APIs, webhooks | HTTP (`ceybyte.com/*`, `www.ceybyte.com/*` → 301 to apex) |
-| `cbpos-release-sync` | `workers/release-sync/src/index.ts` | Sync `latest.json` → D1/KV; retention cleanup | Cron `*/30 * * * *` (sync), `15 3 * * *` (cleanup, 08:45 Asia/Colombo) |
+| Static site | `apps/web` → `apps/web/out` | Workers Static Assets | Every request not matched by `run_worker_first` |
+| `cbpos` Worker | `apps/api/src/index.ts` (Hono) | `workerd` | `run_worker_first` paths; cron `*/30 * * * *` (release sync, geo debounce) and `15 3 * * *` (cleanup, 08:45 Asia/Colombo) |
+| Build | `.github/workflows/deploy.yml` | GitHub Actions (Ubuntu, Bun) | Push to `free`; `repository_dispatch` type `content-published` |
 
-### 2.2 `wrangler.jsonc` (cbpos-web)
+### 2.2 `apps/api/wrangler.jsonc`
 
 ```jsonc
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "cbpos-web",
-  "main": ".open-next/worker.js",
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "cbpos",
+  "main": "src/index.ts",
   "compatibility_date": "2026-09-01",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "compatibility_flags": ["nodejs_compat"],
   "routes": [{ "pattern": "ceybyte.com", "custom_domain": true }],
+  "assets": {
+    "directory": "../web/out",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/", "/api/*", "/ingest/*", "/*/feedback/CB-*"]
+  },
+  "triggers": { "crons": ["*/30 * * * *", "15 3 * * *"] },
   "observability": { "enabled": true, "head_sampling_rate": 0.1 },
 
   "d1_databases": [
-    { "binding": "DB", "database_name": "cbpos-db", "database_id": "<id>", "migrations_dir": "drizzle" },
-    { "binding": "NEXT_TAG_CACHE_D1", "database_name": "cbpos-next-tags", "database_id": "<id>" }
+    { "binding": "DB", "database_name": "cbpos-db", "database_id": "<id>", "migrations_dir": "drizzle" }
   ],
   "r2_buckets": [
     { "binding": "UPLOADS", "bucket_name": "cbpos-uploads" },
-    { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "cbpos-cache" }
+    { "binding": "PUBLIC", "bucket_name": "cbpos-public" }
   ],
   "kv_namespaces": [{ "binding": "CACHE_KV", "id": "<id>" }],
-  "durable_objects": {
-    "bindings": [{ "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" }]
-  },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DOQueueHandler"] }],
-  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "cbpos-web" }],
-
   "ratelimits": [
-    { "name": "RL_FORMS",    "namespace_id": "1001", "simple": { "limit": 5,   "period": 60 } },
-    { "name": "RL_UPLOADS",  "namespace_id": "1002", "simple": { "limit": 10,  "period": 60 } },
-    { "name": "RL_VOTES",    "namespace_id": "1003", "simple": { "limit": 30,  "period": 60 } },
-    { "name": "RL_AUTH",     "namespace_id": "1004", "simple": { "limit": 10,  "period": 60 } },
-    { "name": "RL_READ",     "namespace_id": "1005", "simple": { "limit": 120, "period": 60 } }
+    { "name": "RL_FORMS",   "namespace_id": "1001", "simple": { "limit": 5,   "period": 60 } },
+    { "name": "RL_UPLOADS", "namespace_id": "1002", "simple": { "limit": 10,  "period": 60 } },
+    { "name": "RL_VOTES",   "namespace_id": "1003", "simple": { "limit": 30,  "period": 60 } },
+    { "name": "RL_AUTH",    "namespace_id": "1004", "simple": { "limit": 10,  "period": 60 } },
+    { "name": "RL_READ",    "namespace_id": "1005", "simple": { "limit": 120, "period": 60 } }
   ],
-
   "vars": {
     "SITE_URL": "https://ceybyte.com",
+    "CDN_URL": "https://cdn.ceybyte.com",
     "RELEASES_REPO": "ceybyte/cbpos-releases",
     "RELEASE_MANIFEST_URL": "https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json",
+    "SITE_REPO": "ceybyte/ceybyte.com",
     "R2_ACCOUNT_ID": "<account-id>",
-    "R2_BUCKET": "cbpos-uploads",
     "TURNSTILE_SITE_KEY": "<public>",
-    "POSTHOG_KEY": "<public>",
     "POSTHOG_HOST": "https://eu.i.posthog.com",
-    "MAP_TILES_URL": "pmtiles://https://tiles.ceybyte.com/sri-lanka.pmtiles",
     "DONATION_BANK_NAME": "<bank>",
     "DONATION_BANK_BRANCH": "<branch>",
     "DONATION_ACCOUNT_NAME": "<account name>",
@@ -135,136 +138,126 @@ flowchart LR
 }
 ```
 
-> The `ratelimits` `period` must be `10` or `60` seconds. Longer windows (e.g. 10 minutes for the gate) are built from a 60 s binding plus a D1/KV counter (see §11).
-> Check the OpenNext binding names (`NEXT_INC_CACHE_R2_BUCKET`, `NEXT_TAG_CACHE_D1`, `NEXT_CACHE_DO_QUEUE`, `WORKER_SELF_REFERENCE`) against the installed `@opennextjs/cloudflare` version during Phase 0.
+- The `ratelimits` `period` must be `10` or `60` seconds. Longer windows use KV counters (§11).
+- `run_worker_first` is the quota boundary. Everything else is free. Adding a pattern needs a PR note (`CLAUDE.md §5.2`).
 
-### 2.3 Secrets (`wrangler secret put`, `.dev.vars` locally)
+### 2.3 Secrets (`wrangler secret put`; `.dev.vars` locally)
 
 | Secret | Used by |
 |---|---|
-| `BETTER_AUTH_SECRET` | Auth session signing |
+| `BETTER_AUTH_SECRET` | Session signing |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth |
-| `RESEND_API_KEY` | Auth emails |
+| `RESEND_API_KEY` | OTP emails |
 | `TURNSTILE_SECRET_KEY` | siteverify |
-| `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Presigning R2 URLs (S3 API token scoped to `cbpos-uploads`, Object Read & Write) |
-| `GITHUB_WEBHOOK_SECRET` | HMAC verification of release webhooks |
-| `GITHUB_TOKEN` (optional, fine-grained, read-only public repo) | Raises the GitHub API rate limit for the sync worker |
-| `IP_HASH_PEPPER` | Base for the daily IP-hash salt |
+| `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Presigning (S3 token scoped to `cbpos-uploads`, Object Read & Write) |
+| `GITHUB_WEBHOOK_SECRET` | HMAC for the releases webhook |
+| `GITHUB_DISPATCH_TOKEN` | Fine-grained PAT, `contents:write` on `SITE_REPO` only, for `repository_dispatch` |
+| `GITHUB_API_TOKEN` (optional) | Read-only, raises the GitHub API rate limit for release sync |
+| `IP_HASH_PEPPER` | Daily IP-hash salt base |
 | `CLAIM_TOKEN_SECRET` | HMAC for claim cookies |
-| `INTERNAL_SECRET` | Shared by `cbpos-web` and `cbpos-release-sync` for `/api/internal/*` calls |
-| `POSTHOG_PERSONAL_API_KEY` (optional) | Server-side feature flags |
 
-`src/lib/env.ts` validates all bindings and vars with zod on first access per request, and fails closed with a 500 `ENV_MISCONFIGURED`.
+GitHub Actions secrets: `CLOUDFLARE_API_TOKEN` (Workers, D1, R2, KV edit), `CLOUDFLARE_ACCOUNT_ID`.
 
-### 2.4 OpenNext config (`open-next.config.ts`)
-
-```ts
-import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";
-import d1NextTagCache from "@opennextjs/cloudflare/overrides/tag-cache/d1-next-tag-cache";
-import doQueue from "@opennextjs/cloudflare/overrides/queue/do-queue";
-
-export default defineCloudflareConfig({
-  incrementalCache: r2IncrementalCache,
-  tagCache: d1NextTagCache,
-  queue: doQueue,
-});
-```
-
-`src/server/worker-entry.ts` re-exports `DOQueueHandler` as required by OpenNext.
-
-### 2.5 Environments
+### 2.4 Environments
 
 | Env | URL | D1 | Deploy |
 |---|---|---|---|
-| local | `localhost:3000` (`pnpm dev`), `localhost:8787` (`pnpm preview`) | `--local` (Miniflare) | — |
-| preview | `cbpos-web-preview.<acct>.workers.dev` | `cbpos-db-preview` | Every PR (GitHub Actions) |
-| production | `ceybyte.com` | `cbpos-db` | Merge to `main` → migrations → deploy |
+| local | `localhost:3000` (web, `/api` proxied) + `localhost:8787` (Worker) | `--local` (Miniflare) | — |
+| preview | `cbpos-preview.<acct>.workers.dev` | `cbpos-db-preview` | Every PR |
+| production | `ceybyte.com` | `cbpos-db` | Push to `free` or `content-published` dispatch |
 
 ---
 
-## 3. Request lifecycle & middleware
+## 3. Request routing
 
-`src/middleware.ts` runs on every non-asset request:
+| Path | Served by | Notes |
+|---|---|---|
+| `/` | Worker | Reads `NEXT_LOCALE` cookie, then `Accept-Language` → `307` to `/en/`, `/si/` or `/ta/` |
+| `/{locale}/**` | Static assets | Pre-rendered HTML. `auto-trailing-slash` handles `/x` ↔ `/x/` |
+| `/{locale}/feedback/CB-{number}/` | Worker → `ASSETS.fetch("/{locale}/feedback/ticket/")` | Ticket IDs are created after the build. The shell reads the number from `location.pathname` |
+| `/api/*` | Worker (Hono) | §5 |
+| `/ingest/*` | Worker | PostHog reverse proxy (`fetch` to `eu.i.posthog.com`, strips cookies) |
+| `/_next/static/*`, `/rive/*`, `/data/*`, `/search/*` | Static assets | Hashed or versioned. Long cache headers via `_headers` |
+| `cdn.ceybyte.com/tiles/*`, `/media/*`, `/og/*` | R2 public bucket (custom domain) | Never touches the Worker. Cached at the edge |
+| Anything else | `404.html` | One trilingual 404 page (EN/SI/TA text stacked), since the static 404 can't know the locale |
 
-1. **Skip** paths: `/_next/*`, `/api/*`, `/ingest/*`, `/media/*`, static files (matcher excludes them).
-2. **`/admin/*`:** if there's no Better Auth session cookie → rewrite to `/404`. The full role check happens in `src/app/admin/layout.tsx` (server) and in every action.
-3. **`/[locale]/dashboard/*`:** if there's no session cookie → redirect to `/{locale}/login?next=...`.
-4. **i18n:** `next-intl` `createMiddleware(routing)` with `localePrefix: "always"` and `localeDetection: true` (only `/` is affected).
-5. Headers: security headers (§12.3) are set here and in `next.config.ts` `headers()` for static responses.
-
-Middleware must not query D1 (CPU and latency budget). It checks cookies only.
+**Headers:** `apps/web/public/_headers` sets CSP and security headers for every static response (§12.3). The Worker sets the same headers on its own responses through Hono middleware.
 
 ---
 
 ## 4. Route structure (pages)
 
-All public routes live under `src/app/[locale]/`. `locale ∈ {en, si, ta}`.
+All pages are generated for `locale ∈ {en, si, ta}` at build time.
 
-| Route | Screen (06) | Feature | Render | Revalidate / tags |
-|---|---|---|---|---|
-| `/{locale}` | S01 Home | F-02 | SSG + ISR | tags `home-stats`, `release-latest`; 600 s |
-| `/{locale}?download=1` | S02 Download Gate (modal) | F-03 | client island | — |
-| `/{locale}/download` | S02 (no-JS full page) | F-03 | SSG | `release-latest` |
-| `/{locale}/map` | S03 Map | F-04 | SSG shell + client map | `home-stats` |
-| `/{locale}/docs` | S04 Docs Hub | F-05 | SSG + ISR | `docs` |
-| `/{locale}/docs/[...slug]` | S05 Doc Article | F-05 | SSG (`generateStaticParams`) + ISR | `docs`, `doc:{translationKey}` |
-| `/{locale}/docs/shortcuts/print` | S05 variant | F-05 | SSG | `docs` |
-| `/{locale}/releases` | S06 Releases | F-06 | SSG + ISR | `releases` |
-| `/{locale}/feedback` | S07 Feedback Board | F-07 | ISR | `feedback`; 120 s |
-| `/{locale}/feedback/new` | S08 (submit) | F-07 | SSG | — |
-| `/{locale}/feedback/[number]` | S08 Ticket Detail | F-07 | ISR | `ticket:{id}` |
-| `/{locale}/donate` | S09 Donate | F-11 | SSG + ISR | `supporters`; 600 s |
-| `/{locale}/blog` | S10 Blog Index | F-10 | SSG + ISR | `blog` |
-| `/{locale}/blog/[slug]` | S10 Blog Post | F-10 | SSG + ISR | `blog`, `post:{translationKey}` |
-| `/{locale}/blog/rss.xml` | — | F-10 | route handler, ISR | `blog` |
-| `/{locale}/legal/[doc]` | S11 Legal | F-12 | SSG | — |
-| `/{locale}/login` | S12 Auth | F-09 | SSG shell + client form | — |
-| `/{locale}/dashboard` (+ `/listing`, `/tickets`, `/donations`, `/settings`) | S13 Dashboard | F-09 | dynamic SSR | — |
-| `/admin` (+ `/merchants`, `/donations`, `/feedback`, `/docs`, `/blog`, `/releases`, `/users`, `/audit`) | S14 Admin | F-08 | dynamic SSR | — |
-| `/sitemap.xml`, `/robots.txt` | — | SEO | route handlers, ISR | `docs`, `blog` |
-| `/not-found`, `error.tsx` | system | — | static | — |
+| Route | Screen (06) | Build-time data (`.content/*.json`) | Runtime data (`/api/*`) |
+|---|---|---|---|
+| `/{locale}/` | S01 Home | Latest release (version, size, hash), map teaser image | `GET /api/stats` (shops, districts covered). Falls back to hiding the numbers |
+| `/{locale}/?download=1` | S02 Gate (modal) | Latest release | `POST /api/downloads` |
+| `/{locale}/download/` | S02 no-JS page | Latest release | Form posts to `/api/downloads` (no-JS: `303` redirect to a static thank-you page) |
+| `/{locale}/map/` | S03 Map | — | `GET /api/merchants/geo`, `GET /api/stats` |
+| `/{locale}/docs/` | S04 | Category tree, start-here list | — |
+| `/{locale}/docs/{cat}/{slug}/` | S05 | Rendered article (hast → JSX at build), TOC, prev/next | `POST /api/docs/feedback` |
+| `/{locale}/docs/shortcuts/print/` | S05 variant | Keymap [B1] | — |
+| `/{locale}/releases/` | S06 | All releases + notes | `GET /api/releases/latest` (shows a "newer version available" banner if the build is stale) |
+| `/{locale}/feedback/` | S07 | — | `GET /api/feedback?…` |
+| `/{locale}/feedback/new/` | S08 submit | Release versions | `GET /api/feedback/similar`, `POST /api/feedback`, uploads |
+| `/{locale}/feedback/ticket/` (shell for `CB-*`) | S08 detail | — | `GET /api/feedback/{number}` |
+| `/{locale}/donate/` | S09 | Bank details (from vars at build) | `GET /api/donations/summary`, `POST /api/donations`, uploads |
+| `/{locale}/blog/`, `/{locale}/blog/{slug}/` | S10 | Posts | — |
+| `/{locale}/blog/rss.xml` | — | Generated at build | — |
+| `/{locale}/legal/{doc}/` | S11 | Legal text | — |
+| `/{locale}/login/` | S12 | — | Better Auth client (`/api/auth/*`) |
+| `/{locale}/dashboard/**` | S13 | — | `/api/me/*` (session-gated) |
+| `/admin/**` | S14 | — | `/api/admin/*` (admin-gated) |
+| `/sitemap.xml`, `/robots.txt` | — | Generated at build | — |
+
+Static-export rules: no `cookies()`/`headers()`, no `revalidate`, no middleware. Locale-aware metadata (`hreflang`) is emitted per page at build.
 
 ---
 
-## 5. API surface
+## 5. API surface (Hono, `apps/api/src/routes`)
 
-### 5.1 Route handlers
+### 5.1 Public & merchant routes
 
 | Method & path | Auth | Guards | Purpose |
 |---|---|---|---|
-| `POST /api/downloads` | public | Turnstile, `RL_FORMS` + 10-min window, zod | Download gate submit → merchant upsert, log, claim token |
-| `GET /api/download/latest?channel=stable&asset=exe&ref=` | public | `RL_READ` | Log `installer_download_started` (waitUntil) → `302` to GitHub asset |
-| `GET /api/releases/latest?channel=stable` | public | `RL_READ`, edge cache 300 s | Latest release JSON |
+| `POST /api/downloads` | public | Turnstile, `RL_FORMS` + hourly KV window, zod | Gate submit → merchant upsert, log, claim cookie, `cb_gate` cookie |
+| `GET /api/download/latest?asset=exe&ref=` | public | `RL_READ` | Log `installer_download_started` (waitUntil) → `302` to the GitHub asset |
+| `GET /api/releases/latest` | public | `RL_READ`, Cache API 300 s | Latest release JSON |
+| `GET /api/stats` | public | Cache API 300 s | `{ districtsCovered, listedShops, supporters }` |
 | `GET /api/merchants/geo` | public | `RL_READ`, KV + Cache API | Public GeoJSON (§10) |
-| `GET /api/stats` | public | edge cache 300 s | `{ districtsCovered, listedShops, supporters }` |
-| `GET /api/docs/search-index?locale=si` | public | edge cache, versioned | Orama index JSON for `⌘K` |
-| `POST /api/uploads/presign` | public or session | Turnstile token *or* session, `RL_UPLOADS`, zod | Presigned PUT URL for slip / crash log / screenshot |
-| `POST /api/uploads/confirm` | same | `RL_UPLOADS` | `head()` verify size and type, bind object to entity |
-| `POST /api/feedback` | public | Turnstile, `RL_FORMS`, zod | Create ticket |
+| `POST /api/uploads/presign` | public or session | Turnstile or session, `RL_UPLOADS`, zod | Presigned PUT URL |
+| `POST /api/uploads/confirm` | same | `RL_UPLOADS` | `head()` size/type check, magic bytes, bind to entity |
+| `GET /api/feedback` | public | `RL_READ`, Cache API 60 s | Board list (filters, sort, page) |
+| `GET /api/feedback/{number}` | public | `RL_READ`, Cache API 60 s | Public ticket fields |
 | `GET /api/feedback/similar?q=` | public | `RL_READ` | Top 3 similar titles |
-| `POST /api/feedback/[id]/vote` | public | `RL_VOTES`, voter-hash dedupe | Toggle vote |
-| `POST /api/donations` | public | Turnstile, `RL_FORMS`, zod | Create a `bank_transfer` donation → reference code + bank details |
-| `POST /api/donations/[ref]/submit` | public (ref + secret) | `RL_FORMS` | Confirm the uploaded slip (+ optional bank txn reference) → `pending_review` |
-| `GET /api/donations/[ref]/status` | public (ref + `cb_dn_{ref}` cookie secret) | `RL_READ` | Resume view on `/donate?ref=…`: returns `status` only |
-| `POST /api/webhooks/github` | GitHub | `X-Hub-Signature-256` HMAC | On `release` `published`/`edited`/`deleted` → sync |
-| `POST /api/internal/revalidate` | `X-Internal-Secret` | constant-time compare | `revalidateTag()` for tags sent by the cron worker |
-| `GET/POST /api/auth/[...all]` | — | `RL_AUTH` on sign-in/up | Better Auth handler |
-| `GET /media/[...key]` | public | Allow-list prefixes `docs/`, `blog/`, `screenshots/public/` | Serve public R2 objects with immutable cache headers |
-| `/ingest/[...path]` | — | — | PostHog reverse proxy (rewrite in `next.config.ts`) |
+| `POST /api/feedback` | public | Turnstile, `RL_FORMS`, zod | Create ticket |
+| `POST /api/feedback/{id}/vote` | public | `RL_VOTES`, voter-key dedupe | Toggle vote |
+| `POST /api/docs/feedback` | public | `RL_VOTES` | "Was this helpful?" (stored in KV counters; PostHog event client-side) |
+| `GET /api/donations/summary` | public | Cache API 600 s | Monthly approved total + supporters wall |
+| `POST /api/donations` | public | Turnstile, `RL_FORMS`, zod | Create bank-transfer donation → reference + bank details |
+| `POST /api/donations/{ref}/submit` | ref + `cb_dn_{ref}` cookie secret | `RL_FORMS` | Confirm slip (+ optional txn ref) → `pending_review` |
+| `GET /api/donations/{ref}/status` | ref + cookie secret | `RL_READ` | Resume view |
+| `GET/POST /api/auth/*` | — | `RL_AUTH` on sign-in and OTP send | Better Auth |
+| `GET /api/me/listing` · `PATCH /api/me/listing` · `POST /api/me/listing/visibility` · `POST /api/me/claim` · `DELETE /api/me` | merchant | session | Dashboard |
+| `GET /api/me/tickets` · `GET /api/me/donations` | merchant | session | Dashboard lists |
+| `POST /api/webhooks/github` | GitHub | HMAC | Release published/edited/deleted → sync |
 
-### 5.2 Server Actions (session-bound)
+### 5.2 Admin routes (`/api/admin/*`, role `admin`)
 
-| Action file | Actions | Role |
-|---|---|---|
-| `src/features/merchants/actions.ts` | `updateMyListing`, `setMyVisibility`, `deleteMyListing`, `claimListing` | merchant |
-| `src/features/admin/merchants.actions.ts` | `setMerchantStatus`, `setSupporter`, `linkMerchantToUser`, `exportMerchantsCsv` | admin |
-| `src/features/admin/donations.actions.ts` | `approveDonation`, `rejectDonation`, `getSlipUrl` | admin |
-| `src/features/admin/feedback.actions.ts` | `setTicketStatus`, `markDuplicate`, `respond`, `markScreenshotSafe` | admin |
-| `src/features/admin/content.actions.ts` | `saveDocArticle`, `publishDocArticle`, `saveDocCategory`, `saveBlogPost`, `publishBlogPost`, `rebuildSearchIndex` | admin |
-| `src/features/admin/releases.actions.ts` | `forceSync`, `setYanked`, `upsertManualRelease` | admin |
+| Group | Endpoints |
+|---|---|
+| Overview | `GET /overview` |
+| Merchants | `GET /merchants`, `GET /merchants/{id}`, `POST /merchants/{id}/reveal` (audited), `PATCH /merchants/{id}` (status, supporter), `POST /merchants/{id}/link-user`, `GET /merchants.csv` (streamed, audited) |
+| Donations | `GET /donations?status=`, `GET /donations/{id}/slip-url` (presigned GET, 120 s), `POST /donations/{id}/approve`, `POST /donations/{id}/reject` |
+| Feedback | `GET /feedback`, `PATCH /feedback/{id}` (status, duplicate, release, response), `POST /feedback/{id}/screenshot-public` |
+| Content | `GET/PUT /docs/categories`, `GET/PUT /docs/articles/{id}`, `POST /docs/articles/{id}/publish`, same for `/blog/posts`, `POST /media/presign` |
+| Releases | `GET /releases`, `POST /releases/sync`, `PATCH /releases/{id}` (yank, notes) |
+| Build | `POST /rebuild` (manual), `GET /rebuild/status` (latest workflow run via GitHub API) |
+| Users | `GET /users`, `PATCH /users/{id}` (role, ban) via Better Auth admin plugin |
+| Audit | `GET /audit` |
 
-Every action: `const session = await requireSession(role)` → zod parse → mutation via `db.batch` → `writeAudit()` (admin) → `revalidateTag(...)` → return a typed result.
+Every admin route: `requireRole("admin")` → zod → `db.batch` → `writeAudit()` → side effects (`bumpGeoVersion`, `triggerRebuild`). A non-admin gets `404`.
 
 ### 5.3 Error codes
 
@@ -272,21 +265,19 @@ Every action: `const session = await requireSession(role)` → zod parse → mut
 |---|---|---|
 | `VALIDATION_FAILED` | 422 | zod failure. `error.fields` holds a per-field i18n key |
 | `TURNSTILE_FAILED` | 403 | Token missing, invalid or expired |
-| `RATE_LIMITED` | 429 | Includes a `Retry-After` header |
+| `RATE_LIMITED` | 429 | With `Retry-After` |
 | `LOCATION_OUTSIDE_SRI_LANKA` | 422 | lat/lng outside the bounds |
-| `INVALID_PHONE` | 422 | Not a valid Sri Lankan number |
+| `INVALID_PHONE` | 422 | Not a Sri Lankan number |
 | `FILE_TOO_LARGE` | 413 | > 5 MB after the head check |
-| `FILE_TYPE_NOT_ALLOWED` | 415 | MIME/extension mismatch or not allowed |
-| `UPLOAD_NOT_FOUND` | 404 | Confirm called before the PUT finished |
-| `NOT_FOUND` | 404 | |
+| `FILE_TYPE_NOT_ALLOWED` | 415 | MIME, extension or magic bytes don't match |
+| `UPLOAD_NOT_FOUND` | 404 | Confirm before the PUT finished |
+| `NOT_FOUND` | 404 | Also returned for non-admins on `/api/admin/*` |
 | `UNAUTHENTICATED` | 401 | |
-| `FORBIDDEN` | 404 for `/admin`, 403 otherwise | |
-| `RELEASE_UNAVAILABLE` | 503 | No non-yanked release in D1, KV or the build fallback |
-| `SIGNATURE_INVALID` | 400 | Webhook signature mismatch |
+| `FORBIDDEN` | 403 | Merchant routes only |
+| `RELEASE_UNAVAILABLE` | 503 | No non-yanked release in KV, D1 or the build fallback |
+| `SIGNATURE_INVALID` | 400 | Webhook HMAC mismatch |
 | `ENV_MISCONFIGURED` | 500 | |
 | `INTERNAL` | 500 | Logged with a request ID |
-
-Response envelope:
 
 ```ts
 type ApiResult<T> =
@@ -296,17 +287,37 @@ type ApiResult<T> =
 
 ---
 
-## 6. Rendering & caching matrix
+## 6. Build & content pipeline
 
-| Layer | What | TTL / invalidation |
-|---|---|---|
-| Static Assets | `_next/static/*`, `public/*`, fonts | Immutable, hashed filenames |
-| OpenNext ISR (R2 + D1 tag cache) | Marketing, docs, blog, releases, legal HTML/RSC | `revalidateTag()` from admin actions, the release sync and merchant writes; time-based fallbacks per §4 |
-| Cache API (`caches.default`) | `/api/merchants/geo`, `/api/releases/latest`, `/api/stats`, search index | Versioned keys; `s-maxage` 60–300 s; purge = bump version |
-| KV | `geo:snapshot`, `geo:version`, `release:latest`, `docs:index:{locale}:{version}`, `stats:v1` | Written on change (≪ 1,000 writes/day) |
-| Browser | API JSON `Cache-Control: public, max-age=30, stale-while-revalidate=300` | — |
+```mermaid
+sequenceDiagram
+  autonumber
+  participant A as Admin (browser)
+  participant W as Worker /api/admin
+  participant D as D1
+  participant G as GitHub Actions
+  participant CF as Cloudflare (assets)
 
-**Budget rule:** no public GET route may do more than one D1 query on a cache miss, and the cache-miss rate must stay below 5% (monitored via Workers Analytics).
+  A->>W: POST /docs/articles/{id}/publish
+  W->>D: status = published, published_at
+  W->>G: repository_dispatch content-published (waitUntil)
+  W-->>A: 202 {queued}
+  Note over G: concurrency group "deploy", cancel-in-progress
+  G->>G: bun install --frozen-lockfile
+  G->>D: bun run build:content (wrangler d1 execute --remote --json)
+  G->>G: render markdown → hast, Shiki, TOC, Orama index per locale
+  G->>G: bun --bun next build (static export, 3 locales)
+  G->>CF: wrangler deploy (assets + Worker)
+  A->>W: GET /rebuild/status (poll every 10 s)
+```
+
+- **`build:content`** (`scripts/build-content.ts`, Bun) runs read-only `SELECT`s through `wrangler d1 execute cbpos-db --remote --json` and writes `apps/web/.content/{docs,blog,releases,categories}.json`. No Worker CPU is used.
+- **Rendering at build:** the unified pipeline (`remark-parse → remark-gfm → remark-directive → directive whitelist → remark-rehype → rehype-slug → rehype-autolink-headings → @shikijs/rehype → rehype-sanitize`) produces hast. Pages render it with `hast-util-to-jsx-runtime` and the Fumadocs component map. Tax articles get the disclaimer callout injected [C5].
+- **Search:** Orama indexes per locale are saved to `apps/web/public/search/{locale}.json` (hashed name in a manifest). The `⌘K` dialog loads the index on first open.
+- **Admin preview:** the editor renders Markdown in the browser with the same pipeline (lazy-loaded on `/admin` only). What admins preview is what ships.
+- **Time to live:** about 3–5 minutes from Publish. Rapid publishes coalesce, because a new run cancels the one in progress.
+- **Releases:** the release sync (§7) also dispatches a rebuild, so `/releases` and the homepage CTA show the new version. Until then, the runtime `GET /api/releases/latest` check and the `302` download endpoint already serve the new installer.
+- **Minutes budget:** a build is ~4 min. A private repo gets 2,000 free minutes/month (≈ 500 builds). A public site repo gets unlimited minutes. The admin UI shows remaining minutes from the GitHub API.
 
 ---
 
@@ -327,14 +338,12 @@ This file is generated by the CB-POS release workflow and **read by the desktop 
 }
 ```
 
-- URL: `https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json` (the same URL the app uses).
-- `changelog` is empty today and `min_version` is unused by the app [A6]. The installer has no size or publish timestamp in the manifest, so the sync also calls `GET https://api.github.com/repos/ceybyte/cbpos-releases/releases/tags/v{version}` for `published_at`, `id`, `body` and the asset's `size` and `name`.
-- One stable channel; one `.exe` asset; no portable zip [A3].
+- `changelog` is empty today and `min_version` is unused by the app [A6]. Size and publish time come from `GET https://api.github.com/repos/ceybyte/cbpos-releases/releases/tags/v{version}`.
+- One stable channel; one `.exe` asset (`CBPOSSetup-{version}.exe`); no portable zip [A3].
 - SHA-256 is computed by the release CI. Our code never hashes the installer.
 
-zod schema (`src/features/releases/manifest.ts`, shared by every runtime):
-
 ```ts
+// packages/shared/src/schemas/manifest.ts
 export const Manifest = z.object({
   version: z.string().regex(/^\d+\.\d+\.\d+$/),
   release_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -346,18 +355,15 @@ export const Manifest = z.object({
   changelog: z.string().default(""),
   min_version: z.string().optional(),
   sha256: z.string().regex(/^[a-f0-9]{64}$/),
-  // UR-08 additive keys, accepted when present
-  size: z.number().int().positive().optional(),
-  published_at: z.string().datetime().optional(),
-  notes_url: z.string().url().optional(),
+  size: z.number().int().positive().optional(),          // UR-08
+  published_at: z.string().datetime().optional(),        // UR-08
+  notes_url: z.string().url().optional(),                // UR-08
 }).passthrough();
-
-export const GithubReleaseAsset = z.object({ name: z.string(), size: z.number().int().positive(), browser_download_url: z.string().url() });
 ```
 
 Sync rules:
-- `download_url` must equal the GitHub asset's `browser_download_url`, and the asset name must match. If not, reject and audit-log a warning.
-- Release notes = admin-edited `notes_md` if present, else the manifest `changelog`, else the GitHub release body (a fixed template today, so admins paste the `CHANGELOG.md` entry until UR-09).
+- `download_url` must equal the GitHub asset's `browser_download_url`, or the sync is rejected with an audit warning.
+- Release notes = admin-edited `notes_md`, else the manifest `changelog`, else the GitHub release body (a fixed template today; admins paste the `CHANGELOG.md` entry until UR-09).
 - An invalid manifest never changes `is_latest`.
 
 ### 7.2 Sync sequence
@@ -366,64 +372,50 @@ Sync rules:
 sequenceDiagram
   autonumber
   participant GH as GitHub (cbpos-releases)
-  participant WH as cbpos-web /api/webhooks/github
-  participant CR as cbpos-release-sync (cron */30)
+  participant W as Worker
   participant D1 as D1 releases
   participant KV as KV release:latest
-  participant NX as OpenNext tag cache
+  participant GA as GitHub Actions
 
-  GH->>WH: POST release.published (X-Hub-Signature-256)
-  WH->>WH: verify HMAC (timingSafeEqual)
-  WH-->>GH: 202 Accepted
-  WH->>CR: fetch(service binding /sync) via waitUntil
-  Note over CR: Also runs every 30 min as a fallback
-  CR->>GH: GET raw latest.json (If-None-Match: stored ETag)
-  alt 304 Not Modified
-    CR->>CR: exit
+  GH->>W: POST /api/webhooks/github (release.published)
+  W->>W: verify X-Hub-Signature-256 (timingSafeEqual)
+  W-->>GH: 202
+  Note over W: Also runs from scheduled() every 30 min
+  W->>GH: GET raw latest.json (If-None-Match: stored ETag)
+  alt 304
+    W->>W: stop
   else 200
-    CR->>CR: Manifest.safeParse()
+    W->>W: Manifest.safeParse()
     alt invalid
-      CR->>D1: insert admin_audit_log(level=warn, action=release_sync_invalid)
+      W->>D1: admin_audit_log (warn, release_sync_invalid)
     else valid
-      CR->>GH: GET /repos/{repo}/releases/tags/v{version} (body → notes_md)
-      CR->>D1: batch(upsert release, clear is_latest for channel, set is_latest on version)
-      CR->>KV: put release:latest:{channel} (JSON)
-      CR->>KV: put sync:etag
-      CR->>WH: POST /api/internal/revalidate {tags:[release-latest, releases]} (shared secret)
-      WH->>NX: revalidateTag(...)
+      W->>GH: GET /repos/.../releases/tags/v{version}
+      W->>D1: batch(upsert release, clear is_latest, set is_latest)
+      W->>KV: put release:latest
+      W->>GA: repository_dispatch content-published
     end
   end
 ```
 
-- The webhook only accepts `X-GitHub-Event: release` with `action ∈ {published, edited, deleted}`. Other events get `204`.
-- `/api/internal/revalidate` requires the `X-Internal-Secret` header (`INTERNAL_SECRET`, shared by both Workers) and is not routed publicly through middleware.
-- `deleted` → mark the matching row `is_yanked = 1`, then recompute `is_latest`.
-- Version ordering uses semver comparison in code, not string sort.
+- The webhook accepts only `X-GitHub-Event: release` with `action ∈ {published, edited, deleted}`. `deleted` marks the row `is_yanked = 1` and recomputes `is_latest`.
+- Version comparison uses semver in code, not string sort.
 
 ### 7.3 Download endpoint
 
-`GET /api/download/latest?channel=stable&asset=exe&ref={merchantPublicId?}`
-
-1. Resolve the release: KV `release:latest:stable` → fallback D1 `releases where is_latest=1 and channel=? and is_yanked=0` → fallback build-time constant `FALLBACK_RELEASE` (written by `scripts/snapshot-release.ts` during `pnpm build`).
-2. `ctx.waitUntil(insert merchant_logs {event:'installer_download_started', release_id, merchant_id via ref lookup, ip_hash})`. Also send the PostHog server event `installer_download_started` (no PII).
-3. Return `302 Location: <exe_url>` (the manifest's `download_url`) with `Cache-Control: no-store`.
+`GET /api/download/latest?asset=exe&ref={merchantPublicId?}`
+1. Resolve the release: KV `release:latest` → D1 `is_latest = 1 AND is_yanked = 0` → `FALLBACK_RELEASE` (a constant written into the Worker at build time by `scripts/snapshot-release.ts`).
+2. `waitUntil`: insert `merchant_logs` (`installer_download_started`, `release_id`, merchant via `ref`, `ip_hash`).
+3. `302 Location: <download_url>`, `Cache-Control: no-store`.
 
 ---
 
-## 8. Docs & blog rendering pipeline
+## 8. Docs & blog
 
-```
-body_md (D1)
-  → remark-parse → remark-gfm → remark-directive → remarkCbDirectives (whitelist → mdast nodes)
-  → remark-rehype → rehype-slug → rehype-autolink-headings → rehype-shiki (precomputed at publish) 
-  → hast → sanitize (rehype-sanitize with custom schema)
-  → hast-util-to-jsx-runtime(components = { Callout, Kbd, Screenshot, Steps, Video, a: LocaleLink, img: R2Image })
-```
-
-- **Rendering at publish time:** the admin "Publish" action renders Markdown to a hast JSON (`body_hast` column) and extracts the TOC (`toc_json`) and plain text (`search_text`). Page renders only run `hast-util-to-jsx-runtime` over the stored hast, so CPU stays low. Shiki highlighting happens at publish (inside the Server Action, which runs dynamically), never on a page view.
-- **Fumadocs integration:** use `fumadocs-ui` layouts (`DocsLayout`, `DocsPage`, `DocsBody`, `DocsTitle`, TOC) with a page tree built from `docs_categories` + `docs_articles` via a custom `source` adapter (`src/features/docs/source.ts`) that returns Fumadocs `PageTree.Root`.
-- **Search:** at publish, rebuild the locale's Orama index (`@orama/orama` `create` + `insertMultiple` + `save`) → KV `docs:index:{locale}:{n}` and bump `docs:index-version:{locale}`. The client search dialog (Fumadocs `SearchDialog` with a static client adapter) fetches `/api/docs/search-index?locale=si&v={n}` on first open (immutable cache) and searches in-browser. The English index loads as a secondary source for fallbacks.
-- **Blog:** same pipeline. `reading_minutes = ceil(words / 200)` (for `si`/`ta`, count by whitespace tokens with a divisor of 150).
+- **Storage:** Markdown in D1 (`docs_articles.body_md`, `blog_posts.body_md`). Directive whitelist: `:::callout{type=tip|warn|danger}`, `:kbd[F3]`, `::screenshot{src alt}`, `::video{src}`, `:::steps`.
+- **Rendering:** at build only (§6). The `body_hast`, `toc_json` and `search_text` columns stay `NULL` on this branch; the build computes them.
+- **Fumadocs:** `fumadocs-ui` layouts (`DocsLayout`, `DocsPage`, `DocsBody`, TOC) with a page tree built from `.content/categories.json` + `.content/docs.json` (`apps/web/src/features/docs/source.ts`). Missing translations render the English article with the fallback banner.
+- **Media:** uploaded through `POST /api/admin/media/presign` into `cbpos-public` under `docs/` or `blog/`, served from `cdn.ceybyte.com/media/...`.
+- **OG images:** generated at build with `satori` + `@resvg/resvg-js` under Bun, written to `apps/web/out/og/{locale}/{slug}.png`.
 
 ---
 
@@ -433,21 +425,10 @@ body_md (D1)
 
 | Bucket | Visibility | Prefixes |
 |---|---|---|
-| `cbpos-uploads` | **private**; no public r2.dev domain | `slips/{donationId}/{uuid}.{ext}`, `crash-logs/{ticketId}/{uuid}.{ext}`, `screenshots/private/{ticketId}/{uuid}.{ext}`, `screenshots/public/{ticketId}/{uuid}.{ext}` (copied on admin approval), `docs/{articleId}/{uuid}.{ext}`, `blog/{postId}/{uuid}.{ext}`, `og/{locale}/{slug}.png`, `tmp/{uuid}` (lifecycle: delete after 1 day) |
-| `cbpos-cache` | private | OpenNext ISR cache |
+| `cbpos-uploads` | **private**, no public domain | `slips/{donationId}/{uuid}.{ext}`, `crash-logs/{ticketId or draft-id}/{uuid}.{ext}`, `screenshots/{ticketId or draft-id}/{uuid}.{ext}` |
+| `cbpos-public` | public via `cdn.ceybyte.com` | `tiles/sri-lanka.pmtiles`, `media/docs/…`, `media/blog/…`, `media/screenshots/{ticketId}/…` (copied on admin approval) |
 
-Bucket CORS (`cbpos-uploads`):
-
-```json
-[{
-  "AllowedOrigins": ["https://ceybyte.com", "http://localhost:3000", "http://localhost:8787"],
-  "AllowedMethods": ["PUT"],
-  "AllowedHeaders": ["content-type"],
-  "MaxAgeSeconds": 3600
-}]
-```
-
-Lifecycle rule: `tmp/` expires after 1 day. Unconfirmed uploads are deleted by the daily cleanup cron.
+`cbpos-uploads` CORS: `AllowedOrigins` `https://ceybyte.com`, `http://localhost:3000`, `http://localhost:8787`; `AllowedMethods` `PUT`; `AllowedHeaders` `content-type`; `MaxAgeSeconds` 3600. `cbpos-public` CORS allows `GET`/`HEAD` with `Range` from the site origins (PMTiles needs range requests).
 
 ### 9.2 Allowed uploads
 
@@ -456,7 +437,9 @@ Lifecycle rule: `tmp/` expires after 1 day. Unconfirmed uploads are deleted by t
 | `donation_slip` | `image/jpeg`, `image/png`, `application/pdf` | jpg, jpeg, png, pdf | 5 MB |
 | `crash_log` | `text/plain`, `application/zip`, `application/x-zip-compressed` | log, txt, zip | 5 MB |
 | `ticket_screenshot` | `image/jpeg`, `image/png` | jpg, jpeg, png | 5 MB |
-| `docs_media`, `blog_media` (admin) | `image/png`, `image/jpeg`, `image/webp`, `video/mp4` | — | 5 MB images / 50 MB video |
+| `docs_media`, `blog_media` (admin) | `image/png`, `image/jpeg`, `image/webp`, `video/mp4` | — | 5 MB images, 50 MB video |
+
+CB-POS exports logs as `cbpos_logs.txt` [J1], so `text/plain` is the common case.
 
 ### 9.3 Sequence
 
@@ -464,92 +447,50 @@ Lifecycle rule: `tmp/` expires after 1 day. Unconfirmed uploads are deleted by t
 sequenceDiagram
   autonumber
   participant B as Browser
-  participant W as cbpos-web
+  participant W as Worker
   participant R2 as R2 (S3 API)
   participant D1 as D1
 
-  B->>B: validate type + size (≤5 MB) locally
+  B->>B: check type and size (≤ 5 MB)
   B->>W: POST /api/uploads/presign {purpose, entityRef, fileName, contentType, size, turnstileToken}
-  W->>W: Turnstile verify · RL_UPLOADS · zod · purpose rules · entity ownership (donation ref secret / ticket draft id)
-  W->>W: key = slips/{donationId}/{uuid}.pdf
-  W->>W: aws4fetch sign PUT (X-Amz-Expires=300, signed header content-type)
+  W->>W: Turnstile, RL_UPLOADS, zod, entity ownership
+  W->>W: aws4fetch sign PUT (X-Amz-Expires=300, signed content-type)
   W-->>B: {uploadUrl, key, expiresAt}
-  B->>R2: PUT uploadUrl (Content-Type matches) with progress (XMLHttpRequest)
-  R2-->>B: 200
+  B->>R2: PUT uploadUrl with progress
   B->>W: POST /api/uploads/confirm {key, purpose, entityRef}
-  W->>R2: env.UPLOADS.head(key)
+  W->>R2: UPLOADS.head(key)
   alt missing
     W-->>B: 404 UPLOAD_NOT_FOUND
-  else size > max or contentType ≠ allowed
-    W->>R2: env.UPLOADS.delete(key)
-    W-->>B: 413/415
+  else too large or wrong type
+    W->>R2: UPLOADS.delete(key)
+    W-->>B: 413 or 415
   else ok
-    W->>R2: env.UPLOADS.get(key, {range:{offset:0,length:8}}) → magic-byte check (%PDF, PNG, JPEG FF D8 FF, PK zip)
-    W->>D1: update donation set slip_key, slip_mime, slip_size, status='pending_review'
-    W-->>B: 200 {ok:true}
+    W->>R2: UPLOADS.get(key, range 0-8) magic bytes
+    W->>D1: bind key to entity
+    W-->>B: 200
   end
 ```
 
-Presigning (`src/server/r2.ts`):
-
 ```ts
-import "server-only";
+// apps/api/src/lib/r2.ts
 import { AwsClient } from "aws4fetch";
 
-export async function presignPut(env: CloudflareEnv, key: string, contentType: string) {
-  const r2 = new AwsClient({
-    accessKeyId: env.R2_ACCESS_KEY_ID,
-    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
-    service: "s3",
-    region: "auto",
-  });
-  const url = new URL(
-    `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${env.R2_BUCKET}/${key}`,
-  );
+export async function presignPut(env: Env, key: string, contentType: string) {
+  const r2 = new AwsClient({ accessKeyId: env.R2_ACCESS_KEY_ID, secretAccessKey: env.R2_SECRET_ACCESS_KEY, service: "s3", region: "auto" });
+  const url = new URL(`https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/cbpos-uploads/${key}`);
   url.searchParams.set("X-Amz-Expires", "300");
-  const signed = await r2.sign(new Request(url, { method: "PUT", headers: { "content-type": contentType } }), {
-    aws: { signQuery: true },
-  });
+  const signed = await r2.sign(new Request(url, { method: "PUT", headers: { "content-type": contentType } }), { aws: { signQuery: true } });
   return signed.url;
 }
 ```
 
-Admins read private objects through presigned **GET** URLs (`X-Amz-Expires=120`) generated by `getSlipUrl`. The admin UI opens them in a sandboxed `<iframe sandbox>` (PDF) or `<img>`.
+Admins view private objects through presigned GET URLs (`X-Amz-Expires=120`) in a sandboxed `<iframe sandbox>` (PDF) or `<img>`.
 
 ---
 
-## 10. `/api/merchants/geo` edge caching
+## 10. `/api/merchants/geo` caching
 
-### 10.1 Response
-
-`Content-Type: application/geo+json`
-
-```json
-{
-  "type": "FeatureCollection",
-  "version": 418,
-  "generatedAt": "2026-10-21T04:12:00Z",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [80.3647, 7.4863] },
-      "properties": {
-        "id": "m_7Kq3P9",
-        "shopName": "Perera Stores",
-        "category": "grocery",
-        "district": "kurunegala",
-        "city": "Kurunegala",
-        "isSupporter": true,
-        "since": "2026-08"
-      }
-    }
-  ]
-}
-```
-
-The properties whitelist is defined once in `05-SCHEMA.md §7` and in code as `PUBLIC_GEO_PROPERTIES`. Coordinates are rounded to 4 dp.
-
-### 10.2 Layered read path
+Response: `application/geo+json` FeatureCollection with `version`, `generatedAt` and features whose properties are exactly `PUBLIC_GEO_PROPERTIES` (`05-SCHEMA.md §7`). Coordinates rounded to 4 dp.
 
 ```mermaid
 flowchart TD
@@ -564,124 +505,103 @@ flowchart TD
   DB --> BUILD["Build FeatureCollection"] --> KVW["KV put geo:snapshot:v{n} ttl 7d"] --> PUT1
 ```
 
-- **Conditional requests:** if `If-None-Match` equals `W/"geo-{n}"`, return `304`.
-- **Response headers:** `Cache-Control: public, max-age=60, s-maxage=300, stale-while-revalidate=86400`. `Vary: Accept-Encoding` only (no cookies, so the response is identical for every user).
-- **Invalidation:** any write that changes a public field (gate submit with `is_public_on_map`, a listing edit, an admin status or supporter change, a delete) calls `bumpGeoVersion()`. That increments `geo:version` in KV, writes the new snapshot eagerly in `waitUntil`, and calls `revalidateTag('home-stats')`. The old Cache API entries expire on their own, and new requests use the new key immediately. Other colos pick up the change on their next KV read, so worst-case staleness is KV propagation (≈60 s), which meets AC-04.4.
-- **Write budget:** KV free tier allows 1,000 writes/day. Each bump costs 2 writes, so it supports about 450 public listing changes/day before debounce. Above 300 bumps/day, `bumpGeoVersion` coalesces: it writes at most once per 60 s using a `geo:dirty` flag checked by the cron worker.
-- **Size:** 10,000 merchants × ~180 bytes ≈ 1.8 MB raw / ~250 KB gzip, under KV's 25 MiB value limit. If it exceeds 5,000 features, switch to per-district tiles (`/api/merchants/geo?district=…`). This is noted as a scaling trigger.
+- `If-None-Match: W/"geo-{n}"` → `304`.
+- `Cache-Control: public, max-age=60, s-maxage=300, stale-while-revalidate=86400`.
+- Invalidation: every write that changes a public field calls `bumpGeoVersion()` (KV increment + eager snapshot in `waitUntil`). Worst-case staleness is KV propagation (~60 s).
+- KV writes: 1,000/day free. Each bump is 2 writes. Above 300 bumps/day, bumps set `geo:dirty` and the 30-minute cron rebuilds.
+- Above 5,000 features, switch to per-district responses.
+- `/api/stats` reads KV `stats:v1`, refreshed on the same bump.
 
 ---
 
 ## 11. Rate limiting
 
-**Identity key:** `ipHash = sha256(CF-Connecting-IP + dailySalt)`, where `dailySalt = sha256(IP_HASH_PEPPER + YYYY-MM-DD)`. A session user ID is used instead when present.
+**Identity:** `ipHash = sha256(CF-Connecting-IP + dailySalt)`, `dailySalt = sha256(IP_HASH_PEPPER + YYYY-MM-DD)`. A session user ID replaces it when present.
 
-| Endpoint group | Binding | Limit | Extra window |
+| Group | Binding | Limit | Extra |
 |---|---|---|---|
-| Gate submit, feedback create, donation create | `RL_FORMS` | 5 / 60 s | ≤ 10 per IP-hash per hour (KV counter `rl:h:{ipHash}:{hour}`, TTL 3600; only incremented after the 60 s check passes) |
+| Gate, feedback create, donation create | `RL_FORMS` | 5 / 60 s | ≤ 10 per IP-hash per hour (KV counter, TTL 3600) |
 | Upload presign/confirm | `RL_UPLOADS` | 10 / 60 s | — |
-| Votes | `RL_VOTES` | 30 / 60 s | Dedupe table |
-| Auth sign-in/up/OTP | `RL_AUTH` | 10 / 60 s | Better Auth's built-in `rateLimit` (storage: `secondary-storage` in KV) |
-| Public reads (geo, releases, stats, download) | `RL_READ` | 120 / 60 s | — |
+| Votes, docs feedback | `RL_VOTES` | 30 / 60 s | Vote dedupe table |
+| Auth (OTP send, sign-in) | `RL_AUTH` | 10 / 60 s | Better Auth `rateLimit` with KV secondary storage |
+| Public reads | `RL_READ` | 120 / 60 s | — |
 
-Implementation (`src/server/ratelimit.ts`):
-
-```ts
-export async function limit(binding: RateLimit, key: string) {
-  const { success } = await binding.limit({ key });
-  if (!success) throw new ApiError("RATE_LIMITED", 429, { retryAfter: 60 });
-}
-```
-
-**Zone-level backstop:** one Cloudflare WAF rate-limiting rule (the free plan includes one): `http.request.uri.path wildcard "/api/*" and http.request.method eq "POST"` → block for 10 s when more than 20 requests per 10 s come from one IP.
+Zone backstop: one free WAF rate-limiting rule on `POST /api/*` (block 10 s above 20 requests / 10 s per IP).
 
 ---
 
 ## 12. Bot defense & security
 
 ### 12.1 Turnstile
-- Widget mode: **managed**, `appearance: "interaction-only"`, `language: "auto"` (Turnstile follows the browser language; Sinhala and Tamil coverage isn't guaranteed, and the widget is interaction-only, so it rarely shows text). Render it lazily when the form becomes visible.
-- Server verify (`src/server/turnstile.ts`): `POST https://challenges.cloudflare.com/turnstile/v0/siteverify` with `secret`, `response`, `remoteip`, and an `idempotency_key` (uuid). Accept only if `success && hostname ∈ {ceybyte.com, localhost}` and the `action` matches the form (`gate`, `feedback`, `donation`, `upload`).
-- Tokens are single-use and expire after 300 s. The client resets the widget on any 4xx.
-- Local and dev: Cloudflare's test keys (`1x00000000000000000000AA` site / `1x0000000000000000000000000000000AA` secret) via `.dev.vars`.
+- Managed widget, `appearance: "interaction-only"`, `language: "auto"`, rendered lazily.
+- Server verify: `POST https://challenges.cloudflare.com/turnstile/v0/siteverify` with `secret`, `response`, `remoteip`, `idempotency_key`. Accept only if `success`, `hostname ∈ {ceybyte.com, localhost}` and `action` matches (`gate`, `feedback`, `donation`, `upload`).
+- Dev: Cloudflare test keys in `.dev.vars`.
 
 ### 12.2 Auth
-- `better-auth` per request: `createAuth(env)` with `drizzleAdapter(db, { provider: "sqlite", usePlural: true, schema })`, `plugins: [admin({ defaultRole: "merchant", adminRoles: ["admin"] }), emailOTP({...}), nextCookies()]`, `socialProviders.google`, `advanced.useSecureCookies: true`, `session.cookieCache.enabled: true (maxAge 300)`.
-- `better-auth-cloudflare` (`withCloudflare`) supplies D1 wiring and the KV secondary storage for sessions and rate limits.
-- Session cookie: `__Secure-better-auth.session_token`, `HttpOnly; Secure; SameSite=Lax`.
-- Admin bootstrap: `scripts/make-admin.ts --email` (run with `wrangler d1 execute`) is the only way to create the first admin.
+- `createAuth(c.env)` per request: Drizzle adapter (`provider: "sqlite"`, `usePlural: true`), `admin({ defaultRole: "merchant", adminRoles: ["admin"] })`, `emailOTP` (Resend), Google. **`emailAndPassword` is disabled** (D5).
+- `better-auth-cloudflare` provides the D1 wiring and the KV secondary storage for sessions and rate limits.
+- Cookie `__Secure-better-auth.session_token`, `HttpOnly; Secure; SameSite=Lax`, same origin as the site (no CORS).
+- First admin: `bun scripts/make-admin.ts --email` (runs `wrangler d1 execute`).
 
-### 12.3 Headers & CSP
+### 12.3 Headers & CSP (`apps/web/public/_headers` + Worker middleware)
 
 ```
-Content-Security-Policy:
-  default-src 'self';
-  script-src 'self' 'nonce-{n}' https://challenges.cloudflare.com;
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://avatars.githubusercontent.com;
-  font-src 'self';
-  connect-src 'self' https://*.r2.cloudflarestorage.com https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://tiles.basemaps.cartocdn.com;
-  frame-src https://challenges.cloudflare.com;
-  worker-src 'self' blob:;
-  child-src blob:;
-  form-action 'self';
-  frame-ancestors 'none';
-  base-uri 'self';
-  upgrade-insecure-requests
-Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=()
-Cross-Origin-Opener-Policy: same-origin
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://cdn.ceybyte.com https://lh3.googleusercontent.com; font-src 'self'; connect-src 'self' https://cdn.ceybyte.com https://*.r2.cloudflarestorage.com; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; child-src blob:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
 ```
 
-- PostHog runs through `/ingest` (same origin), so it needs no CSP entry.
-- Rive's WASM is self-hosted under `/rive/` (`RuntimeLoader.setWasmUrl`), so it needs no CDN.
-- MapLibre needs `worker-src blob:`.
+- Static export can't use per-request nonces, so `script-src` needs `'unsafe-inline'` for Next's inline bootstrap. Mitigations: no user HTML is ever rendered unsanitised (`rehype-sanitize`), no third-party scripts except Turnstile, and Trusted Types are planned (ADR-0011).
+- Rive WASM is self-hosted. MapLibre needs `worker-src blob:`.
 
-### 12.4 Webhook verification
-- **GitHub:** `X-Hub-Signature-256 = "sha256=" + HMAC_SHA256(GITHUB_WEBHOOK_SECRET, rawBody)`, compared in constant time with `crypto.subtle.timingSafeEqual`.
-- **Payment gateways:** none in v1 (donations are bank transfers verified by an admin). Whichever gateway is chosen later must have its webhook signature verification, idempotency key and CSP entries specified in its ADR before any code is written.
+### 12.4 Webhooks
+- **GitHub:** `X-Hub-Signature-256 = "sha256=" + HMAC_SHA256(GITHUB_WEBHOOK_SECRET, rawBody)`, compared with `crypto.subtle.timingSafeEqual`.
+- **Payment gateways:** none in v1 (bank transfers verified by admins). A future gateway's webhook security goes in its ADR before any code.
 
 ### 12.5 Data protection
-- IPs are hashed (§11). Raw IPs are never stored.
-- `merchants.claim_token_hash` holds `sha256(token)`. The token itself is only in the httpOnly cookie and in the response body shown once.
-- CSV export of merchants is admin-only, audited, and streamed (never stored in R2).
+- IPs are only stored hashed (§11).
+- `merchants.claim_token_hash` holds `sha256(token)`. The token lives only in the httpOnly cookie.
+- Merchant CSV export is admin-only, audited and streamed (never stored).
+- **Shop data never reaches us** (D9). No route accepts database URLs, passwords or LAN Sync secrets.
 
 ---
 
 ## 13. Observability & analytics
 
-- **Workers Logs** (observability enabled, 10% head sampling). A structured JSON logger in `src/server/log.ts` emits `{ level, msg, requestId, route, code }` and **never** PII fields. A lint rule blocks logging objects that contain `phone|whatsapp|telegram|email`.
-- **Request ID:** `cf-ray` is reused as `requestId` and returned in error envelopes.
-- **PostHog:**
-  - `posthog-js` initialised after consent, with `api_host: "/ingest"`, `ui_host: "https://eu.posthog.com"`, `person_profiles: "identified_only"`, `session_recording: { maskAllInputs: true }`, `capture_pageview: "history_change"`.
-  - Server events (download started, webhook outcomes) go through `posthog-node` with `flushAt: 1` inside `waitUntil`.
-- **Funnel** (event names are fixed and also used in `04-APP_FLOW.md`):
-  `cta_download_clicked{source}` → `download_gate_opened` → `download_gate_step1_completed` → `download_gate_submitted{district, category, public}` → `installer_download_started{version}` → `what_next_viewed` → `claim_listing_clicked`.
-- **Alerts** (free): the daily cron counts `merchant_logs` and `donations.pending_review` and posts a summary to a private Discord/Telegram webhook (optional secret `OPS_WEBHOOK_URL`).
+- Workers Logs (10% sampling). `apps/api/src/lib/log.ts` writes JSON `{ level, msg, requestId, route, code }` and drops keys matching `/phone|whatsapp|telegram|full_?name|email|contact|ip$/i`.
+- `requestId` = `cf-ray`, returned in error envelopes.
+- PostHog EU Cloud: `posthog-js` after consent, `api_host: "/ingest"`, `person_profiles: "identified_only"`, `session_recording.maskAllInputs: true`. Server events are sent with a `fetch` to `/capture` in `waitUntil`, with an allow-listed property set.
+- Funnels and the event dictionary: `04-APP_FLOW.md §7`.
+- Daily summary: the 08:45 cron posts counts (gate submissions, downloads, pending slips, open tickets) to an optional private webhook (`OPS_WEBHOOK_URL`).
 
 ---
 
 ## 14. Free-tier budget ($0/month)
 
-| Service | Free allowance (verify at Phase 0) | Expected at 10k visits/mo | Trigger to revisit |
-|---|---|---|---|
-| Workers requests | 100,000 / day | ~6,000 / day | > 60k/day sustained |
-| Workers CPU | 10 ms / invocation | SSG/ISR pages < 5 ms | Any route p95 > 8 ms → optimise or move to Workers Paid ($5) |
-| Worker size | 3 MiB gzip (free) | Target ≤ 2.5 MiB | CI `bundle:check` fails > 2.8 MiB |
-| D1 | 5 M rows read/day, 100 k rows written/day, 500 MB per database (5 GB per account) | < 50 k reads/day, < 50 MB | Reads > 1 M/day or DB > 300 MB |
-| KV | 100 k reads/day, 1 k writes/day | ~10 k reads, < 100 writes | Writes > 600/day |
-| R2 | 10 GB, 1 M Class A, 10 M Class B / month | < 1 GB | > 7 GB |
-| Durable Objects (SQLite-backed) | Free plan allowance | Revalidation queue only | — |
-| Cron triggers | 5 per account | 2 | — |
-| Turnstile | Unlimited | — | — |
-| PostHog | 1 M events, 5 k replays / month | ~150 k events | > 700 k events → sample replays |
-| Resend | 3,000 emails / month, 100 / day | < 300 | > 80/day |
-| GitHub Releases | Free public bandwidth | — | — |
-| CARTO basemaps | Free with attribution, subject to their terms | ~10 k map loads | Terms change → OpenFreeMap / Protomaps on R2 |
+Figures checked against Cloudflare's docs on 2026-10-21. Re-check in Phase 0.
 
-Upgrading to Workers Paid ($5/mo) is the **only** pre-approved paid escalation, and it needs an ADR recording the metric that triggered it.
+| Service | Free allowance | Expected (10k visits/month) | Watch |
+|---|---|---|---|
+| Static asset requests | Free and unlimited | ~all page views | — |
+| Worker requests (`run_worker_first` + API) | 100,000 / day | ~3,000 / day | > 60k/day |
+| Worker CPU | 10 ms / request | API calls ≪ 5 ms | Any route p95 > 7 ms |
+| Worker size | 64 MiB uncompressed (startup ≤ 1 s) | < 2 MiB | Startup time in `wrangler deploy` output |
+| D1 | 5 M rows read/day, 100 k rows written/day, 500 MB per DB | < 20 k reads/day | DB > 300 MB |
+| KV | 100 k reads/day, 1 k writes/day | ~5 k reads, < 100 writes | Writes > 600/day |
+| R2 | 10 GB, 1 M Class A, 10 M Class B / month; free egress | < 1 GB (tiles ~100–200 MB) | > 7 GB |
+| Cron triggers | 5 per account | 2 | — |
+| GitHub Actions | 2,000 min/month (private repo) / unlimited (public) | ~40 builds × 4 min | > 1,500 min |
+| Turnstile | Unlimited | — | — |
+| PostHog Cloud | 1 M events, 5 k replays / month | ~150 k events | > 700 k |
+| Resend | 3,000 emails/month, 100/day | < 300 (OTP only) | > 80/day |
+
+The only pre-approved escalation is Workers Paid ($5/month), and only if Worker requests or CPU limits are hit. Anything bigger means moving to the `main` (VPS) architecture.
 
 ---
 
@@ -689,45 +609,51 @@ Upgrading to Workers Paid ($5/mo) is the **only** pre-approved paid escalation, 
 
 | Page | Initial JS (gz) | LCP p75 mobile | Notes |
 |---|---|---|---|
-| `/{locale}` | ≤ 180 KB | ≤ 2.5 s | Hero poster image is the LCP. Rive hydrates after idle |
-| `/{locale}/map` | ≤ 120 KB + MapLibre (~220 KB, lazy) | ≤ 3.0 s | Skeleton grid + district list render first |
-| `/{locale}/docs/*` | ≤ 140 KB | ≤ 2.0 s | Search index lazy |
-| Dashboard / admin | ≤ 250 KB | — | Not public |
+| `/{locale}/` | ≤ 180 KB | ≤ 2.0 s | Static HTML from the edge. Hero capture is the LCP |
+| `/{locale}/map/` | ≤ 120 KB + MapLibre (lazy) | ≤ 3.0 s | Panel and district grid render first |
+| `/{locale}/docs/**` | ≤ 140 KB | ≤ 1.8 s | Search index lazy |
+| Dashboard / admin | ≤ 250 KB | — | Client-rendered shells |
 
-Fonts: `next/font/google` with `display: "swap"` and subsets (`latin` for Inter/Geist/JetBrains Mono, `sinhala`, `tamil`). Only the active locale's script font is preloaded.
+Fonts: `next/font/google` (self-hosted at build), `display: "swap"`, script subsets, only the active locale's script font preloaded.
 
 ---
 
-## 16. Testing strategy
+## 16. Testing
 
 | Level | Tool | Scope |
 |---|---|---|
-| Unit | vitest | `money`, `phone`, `tax` display maths, `sri-lanka` (bounds, nearest city), masking projections, manifest zod, slip magic-byte check, GitHub HMAC |
-| Contract | vitest | `geo.contract.test.ts` (whitelist), API envelopes, error codes ↔ message keys |
-| Integration | vitest + Miniflare (`@cloudflare/vitest-pool-workers`) | Route handlers against local D1/R2/KV; webhook idempotency |
-| E2E | Playwright against `pnpm preview` | The 6 flows in `04-APP_FLOW.md` × 3 locales; mobile (Pixel 7) + desktop |
-| A11y | `@axe-core/playwright` | Every screen; zero violations |
-| Visual | Playwright screenshots | Sinhala/Tamil clipping checks on S01, S02, S05, S09 |
-| Perf | Lighthouse CI | `/en`, `/si`, `/ta`, `/si/docs/...` against §15 budgets |
+| Unit | `bun test` | `packages/shared`: money, phone, tax maths (round-half-even, [C1]/[C2] examples), sri-lanka, projections, manifest zod, HMAC |
+| Contract | `bun test` | `geo.contract.test.ts`, error codes ↔ message keys |
+| API integration | `vitest` + `@cloudflare/vitest-pool-workers` | Every route against local D1/R2/KV; webhook idempotency; rate limits; admin 404 |
+| Build | `bun run build` in CI | Static export succeeds for 3 locales; no page uses dynamic APIs |
+| E2E | Playwright against `bun run preview` | The 6 flows in `04-APP_FLOW.md` × 3 locales, Pixel 7 + desktop |
+| A11y | `@axe-core/playwright` | Every screen, zero violations |
+| Visual | Playwright screenshots | Sinhala/Tamil clipping on S01, S02, S05, S09 at 320/375/414/768 |
+| Perf | Lighthouse CI | §15 budgets on `/en/`, `/si/`, `/ta/`, a docs page |
 
 ---
 
 ## 17. CI/CD (GitHub Actions)
 
-1. **`ci.yml`** (every PR): install → lint → typecheck → test → i18n:check → `opennextjs-cloudflare build` → `bundle:check` → Playwright (preview) → Lighthouse CI → `wrangler deploy --env preview`.
-2. **`deploy.yml`** (push to `main`): the CI steps → `wrangler d1 migrations apply cbpos-db --remote` → `pnpm deploy` → `pnpm --filter release-sync deploy` → smoke test (`/en`, `/api/releases/latest`, `/api/merchants/geo` 200) → on failure, `wrangler rollback`.
-3. Secrets in GitHub: `CLOUDFLARE_API_TOKEN` (Workers, D1, R2, KV edit), `CLOUDFLARE_ACCOUNT_ID`.
-4. The production deploy is blocked while `[[TRANSLATE]]` markers exist in enabled locales.
+1. **`ci.yml`** (PR): `oven-sh/setup-bun` → `bun install --frozen-lockfile` → lint → typecheck → test → `i18n:check` → `build` (against the preview D1) → `wrangler deploy --env preview` → Playwright → Lighthouse CI.
+2. **`deploy.yml`** (push to `free`, or `repository_dispatch: content-published`): concurrency `deploy` with cancel-in-progress → `wrangler d1 migrations apply cbpos-db --remote` (push only) → `bun run build` → `wrangler deploy` → smoke tests (`/en/`, `/api/releases/latest`, `/api/merchants/geo`) → `wrangler rollback` on failure.
+3. Production deploys are blocked while `[[TRANSLATE]]` markers exist in enabled locales.
 
 ---
 
-## 18. ADR index (to be written in `docs/adr/`)
+## 18. ADR index (`docs/adr/`)
 
 | ADR | Title |
 |---|---|
-| 0001 | Workers + OpenNext instead of Pages |
-| 0002 | Docs content in D1 rendered without eval |
+| 0000 | Phase 0 verification results |
+| 0001 | Static export + Hono Worker instead of OpenNext on the free plan |
+| 0002 | Content in D1, rendered at build time |
 | 0003 | Installer delivery by 302 to GitHub Releases |
 | 0004 | Geo snapshot in KV with versioned Cache API keys |
 | 0005 | Presigned PUT + head verification for R2 uploads |
-| 0006 | Drizzle on D1 with a Postgres-portable schema; Convex as a documented alternative |
+| 0006 | Drizzle on D1 with a Postgres-portable schema; Convex documented only |
+| 0007 | `@lucasmarkes/hairline` adoption and figure mapping |
+| 0008 | Protomaps self-hosted tiles instead of CARTO |
+| 0009 | Passwordless auth on the free plan |
+| 0010 | Inter body font kept despite impeccable's generic-font finding |
+| 0011 | CSP without nonces on static export; Trusted Types plan |
