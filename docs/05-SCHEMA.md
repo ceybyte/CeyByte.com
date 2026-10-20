@@ -832,6 +832,8 @@ Append-only. Kept indefinitely (small). `diff.before`/`diff.after` **must not** 
 
 ## 6. Postgres portability
 
+> This section covers **the website's own database** only. It's unrelated to CB-POS Cloud Sync, whose PostgreSQL schema belongs to the desktop app and lives on servers the merchants host.
+
 The schema avoids SQLite-only features so it can move to Postgres (e.g. Neon or Supabase) with a mechanical rewrite of `sqlite-core` to `pg-core`, should D1 limits be outgrown.
 
 | SQLite (D1) | Postgres equivalent | Rule that keeps it portable |
@@ -1186,8 +1188,8 @@ Masking rules (§7) apply equally to Convex: public `query` functions return the
 
 | Data | Source | Rows |
 |---|---|---|
-| Docs categories | The 9 categories in PRD F-05 with EN titles. SI/TA titles marked `[[TRANSLATE]]` until provided | 9 |
-| Docs articles | "Install CB-POS", "Windows SmartScreen", "First sale", "Keyboard shortcuts", "VAT 18% backward calculation", "SSCL 2.5% setting", "Connect a thermal printer", "Backups" (EN) | 8 |
+| Docs categories | The 10 categories in PRD F-05 with EN titles. SI/TA titles marked `[[TRANSLATE]]` until provided | 10 |
+| Docs articles | "Install CB-POS", "Windows SmartScreen", "First sale", "Keyboard shortcuts", "VAT 18% backward calculation", "SSCL 2.5% setting", "Connect a thermal printer", "Backups", "Set up Cloud Sync with your own PostgreSQL" (EN) | 9 |
 | Releases | One fixture release `0.0.0-dev` (local only) pointing at a test asset | 1 |
 | Merchants (local/preview only) | 60 synthetic shops across all 25 districts with random coordinates inside district bboxes, fake phones `+9470000xxxx`, 10% supporters | 60 |
 | Admin user | From `SEED_ADMIN_EMAIL` | 1 |

@@ -20,6 +20,7 @@
 - AVCO inventory costing
 - 3-decimal weighed goods
 - ESC/POS thermal receipts in English, Sinhala and Tamil
+- optional **Cloud Sync** to a PostgreSQL database that the merchant chooses and hosts (their own server or a provider they pick). Local SQLite stays the primary store, so billing never waits for the network. Ceybyte doesn't host, see or manage these databases
 - encrypted `.ZIP` local backups
 
 **Ceybyte.com** is how shop owners find, trust, download and get help with CB-POS. It has five jobs:
@@ -42,7 +43,7 @@ Sri Lankan small retailers are stuck choosing between:
 
 ### 1.2 Why a web platform
 
-CB-POS is offline software. The website is the only online touchpoint, so it must carry trust (real UI, real hashes, real shops, honest disclaimers), handle onboarding (setup guide, docs) and build community (tracker, map, donations).
+CB-POS is offline-first software. Its only network feature, Cloud Sync, talks to the merchant's own PostgreSQL database, never to Ceybyte. The website is Ceybyte's only online touchpoint, so it must carry trust (real UI, real hashes, real shops, honest disclaimers), handle onboarding (setup guide, docs) and build community (tracker, map, donations).
 
 ---
 
@@ -56,7 +57,8 @@ CB-POS is offline software. The website is the only online touchpoint, so it mus
 
 ### 2.2 Non-goals (v1)
 - Selling CB-POS, licences or subscriptions. CB-POS is free, permanently.
-- Cloud sync, remote dashboards or telemetry from installed POS terminals. The POS stays offline. The website never receives sales data.
+- Hosting, provisioning or proxying Cloud Sync databases. CB-POS Cloud Sync connects straight to a PostgreSQL database the merchant chooses and hosts. The website never receives sales data, database URLs or database credentials, and has no telemetry from POS terminals.
+- Remote sales dashboards on ceybyte.com.
 - Selling hardware (printers, scanners, scales). Docs may list tested hardware; no affiliate links in v1.
 - Native mobile apps.
 - A public merchant review or rating system.
@@ -99,7 +101,7 @@ Personas are written without gendered pronouns on purpose.
 
 ### P3 — Ravindu, POS installer and IT freelancer (Colombo / Gampaha)
 - 27, English-fluent power user. Sets up shops in exchange for a setup fee.
-- Needs: release notes, SHA-256 hashes, silent-install flags, a hardware compatibility list, keyboard-shortcut reference sheets, and a bug tracker where reports get acknowledged.
+- Needs: release notes, SHA-256 hashes, silent-install flags, a hardware compatibility list, keyboard-shortcut reference sheets, Cloud Sync setup guides for the PostgreSQL servers Ravindu runs for clients, and a bug tracker where reports get acknowledged.
 - Influence: one installer brings 10–50 shops. Very likely to opt shops into the public map.
 
 ### P4 — Dilani, supporter (Kandy, or diaspora in Melbourne)
@@ -182,7 +184,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-02.3 The latest version and installer size come from F-06 (`releases.is_latest`). The CTA subtext reads `Windows 10/11 · 64-bit · v{version} · {size} MB`.
 - FR-02.4 Bento cards are interactive on hover and focus, and reachable by keyboard:
   - **Keyboard:** pressing the shown keys (`F2`, `Enter`, `Esc`) highlights the matching `<kbd>`.
-  - **Offline:** a Wi-Fi toggle keeps the bill running.
+  - **Offline:** a Wi-Fi toggle keeps the bill running. Switching it back on shows a "Synced" indicator, labelled as optional Cloud Sync to the merchant's own PostgreSQL.
   - **Dual-Tax:** typing an MRP shows base/VAT live.
   - **Hardware:** a device list.
   - **Receipts:** an EN/SI/TA tab switch.
@@ -295,8 +297,9 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 5. Hardware — thermal printers (58/80mm, ESC/POS), cash drawers, scanners, scales, tested hardware list
 6. Receipts — layouts, Sinhala/Tamil receipt fonts, logo printing
 7. Backup & Restore — encrypted `.ZIP` backups, restore, moving to a new PC
-8. Troubleshooting — printer not printing, scale not reading, database locked
-9. Release Notes → links to F-06
+8. Cloud Sync — what it does (and doesn't), choosing where to host PostgreSQL (self-hosted server or a managed provider), creating a least-privilege database user, requiring TLS, connecting CB-POS, sync status, troubleshooting, turning sync off
+9. Troubleshooting — printer not printing, scale not reading, database locked
+10. Release Notes → links to F-06
 
 **Functional requirements**
 - FR-05.1 Fumadocs UI layout: sidebar tree, TOC, breadcrumb, prev/next, "Edit history", "Was this helpful? Yes/No" (→ PostHog event `doc_feedback`).
@@ -306,6 +309,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-05.5 Articles carry `app_version_min`, shown as a badge ("Applies to v1.4+").
 - FR-05.6 Screenshots are stored in R2 under `docs/` and served by a public, cache-friendly path through the Worker (`/media/docs/...`).
 - FR-05.7 A printable keyboard-shortcut cheat sheet page (A4, print CSS).
+- FR-05.8 Cloud Sync articles stay provider-neutral: they cover self-hosting and managed PostgreSQL equally, never present a paid provider as required, and never ask readers to paste connection strings anywhere on the site.
 
 **Acceptance criteria**
 - AC-05.1 Searching "printer" in `/si/docs` returns Sinhala articles first, then English fallbacks labelled `EN`.
@@ -477,7 +481,7 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 | `terms` | Terms of use for the website and CB-POS software licence summary: free, as-is, no warranty, limitation of liability |
 | `privacy` | PDPA-aligned privacy notice: what is collected (gate, tickets, donations, auth), purpose, retention, public map fields, processors (Cloudflare, PostHog, Resend, GitHub), rights (access, correction, deletion), contact |
 | `tax-disclaimer` | CB-POS calculates VAT 18% (backward from MRP) and SSCL 2.5% per configured rates. It is not certified, approved or endorsed by the IRD. Merchants are responsible for verifying rates, registration thresholds and filings with a qualified accountant. Rates can change by law, so update CB-POS and check settings |
-| `data-safety` | CB-POS stores data locally in SQLite on the shop PC. Ceybyte has no access to it and can't recover it. Merchants must take regular encrypted `.ZIP` backups to external media. Lost passwords for encrypted backups can't be recovered |
+| `data-safety` | CB-POS stores data locally in SQLite on the shop PC. With Cloud Sync on, it's also copied to the PostgreSQL database the merchant chooses and hosts. Ceybyte has no access to either and can't recover them. The merchant is responsible for that server's security, availability, backups and costs. Merchants must take regular encrypted `.ZIP` backups to external media. Lost passwords for encrypted backups can't be recovered |
 | `cookies` | Cookies used: locale, gate, claim, auth session, PostHog (with consent banner choices) |
 
 **Functional requirements**
@@ -525,6 +529,7 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 | SmartScreen warnings scare users | Lower installs | Explicit "What Next?" guidance with screenshots; publish hashes; code-signing as funding goal #1 |
 | CARTO basemap terms or quota | Map tiles blocked | Attribution shown; fallback style URL via env (`MAP_STYLE_DARK`/`_LIGHT`) to OpenFreeMap or self-hosted Protomaps on R2 |
 | Tax law changes | Incorrect claims on site | Rates live in one config (`src/lib/tax.ts`) + disclaimer; blog post per change |
+| Merchants expose a Cloud Sync PostgreSQL to the internet with weak settings | Shop data leaked | Cloud Sync docs include a security checklist (TLS required, least-privilege user, strong password, IP allow-listing, provider backups). The site never collects or stores connection details |
 | Translator availability | Launch delay | `[[TRANSLATE]]` CI gate; launch `si`/`ta` only when complete (feature flag per locale) |
 
 ## 8. Release scope

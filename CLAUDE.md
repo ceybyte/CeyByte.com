@@ -1,6 +1,6 @@
 # CLAUDE.md — Ceybyte.com Repository Constitution
 
-Ceybyte.com is the official web platform for **CB-POS**: a free, offline, keyboard-first Windows Point of Sale system for Sri Lankan retail shops. This site is where people see the product, download the installer, read the trilingual docs, report bugs, donate, and find shops that use it on the live Sri Lanka Merchant Map.
+Ceybyte.com is the official web platform for **CB-POS**: a free, offline-first, keyboard-first Windows Point of Sale system for Sri Lankan retail shops, with optional Cloud Sync to a PostgreSQL database the merchant chooses and hosts. This site is where people see the product, download the installer, read the trilingual docs, report bugs, donate, and find shops that use it on the live Sri Lanka Merchant Map.
 
 This file has the rules for every developer and AI agent working in this repo. If a rule here conflicts with what you would usually do, the rule here wins.
 
@@ -219,6 +219,7 @@ A PR fails review if any box can't be honestly ticked.
 - [ ] Every headline states a concrete outcome or number ("Bill in 0 ms network lag", not "Next-gen retail experience").
 - [ ] No exclamation marks in UI copy. No emoji in UI copy.
 - [ ] Prices are written `Rs. 1,250.00` (space after `Rs.`, comma thousands, 2 dp) in `font-mono`.
+- [ ] Data claims match how CB-POS works: never say "your data never leaves your PC", because Cloud Sync exists. Say "your data stays under your control", or "on your PC, and on your own PostgreSQL if you turn on Cloud Sync".
 - [ ] Tax claims say *calculates*, never *certified/approved/compliant-guaranteed*, and link the disclaimer.
 - [ ] Each string exists in `en`, `si` and `ta` (or carries `[[TRANSLATE]]`).
 - [ ] Button labels are verbs: "Download CB-POS", "Send ticket", "Upload slip". Never "Submit" or "Click here".
@@ -254,6 +255,7 @@ A PR fails review if any box can't be honestly ticked.
 ## 9. Privacy & legal guardrails
 
 - **Sri Lanka PDPA (Personal Data Protection Act No. 9 of 2022):** collect only what a feature needs, state the purpose at collection, honour deletion requests (`/dashboard/settings` → delete listing; admin hard-delete within 30 days).
+- **Cloud Sync is out of this platform's scope.** The CB-POS app connects directly to the merchant's PostgreSQL. This site never hosts, proxies or stores sync databases, connection strings, credentials or sales data. Never add a form field, ticket field or upload purpose that collects a database URL or password. The ticket form warns users to strip credentials from logs.
 - IP addresses are stored only as `sha256(ip + daily_salt)`. Raw IPs are never persisted.
 - PostHog runs with `maskAllInputs: true` and `mask_all_text: false`. Elements with `data-ph-no-capture` (contact fields, slips, dashboards) are never recorded. Merchant contact data is never sent as event properties.
 - Bank slips and crash logs live in private R2. They're served only through short-lived presigned GET URLs to admins.

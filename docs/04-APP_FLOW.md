@@ -190,7 +190,7 @@ flowchart TD
 
 | # | User action | System response | Event |
 |---|---|---|---|
-| 1 | Opens the docs hub | Category grid (9) + "Start here" (Install, First sale, Printer setup) + search | `$pageview` |
+| 1 | Opens the docs hub | Category grid (10) + "Start here" (Install, First sale, Printer setup) + search | `$pageview` |
 | 2 | Opens an article | SSG HTML from stored hast. TOC on the right (xl), collapsible on top (mobile). `app_version_min` badge | `doc_viewed {slug, locale, fallback}` |
 | 3 | `⌘K` / `Ctrl+K` / `/` | Dialog opens. The index (KV-versioned JSON, ~100–300 KB) loads once and is cached by the browser | `docs_search_opened` |
 | 4 | Types | Orama search, typo tolerance 1, boost title ×3, headings ×2 | `docs_searched {qLength, results}` (never the raw query if it looks like a phone number) |

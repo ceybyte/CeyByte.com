@@ -385,6 +385,7 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 | Hardware hub | `Printer`, `ScanBarcode`, `Scale`, `Usb` |
 | Trilingual receipts | `Languages`, `ReceiptText` |
 | Weighing & backups | `Scale`, `ArchiveRestore`, `ShieldCheck` |
+| Cloud Sync (optional) | `RefreshCw`, `Server` |
 | Map | `MapPin`, `Map` |
 | Supporter | `Award` (gold) |
 | Docs | `BookOpen`, `Search` |
@@ -547,7 +548,7 @@ Rules (following the `emilkowalski/skills` guidance in `CLAUDE.md §7`):
 | Bento card | hover/focus-within | Border colour to cyan 40% (CSS 180 ms). Demo area starts its interaction. No card lift |
 | Kbd | matching key down | `y 1`, border cyan, `spring.snappy`. Release returns |
 | Telemetry numbers | in view, once | `useSpring(spring.number)` from 0 to the value, displayed with `Intl.NumberFormat`. Done in ≤ 900 ms |
-| Offline toggle (bento) | click/Space | Wi-Fi icon swaps with a `scale .8→1` crossfade. The bill list keeps adding items (a new item every 700 ms, `layout` animation) to prove billing continues |
+| Offline toggle (bento) | click/Space | Wi-Fi icon swaps with a `scale .8→1` crossfade. The bill list keeps adding items (a new item every 700 ms, `layout` animation) to prove billing continues. Switching back on shows a small `RefreshCw` → `Check` "Synced" chip (cyan, 600 ms) for the optional Cloud Sync |
 | Dual-tax calculator | input change | Base/VAT values crossfade digits (each digit `y ±6`, 140 ms), mono |
 | Receipt language tabs | tab change | Receipt paper `clipPath: inset(0 0 100% 0) → inset(0)` 320 ms, like a printer feed |
 | Weighing scale | in view | Readout ticks `0.000 → 1.250 kg` over 800 ms with 3 overshoots settling (`spring.gentle`) |

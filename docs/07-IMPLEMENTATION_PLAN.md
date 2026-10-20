@@ -251,7 +251,7 @@ gantt
 - [ ] Audit log viewer with the diff view.
 
 ### 7.4 Content
-- [ ] Write the 8 seed articles in English (`05 §9`). Hand them off to translators along with the UI strings.
+- [ ] Write the 9 seed articles in English (`05 §9`), including the provider-neutral Cloud Sync setup guide with its security checklist (FR-05.8). Hand them off to translators along with the UI strings.
 
 **Verify:** E2E `03-docs.spec.ts`. Publishing an article makes it live and searchable in ≤ 60 s (AC-05.2). Axe passes on articles. A non-admin gets a 404 on `/admin` (AC-08.1).
 
@@ -267,7 +267,7 @@ gantt
 - [ ] S11 pages (terms, privacy, tax-disclaimer, data-safety, cookies) with summary boxes, version stamps and the "English prevails" note. The legal text is reviewed by a Sri Lankan lawyer (or at least checked against the PDPA's obligations) before launch.
 - [ ] `terms_version` constant wired into the gate. Inline disclaimers in all the places listed in FR-12.1.
 - [ ] CI grep for banned phrases (`06 §5`, AC-12.1).
-- [ ] **Product facts PF-1…PF-8 signed off** by the CB-POS team (`06 §0`). Copy updated where needed.
+- [ ] **Product facts PF-1…PF-9 signed off** by the CB-POS team (`06 §0`). Copy updated where needed.
 - [ ] Sinhala and Tamil translations delivered for all M1 UI strings, the legal pages and the 8 docs. `pnpm i18n:check --strict` passes. Native-speaker review of S01, S02, S03 and S05 screenshots for clipping and tone.
 
 ### 8.2 Hardening

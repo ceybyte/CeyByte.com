@@ -25,6 +25,7 @@ The copy depends on facts about the CB-POS desktop app. The values below are the
 | PF-6 | Setup wizard length | ~2 minutes, 4 steps (shop, tax, receipt, printer) | How It Works |
 | PF-7 | Backup format | AES-encrypted `.ZIP`, manual + scheduled | Bento 6, data-safety page |
 | PF-8 | Installer is unsigned | True until a code-signing certificate is bought | What Next, FAQ 4 |
+| PF-9 | Cloud Sync | Optional. Syncs to a merchant-hosted PostgreSQL (version range to confirm) over TLS. Local SQLite stays primary. Changes queue while offline and sync when the connection returns. Conflict rules and multi-terminal support to confirm | Bento 2, FAQ 2, Cloud Sync docs, data-safety page |
 
 ---
 
@@ -43,7 +44,7 @@ Prepend this block to every screen prompt in §4 when generating with Google Sti
 | S01 | Home (8 sections) | `/{locale}` | public | F-02 | Download CB-POS | Hero, StatTile ×4, MapTeaser, ProblemCard ×3, BentoCard ×6, Steps, Accordion, Banner, Footer |
 | S02 | Download Gate (a: Your shop · b: Location · c: What Next) | modal `?download=1`, full page `/{locale}/download` | public | F-03 | Download CB-POS | Dialog/Vaul, PhoneInput, Select, Combobox, MiniMap, Checkbox, Turnstile, HashBlock, Rive check |
 | S03 | Merchant Map | `/{locale}/map` | public | F-04 | Add my shop | MapLibre, FilterBar, DistrictGrid, ResultList, Popup/Sheet |
-| S04 | Docs Hub | `/{locale}/docs` | public | F-05 | Search docs (`⌘K`) | Search trigger, CategoryCard ×9, StartHere list |
+| S04 | Docs Hub | `/{locale}/docs` | public | F-05 | Search docs (`⌘K`) | Search trigger, CategoryCard ×10, StartHere list |
 | S05 | Doc Article | `/{locale}/docs/{cat}/{slug}` | public | F-05 | Next article / Was this helpful | Fumadocs DocsLayout, TOC, Callout, Kbd, Screenshot, Steps |
 | S06 | Releases | `/{locale}/releases` | public | F-06 | Download (via gate) | LatestReleaseCard, HashBlock ×2, VerifyExpander, Changelog |
 | S07 | Feedback Board | `/{locale}/feedback` | public | F-07 | Report a bug / Request a feature | Tabs, Filters, TicketRow, VoteButton |
@@ -85,7 +86,7 @@ System states (not counted as screens): `not-found` (Hairline "unplugged cable" 
 │  [ ⬇ Download CB-POS — Free ]   See how it works →                       │
 │  Windows 10/11 · 64-bit · v1.4.2 · 80.3 MB                               │
 │                                                                          │
-│  ✓ No monthly fee   ✓ Works fully offline   ✓ Your data stays on your PC │
+│  ✓ No monthly fee   ✓ Works fully offline   ✓ Your data stays yours     │
 │ +                                                                      + │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -100,7 +101,7 @@ System states (not counted as screens): `not-found` (Hairline "unplugged cable" 
 | `home.hero.secondary` | See how it works |
 | `home.hero.assurance.1` | No monthly fee, ever |
 | `home.hero.assurance.2` | Works fully offline |
-| `home.hero.assurance.3` | Your data stays on your PC |
+| `home.hero.assurance.3` | Your data stays under your control |
 | `home.hero.mockupAlt` | CB-POS billing screen with Samba Rice 1.250 kg and the VAT total in rupees |
 
 Layout: desktop 12-col, copy cols 1–6, mockup cols 7–12. Mobile: copy first, mockup below the CTA (the poster image is the LCP). The `h1` is the only `text-display` on the page.
@@ -157,9 +158,10 @@ Desktop layout (3 columns × 3 rows, hairline-separated):
 | `home.bento.keyboard.body` | Every action has a key. Cashiers learn it in a day and bill faster from day two. |
 | `home.bento.keyboard.demo` | Try it: press F2, Enter, F12 |
 | **Card 2** `home.bento.offline.title` | No internet. No problem. |
-| `home.bento.offline.body` | Every sale is written to a local SQLite database in milliseconds. Switch the Wi-Fi off and keep billing. |
+| `home.bento.offline.body` | Every sale is written to a local SQLite database in milliseconds. Switch the Wi-Fi off and keep billing. Want an off-site copy? Turn on Cloud Sync to your own PostgreSQL server. |
 | `home.bento.offline.toggleOn` | Wi-Fi: on |
 | `home.bento.offline.toggleOff` | Wi-Fi: off — still billing |
+| `home.bento.offline.synced` | Back online — synced to your PostgreSQL |
 | **Card 3** `home.bento.tax.title` | 18% VAT and 2.5% SSCL, worked out for you. |
 | `home.bento.tax.body` | Type the shelf MRP. CB-POS works backward to the price before VAT and the VAT amount, and tracks SSCL on your turnover. |
 | `home.bento.tax.inputLabel` | MRP |
@@ -196,7 +198,7 @@ Tax demo default: MRP `1,180.00` → base `1,000.00`, VAT `180.00`. Rounding is 
 | Key | Question | Answer |
 |---|---|---|
 | `home.faq.1` | Is CB-POS really free? What's the catch? | Yes, it's free. No subscription, no trial period, no locked features, no ads. CB-POS is funded by voluntary donations from Sri Lankan shops and supporters. |
-| `home.faq.2` | What happens to my sales if the internet goes down? | Nothing. CB-POS never needs the internet to bill. Your data lives in a SQLite database on your own PC. Back it up often to an encrypted .ZIP on a USB drive. Ceybyte can't see or recover your data. |
+| `home.faq.2` | What happens to my sales if the internet goes down? | Nothing. CB-POS never needs the internet to bill. Every sale saves to a SQLite database on your own PC first. If you turn on Cloud Sync, CB-POS copies your data to a PostgreSQL database that you choose and host, and catches up automatically when the internet returns. Ceybyte never hosts or sees your data, so keep encrypted .ZIP backups too. |
 | `home.faq.3` | Is CB-POS approved by the IRD? | No. CB-POS calculates 18% VAT and 2.5% SSCL from your MRP using the rates you set, but it is not certified or endorsed by the Inland Revenue Department. Your tax filings are your responsibility, so check your settings with your accountant. **Read the tax disclaimer.** |
 | `home.faq.4` | Windows says the installer isn't safe. Is it a virus? | No. Windows SmartScreen warns about new apps that aren't code-signed yet. Check the SHA-256 hash on the download page matches your file, then click **More info → Run anyway**. Buying a code-signing certificate is our first funding goal. |
 | `home.faq.5` | Will it work with my printer, scanner and scale? | Most ESC/POS thermal printers (58mm and 80mm, USB or network), USB barcode scanners, cash drawers and USB/serial scales work. Check the tested hardware list, or ask in the WhatsApp community. |
@@ -361,12 +363,12 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `docs.search.hint` | ⌘K |
 | `docs.startHere` | Start here |
 | `docs.startHere.items` | Install CB-POS · Get past Windows SmartScreen · Make your first sale · Connect a thermal printer |
-| `docs.categories` | Getting Started · Cashiering · Products & Inventory · Tax · Hardware · Receipts · Backup & Restore · Troubleshooting · Release Notes |
+| `docs.categories` | Getting Started · Cashiering · Products & Inventory · Tax · Hardware · Receipts · Backup & Restore · Cloud Sync · Troubleshooting · Release Notes |
 | `docs.help.title` | Can't find it? |
 | `docs.help.body` | Ask the community on WhatsApp or open a question ticket. |
 
 **Stitch prompt:**
-> A documentation home page in the CB-POS dark style. Top: title "CB-POS documentation", a muted lead, and a wide search field-button "Search the docs" with a "⌘K" keycap on the right. A "Start here" row of four compact link cards with Lucide icons (download, shield, receipt, printer). Below, a 3×3 grid of category cards separated by shared 1px hairlines (no gaps), each with a small icon, a title (Getting Started, Cashiering, Products & Inventory, Tax, Hardware, Receipts, Backup & Restore, Troubleshooting, Release Notes) and an article count in mono. The Tax card has a small yellow "Disclaimer" tag. A footer help strip: "Can't find it?" with links to the WhatsApp community and "Open a question ticket". Crosshair marks at the grid corners.
+> A documentation home page in the CB-POS dark style. Top: title "CB-POS documentation", a muted lead, and a wide search field-button "Search the docs" with a "⌘K" keycap on the right. A "Start here" row of four compact link cards with Lucide icons (download, shield, receipt, printer). Below, a 5×2 grid of category cards separated by shared 1px hairlines (no gaps), each with a small icon, a title (Getting Started, Cashiering, Products & Inventory, Tax, Hardware, Receipts, Backup & Restore, Cloud Sync, Troubleshooting, Release Notes) and an article count in mono. The Tax card has a small yellow "Disclaimer" tag. A footer help strip: "Can't find it?" with links to the WhatsApp community and "Open a question ticket". Crosshair marks at the grid corners.
 
 ---
 
@@ -468,7 +470,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `ticket.severity.label` | How bad is it? |
 | `ticket.severity.options` | App crashes · Can't bill · Wrong numbers or output · Looks wrong |
 | `ticket.log.label` | Crash log (optional) |
-| `ticket.log.help` | In CB-POS: Help → Export logs. .LOG, .TXT or .ZIP, up to 5 MB. Logs are private. |
+| `ticket.log.help` | In CB-POS: Help → Export logs. .LOG, .TXT or .ZIP, up to 5 MB. Logs are private. Remove any database passwords or Cloud Sync connection strings before uploading. |
 | `ticket.shot.label` | Screenshot (optional) |
 | `ticket.shot.help` | PNG or JPG, up to 5 MB. Kept private unless we mark it safe to show. |
 | `ticket.contact.label` | Email or phone (optional) |
@@ -558,7 +560,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `legal.updated` | Last updated {date} · Version {version} |
 | `legal.prevails` | If translations differ, the English version applies. |
 | `legal.tax.summary` | CB-POS calculates VAT (18%, backward from MRP) and SSCL (2.5%) from the rates you configure. It is not certified, approved or endorsed by the Inland Revenue Department. You are responsible for checking rates, registration thresholds and filings with a qualified accountant. Tax law can change, so keep CB-POS updated and check your settings. |
-| `legal.data.summary` | CB-POS stores your data on your PC in a SQLite database. Ceybyte has no access to it and can't recover it. Take regular encrypted .ZIP backups to a USB drive or another computer. If you forget a backup password, the backup can't be opened. |
+| `legal.data.summary` | CB-POS stores your data on your PC in a SQLite database. If you turn on Cloud Sync, it's also copied to a PostgreSQL database you choose and host. You're responsible for that server's security, backups and costs. Ceybyte has no access to either copy and can't recover them. Take regular encrypted .ZIP backups to a USB drive or another computer. If you forget a backup password, the backup can't be opened. |
 | `legal.asIs.summary` | CB-POS is free software provided "as is", without warranty of any kind. Ceybyte is not liable for losses from its use, including lost data, incorrect tax calculations or business interruption, to the extent permitted by Sri Lankan law. |
 | `legal.privacy.summary` | We collect what each feature needs: shop details from the download form, tickets you send, donations you make, and account details if you sign up. Phone numbers are never public. You can ask us to correct or delete your data at any time. |
 

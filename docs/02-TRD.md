@@ -67,6 +67,7 @@ flowchart LR
 | D6 | **Geo endpoint served from a KV snapshot + Cache API**, rebuilt on write | Map reads far outnumber writes. Keeps D1 reads near zero on the hot path |
 | D7 | **Presigned PUT to R2 + server-side `head` verification** | R2 doesn't support presigned POST policies (no `content-length-range`), so size and type are enforced after upload |
 | D8 | **MapLibre native clustering** instead of a separate `supercluster` import | MapLibre's GeoJSON source uses Supercluster internally. `clusterProperties` covers supporter counts without extra JS |
+| D9 | **CB-POS Cloud Sync is outside this system.** The desktop app syncs directly to a PostgreSQL database the merchant hosts. No `cbpos-web` route, binding or table touches it | Keeps Ceybyte out of the custody chain for sales data (PDPA, liability), keeps the website at $0, and matches the product promise that merchants control where their data lives |
 
 ---
 
