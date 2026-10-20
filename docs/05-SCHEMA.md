@@ -5,8 +5,8 @@
 | Version | 1.0 |
 | Date | 2026-10-21 |
 | Status | Approved for build. **Highest-precedence doc** (see `CLAUDE.md §0`) |
-| Code | `src/lib/enums.ts`, `src/server/db/schema.ts`, `src/server/db/relations.ts`, `src/server/db/projections.ts` |
-| Migrations | `drizzle/` via `pnpm db:generate`; applied with `wrangler d1 migrations apply` |
+| Code | `packages/shared/src/enums.ts`, `packages/shared/src/db/{schema,relations,projections}.ts`, `apps/api/src/lib/db.ts` |
+| Migrations | `apps/api/drizzle/` via `bun run db:generate`; applied with `wrangler d1 migrations apply` |
 
 ---
 
@@ -29,7 +29,7 @@
 
 ---
 
-## 2. Shared enums — `src/lib/enums.ts`
+## 2. Shared enums — `packages/shared/src/enums.ts`
 
 Isomorphic (imported by zod schemas, UI and DB).
 
@@ -235,10 +235,9 @@ erDiagram
 
 ---
 
-## 4. Drizzle schema — `src/server/db/schema.ts`
+## 4. Drizzle schema — `packages/shared/src/db/schema.ts`
 
 ```ts
-import "server-only";
 import { sql } from "drizzle-orm";
 import {
   sqliteTable, text, integer, real, index, uniqueIndex, primaryKey, check,
@@ -249,7 +248,7 @@ import {
   MERCHANT_LOG_EVENTS, RELEASE_CHANNELS, RELEASE_SOURCES, CONTENT_STATUSES, BLOG_STATUSES,
   TICKET_TYPES, TICKET_STATUSES, TICKET_SEVERITIES, DONATION_METHODS, DONATION_STATUSES,
   AUDIT_LEVELS,
-} from "@/lib/enums";
+} from "../enums";
 
 /* ---------- column helpers ---------- */
 const pk = () => text("id").primaryKey().$defaultFn(() => crypto.randomUUID());
@@ -319,7 +318,7 @@ export const accounts = sqliteTable(
     accessTokenExpiresAt: ts("access_token_expires_at"),
     refreshTokenExpiresAt: ts("refresh_token_expires_at"),
     scope: text("scope"),
-    password: text("password"), // Better Auth scrypt hash (credential provider only)
+    password: text("password"), // unused on branch `free` (passwordless, 02-TRD D5)
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -502,7 +501,7 @@ export const docsArticles = sqliteTable(
     title: text("title").notNull(),
     summary: text("summary").notNull().default(""),
     bodyMd: text("body_md").notNull(),
-    bodyHast: text("body_hast", { mode: "json" }).$type<unknown>(),   // rendered at publish
+    bodyHast: text("body_hast", { mode: "json" }).$type<unknown>(),   // NULL on branch `free` (rendered at build)
     tocJson: text("toc_json", { mode: "json" }).$type<TocItem[]>(),
     searchText: text("search_text"),                                   // plain text for the Orama index
     status: text("status", { enum: CONTENT_STATUSES }).notNull().default("draft"),
@@ -683,7 +682,7 @@ export const adminAuditLog = sqliteTable(
 
 > **Default note:** `tags` uses `default(sql\`'[]'\`)`, a SQL literal rather than a function call, so it's portable. It's the only SQL-side default in the schema.
 
-### 4.1 Relations — `src/server/db/relations.ts`
+### 4.1 Relations — `packages/shared/src/db/relations.ts`
 
 ```ts
 import { relations } from "drizzle-orm";
@@ -731,20 +730,22 @@ export const donationsRelations = relations(s.donations, ({ one }) => ({
 }));
 ```
 
-### 4.2 Client factory — `src/server/db/index.ts`
+### 4.2 Client factory — `apps/api/src/lib/db.ts`
 
 ```ts
-import "server-only";
 import { drizzle } from "drizzle-orm/d1";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
-import * as schema from "./schema";
-import * as relations from "./relations";
+import { createMiddleware } from "hono/factory";
+import * as schema from "@cbpos/shared/db/schema";
+import * as relations from "@cbpos/shared/db/relations";
 
-export async function getDb() {
-  const { env } = await getCloudflareContext({ async: true });
-  return drizzle(env.DB, { schema: { ...schema, ...relations } });
-}
-export type Db = Awaited<ReturnType<typeof getDb>>;
+export const makeDb = (d1: D1Database) => drizzle(d1, { schema: { ...schema, ...relations } });
+export type Db = ReturnType<typeof makeDb>;
+
+// One client per request; D1 bindings are request-scoped.
+export const dbMiddleware = createMiddleware<{ Bindings: Env; Variables: { db: Db } }>(async (c, next) => {
+  c.set("db", makeDb(c.env.DB));
+  await next();
+});
 ```
 
 ### 4.3 `drizzle.config.ts`
@@ -753,7 +754,7 @@ export type Db = Awaited<ReturnType<typeof getDb>>;
 import { defineConfig } from "drizzle-kit";
 export default defineConfig({
   dialect: "sqlite",
-  schema: "./src/server/db/schema.ts",
+  schema: "../../packages/shared/src/db/schema.ts",
   out: "./drizzle",
   driver: "d1-http", // only for drizzle-kit studio against remote; migrations go through wrangler
   dbCredentials: {
@@ -803,7 +804,7 @@ One row per (version, channel). The partial unique index guarantees at most one 
 
 ### 5.4 `docs_categories`, `docs_articles`
 - An article is reachable at `/{locale}/docs/{category.slug}/{article.slug}`. Nested categories prepend parent slugs.
-- Publishing sets `status='published'`, `published_at` (first time only), `body_hast`, `toc_json` and `search_text`.
+- Publishing sets `status='published'` and `published_at` (first time only), then triggers a rebuild. On this branch the build renders the hast, TOC and search text; those columns stay `NULL`.
 - Fallback lookup: `WHERE translation_key = ? AND locale IN (?, 'en') ORDER BY locale = ? DESC LIMIT 1`.
 
 ### 5.5 `feedback_tickets`, `feedback_votes`
@@ -849,7 +850,7 @@ The schema avoids SQLite-only features so it can move to Postgres (e.g. Neon or 
 | `text {mode:"json"}` | `jsonb` | JSON is never queried inside SQL. It's parsed in the app |
 | `text {enum}` + CHECK | `pgEnum` or `text` + CHECK | Enum values are in `src/lib/enums.ts` only |
 | Partial unique index `.where(sql…)` | Same (Postgres supports partial indexes) | Predicates use only `IS NULL` / `= 1` (rewrite `= 1` → `= true`) |
-| `db.batch([...])` | `db.transaction(async tx => …)` | All multi-write logic goes through `src/server/db/tx.ts` `runAtomic(db, ops)`, which picks batch or transaction per driver |
+| `db.batch([...])` | `db.transaction(async tx => …)` | All multi-write logic goes through `apps/api/src/lib/tx.ts` `runAtomic(db, ops)`, which picks batch or transaction per driver |
 | `COALESCE(MAX(n),0)+1` | Same, or a sequence | — |
 
 **Forbidden in queries:** `json_extract`, `strftime`, `unixepoch`, `ROWID`, `INSERT OR REPLACE` (use `onConflictDoUpdate`), `GLOB`, `LIKE` without `lower()` on both sides (Postgres `LIKE` is case-sensitive).
@@ -924,10 +925,9 @@ export const merchants = pgTable("merchants", {
 | users.email | — | ❌ | ✅ own | ✅ | ❌ | ❌ |
 | users.name | — | ❌ (tickets show "Community member") | ✅ | ✅ | ❌ | ❌ |
 
-### 7.2 Enforcement — `src/server/db/projections.ts`
+### 7.2 Enforcement — `packages/shared/src/db/projections.ts`
 
 ```ts
-import "server-only";
 import { and, eq, isNull } from "drizzle-orm";
 import { merchants } from "./schema";
 
@@ -979,9 +979,9 @@ export function toGeoFeature(r: {
 Query: `db.select(PUBLIC_GEO_COLUMNS).from(merchants).where(publicMapWhere)`.
 
 ### 7.3 Guard rails
-1. **Contract test** `src/server/db/geo.contract.test.ts`: builds features from a fixture that contains every merchant column, then asserts `Object.keys(feature.properties)` equals `PUBLIC_GEO_PROPERTIES` exactly and that the serialised JSON contains no `+94`, `phone`, `whatsapp`, `telegram` or `fullName`.
+1. **Contract test** `packages/shared/src/db/geo.contract.test.ts` (`bun test`): builds features from a fixture that contains every merchant column, then asserts `Object.keys(feature.properties)` equals `PUBLIC_GEO_PROPERTIES` exactly and that the serialised JSON contains no `+94`, `phone`, `whatsapp`, `telegram` or `fullName`.
 2. **Lint rule** `no-bare-merchant-select`: flags `db.select().from(merchants)` and `db.query.merchants.findMany()` without `columns` outside `src/features/admin/**` and `src/features/merchants/owner.ts`.
-3. **Log redaction:** `src/server/log.ts` drops keys matching `/phone|whatsapp|telegram|full_?name|email|contact|ip$/i`.
+3. **Log redaction:** `apps/api/src/lib/log.ts` drops keys matching `/phone|whatsapp|telegram|full_?name|email|contact|ip$/i`.
 4. **PostHog:** contact inputs carry `data-ph-no-capture`, `maskAllInputs: true`, and server events are built from an allow-list of property names.
 5. **R2:** the bucket is private. Public media is served only through `/media/[...key]` with a prefix allow-list (`docs/`, `blog/`, `screenshots/public/`, `og/`).
 

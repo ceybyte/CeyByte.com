@@ -68,7 +68,7 @@ flowchart TD
 
 | # | Screen | User action | System response | Event |
 |---|---|---|---|---|
-| 1 | S01 | Lands | SSG page from cache; locale from URL | `$pageview` |
+| 1 | S01 | Lands | Static HTML from the edge; locale from URL. Live stats load from `/api/stats` | `$pageview` |
 | 2 | S01 | Clicks a Download CTA | Opens the modal (dialog ≥ md / Vaul < md), pushes `?download=1`, pauses Lenis, focuses the first field | `cta_download_clicked {source: hero\|header\|bento\|banner\|releases}`, `download_gate_opened` |
 | 3 | S02-a | Fills Step 1 | Field validation on blur, phone normalised live, values persisted to `sessionStorage` | — |
 | 4 | S02-a | Continue (`Enter`) | Validates all of Step 1. On success, slides to Step 2 (direction-aware) | `download_gate_step1_completed {category}` |
@@ -111,7 +111,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  A["Open /{locale}/map (S03)"] --> B["SSG shell: header, filters, district coverage grid, list skeleton"]
+  A["Open /{locale}/map (S03)"] --> B["Static shell: header, filters, district coverage grid, list skeleton"]
   B --> C{"WebGL available?"}
   C -- no --> D["List-only mode: district grid + results list"]
   C -- yes --> E["Lazy-load MapLibre + style (dark/light)"]
@@ -191,8 +191,8 @@ flowchart TD
 | # | User action | System response | Event |
 |---|---|---|---|
 | 1 | Opens the docs hub | Category grid (10) + "Start here" (Install, Get past SmartScreen, First sale, Connect a receipt printer) + search | `$pageview` |
-| 2 | Opens an article | SSG HTML from stored hast. TOC on the right (xl), collapsible on top (mobile). `app_version_min` badge | `doc_viewed {slug, locale, fallback}` |
-| 3 | `⌘K` / `Ctrl+K` / `/` | Dialog opens. The index (KV-versioned JSON, ~100–300 KB) loads once and is cached by the browser | `docs_search_opened` |
+| 2 | Opens an article | Static HTML rendered at build. TOC on the right (xl), collapsible on top (mobile). `app_version_min` badge | `doc_viewed {slug, locale, fallback}` |
+| 3 | `⌘K` / `Ctrl+K` / `/` | Dialog opens. The index (static `/search/{locale}.json` built with the site, ~100–300 KB) loads once and is cached by the browser | `docs_search_opened` |
 | 4 | Types | Orama search, typo tolerance 1, boost title ×3, headings ×2 | `docs_searched {qLength, results}` (never the raw query if it looks like a phone number) |
 | 5 | Opens a result | Navigates. Search closes. Focus moves to the article `<h1>` | `docs_search_result_clicked {rank}` |
 | 6 | Rates the article | Yes/No (+ optional reason) | `doc_feedback {slug, helpful}` |
@@ -273,7 +273,7 @@ stateDiagram-v2
   wont_fix --> [*]
 ```
 
-- Each transition writes `admin_audit_log` and `revalidateTag('feedback', 'ticket:{id}')`.
+- Each transition writes `admin_audit_log`. Board and ticket responses are edge-cached for 60 s, so changes show within a minute.
 - `shipped` requires picking a release. The public ticket shows "Fixed in v1.4.3" linking to the Releases page.
 - Screenshots stay private until "Mark screenshot safe" copies them to `screenshots/public/`.
 
@@ -321,7 +321,7 @@ flowchart TD
 | 6 | Donor | Uploads the slip or screenshot, optionally types the bank txn reference | Presign (`purpose: donation_slip`, ref + secret) → PUT → confirm | `donation_slip_uploaded` |
 | 7 | Donor | Confirms | Status `pending_review` | `donation_submitted {method}` |
 | 8 | Admin | Opens the queue (`g d`) | Oldest first. Shows amount, reference, date, name, slip preview | — |
-| 9 | Admin | Approve `a` / Reject `r` | `db.batch`: donation status + `reviewed_by/at` + merchant supporter flag + audit log. `bumpGeoVersion()`, `revalidateTag('supporters','home-stats')` | `donation_reviewed {result}` (server) |
+| 9 | Admin | Approve `a` / Reject `r` | `db.batch`: donation status + `reviewed_by/at` + merchant supporter flag + audit log. `bumpGeoVersion()`, refresh `stats:v1`; the supporters wall is fetched at runtime | `donation_reviewed {result}` (server) |
 
 `amountBand` buckets: `<1k`, `1k–5k`, `5k–25k`, `>25k`. The exact amount never goes to analytics.
 
@@ -353,11 +353,9 @@ Bank transfer is the only method in v1. When a payment gateway (card and/or Lank
 ```mermaid
 flowchart TD
   A["/{locale}/login (S12)"] --> B{"Method"}
-  B -- "Email + password" --> C["Sign in / Sign up"]
   B -- "Email OTP" --> D["Enter email → 6-digit code (Resend) → verify"]
   B -- Google --> E["OAuth redirect → callback"]
-  C --> F{"Session created"}
-  D --> F
+  D --> F{"Session created"}
   E --> F
   F --> G{"cb_claim cookie present?"}
   G -- yes --> H["claimListing: verify HMAC, hash matches, unredeemed →<br/>merchants.owner_user_id = user.id; mark redeemed; clear cookie"]
@@ -367,7 +365,7 @@ flowchart TD
   I -- no --> K["Dashboard empty state: 'No listing linked'<br/>→ Download CB-POS (gate) or 'I already downloaded' help"]
   J --> L{"Tab"}
   L -- "My Listing" --> M["Edit shop name/category/district/city/pin/visibility"]
-  M --> N["Server Action updateMyListing → batch + bumpGeoVersion if public fields changed"]
+  M --> N["PATCH /api/me/listing → batch + bumpGeoVersion if public fields changed"]
   L -- "My Tickets" --> O["List own tickets (reporter_user_id)"]
   L -- "My Donations" --> P["List own donations + status"]
   L -- Settings --> Q{"Action"}
@@ -394,7 +392,7 @@ flowchart TD
 
 ### 6.3 Acceptance (E2E `e2e/flows/06-dashboard.spec.ts`)
 - Gate → sign up on the same browser → listing visible in the dashboard without admin action.
-- A user can't fetch or mutate another merchant by crafting a Server Action payload (expect `NOT_FOUND`).
+- A user can't fetch or mutate another merchant by crafting API requests with another listing's ID (expect `NOT_FOUND`).
 - Delete → pin gone from the map ≤ 60 s. Login fails afterwards.
 
 ---

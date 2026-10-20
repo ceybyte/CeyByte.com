@@ -33,7 +33,7 @@
 4. **Prove:** show real adoption on a live Sri Lanka Merchant Map, without exposing shop owners' phone numbers.
 5. **Sustain:** collect donations by bank transfer and reward supporters with a gold map pin.
 
-**Constraint:** the platform runs at **Rs. 0 / month** on free tiers (Cloudflare Workers, D1, R2, KV, Turnstile; PostHog; Resend; GitHub) until product-market fit.
+**Constraint (branch `free`):** the platform runs at **Rs. 0 / month** until product-market fit: Cloudflare Workers Static Assets + one Hono Worker, D1, R2, KV, Turnstile; GitHub Actions for builds; PostHog and Resend free tiers. Every public page is static HTML (`02-TRD.md` D1). The full server architecture for a VPS lives on branch `main`.
 
 ### 1.1 Problem
 
@@ -182,7 +182,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 **Functional requirements**
 - FR-02.1 Every Download CTA (hero, final banner, sticky header, bento "try it") opens the same Download Gate (F-03) with a `source` property for analytics.
-- FR-02.2 The telemetry strip gets `districtsCovered` and `listedShops` from D1 (ISR, revalidated on merchant writes, with a fallback revalidation every 10 minutes). If `districtsCovered < 25`, it shows the real number (`17/25`). It never hardcodes `25/25`.
+- FR-02.2 The telemetry strip fetches `districtsCovered` and `listedShops` from `GET /api/stats` in the browser (edge-cached for 5 minutes). Until the response arrives, the tiles show skeletons; if it fails, the numbers are hidden rather than guessed. If `districtsCovered < 25`, it shows the real number (`17/25`). It never hardcodes `25/25`.
 - FR-02.3 The latest version and installer size come from F-06 (`releases.is_latest`). The CTA subtext reads `Windows 10/11 · 64-bit · v{version} · {size} MB`.
 - FR-02.4 Bento cards are interactive on hover and focus, and reachable by keyboard:
   - **Keyboard:** pressing the shown keys (`F2`, `Enter`, `Esc`) highlights the matching `<kbd>`.
@@ -242,7 +242,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 **Functional requirements**
 - FR-03.1 Step 1 data is kept in client state and `sessionStorage` (wrapped in try/catch), so going back or accidentally closing doesn't lose input for the session.
-- FR-03.2 Returning visitors: if a `cb_gate` cookie (httpOnly, 180 days) proves a completed submission, Download CTAs skip the form and go straight to the "What Next?" state plus the download.
+- FR-03.2 Returning visitors: after a completed submission, the API sets an httpOnly `cb_gate` cookie (180 days, holds the merchant's public ID) and a readable `cb_gate_done=1` flag cookie with no personal data. When the flag is present, Download CTAs skip the form and go straight to "What Next?" plus the download; the API still validates `cb_gate` when it logs the download.
 - FR-03.3 Duplicate handling: if the normalised phone already exists, the server attaches a new `merchant_logs` event to the existing merchant and does **not** create a duplicate. The response is identical either way, so it doesn't reveal whether a number exists.
 - FR-03.4 Rate limit: 5 submissions per IP-hash per 10 minutes, plus Turnstile (see TRD §11–12).
 - FR-03.5 Without JavaScript, the CTA links to `/{locale}/download`, a full-page version of the same two-step form.
@@ -315,7 +315,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 **Acceptance criteria**
 - AC-05.1 Searching "printer" in `/si/docs` returns Sinhala articles first, then English fallbacks labelled `EN`.
-- AC-05.2 Publishing an article in the admin console makes it live (and searchable) within 60 s.
+- AC-05.2 Publishing an article in the admin console triggers a rebuild, and the article is live and searchable within 5 minutes. The admin sees the build status until it finishes.
 - AC-05.3 Every article page passes axe, has exactly one `<h1>`, and has a sequential heading order.
 
 ---
@@ -335,7 +335,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-06.6 Manifest URLs are accepted only when they match `https://github.com/ceybyte/cbpos-releases/releases/download/`.
 
 **Acceptance criteria**
-- AC-06.1 Publishing a GitHub release with a valid `latest.json` makes the new version live on the site within 2 minutes via the webhook (30 minutes worst case via cron).
+- AC-06.1 Publishing a GitHub release with a valid `latest.json` makes `/api/download/latest` serve the new installer within 1 minute of the webhook (30 minutes worst case via cron). The rebuilt pages show the new version within 5 minutes after that.
 - AC-06.2 A malformed manifest leaves the current `is_latest` release unchanged and writes an `admin_audit_log` warning.
 
 ---
@@ -387,7 +387,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 | Audit log | Read-only list of every admin mutation |
 
 **Functional requirements**
-- FR-08.1 Only users with `role = 'admin'` can reach `/admin/*`. Middleware does a coarse check, and every Server Action re-checks the session and role.
+- FR-08.1 Only users with `role = 'admin'` can use `/api/admin/*`; every route checks the session and role. The `/admin` pages are static shells that render nothing until the session check passes.
 - FR-08.2 Every admin mutation writes `admin_audit_log` (actor, action, entity, before/after JSON diff).
 - FR-08.3 Keyboard shortcuts: `j/k` move in queues, `a` approve, `r` reject, `/` search, `g m` go to merchants, `?` shows help.
 - FR-08.4 The admin console is English-only (not localized). Content editors manage `si`/`ta` content through the translations view.
@@ -403,7 +403,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Goal:** let shop owners manage their own map listing and see their tickets and donations.
 
 **Functional requirements**
-- FR-09.1 Better Auth with email + password, email OTP (Resend), and Google OAuth. Roles: `merchant` (default) and `admin`.
+- FR-09.1 Better Auth with email OTP (Resend) and Google OAuth. No passwords on this branch, because password hashing doesn't fit the Worker's 10 ms CPU limit (`02-TRD.md` D5). Roles: `merchant` (default) and `admin`.
 - FR-09.2 Claiming a listing: the "What Next?" screen sets an httpOnly `cb_claim` cookie (30 days) holding a signed claim token, and shows "Save your listing". After sign-up or sign-in with this cookie present, the merchant row gets `owner_user_id`. The token is single-use, and only its hash is stored.
 - FR-09.3 Admins can manually link a user to a merchant (for shops that lost the cookie, verified by phone call).
 - FR-09.4 Dashboard pages:
@@ -411,7 +411,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
   - **My Listing:** edit shop name, category, district, city, pin, map visibility
   - **My Tickets**
   - **My Donations:** status of each
-  - **Settings:** language, email, password, **Delete my listing and account**
+  - **Settings:** language, email, linked Google account, **Delete my listing and account**
 - FR-09.5 Edits to name, location or category re-enter moderation only if the listing was previously `hidden` by an admin. Otherwise they go live immediately and purge the geo cache.
 - FR-09.6 Deletion: soft-delete immediately (removed from the map), hard-delete of personal fields after 30 days by the cron Worker.
 
@@ -429,7 +429,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-10.1 Posts are per-locale, linked by `translation_key`, stored in D1 as Markdown with the same renderer as docs.
 - FR-10.2 Index page with tag filter, post page with reading time, author, date, cover, and related posts (same tag).
 - FR-10.3 RSS feed per locale (`/{locale}/blog/rss.xml`) and a generated OG image per post (static template, built at publish time and stored in R2).
-- FR-10.4 Scheduled publishing: posts with a future `published_at` stay hidden until then (checked at render and by revalidation).
+- FR-10.4 Scheduled publishing: posts with a future `published_at` stay out of the build. The 30-minute cron checks for posts that have become due and triggers a rebuild.
 
 **Acceptance criteria**
 - AC-10.1 A post published in `en` only appears in the `si` index under "Also in English".
@@ -528,7 +528,8 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Free Workers plan limits (10 ms CPU, 3 MiB bundle) | Pages fail or the deploy is rejected | SSG/ISR for all public pages; bundle gate in CI; escalation trigger to Workers Paid ($5/mo) documented in TRD §14 |
+| Free Workers plan limits (10 ms CPU per request, 100k Worker requests/day) | API errors or blocked requests | Pages are static and free; only `/api/*` counts. Heavy work happens at build time. Escalation: Workers Paid ($5/mo), or move to the `main` VPS architecture |
+| GitHub Actions minutes run out (private repo) | Content can't publish | Coalesced builds (~4 min each), minutes shown in admin; making the site repo public removes the limit |
 | Fake or spam map listings | Map loses credibility | Turnstile, rate limits, phone dedupe, admin moderation queue, "Report listing" |
 | SmartScreen warnings scare users | Lower installs | Explicit "What Next?" guidance with screenshots; publish hashes; code-signing as funding goal #1 |
 | Self-hosted map tiles go stale or fail to load | Map out of date or blank | Rebuild the Sri Lanka extract quarterly (scripted). If tiles fail, fall back to list-only mode. `MAP_STYLE_*` env can point at another style |

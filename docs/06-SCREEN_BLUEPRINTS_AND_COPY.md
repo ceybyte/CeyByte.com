@@ -121,7 +121,7 @@ Layout: desktop 12-col, copy cols 1–6, mockup cols 7–12. Mobile: copy first,
 | `home.mapTeaser.cta` | Open the merchant map | |
 | `home.mapTeaser.empty` | Be the first CB-POS shop in your district. | (when `shops = 0`) |
 
-`{covered}` and `{shops}` come from `/api/stats` at ISR time. Never hardcoded (`CLAUDE.md §1.4`).
+`{covered}` and `{shops}` are fetched from `/api/stats` in the browser. Skeletons while loading; hidden on error. Never hardcoded (`CLAUDE.md §1.4`).
 
 ### 3.3 Section 3 — Problem
 
@@ -582,19 +582,18 @@ Each page has a "Summary" box (`surface-legal`, hairline) at the top in plain la
 | `auth.google` | Continue with Google |
 | `auth.or` | or |
 | `auth.email.label` | Email |
-| `auth.password.label` | Password |
-| `auth.otp.toggle` | Email me a sign-in code instead |
 | `auth.otp.sent` | We sent a 6-digit code to {email}. |
 | `auth.otp.label` | 6-digit code |
 | `auth.submit` | Continue |
 | `auth.switch.toSignup` | New here? Create an account |
 | `auth.switch.toSignin` | Have an account? Sign in |
-| `auth.forgot` | Forgot password? |
-| `auth.error.invalid` | Email or password is wrong. |
+| `auth.error.invalid` | That code is wrong or has expired. Send a new one. |
+| `auth.otp.send` | Email me a sign-in code |
+| `auth.otp.resend` | Send a new code |
 | `auth.error.banned` | Account disabled. Contact support. |
 
 **Stitch prompt:**
-> A minimal dark sign-in screen centred on a grid background with crosshair marks. A 420px card: the "[CB-POS]" logo, title "Create your account", a muted context line "Create an account to manage your shop on the CB-POS map.", a secondary full-width "Continue with Google" button with the Google G icon in monochrome, an "or" divider with hairlines, email and password inputs, a small link "Email me a sign-in code instead", a secondary-styled full-width "Continue" button (no green on this screen), and a footer link "Have an account? Sign in".
+> A minimal dark sign-in screen centred on a grid background with crosshair marks. A 420px card: the "[CB-POS]" logo, title "Create your account", a muted context line "Create an account to manage your shop on the CB-POS map.", a secondary full-width "Continue with Google" button with the Google G icon in monochrome, an "or" divider with hairlines, an email input with a secondary "Email me a sign-in code" button, then (second state) six single-digit mono code boxes, a secondary-styled full-width "Continue" button (no green on this screen), and a footer link "Have an account? Sign in".
 
 ---
 
