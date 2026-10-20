@@ -13,7 +13,7 @@ This file has the rules for every developer and AI agent working in this repo. I
 | `docs/00-CBPOS_FACTS.md` | **What the CB-POS app actually does**, audited from its source with `path:line` evidence | Before writing or reviewing any sentence about the product |
 | `docs/08-UPSTREAM_REQUESTS.md` | App changes the site depends on, with status | Before claiming a feature that isn't shipped yet |
 | `docs/01-PRD.md` | What we build and why. Features `F-01`–`F-12`, acceptance criteria | Before starting any feature |
-| `docs/02-TRD.md` | Architecture, routes, APIs, caching, security, free-tier budget | Before touching `src/app/api`, `src/server`, `wrangler.jsonc`, workers |
+| `docs/02-TRD.md` | Architecture, routes, APIs, caching, security, free-tier budget | Before touching `apps/api`, `wrangler.jsonc`, the build pipeline |
 | `docs/03-DESIGN.md` | Tokens, type scale, script rules, components, motion | Before writing any UI |
 | `docs/04-APP_FLOW.md` | User journeys, states, error paths, analytics events | Before building a multi-step flow |
 | `docs/05-SCHEMA.md` | Drizzle schema, ERD, public data masking | Before touching the database or any public API |
@@ -28,14 +28,16 @@ This file has the rules for every developer and AI agent working in this repo. I
 
 ## 1. Non-negotiables
 
-1. **$0/month until product-market fit.** Every service must fit its free tier (budget table in `02-TRD.md §14`). Adding anything that bills requires an ADR in `docs/adr/`.
-2. **Never leak merchant contact data.** `phone`, `whatsapp`, `telegram`, `full_name`, IP addresses and claim tokens never appear in any public response, page, cache entry, log line or analytics event. Public queries use the explicit projections in `src/server/db/projections.ts`. Never use `select()` without columns on `merchants`.
+> **Branch `free`: the $0/month architecture.** Every public page is static HTML served from Cloudflare Workers Static Assets (free and unlimited). Only `/api/*` runs code, in one Hono Worker. The full-featured server architecture lives on `main` (VPS). Don't copy runtime code between branches without checking the other branch's `CLAUDE.md`.
+
+1. **$0/month.** Every service must fit its free tier (budget in `02-TRD.md §14`). Anything that bills needs an ADR in `docs/adr/`.
+2. **Never leak merchant contact data.** `phone`, `whatsapp`, `telegram`, `full_name`, IP addresses and claim tokens never appear in any public response, page, cache entry, log line or analytics event. Public queries use the explicit projections in `packages/shared/src/db/projections.ts`. Never use `select()` without columns on `merchants`.
 3. **Product truth.** Every claim about CB-POS (features, tax maths, hardware, shortcuts, privacy, file names) must match `docs/00-CBPOS_FACTS.md`. Copy tables in `06` cite the fact ID (`[C2]`). Features marked `open` in `08-UPSTREAM_REQUESTS.md` are never advertised. When the facts say UNKNOWN, the site says nothing.
 3a. **Never claim IRD approval or certification.** CB-POS *calculates* 18% VAT and 2.5% SSCL. It is not *certified*, *approved* or *endorsed* by the Inland Revenue Department. Every tax claim links to `/{locale}/legal/tax-disclaimer`.
-4. **Never fabricate numbers.** Telemetry figures (districts covered, shop count, downloads) come from D1 at request/revalidate time. If a number isn't live, it isn't shown.
+4. **Never fabricate numbers.** Shop counts, district coverage and donation totals are fetched live from the API at runtime. If the API can't answer, the number is hidden, never guessed.
 5. **Trilingual by construction.** No user-facing string is hardcoded in a component. Every string lives in `messages/{en,si,ta}.json`. A PR that adds an `en` key without matching `si` and `ta` keys fails CI (it may use the `[[TRANSLATE]]` marker, which blocks production deploys).
 6. **Sinhala and Tamil are written by native speakers, never machine-translated into production.** Agents may draft them but must mark them `[[TRANSLATE]]`.
-7. **Workers runtime only.** No Node `fs` and no `eval`/`new Function` (this rules out runtime MDX compilation). No native addons and no long-running processes. Code must run inside `workerd` with `nodejs_compat`.
+7. **Static pages, thin API.** Pages are built with `next build` in `output: "export"` mode: no SSR, no ISR, no middleware, no Server Actions, no route handlers in `src/app`. Anything dynamic is either fetched from `/api/*` in the browser or baked in at build time. The API Worker runs in `workerd` with `nodejs_compat`: no `fs`, no `eval`/`new Function`, no long-running work on the request path.
 8. **Every public mutating endpoint** passes, in order: Cloudflare Turnstile → rate limit → zod validation → business logic. No exceptions.
 9. **Money is integer LKR cents** (`amount_cents: number`). Floats are never used for money. Coordinates are `real`.
 10. **Accessibility is not optional.** WCAG 2.2 AA contrast, full keyboard operation (this is a keyboard-first product — the site must be too), visible `#00BCEB` focus rings, `prefers-reduced-motion` respected everywhere.
@@ -44,65 +46,66 @@ This file has the rules for every developer and AI agent working in this repo. I
 
 ## 2. Stack lock
 
-Major versions are locked. Upgrading a major version or swapping a library requires an ADR.
+Major versions are locked. Upgrading a major version or swapping a library needs an ADR.
 
 | Layer | Package(s) | Notes |
 |---|---|---|
-| Framework | `next@15` (App Router, TypeScript strict) | `src/` layout, Server Components by default |
-| Edge runtime | `@opennextjs/cloudflare`, `wrangler` | Deploys to **Cloudflare Workers with Static Assets** (OpenNext doesn't target Pages; see `02-TRD.md §2`) |
-| Database | Cloudflare D1 + `drizzle-orm` + `drizzle-kit` | SQLite dialect; schema stays Postgres-portable (`05-SCHEMA.md §6`) |
-| Reactive alt. | `convex` (not installed) | Mirror schema in `05-SCHEMA.md §8`, only adopted via ADR |
-| Auth | `better-auth`, `better-auth-cloudflare`, Better Auth `admin` plugin | Roles: `merchant`, `admin` |
-| Storage | Cloudflare R2 (`UPLOADS` binding) + `aws4fetch` for presigning | Slips, crash logs, blog covers |
-| Installer CDN | GitHub Releases on `ceybyte/cbpos-releases` | Manifest: `https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json` |
-| Cache/KV | Workers KV (`CACHE_KV`) + Cache API | Geo snapshot, docs search index |
-| Styling | `tailwindcss@4` (CSS-first `@theme`), `shadcn/ui`, Radix UI, `vaul`, `lucide-react`, `sonner` (toasts), `next-themes` | No `tailwind.config.js`; tokens live in `src/app/globals.css` |
-| Motion | `motion` (import from `motion/react`), `gsap` + `ScrollTrigger`, `lenis`, `@rive-app/react-canvas`, `@lucasmarkes/hairline` | See `03-DESIGN.md §9`; `hairline` must be verified before install (`07 Phase 1`) |
-| Maps | `maplibre-gl` (native GeoJSON clustering, which uses Supercluster internally) | CARTO Dark Matter / Positron styles, bounded to Sri Lanka |
-| Docs | `fumadocs-ui`, `fumadocs-core` + unified/remark/rehype pipeline | Content in D1, rendered without eval (`02-TRD.md §8`) |
-| i18n | `next-intl` | Locales `en` (default), `si`, `ta`; prefix `always` |
-| Forms | `react-hook-form`, `zod`, `@hookform/resolvers` | Same zod schema validates client and server |
+| Runtime & tooling | **Bun 1.x**: package manager (`bun.lock`), script runner, unit test runner (`bun test`), and the runtime for `next dev`/`next build` (`bun --bun`) | Production API code runs in Cloudflare's `workerd`, not Bun. That's the only place Bun can't be used |
+| Web app | `next@15` (App Router, TypeScript strict) with `output: "export"`, `trailingSlash: true`, `images.unoptimized: true` | `apps/web`. Static HTML for every public route × 3 locales |
+| API | `hono@4` on Cloudflare Workers, typed client via `hono/client` | `apps/api`. Same Worker serves the static assets, the API, a few rewrites and the cron jobs |
+| Hosting | Cloudflare Workers Static Assets + `wrangler@4` | Asset requests are free and unlimited. Only `run_worker_first` paths invoke the Worker |
+| Database | Cloudflare D1 + `drizzle-orm` (`drizzle-orm/d1`) + `drizzle-kit` | Schema in `packages/shared`. Postgres-portable (`05-SCHEMA.md §6`) |
+| Reactive alt. | `convex` (not installed) | Mirror schema in `05-SCHEMA.md §8`, only via ADR |
+| Auth | `better-auth` (Drizzle adapter, `admin` + `emailOTP` plugins), `better-auth-cloudflare` | Mounted at `/api/auth/*` in Hono. Roles: `merchant`, `admin` |
+| Storage | Cloudflare R2: `cbpos-uploads` (private) + `cbpos-public` (public via custom domain) + `aws4fetch` presigning | Slips, crash logs, media, OG images, map tiles |
+| Map tiles | Protomaps: `sri-lanka.pmtiles` on `cbpos-public` (`tiles.ceybyte.com`), `pmtiles` protocol + `@protomaps/basemaps` | Range requests served and cached by Cloudflare. No CARTO (commercial licence, ADR-0008) |
+| Installer CDN | GitHub Releases on `ceybyte/cbpos-releases` | Manifest read server-side only (`02-TRD.md §7`) |
+| Cache/KV | Workers KV (`CACHE_KV`) + Cache API | Geo snapshot, stats, release cache |
+| Builds | GitHub Actions (`repository_dispatch` from admin publish) | Content changes rebuild and redeploy the static site |
+| Styling | `tailwindcss@4` (CSS-first `@theme`), `shadcn/ui`, Radix UI, `vaul`, `lucide-react`, `sonner`, `next-themes` | Tokens in `apps/web/src/app/globals.css` |
+| Motion | `motion` (`motion/react`), `gsap` + `ScrollTrigger`, `lenis`, `@rive-app/react-canvas`, `@lucasmarkes/hairline@0.5` | `03-DESIGN.md §9`. Hairline verified (ADR-0007) |
+| Maps | `maplibre-gl` (native GeoJSON clustering) | Bounded to Sri Lanka. Latin labels (`03-DESIGN.md §8.9`) |
+| Docs | `fumadocs-ui`, `fumadocs-core`, unified/remark/rehype, `@orama/orama` | Markdown from D1 rendered **at build time**; search index shipped as static JSON |
+| Data fetching | `@tanstack/react-query` | Client-side calls to `/api/*` |
+| i18n | `next-intl` (static rendering: `setRequestLocale` + `generateStaticParams`) | Locales `en`, `si`, `ta`, prefix always |
+| Forms | `react-hook-form`, `zod`, `@hookform/resolvers` | zod schemas shared from `packages/shared` |
 | Bot defense | Cloudflare Turnstile | Every public form |
-| Analytics | `posthog-js`, `posthog-node` | Proxied via `/ingest`; inputs masked in replay |
+| Analytics | `posthog-js` (EU Cloud, free tier) | Proxied through `/ingest/*` on the Worker |
 | Email | Resend (free tier) | Auth emails only |
-| Testing | `vitest`, `@testing-library/react`, `@playwright/test`, `@axe-core/playwright` | |
-| Package manager | `pnpm` | Never commit `package-lock.json` or `yarn.lock` |
+| Testing | `bun test` (pure logic), `vitest` + `@cloudflare/vitest-pool-workers` (API with real bindings), `@playwright/test`, `@axe-core/playwright` | Run with `bunx` |
 
-**Banned:** Prisma (doesn't fit Workers' bundle limits), `next-auth`, styled-components/emotion, `moment`, `lodash` (full), jQuery, any CSS-in-JS runtime, Google Maps, Mapbox GL (licence), `framer-motion` package name (use `motion`), client-side fetching of `latest.json` directly from GitHub (always go through our API).
+**Banned:** OpenNext and any SSR runtime on Workers (the 10 ms CPU limit per request makes SSR fragile on the free plan, ADR-0001); Prisma; `next-auth`; styled-components/emotion; `moment`; full `lodash`; jQuery; CSS-in-JS runtimes; Google Maps; Mapbox GL; CARTO basemaps; the `framer-motion` package name (use `motion`); fetching `latest.json` from the browser; `npm`/`pnpm`/`yarn` lockfiles.
 
 ---
 
 ## 3. Commands
 
-These scripts are the `package.json` contract created in Phase 0 (`07-IMPLEMENTATION_PLAN.md`). Do not rename them.
+These `package.json` scripts are created in Phase 0 (`07-IMPLEMENTATION_PLAN.md`). Don't rename them.
 
 ```bash
-pnpm install                 # install deps
-pnpm dev                     # next dev with Cloudflare bindings via initOpenNextCloudflareForDev()
-pnpm build                   # next build
-pnpm preview                 # opennextjs-cloudflare build && opennextjs-cloudflare preview (real workerd)
-pnpm deploy                  # opennextjs-cloudflare build && opennextjs-cloudflare deploy
-pnpm cf-typegen              # wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts
+bun install                       # workspaces: apps/web, apps/api, packages/shared
+bun run dev                       # web (bun --bun next dev :3000) + api (wrangler dev :8787), /api proxied
+bun run build                     # build:content → next build (static export to apps/web/out)
+bun run build:content             # pull published docs/blog/releases from D1 → apps/web/.content/*.json
+bun run preview                   # wrangler dev serving apps/web/out + the API Worker (production-like)
+bun run deploy                    # wrangler deploy (assets + Worker) — CI only
+bun run cf-typegen                # wrangler types → apps/api/worker-configuration.d.ts
 
-pnpm db:generate             # drizzle-kit generate  → ./drizzle/*.sql
-pnpm db:migrate:local        # wrangler d1 migrations apply cbpos-db --local
-pnpm db:migrate:remote       # wrangler d1 migrations apply cbpos-db --remote   (CI only)
-pnpm db:seed:local           # tsx scripts/seed.ts → local D1 (districts, demo merchants, docs)
-pnpm db:studio               # drizzle-kit studio (local)
+bun run db:generate               # drizzle-kit generate → apps/api/drizzle/*.sql
+bun run db:migrate:local          # wrangler d1 migrations apply cbpos-db --local
+bun run db:migrate:remote         # wrangler d1 migrations apply cbpos-db --remote   (CI only)
+bun run db:seed:local             # bun scripts/seed.ts → local D1
+bun run db:studio                 # drizzle-kit studio
 
-pnpm lint                    # eslint + prettier --check
-pnpm typecheck               # tsc --noEmit
-pnpm test                    # vitest run
-pnpm test:watch              # vitest
-pnpm e2e                     # playwright test (against pnpm preview)
-pnpm i18n:check              # scripts/i18n-check.ts: key parity + [[TRANSLATE]] scan
-pnpm bundle:check            # wrangler deploy --dry-run --outdir .bundle && size gate (3 MiB gz)
-
-pnpm --filter release-sync dev     # run cron worker locally (wrangler dev --test-scheduled)
-pnpm --filter release-sync deploy  # deploy cron worker
+bun run lint                      # eslint + prettier --check
+bun run typecheck                 # tsc -b (all workspaces)
+bun run test                      # bun test (packages/shared, apps/web/src/lib) + bunx vitest run (apps/api)
+bun run e2e                       # bunx playwright test against bun run preview
+bun run i18n:check                # key parity + [[TRANSLATE]] scan
+bun run tiles:build               # pmtiles extract → sri-lanka.pmtiles (quarterly)
 ```
 
-**Before declaring any task done:** `pnpm lint && pnpm typecheck && pnpm test && pnpm i18n:check`. For changes to the runtime, bindings or middleware, also run `pnpm preview` and `pnpm bundle:check`.
+**Before declaring a task done:** `bun run lint && bun run typecheck && bun run test && bun run i18n:check`. For changes to the Worker, routing or build, also run `bun run preview` and the affected E2E flow.
 
 ---
 
@@ -111,45 +114,33 @@ pnpm --filter release-sync deploy  # deploy cron worker
 ```
 .
 ├── CLAUDE.md
-├── docs/                          # 01–07 planning suite + adr/
-├── messages/{en,si,ta}.json       # all UI strings
-├── drizzle/                       # generated SQL migrations (never hand-edit applied ones)
-├── public/
-│   ├── data/lk-districts.json     # 25 districts, 9 provinces, centroids
-│   ├── data/lk-cities.json        # city → district, lat, lng (GPS snap + dropdowns)
-│   ├── rive/*.riv                 # Rive state machines
-│   └── og/                        # static OG fallbacks
-├── scripts/                       # seed, i18n-check, bundle size gate
-├── e2e/                           # Playwright specs
-├── workers/release-sync/          # standalone cron Worker (GitHub → D1)
-├── src/
-│   ├── middleware.ts              # next-intl locale routing + admin/dashboard guards
-│   ├── i18n/{routing,request,navigation}.ts
-│   ├── app/
-│   │   ├── globals.css            # Tailwind v4 @theme tokens (03-DESIGN §3)
-│   │   ├── [locale]/              # all public + merchant routes
-│   │   ├── admin/                 # admin console (English only, not localized)
-│   │   └── api/                   # route handlers (02-TRD §5)
-│   ├── components/
-│   │   ├── ui/                    # shadcn primitives (generated, then token-adapted)
-│   │   ├── brand/                 # Logo, Kbd, HashBlock, GridCanvas, Crosshair
-│   │   ├── marketing/             # 8 homepage sections
-│   │   ├── map/  docs/  forms/  motion/
-│   ├── features/                  # vertical slices: download-gate, merchants, releases,
-│   │                              # docs, feedback, donations, blog, admin
-│   ├── server/                    # server-only: db, auth, r2, turnstile, ratelimit,
-│   │                              # geo-cache, github, markdown
-│   └── lib/                       # isomorphic: env, money, phone, sri-lanka, analytics
-├── open-next.config.ts
-├── wrangler.jsonc
-├── drizzle.config.ts
-└── next.config.ts
+├── docs/                              # 00–08 planning suite + adr/
+├── messages/{en,si,ta}.json           # all UI strings (shared by web and API error messages)
+├── packages/shared/                   # isomorphic: enums, zod schemas, db schema, money, phone, tax, sri-lanka
+│   └── src/db/{schema,relations,projections}.ts
+├── apps/api/                          # Hono Worker (wrangler.jsonc lives here)
+│   ├── src/index.ts                   # fetch: routes + asset rewrites; scheduled: cron jobs
+│   ├── src/routes/                    # auth, downloads, merchants, releases, uploads, feedback,
+│   │                                  # donations, admin/*, webhooks, internal
+│   ├── src/lib/                       # db, auth, r2, turnstile, ratelimit, geo-cache, github,
+│   │                                  # markdown (publish-time render), rebuild (repository_dispatch)
+│   ├── src/jobs/                      # release-sync, cleanup, geo-rebuild
+│   └── drizzle/                       # generated migrations
+├── apps/web/                          # Next.js static export
+│   ├── src/app/[locale]/…             # every public, dashboard and admin page (static shells)
+│   ├── src/components/{ui,brand,marketing,map,docs,forms,motion}/
+│   ├── src/features/                  # client slices: download-gate, merchants, docs, feedback, …
+│   ├── src/lib/api.ts                 # typed hono/client + react-query hooks
+│   ├── .content/                      # build-time content snapshot (gitignored)
+│   └── public/{data,rive,og,search}/  # lk-districts.json, lk-cities.json, search/{locale}.json
+├── scripts/                           # seed, i18n-check, build-content, tiles
+└── e2e/                               # Playwright specs
 ```
 
 Rules:
-- Anything under `src/server/` starts with `import "server-only";`.
-- A feature's zod schemas live in `src/features/<feature>/schema.ts` and are imported by both the form and the route handler.
-- Components never import from `src/server/`. They receive data as props or call Server Actions.
+- `packages/shared` has no runtime-specific imports. Both apps import from it.
+- `apps/web` never imports from `apps/api` except the exported `AppType` for `hono/client`.
+- A feature's zod schemas live in `packages/shared/src/schemas/<feature>.ts`.
 
 ---
 
@@ -158,32 +149,35 @@ Rules:
 ### 5.1 TypeScript
 - `strict: true`, `noUncheckedIndexedAccess: true`. No `any`. Use `unknown` and narrow it.
 - Prefer `type` over `interface` unless declaration merging is needed.
-- Use discriminated unions for states (`{ status: "idle" } | { status: "submitting" } | …`) instead of boolean soup.
-- Filenames are kebab-case. Component exports are PascalCase. One component per file unless the others are private helpers.
+- Use discriminated unions for states (`{ status: "idle" } | { status: "submitting" } | …`).
+- Filenames are kebab-case. Component exports are PascalCase.
 
-### 5.2 Cloudflare runtime
-- Get bindings with `getCloudflareContext()` from `@opennextjs/cloudflare`. **Create the Drizzle client and the Better Auth instance per request.** Never put them in module scope, because D1 bindings are request-scoped.
-- No `fs` and no `eval`. Sharp/image processing is not available, so use `next/image` with `unoptimized` or Cloudflare Images (paid, banned for now). Pre-size images at build time.
-- Worker CPU time is limited (10 ms on the free plan). Any route that does real work must be statically prerendered or cached. See the rendering matrix in `02-TRD.md §6`.
-- Use `ctx.waitUntil()` (via `getCloudflareContext().ctx`) for fire-and-forget logging and cache writes. Never `await` analytics on the request path.
+### 5.2 API Worker (`workerd`)
+- Bindings come from Hono's `c.env`. **Create the Drizzle client and the Better Auth instance per request** (`c.get("db")` set by middleware), never in module scope.
+- CPU budget: 10 ms per request on the free plan. No markdown rendering, image work or hashing of large payloads on the request path. Heavy work runs at publish time (admin actions are rare) or in `scheduled()`.
+- Use `c.executionCtx.waitUntil()` for logging, analytics and cache writes. Never `await` analytics on the request path.
+- `run_worker_first` lists exactly which paths invoke the Worker (`02-TRD.md §3`). Adding a pattern there costs request quota. Justify it in the PR.
 
 ### 5.3 Data & APIs
-- All input is validated with zod at the boundary. Route handlers return `{ ok: true, data } | { ok: false, error: { code, message } }` with correct HTTP status codes.
-- Error `code`s are SCREAMING_SNAKE and documented in `02-TRD.md §5.3`. User-facing messages come from `messages/*.json` keyed by code. Never send raw error strings to the client.
+- All input is validated with zod at the boundary (`@hono/zod-validator`). Responses are `{ ok: true, data } | { ok: false, error: { code, requestId, fields? } }` with correct HTTP status codes.
+- Error `code`s are SCREAMING_SNAKE and documented in `02-TRD.md §5.3`. User-facing text comes from `messages/*.json` keyed by code.
 - Use `db.batch([...])` for multi-statement writes (D1 has no interactive transactions).
-- Generate IDs in the app with `crypto.randomUUID()`. Generate timestamps in the app (`new Date()`). No SQL-side defaults, so the schema stays portable.
-- Phone numbers are normalised to E.164 (`+947XXXXXXXX`) by `src/lib/phone.ts` before storage.
+- Generate IDs (`crypto.randomUUID()`) and timestamps (`new Date()`) in the app, never in SQL.
+- Phone numbers are normalised to E.164 by `packages/shared/src/phone.ts` before storage.
 
-### 5.4 React / Next
-- Server Components by default. Add `"use client"` only for interactivity, motion, maps, Rive and forms.
-- Heavy client libraries (`maplibre-gl`, `@rive-app/react-canvas`, `gsap`, `lenis`) load through `next/dynamic` with `ssr: false` behind an IntersectionObserver or interaction trigger. They must never be in the initial JS of `/`.
-- Mutations use Server Actions for authenticated dashboard and admin work, and route handlers for public, Turnstile-protected forms and webhooks.
-- Links use the locale-aware `Link` from `src/i18n/navigation.ts`, never `next/link` directly in localized routes.
+### 5.4 React / Next (static export)
+- Every page component is a Server Component rendered **at build time**. Interactivity is `"use client"` islands.
+- Build-time data comes from `apps/web/.content/*.json` (written by `build:content`). Runtime data comes from `/api/*` through `src/lib/api.ts` hooks, always with a loading skeleton and an error state.
+- Dynamic route params must be listed in `generateStaticParams`. Pages whose IDs are created after the build (ticket details) use one static shell that the Worker rewrites to (`02-TRD.md §3`).
+- Auth-gated pages (`/dashboard`, `/admin`) are static shells. The client checks the session through `/api/auth/get-session` and renders nothing private until it confirms. The API enforces every rule; the client check is only UX.
+- Heavy client libraries (`maplibre-gl`, Rive, GSAP, Lenis) load through `next/dynamic` with `ssr: false` behind an IntersectionObserver or interaction. Never in the initial JS of `/`.
+- Links use the locale-aware `Link` from `src/i18n/navigation.ts`.
 
 ### 5.5 Tests
-- Unit tests (vitest) cover `src/lib/*`: money, phone, VAT/SSCL display math, district lookup, masking projections.
-- **Required test:** `geo.contract.test.ts` asserts that the `/api/merchants/geo` feature properties equal exactly the public key whitelist from `05-SCHEMA.md §7`.
-- E2E (Playwright) covers the 6 flows in `04-APP_FLOW.md` in all three locales, with axe checks on every screen.
+- `bun test`: money, phone, tax display maths (round-half-even, `00-CBPOS_FACTS` [C1]/[C2] examples), district lookup, masking projections, manifest zod.
+- **Required test:** `geo.contract.test.ts` asserts the `/api/merchants/geo` feature properties equal the public whitelist in `05-SCHEMA.md §7`.
+- `vitest` with `@cloudflare/vitest-pool-workers`: every API route against local D1/R2/KV, webhook idempotency, rate limits.
+- Playwright: the 6 flows in `04-APP_FLOW.md` in all three locales, with axe checks on every screen.
 
 ---
 
@@ -274,7 +268,7 @@ A PR fails review if any box can't be honestly ticked.
 - [ ] Public endpoints: Turnstile → rate limit → zod → logic.
 - [ ] No merchant contact fields in any public projection (the contract test passes).
 - [ ] Heavy client libs are dynamically imported.
-- [ ] The bundle gate passes (`pnpm bundle:check`).
+- [ ] No new `run_worker_first` pattern without a quota note in the PR.
 
 ---
 
@@ -284,7 +278,7 @@ A PR fails review if any box can't be honestly ticked.
 - **The site never touches shop data.** LAN Sync and PostgreSQL network mode run between the shop's own computers ([G4], [H]). The site never hosts, proxies or stores shop databases, connection strings, sync secrets or sales data. Never add a form field, ticket field or upload purpose that collects a database URL, password or LAN Sync secret. The ticket form warns users to remove these from logs before uploading ([H9]).
 - IP addresses are stored only as `sha256(ip + daily_salt)`. Raw IPs are never persisted.
 - PostHog runs with `maskAllInputs: true` and `mask_all_text: false`. Elements with `data-ph-no-capture` (contact fields, slips, dashboards) are never recorded. Merchant contact data is never sent as event properties.
-- Bank slips and crash logs live in private R2. They're served only through short-lived presigned GET URLs to admins.
+- Bank slips and crash logs live in the private R2 bucket. They're served only through short-lived presigned GET URLs to admins.
 - Required disclaimers (copy in `06-SCREEN_BLUEPRINTS_AND_COPY.md`): **as-is software / no warranty**, **tax calculation is the merchant's responsibility, not IRD-certified**, **backups are the merchant's responsibility** (the local database isn't encrypted at rest, and backups need a password, [G1], [G2]), plus the **EULA** for the app itself (none exists in the app yet, UR-06).
 
 ---
@@ -295,7 +289,7 @@ A PR fails review if any box can't be honestly ticked.
 - One logical change per commit. Commit after each completed checklist item.
 - Branches: `feat/<scope>-<slug>`, `fix/<scope>-<slug>`. `main` is always deployable.
 - Never commit `.dev.vars`, `.env*`, `.wrangler/`, `.open-next/` or real merchant data.
-- Migrations: generated by `pnpm db:generate`, committed with the schema change, applied to remote only by CI.
+- Migrations: generated by `bun run db:generate`, committed with the schema change, applied to remote only by CI.
 
 ---
 
@@ -305,7 +299,7 @@ A task is done when all of these are true:
 1. It meets the acceptance criteria in `01-PRD.md` for the feature.
 2. It matches the screen blueprint and copy in `06-…`, using tokens from `03-DESIGN.md`.
 3. It handles every state from `04-APP_FLOW.md`: loading, empty, error, success, offline where relevant.
-4. `pnpm lint && pnpm typecheck && pnpm test && pnpm i18n:check` all pass.
+4. `bun run lint && bun run typecheck && bun run test && bun run i18n:check` all pass.
 5. The E2E spec for the flow passes in `en`, `si` and `ta`, with zero axe violations.
 6. The checklists in §8 are ticked in the PR description.
 7. The matching box in `docs/07-IMPLEMENTATION_PLAN.md` is checked in the same PR.
