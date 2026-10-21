@@ -162,7 +162,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - AC-01.1 Visiting `/` with `Accept-Language: si-LK` redirects (307) to `/si`.
 - AC-01.2 Switching language on `/en/docs/getting-started/install` goes to `/ta/docs/getting-started/install` (or shows the English fallback with the banner when no Tamil version exists).
 - AC-01.3 No Sinhala vowel sign (e.g. `ු`, `ූ`, `ෘ`) or Tamil vowel sign is clipped in buttons, inputs, accordion headers or headings at any breakpoint, verified by Playwright screenshot review.
-- AC-01.4 `pnpm i18n:check` reports zero missing keys across the three locales.
+- AC-01.4 `bun run i18n:check` reports zero missing keys across the three locales.
 
 ---
 
