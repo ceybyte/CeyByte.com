@@ -346,12 +346,12 @@ Blueprint: §3 above. States: stats loading → skeleton tiles; `shops = 0` → 
 | `map.error` | Shop list unavailable right now. |
 | `map.retry` | Try again |
 | `map.noWebgl` | Interactive map isn't supported on this device. Here's the list instead. |
-| `map.attribution` | © OpenStreetMap contributors © CARTO |
+| `map.attribution` | © OpenStreetMap contributors · Protomaps |
 
 States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, filtered-empty ("No shops match. Clear filters").
 
 **Stitch prompt:**
-> A full-screen dark map page for "CB-POS Merchant Map". The left panel is 360px wide, #252526, with a hairline right border: title "CB-POS shops across Sri Lanka", a mono subtitle "— shops in —/25 districts" (live numbers), a search input "Search shop or town", two selects "All districts" and "All business types", a toggle "Gold Supporters only", a 5×5 grid of small square cells labelled with district abbreviations (lit cells have a cyan border, unlit cells are dim), then a scrolling list of shops (shop name, category · town in muted text, a small gold "Gold Supporter" badge on some). The right side is a dark CARTO Dark Matter map tightly framed on Sri Lanka, with cyan cluster circles showing counts in mono, individual cyan dots with soft halos, and a few gold dots. One popup is open on a gold pin: shop name "Perera Stores", "Grocery · Kurunegala", mono "CB-POS user since Aug 2026", a gold badge, and a cyan "Get directions →" link. Minimal square zoom controls with hairline borders. Small attribution text at the bottom right. No phone numbers anywhere.
+> A full-screen dark map page for "CB-POS Merchant Map". The left panel is 360px wide, #252526, with a hairline right border: title "CB-POS shops across Sri Lanka", a mono subtitle "— shops in —/25 districts" (live numbers), a search input "Search shop or town", two selects "All districts" and "All business types", a toggle "Gold Supporters only", a 5×5 grid of small square cells labelled with district abbreviations (lit cells have a cyan border, unlit cells are dim), then a scrolling list of shops (shop name, category · town in muted text, a small gold "Gold Supporter" badge on some). The right side is a near-black vector map (land #1E1E1E, water #141414, thin grey roads, Latin-script labels) tightly framed on Sri Lanka, with cyan cluster circles showing counts in mono, individual cyan dots with soft halos, and a few gold dots. One popup is open on a gold pin: shop name "Perera Stores", "Grocery · Kurunegala", mono "CB-POS user since Aug 2026", a gold badge, and a cyan "Get directions →" link. Minimal square zoom controls with hairline borders. Small attribution text at the bottom right. No phone numbers anywhere.
 
 ---
 

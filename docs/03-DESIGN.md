@@ -428,7 +428,7 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 
 ## 8. Component blueprints
 
-Each component's file, variants, states, and the rules it has to follow. shadcn components are generated with `pnpm dlx shadcn@latest add <name>` and then adapted to these tokens.
+Each component's file, variants, states, and the rules it has to follow. shadcn components are generated with `bunx shadcn@latest add <name>` and then adapted to these tokens.
 
 ### 8.1 Button — `components/ui/button.tsx`
 
