@@ -77,7 +77,7 @@ flowchart TD
 | 7 | S02-b | Drags pin | Clamped to bounds. lat/lng updated (6 dp stored, 4 dp public). District is **not** auto-changed on drag (the user's choice wins) | — |
 | 8 | S02-b | Ticks the public map opt-in (optional) and the terms (required) | Download button enabled once the form is valid. Turnstile resolves invisibly | — |
 | 9 | S02-b | Download CB-POS | `POST /api/downloads` with Turnstile token. Button loading. Rest of the form `inert` | — |
-| 10 | — | — | Server: Turnstile → RL → zod → phone dedupe → `db.batch` (merchant insert or reuse + `merchant_logs`) → `bumpGeoVersion()` if public → response `{ downloadUrl, release, claimToken }` | `download_gate_submitted {district, category, public}` (server mirrors it without PII) |
+| 10 | — | — | Server: Turnstile → RL → zod → phone dedupe → transaction (merchant insert or reuse + `merchant_logs`) → `bumpGeoVersion()` if public → response `{ downloadUrl, release, claimToken }` | `download_gate_submitted {district, category, public}` (server mirrors it without PII) |
 | 11 | S02 | — | Sets cookies. Triggers the download via a hidden iframe-free `<a href=downloadUrl download>` click (falls back to `location.assign`) | `installer_download_started {version}` (server) |
 | 12 | S02-c | Sees What Next | Layout morph + Rive check. Focus moves to the "Download started" heading | `what_next_viewed` |
 | 13 | S02-c | Copies the hash | Clipboard + aria-live "Hash copied" | `hash_copied` |
@@ -158,7 +158,7 @@ flowchart TD
 
 ### 2.3 Acceptance (E2E `e2e/flows/02-map-explorer.spec.ts`)
 - Network assertion: the geo response JSON has no keys outside the public whitelist.
-- An admin hides a seeded merchant → within 60 s (KV version bump) the pin is absent.
+- An admin hides a seeded merchant → within 60 s (geo-rebuild job + 60 s edge cache) the pin is absent.
 
 ---
 
@@ -192,7 +192,7 @@ flowchart TD
 |---|---|---|---|
 | 1 | Opens the docs hub | Category grid (10) + "Start here" (Install, Get past SmartScreen, First sale, Connect a receipt printer) + search | `$pageview` |
 | 2 | Opens an article | SSG HTML from stored hast. TOC on the right (xl), collapsible on top (mobile). `app_version_min` badge | `doc_viewed {slug, locale, fallback}` |
-| 3 | `⌘K` / `Ctrl+K` / `/` | Dialog opens. The index (KV-versioned JSON, ~100–300 KB) loads once and is cached by the browser | `docs_search_opened` |
+| 3 | `⌘K` / `Ctrl+K` / `/` | Dialog opens. The index (versioned JSON on `cdn.ceybyte.com`, ~100–300 KB) loads once and is cached by the browser | `docs_search_opened` |
 | 4 | Types | Orama search, typo tolerance 1, boost title ×3, headings ×2 | `docs_searched {qLength, results}` (never the raw query if it looks like a phone number) |
 | 5 | Opens a result | Navigates. Search closes. Focus moves to the article `<h1>` | `docs_search_result_clicked {rank}` |
 | 6 | Rates the article | Yes/No (+ optional reason) | `doc_feedback {slug, helpful}` |
@@ -227,7 +227,7 @@ flowchart TD
   I -- "yes, user picks one" --> D
   I -- "no / continue" --> J["Description, version, Windows, severity (bug)"]
   J --> K{"Attach crash log / screenshot?"}
-  K -- yes --> L["Presign → PUT to R2 with progress → confirm (head check)"]
+  K -- yes --> L["Presign → PUT to object storage with progress → confirm (head check)"]
   L --> M{"Upload OK?"}
   M -- no --> N["Inline file error (size/type); file removed"] --> K
   M -- yes --> O["Optional private contact + Turnstile"]
@@ -241,7 +241,7 @@ flowchart TD
 ```
 
 ### 4.1 Upload ordering
-Ticket attachments are uploaded **before** the ticket exists. The client creates a draft ID (`crypto.randomUUID()`) that is sent with the presign request (`entityRef: {kind: "ticket_draft", id}`). Keys go under `crash-logs/draft-{id}/…`. On `POST /api/feedback` with the same draft ID, the server moves the confirmed keys to `crash-logs/{ticketId}/…` (R2 copy + delete in `waitUntil`) and stores them on the ticket. The daily cron deletes unclaimed `draft-*` objects older than 24 h.
+Ticket attachments are uploaded **before** the ticket exists. The client creates a draft ID (`crypto.randomUUID()`) that is sent with the presign request (`entityRef: {kind: "ticket_draft", id}`). Keys go under `crash-logs/draft-{id}/…`. On `POST /api/feedback` with the same draft ID, the server moves the confirmed keys to `crash-logs/{ticketId}/…` (copy + delete in a `move-attachments` job) and stores them on the ticket. The daily cron deletes unclaimed `draft-*` objects older than 24 h.
 
 ### 4.2 Step table
 
@@ -251,7 +251,7 @@ Ticket attachments are uploaded **before** the ticket exists. The client creates
 | 2 | Types the title | Debounced 400 ms → `/api/feedback/similar` → ≤ 3 suggestions with vote counts | `ticket_similar_shown {count}` |
 | 3 | Picks a suggestion | Navigates to it, offers "Vote for this" | `ticket_duplicate_avoided` |
 | 4 | Attaches a file | Client checks type/size → presign → PUT with progress → confirm | `ticket_attachment_uploaded {kind}` |
-| 5 | Submits | Turnstile → RL → zod → insert ticket (`public_number` from `MAX+1` in a batch) | `ticket_submitted {type, severity?, hasAttachment}` |
+| 5 | Submits | Turnstile → RL → zod → insert ticket (`public_number` from `MAX+1` in a serializable transaction) | `ticket_submitted {type, severity?, hasAttachment}` |
 | 6 | Views the ticket | Public fields only. Status timeline. "Follow on this page" (no email in v1) | — |
 | 7 | Votes | `POST /vote` → toggles, optimistic UI, reverts on error | `ticket_voted {direction}` |
 
@@ -295,7 +295,7 @@ flowchart TD
   D --> E["Turnstile → POST /api/donations {method: bank_transfer}"]
   E --> F["Show reference CB-DN-7K3Q9P + bank details (copy buttons)<br/>status = awaiting_payment"]
   F --> G["User pays at bank / app, returns (same tab or link from cookie)"]
-  G --> H["Upload slip or transfer screenshot: presign → PUT R2 → confirm (head + magic bytes)<br/>optional bank txn reference"]
+  G --> H["Upload slip or transfer screenshot: presign → PUT to storage → confirm (head + magic bytes)<br/>optional bank txn reference"]
   H --> I{"Valid?"}
   I -- no --> J["Error: FILE_TOO_LARGE / FILE_TYPE_NOT_ALLOWED"] --> H
   I -- yes --> K["POST /api/donations/{ref}/submit → status = pending_review"]
@@ -321,7 +321,7 @@ flowchart TD
 | 6 | Donor | Uploads the slip or screenshot, optionally types the bank txn reference | Presign (`purpose: donation_slip`, ref + secret) → PUT → confirm | `donation_slip_uploaded` |
 | 7 | Donor | Confirms | Status `pending_review` | `donation_submitted {method}` |
 | 8 | Admin | Opens the queue (`g d`) | Oldest first. Shows amount, reference, date, name, slip preview | — |
-| 9 | Admin | Approve `a` / Reject `r` | `db.batch`: donation status + `reviewed_by/at` + merchant supporter flag + audit log. `bumpGeoVersion()`, `revalidateTag('supporters','home-stats')` | `donation_reviewed {result}` (server) |
+| 9 | Admin | Approve `a` / Reject `r` | Transaction: donation status + `reviewed_by/at` + merchant supporter flag + audit log. `bumpGeoVersion()`, `revalidateTag('supporters','home-stats')` | `donation_reviewed {result}` (server) |
 
 `amountBand` buckets: `<1k`, `1k–5k`, `5k–25k`, `>25k`. The exact amount never goes to analytics.
 
@@ -367,7 +367,7 @@ flowchart TD
   I -- no --> K["Dashboard empty state: 'No listing linked'<br/>→ Download CB-POS (gate) or 'I already downloaded' help"]
   J --> L{"Tab"}
   L -- "My Listing" --> M["Edit shop name/category/district/city/pin/visibility"]
-  M --> N["Server Action updateMyListing → batch + bumpGeoVersion if public fields changed"]
+  M --> N["Server Action updateMyListing → transaction + geo-rebuild job if public fields changed"]
   L -- "My Tickets" --> O["List own tickets (reporter_user_id)"]
   L -- "My Donations" --> P["List own donations + status"]
   L -- Settings --> Q{"Action"}

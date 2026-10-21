@@ -33,7 +33,7 @@
 4. **Prove:** show real adoption on a live Sri Lanka Merchant Map, without exposing shop owners' phone numbers.
 5. **Sustain:** collect donations by bank transfer and reward supporters with a gold map pin.
 
-**Constraint:** the platform runs at **Rs. 0 / month** on free tiers (Cloudflare Workers, D1, R2, KV, Turnstile; PostHog; Resend; GitHub) until product-market fit.
+**Constraint (branch `main`):** one VPS is the only bill. It runs the whole platform (Next.js, PostgreSQL, Valkey, Garage, jobs) behind Cloudflare's free proxy, with free tiers for everything else (Cloudflare R2 backups, Turnstile, PostHog, Resend, GitHub). The $0/month static variant lives on branch `free`.
 
 ### 1.1 Problem
 
@@ -68,7 +68,7 @@ CB-POS is offline-first software. Its only automatic network call is an update c
 
 ### 2.3 Success metrics
 
-These are targets, measured in PostHog and D1. They are not claims to display publicly.
+These are targets, measured in PostHog and PostgreSQL. They are not claims to display publicly.
 
 | Metric | Definition | Target (90 days post-launch) |
 |---|---|---|
@@ -81,7 +81,7 @@ These are targets, measured in PostHog and D1. They are not claims to display pu
 | Ticket triage time | Median `open` → `triaged` | ≤ 72 h |
 | Donation approval time | Median slip `pending_review` → `approved` | ≤ 48 h |
 | LCP (p75, mobile, 4G) | Home in `si` locale | ≤ 2.5 s |
-| Infra cost | Monthly Cloudflare + SaaS bill | Rs. 0 |
+| Infra cost | Monthly bill beyond the VPS | Rs. 0 |
 
 ---
 
@@ -182,7 +182,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 **Functional requirements**
 - FR-02.1 Every Download CTA (hero, final banner, sticky header, bento "try it") opens the same Download Gate (F-03) with a `source` property for analytics.
-- FR-02.2 The telemetry strip gets `districtsCovered` and `listedShops` from D1 (ISR, revalidated on merchant writes, with a fallback revalidation every 10 minutes). If `districtsCovered < 25`, it shows the real number (`17/25`). It never hardcodes `25/25`.
+- FR-02.2 The telemetry strip gets `districtsCovered` and `listedShops` from PostgreSQL (ISR, revalidated on merchant writes, with a fallback revalidation every 10 minutes). If `districtsCovered < 25`, it shows the real number (`17/25`). It never hardcodes `25/25`.
 - FR-02.3 The latest version and installer size come from F-06 (`releases.is_latest`). The CTA subtext reads `Windows 10/11 · 64-bit · v{version} · {size} MB`.
 - FR-02.4 Bento cards are interactive on hover and focus, and reachable by keyboard:
   - **Keyboard:** pressing the shown keys (`F2`, `Enter`, `Esc`) highlights the matching `<kbd>`.
@@ -198,7 +198,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Acceptance criteria**
 - AC-02.1 Lighthouse mobile on `/si`: Performance ≥ 90, Accessibility 100, LCP ≤ 2.5 s, CLS ≤ 0.05, and initial JS ≤ 180 KB gz (Rive, GSAP and Lenis lazy-loaded).
 - AC-02.2 With `prefers-reduced-motion: reduce`, the page renders every section with no parallax, no smooth scroll and no autoplaying Rive.
-- AC-02.3 Every telemetry number on the page matches a D1 query, verified by an E2E test against seeded data.
+- AC-02.3 Every telemetry number on the page matches a PostgreSQL query, verified by an E2E test against seeded data.
 
 ---
 
@@ -306,10 +306,10 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 - FR-05.1 Fumadocs UI layout: sidebar tree, TOC, breadcrumb, prev/next, "Edit history", "Was this helpful? Yes/No" (→ PostHog event `doc_feedback`).
 - FR-05.2 `⌘K` / `Ctrl+K` and `/` open instant search over the current locale's index. The index is client-side, fetched lazily on first open, results in under 50 ms.
-- FR-05.3 Content is stored in D1 (`docs_articles`) as Markdown with a fixed directive whitelist (`:::callout{type=tip|warn|danger}`, `:kbd[F2]`, `::screenshot{src alt}`, `::video{src}`, `:::steps`). It's rendered without runtime eval (TRD §8).
+- FR-05.3 Content is stored in PostgreSQL (`docs_articles`) as Markdown with a fixed directive whitelist (`:::callout{type=tip|warn|danger}`, `:kbd[F2]`, `::screenshot{src alt}`, `::video{src}`, `:::steps`). It's rendered without runtime eval (TRD §8).
 - FR-05.4 Every Tax article automatically includes the tax disclaimer callout.
 - FR-05.5 Articles carry `app_version_min`, shown as a badge ("Applies to v1.4+").
-- FR-05.6 Screenshots are stored in R2 under `docs/` and served by a public, cache-friendly path through the Worker (`/media/docs/...`).
+- FR-05.6 Screenshots are stored in the Garage `public` bucket under `media/docs/` and served from `cdn.ceybyte.com`, cached by Cloudflare.
 - FR-05.7 A printable keyboard-shortcut cheat sheet page (A4, print CSS).
 - FR-05.8 Multi-till articles state the security limits plainly: LAN Sync doesn't verify the Main PC's certificate, so use it only on a trusted shop network [H6]; PostgreSQL network mode has no TLS setting in the app UI and no automatic schema upgrades [H6], [H7]; backups don't include the PostgreSQL data [G4]. They never ask readers to paste connection strings anywhere on the site. Until UR-03 ships, LAN Sync articles carry a warning about the v1.3.0 data-loss bugs.
 
@@ -353,7 +353,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
   - CB-POS version (select from `releases`)
   - Windows version
   - severity (`bug` only: `crash`, `blocks_billing`, `wrong_output`, `cosmetic`)
-  - optional crash log upload (`.log`, `.txt`, `.zip` ≤ 5 MB to R2)
+  - optional crash log upload (`.log`, `.txt`, `.zip` ≤ 5 MB, private object storage)
   - optional screenshot (`.png`, `.jpg` ≤ 5 MB)
   - optional contact (email or phone; private)
   - Turnstile
@@ -364,7 +364,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-07.7 Admin responses show publicly as "Ceybyte team" comments (single `admin_response` field in v1).
 
 **Acceptance criteria**
-- AC-07.1 A guest submits a bug with a crash log. The log is stored in R2 under `crash-logs/{ticketId}/`, and the ticket shows on the public board without the log or contact.
+- AC-07.1 A guest submits a bug with a crash log. The log is stored in the private `uploads` bucket under `crash-logs/{ticketId}/`, and the ticket shows on the public board without the log or contact.
 - AC-07.2 Voting twice from the same browser doesn't increase `vote_count`.
 
 ---
@@ -426,9 +426,9 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Goal:** release stories, tax-change explainers, shop success stories. This is the SEO surface for Sinhala and Tamil searches.
 
 **Functional requirements**
-- FR-10.1 Posts are per-locale, linked by `translation_key`, stored in D1 as Markdown with the same renderer as docs.
+- FR-10.1 Posts are per-locale, linked by `translation_key`, stored in PostgreSQL as Markdown with the same renderer as docs.
 - FR-10.2 Index page with tag filter, post page with reading time, author, date, cover, and related posts (same tag).
-- FR-10.3 RSS feed per locale (`/{locale}/blog/rss.xml`) and a generated OG image per post (static template, built at publish time and stored in R2).
+- FR-10.3 RSS feed per locale (`/{locale}/blog/rss.xml`) and a generated OG image per post (static template, built at publish time and stored in the `public` bucket).
 - FR-10.4 Scheduled publishing: posts with a future `published_at` stay hidden until then (checked at render and by revalidation).
 
 **Acceptance criteria**
@@ -443,7 +443,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Payment method (v1): bank transfer only**
 | Method | How the donor pays | Verification |
 |---|---|---|
-| **Bank transfer / deposit** | Online banking, a mobile banking app, CEFT, or a cash deposit at a branch, into the Ceybyte account. Bank details are shown with copy buttons | The donor uploads the slip or a screenshot of the transfer (JPG/PNG/PDF ≤ 5 MB) to R2 through a presigned URL. An admin checks it against the account statement and approves it |
+| **Bank transfer / deposit** | Online banking, a mobile banking app, CEFT, or a cash deposit at a branch, into the Ceybyte account. Bank details are shown with copy buttons | The donor uploads the slip or a screenshot of the transfer (JPG/PNG/PDF ≤ 5 MB) to private storage through a presigned URL. An admin checks it against the account statement and approves it |
 
 A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put it in the transfer remark.
 
@@ -469,7 +469,7 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 **Acceptance criteria**
 - AC-11.1 Uploading an 8 MB PDF is rejected before upload (client) and after upload (server `head` check → object deleted, error `FILE_TOO_LARGE`).
 - AC-11.2 A donation stays `pending_review` until an admin acts. Nothing on the public site (supporters wall, gold pin, monthly total) changes before approval.
-- AC-11.3 A slip whose first bytes don't match its declared type (e.g. an `.exe` renamed to `.pdf`) is rejected with `FILE_TYPE_NOT_ALLOWED` and deleted from R2.
+- AC-11.3 A slip whose first bytes don't match its declared type (e.g. an `.exe` renamed to `.pdf`) is rejected with `FILE_TYPE_NOT_ALLOWED` and deleted from storage.
 
 ---
 
@@ -506,9 +506,9 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 |---|---|
 | Performance | Mobile LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.05 at p75. Initial JS on `/` ≤ 180 KB gz |
 | Accessibility | WCAG 2.2 AA; keyboard parity; visible focus; captions for videos; `alt` on every screenshot in all locales |
-| Security | Turnstile + rate limits on public writes; CSP; R2 private by default; secrets only in Wrangler secrets; admin actions audited |
+| Security | Turnstile + rate limits on public writes; CSP with nonces; private object storage by default; no open HTTP ports (Cloudflare Tunnel); secrets only in Dokploy env; admin actions audited |
 | Privacy | PDPA data minimisation; opt-in public map; hashed IPs; analytics consent; deletion within 30 days |
-| Reliability | Downloads keep working if D1 is down (fallback: `/api/download/latest` reads KV `release:latest` then a hardcoded last-known release in the build) |
+| Reliability | Downloads keep working if PostgreSQL is down (fallback: `/api/download/latest` reads Valkey `release:latest`, then a last-known release baked into the build). Nightly encrypted off-site backups; RPO 24 h, RTO 2 h |
 | SEO | SSG for marketing, docs and blog; per-locale sitemaps; `hreflang`; structured data (`SoftwareApplication` with `offers.price = 0`, `FAQPage`, `BreadcrumbList`, `Article`) |
 | Browser support | Last 2 versions of Chrome, Edge, Firefox, Safari; Android Chrome 100+; graceful degradation without WebGL (map shows a district list) |
 
@@ -528,7 +528,8 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Free Workers plan limits (10 ms CPU, 3 MiB bundle) | Pages fail or the deploy is rejected | SSG/ISR for all public pages; bundle gate in CI; escalation trigger to Workers Paid ($5/mo) documented in TRD §14 |
+| Single VPS is a single point of failure | Site down until restored | Cloudflare keeps static assets and tiles cached; nightly encrypted backups to R2; tested restore runbook (RTO 2 h); Uptime Kuma alerts |
+| Self-hosting adds ops work (patches, disk, certificates) | Maintainer time, security exposure | Dokploy, unattended security upgrades, Cloudflare Tunnel (no open ports), disk and backup alerts, monthly restore test |
 | Fake or spam map listings | Map loses credibility | Turnstile, rate limits, phone dedupe, admin moderation queue, "Report listing" |
 | SmartScreen warnings scare users | Lower installs | Explicit "What Next?" guidance with screenshots; publish hashes; code-signing as funding goal #1 |
 | Self-hosted map tiles go stale or fail to load | Map out of date or blank | Rebuild the Sri Lanka extract quarterly (scripted). If tiles fail, fall back to list-only mode. `MAP_STYLE_*` env can point at another style |
