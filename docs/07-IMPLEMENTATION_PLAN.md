@@ -151,7 +151,7 @@ Already verified on 2026-10-21: `@lucasmarkes/hairline@0.5.1` (MIT), the three d
 
 ## Phase 4 — Homepage (Sprint 3)
 
-**Prerequisite:** real CB-POS captures (UR-20 or captured by the team per `03 §6.2`). No hero ships with an invented UI.
+**Prerequisite:** real CB POS captures (UR-20 or captured by the team per `03 §6.2`). No hero ships with an invented UI.
 
 - [ ] `getHomeStats()` (Valkey `stats:v1` → Postgres) for ISR with tag `home-stats`; `/api/stats`.
 - [ ] Hero (copy with fact IDs checked, capture with rim glow, Hairline `Keyboard`), telemetry strip (live), map teaser (image built by `render-og`-style job from the geo snapshot).
@@ -237,9 +237,9 @@ Already verified on 2026-10-21: `@lucasmarkes/hairline@0.5.1` (MIT), the three d
 ### 9.2 Legal & content
 - [ ] S11 pages: terms, **EULA**, privacy (with the app network disclosure [A7], [A8]), tax disclaimer, data safety, cookies; lawyer review (or at least against PDPA obligations).
 - [ ] `terms_version` in the gate; inline disclaimers per FR-12.1; CI grep for banned claims.
-- [ ] Re-run the CB-POS facts audit against the newest tag; update copy; check UR-01/02/03 status.
+- [ ] Re-run the CB POS facts audit against the newest tag; update copy; check UR-01/02/03 status.
 - [ ] Sinhala and Tamil for all M1 strings, legal pages and seed docs; `i18n:check --strict`; native-speaker screenshot review.
-- [ ] Decide PRD OQ-3 (CB-POS vs CB POS) and apply.
+- [ ] Check every page, meta tag and OG image uses "CB POS" with a non-breaking space (PRD OQ-3).
 
 ### 9.3 Hardening
 - [ ] `/security-review`; Turnstile on every public POST (enumerated test); limiter tests; webhook negative tests.
@@ -304,7 +304,7 @@ Already verified on 2026-10-21: `@lucasmarkes/hairline@0.5.1` (MIT), the three d
 - [ ] OG images (`render-og`), RSS per locale, sitemap entries.
 - [ ] Docs video embeds (`::video`, captions required).
 - [ ] Payment gateway ADR (card and/or LankaQR). Build only after approval.
-- [ ] Launch posts ("CB-POS is free", "How CB-POS works out VAT and SSCL from MRP" with [C1]/[C2], a consented shop story).
+- [ ] Launch posts ("CB POS is free", "How CB POS works out VAT and SSCL from MRP" with [C1]/[C2], a consented shop story).
 - [ ] **Design gates.**
 
 **Exit (M3):** blog live in EN; SI/TA as translations arrive.
@@ -316,7 +316,7 @@ Already verified on 2026-10-21: `@lucasmarkes/hairline@0.5.1` (MIT), the three d
 - [ ] Weekly: PostHog funnels vs `01 §2.3`; one experiment.
 - [ ] Weekly: VPS CPU/RAM/disk and backup reports vs `02 §14.2` triggers.
 - [ ] Monthly: `backup:test`; OS and image updates (Dokploy, Postgres minor, Valkey, Garage); dependency updates (minor/patch); Lighthouse; axe sweep; skill updates reviewed.
-- [ ] Per CB-POS release: re-run the facts audit; update `00`/`08`, docs and copy; mark linked tickets `shipped`.
+- [ ] Per CB POS release: re-run the facts audit; update `00`/`08`, docs and copy; mark linked tickets `shipped`.
 - [ ] Quarterly: rebuild map tiles; full restore rehearsal on staging; legal review.
 
 ---

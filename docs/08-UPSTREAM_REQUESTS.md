@@ -1,11 +1,11 @@
-# 08 — Requests to the CB-POS App Repository
+# 08 — Requests to the CB POS App Repository
 
 | | |
 |---|---|
 | Version | 1.0 |
 | Date | 2026-10-21 |
-| Source | `docs/00-CBPOS_FACTS.md` (audit of `HMAHD/CB-POS` at `88a7858`) |
-| Owner | CB-POS app team. The website team tracks status here |
+| Source | `docs/00-CBPOS_FACTS.md` (audit of `HMAHD/CB POS` at `88a7858`) |
+| Owner | CB POS app team. The website team tracks status here |
 
 The website can only say what the app does. These are the app-side changes the website depends on, or that would let the site say more. Each request names the fact it comes from (`[C2]` = section C2 of `00-CBPOS_FACTS.md`) and what the website does until it lands.
 
@@ -50,4 +50,4 @@ Status values: `open` · `accepted` · `done in vX.Y.Z` · `declined`.
 
 - The website must not claim anything that is still `open` here.
 - When a request ships, update `00-CBPOS_FACTS.md` (re-run the audit prompt against the new tag), then update the website copy in the same PR.
-- Re-run the full audit against every tagged CB-POS release before changing release-related copy.
+- Re-run the full audit against every tagged CB POS release before changing release-related copy.

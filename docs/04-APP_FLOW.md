@@ -24,7 +24,7 @@ This document defines the six primary journeys end to end: entry points, every s
 | Empty | Statement + one action (`03-DESIGN §8.13`) |
 | Error (recoverable) | Inline message near the cause + a retry action. Input is never cleared |
 | Error (fatal) | `error.tsx` with "Reload" and "Go home", plus the `requestId` in mono for support |
-| Offline (browser) | `navigator.onLine === false` → a top banner "You're offline. CB-POS works offline — this website doesn't." Forms keep their state and disable submit |
+| Offline (browser) | `navigator.onLine === false` → a top banner "You're offline. CB POS works offline — this website doesn't." Forms keep their state and disable submit |
 | Rate limited | "Too many attempts. Try again in {seconds}s." Submit disabled with a countdown |
 
 ---
@@ -37,7 +37,7 @@ This document defines the six primary journeys end to end: entry points, every s
 ```mermaid
 flowchart TD
   A["Land on /{locale} (S01)"] --> B{"Has cb_gate cookie?"}
-  B -- yes --> Q["CTA: Download CB-POS"] --> FAST["Skip form → What Next + download"]
+  B -- yes --> Q["CTA: Download CB POS"] --> FAST["Skip form → What Next + download"]
   B -- no --> C["Scroll: Hero → Proof → Problem → Bento → How → FAQ"]
   C --> D["Click any Download CTA<br/>(hero / header / bento / banner)"]
   D --> E["Open DownloadModal (S02)<br/>URL ?download=1"]
@@ -76,12 +76,12 @@ flowchart TD
 | 6 | S02-b | Detect My Location | `navigator.geolocation.getCurrentPosition({enableHighAccuracy:true, timeout:10000})`. Bounds check. Nearest city from `lk-cities.json` (haversine) → sets district/city/pin | `gate_location_detected {result: ok\|denied\|outside\|timeout}` |
 | 7 | S02-b | Drags pin | Clamped to bounds. lat/lng updated (6 dp stored, 4 dp public). District is **not** auto-changed on drag (the user's choice wins) | — |
 | 8 | S02-b | Ticks the public map opt-in (optional) and the terms (required) | Download button enabled once the form is valid. Turnstile resolves invisibly | — |
-| 9 | S02-b | Download CB-POS | `POST /api/downloads` with Turnstile token. Button loading. Rest of the form `inert` | — |
+| 9 | S02-b | Download CB POS | `POST /api/downloads` with Turnstile token. Button loading. Rest of the form `inert` | — |
 | 10 | — | — | Server: Turnstile → RL → zod → phone dedupe → transaction (merchant insert or reuse + `merchant_logs`) → `bumpGeoVersion()` if public → response `{ downloadUrl, release, claimToken }` | `download_gate_submitted {district, category, public}` (server mirrors it without PII) |
 | 11 | S02 | — | Sets cookies. Triggers the download via a hidden iframe-free `<a href=downloadUrl download>` click (falls back to `location.assign`) | `installer_download_started {version}` (server) |
 | 12 | S02-c | Sees What Next | Layout morph + Rive check. Focus moves to the "Download started" heading | `what_next_viewed` |
 | 13 | S02-c | Copies the hash | Clipboard + aria-live "Hash copied" | `hash_copied` |
-| 14 | S02-c | WhatsApp community | Opens `https://chat.whatsapp.com/{invite}` in a new tab | `whatsapp_community_clicked` |
+| 14 | S02-c | WhatsApp community | Opens `https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM` in a new tab (`rel="noopener"`) | `whatsapp_community_clicked` |
 | 15 | S02-c | Save your listing | → `/{locale}/login?claim=1` | `claim_listing_clicked` |
 
 ### 1.2 Edge cases
@@ -94,7 +94,7 @@ flowchart TD
 | No JS | CTA `href="/{locale}/download"` (full-page form, Turnstile non-invisible) |
 | Release unavailable (`503 RELEASE_UNAVAILABLE`) | Gate still saves the merchant. What Next shows "Download is temporarily unavailable — we saved your details. Try the Releases page in a few minutes." + link |
 | Mobile Safari blocks a programmatic download after an async call | What Next shows a large "Tap to download" primary button (same URL) as the guaranteed path. Auto-start is best effort |
-| The user is on Android/iOS (can't run `.exe`) | Step 2 button reads "Download CB-POS" but What Next leads with "Send this to your PC": a share sheet (`navigator.share`) with the Releases URL, plus copy link. The download still starts |
+| The user is on Android/iOS (can't run `.exe`) | Step 2 button reads "Download CB POS" but What Next leads with "Send this to your PC": a share sheet (`navigator.share`) with the Releases URL, plus copy link. The download still starts |
 | GPS accuracy > 1 km | Notice "Location is approximate — drag the pin to your shop." |
 
 ### 1.3 Acceptance (E2E `e2e/flows/01-visitor-download.spec.ts`)
@@ -106,7 +106,7 @@ flowchart TD
 
 ## Flow 2 — Map Explorer (F-04)
 
-**Goal:** a visitor explores CB-POS adoption, finds shops nearby, or adds their own.
+**Goal:** a visitor explores CB POS adoption, finds shops nearby, or adds their own.
 **Entry points:** homepage telemetry teaser (S01 §2), header "Map", footer, "Add my shop" links, shared links `/{locale}/map?d=kandy` or `?m={publicId}`.
 
 ```mermaid
@@ -149,7 +149,7 @@ flowchart TD
 
 | Case | Behaviour |
 |---|---|
-| Zero public merchants (pre-launch) | Map renders Sri Lanka with the coverage grid all dark: "Be the first CB-POS shop on the map." + Download CTA |
+| Zero public merchants (pre-launch) | Map renders Sri Lanka with the coverage grid all dark: "Be the first CB POS shop on the map." + Download CTA |
 | `?m={id}` points to a hidden/deleted merchant | Ignored silently. Map opens at the default view |
 | Tile provider failure | Fall back to the `MAP_STYLE_*` alternative URL once. If that also fails, list-only mode |
 | Light/dark switch while open | `map.setStyle(next, { diff: true })` and re-add sources/layers on `style.load` |
@@ -364,7 +364,7 @@ flowchart TD
   G -- no --> I{"User owns a merchant?"}
   H --> J["/{locale}/dashboard (S13) Overview + 'Listing claimed' toast"]
   I -- yes --> J
-  I -- no --> K["Dashboard empty state: 'No listing linked'<br/>→ Download CB-POS (gate) or 'I already downloaded' help"]
+  I -- no --> K["Dashboard empty state: 'No listing linked'<br/>→ Download CB POS (gate) or 'I already downloaded' help"]
   J --> L{"Tab"}
   L -- "My Listing" --> M["Edit shop name/category/district/city/pin/visibility"]
   M --> N["Server Action updateMyListing → transaction + geo-rebuild job if public fields changed"]
