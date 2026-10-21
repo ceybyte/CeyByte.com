@@ -637,7 +637,7 @@ export const blogPosts = pgTable(
     bodyMd: text("body_md").notNull(),
     bodyHast: jsonb("body_hast").$type<unknown>(),
     tocJson: jsonb("toc_json").$type<TocItem[]>(),
-    coverImageKey: text("cover_image_key"), // R2 blog/{postId}/...
+    coverImageKey: text("cover_image_key"), // Garage public: media/blog/{postId}/...
     coverAlt: text("cover_alt"),
     ogImageKey: text("og_image_key"),
     tags: jsonb("tags").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
@@ -791,7 +791,7 @@ export default defineConfig({
 | created_at / updated_at / deleted_at | ts | — | `created_at` public as `since` (YYYY-MM) | |
 
 ### 5.2 `merchant_logs`
-Append-only. Retained 18 months, then deleted by the cleanup cron. `ip_hash` rotates daily (salted), so it can't be joined across days.
+Append-only. Retained 18 months, then deleted by the daily cleanup job. `ip_hash` rotates daily (salted), so it can't be joined across days.
 
 ### 5.3 `releases`
 One row per (version, channel). The partial unique index guarantees at most one `is_latest` row per channel. The sync job flips `is_latest` in one transaction: clear the old flag, then set the new one.
@@ -822,7 +822,7 @@ stateDiagram-v2
 - The supporter flag is **derived**: `is_supporter = EXISTS(approved donation for merchant)`. `recomputeSupporter(merchantId)` runs on every donation status change.
 
 ### 5.7 `blog_posts`
-`scheduled` posts become visible when `published_at <= now`. The listing query uses `status IN ('published','scheduled') AND published_at <= ?`. The cron revalidates the `blog` tag hourly so scheduled posts appear.
+`scheduled` posts become visible when `published_at <= now`. The listing query uses `status IN ('published','scheduled') AND published_at <= ?`. The hourly `publish-due` job revalidates the `blog` tag hourly so scheduled posts appear.
 
 ### 5.8 `admin_audit_log`
 Append-only. Kept indefinitely (small). `diff.before`/`diff.after` **must not** include `phone`, `whatsapp`, `telegram` or `full_name` values. The writer helper replaces them with `"[redacted]"`.
@@ -934,7 +934,7 @@ Query: `db.select(PUBLIC_GEO_COLUMNS).from(merchants).where(publicMapWhere)`.
 2. **Lint rule** `no-bare-merchant-select`: flags `db.select().from(merchants)` and `db.query.merchants.findMany()` without `columns` outside `src/features/admin/**` and `src/features/merchants/owner.ts`.
 3. **Log redaction:** `src/server/log.ts` drops keys matching `/phone|whatsapp|telegram|full_?name|email|contact|ip$/i`.
 4. **PostHog:** contact inputs carry `data-ph-no-capture`, `maskAllInputs: true`, and server events are built from an allow-list of property names.
-5. **R2:** the bucket is private. Public media is served only through `/media/[...key]` with a prefix allow-list (`docs/`, `blog/`, `screenshots/public/`, `og/`).
+5. **Object storage:** the Garage `uploads` bucket is private. Public files live only in the `public` bucket (`cdn.ceybyte.com`); a private object becomes public only through an admin action that copies it (screenshots).
 
 ---
 
@@ -1155,14 +1155,14 @@ Production is **never** seeded with synthetic merchants. `seed.ts` refuses to ru
 
 ---
 
-## 10. Retention & deletion jobs (cron `15 3 * * *`)
+## 10. Retention & deletion jobs (pg-boss schedule, daily 08:45 Asia/Colombo)
 
 | Job | Rule |
 |---|---|
 | Merchant hard delete | `deleted_at < now − 30 d` → overwrite `full_name='[deleted]'`, `shop_name='[deleted]'`, `phone='deleted:' || id` (keeps the unique index satisfied and can never match an E.164 lookup), null `whatsapp`, `telegram`, `claim_token_hash`, snap `lat/lng` to the district centroid; keep the row for log integrity |
 | Merchant logs | Delete `created_at < now − 18 months` |
 | Abandoned donations | `awaiting_payment` and `created_at < now − 14 d` → `cancelled` |
-| Upload drafts | Delete R2 `crash-logs/draft-*`, `screenshots/private/draft-*` older than 24 h, plus unreferenced `slips/*` older than 14 d |
-| Rejected slips | Delete the R2 object 90 days after `rejected` (keep the DB row) |
+| Upload drafts | Delete Garage `crash-logs/draft-*`, `screenshots/private/draft-*` older than 24 h, plus unreferenced `slips/*` older than 14 d |
+| Rejected slips | Delete the Garage object 90 days after `rejected` (keep the DB row) |
 | Verifications | Delete expired `verifications` rows |
 | Geo snapshot debounce | If `geo:dirty` → rebuild the snapshot and bump the version |
