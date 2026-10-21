@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: CB POS app bug or feature request
+    url: https://github.com/ceybyte/cbpos-releases/issues
+    about: Problems with the CB POS desktop app itself (billing, printing, tax, backups). This repo is only the website.
+  - name: Ask the CB POS community
+    url: https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM
+    about: Setup help and questions in the WhatsApp community.
+  - name: Security vulnerability
+    url: https://github.com/ceybyte/CeyByte.com/security/advisories/new
+    about: Report privately. Never in a public issue.
