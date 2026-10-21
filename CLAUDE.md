@@ -13,7 +13,7 @@ This file has the rules for every developer and AI agent working in this repo. I
 | `docs/00-CBPOS_FACTS.md` | **What the CB-POS app actually does**, audited from its source with `path:line` evidence | Before writing or reviewing any sentence about the product |
 | `docs/08-UPSTREAM_REQUESTS.md` | App changes the site depends on, with status | Before claiming a feature that isn't shipped yet |
 | `docs/01-PRD.md` | What we build and why. Features `F-01`–`F-12`, acceptance criteria | Before starting any feature |
-| `docs/02-TRD.md` | Architecture, routes, APIs, caching, security, free-tier budget | Before touching `src/app/api`, `src/server`, `wrangler.jsonc`, workers |
+| `docs/02-TRD.md` | Architecture, routes, APIs, caching, security, free-tier budget | Before touching `src/app/api`, `src/server`, `apps/worker`, `deploy/`, Docker |
 | `docs/03-DESIGN.md` | Tokens, type scale, script rules, components, motion | Before writing any UI |
 | `docs/04-APP_FLOW.md` | User journeys, states, error paths, analytics events | Before building a multi-step flow |
 | `docs/05-SCHEMA.md` | Drizzle schema, ERD, public data masking | Before touching the database or any public API |
@@ -28,81 +28,86 @@ This file has the rules for every developer and AI agent working in this repo. I
 
 ## 1. Non-negotiables
 
-1. **$0/month until product-market fit.** Every service must fit its free tier (budget table in `02-TRD.md §14`). Adding anything that bills requires an ADR in `docs/adr/`.
+> **Branch `main`: the full architecture on a VPS.** One Linux VPS runs the Next.js app (server-rendered, ISR, Server Actions), PostgreSQL, Valkey, Garage (S3) and a job worker, deployed with Dokploy behind Cloudflare's free proxy. The $0/month static architecture lives on branch `free`. Don't copy runtime code between branches without checking the other branch's `CLAUDE.md`.
+
+1. **Lean and owned.** The monthly bill is the VPS plus nothing else: every external service must be free (Cloudflare proxy/DNS/Turnstile, R2 for off-site backups, PostHog, Resend, GitHub). Adding a paid service needs an ADR in `docs/adr/`.
 2. **Never leak merchant contact data.** `phone`, `whatsapp`, `telegram`, `full_name`, IP addresses and claim tokens never appear in any public response, page, cache entry, log line or analytics event. Public queries use the explicit projections in `src/server/db/projections.ts`. Never use `select()` without columns on `merchants`.
 3. **Product truth.** Every claim about CB-POS (features, tax maths, hardware, shortcuts, privacy, file names) must match `docs/00-CBPOS_FACTS.md`. Copy tables in `06` cite the fact ID (`[C2]`). Features marked `open` in `08-UPSTREAM_REQUESTS.md` are never advertised. When the facts say UNKNOWN, the site says nothing.
 3a. **Never claim IRD approval or certification.** CB-POS *calculates* 18% VAT and 2.5% SSCL. It is not *certified*, *approved* or *endorsed* by the Inland Revenue Department. Every tax claim links to `/{locale}/legal/tax-disclaimer`.
-4. **Never fabricate numbers.** Telemetry figures (districts covered, shop count, downloads) come from D1 at request/revalidate time. If a number isn't live, it isn't shown.
+4. **Never fabricate numbers.** Shop counts, district coverage and donation totals come from PostgreSQL at render/revalidate time. If a number isn't live, it isn't shown.
 5. **Trilingual by construction.** No user-facing string is hardcoded in a component. Every string lives in `messages/{en,si,ta}.json`. A PR that adds an `en` key without matching `si` and `ta` keys fails CI (it may use the `[[TRANSLATE]]` marker, which blocks production deploys).
 6. **Sinhala and Tamil are written by native speakers, never machine-translated into production.** Agents may draft them but must mark them `[[TRANSLATE]]`.
-7. **Workers runtime only.** No Node `fs` and no `eval`/`new Function` (this rules out runtime MDX compilation). No native addons and no long-running processes. Code must run inside `workerd` with `nodejs_compat`.
+7. **Bun everywhere.** Bun is the package manager, script runner, test runner and the production runtime for the web server and the job worker. Node is a documented fallback for the web container only (ADR-0012). No native Node addons that Bun can't load.
 8. **Every public mutating endpoint** passes, in order: Cloudflare Turnstile → rate limit → zod validation → business logic. No exceptions.
 9. **Money is integer LKR cents** (`amount_cents: number`). Floats are never used for money. Coordinates are `real`.
 10. **Accessibility is not optional.** WCAG 2.2 AA contrast, full keyboard operation (this is a keyboard-first product — the site must be too), visible `#00BCEB` focus rings, `prefers-reduced-motion` respected everywhere.
+11. **Backups are part of the product.** Nightly PostgreSQL dumps and Garage bucket syncs go off-site to Cloudflare R2, and a restore is tested monthly. A feature that stores data isn't done until its data is in the backup set.
 
 ---
 
 ## 2. Stack lock
 
-Major versions are locked. Upgrading a major version or swapping a library requires an ADR.
+Major versions are locked. Upgrading a major version or swapping a component needs an ADR.
 
-| Layer | Package(s) | Notes |
+| Layer | Component | Notes |
 |---|---|---|
-| Framework | `next@15` (App Router, TypeScript strict) | `src/` layout, Server Components by default |
-| Edge runtime | `@opennextjs/cloudflare`, `wrangler` | Deploys to **Cloudflare Workers with Static Assets** (OpenNext doesn't target Pages; see `02-TRD.md §2`) |
-| Database | Cloudflare D1 + `drizzle-orm` + `drizzle-kit` | SQLite dialect; schema stays Postgres-portable (`05-SCHEMA.md §6`) |
-| Reactive alt. | `convex` (not installed) | Mirror schema in `05-SCHEMA.md §8`, only adopted via ADR |
-| Auth | `better-auth`, `better-auth-cloudflare`, Better Auth `admin` plugin | Roles: `merchant`, `admin` |
-| Storage | Cloudflare R2 (`UPLOADS` binding) + `aws4fetch` for presigning | Slips, crash logs, blog covers |
-| Installer CDN | GitHub Releases on `ceybyte/cbpos-releases` | Manifest: `https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json` |
-| Cache/KV | Workers KV (`CACHE_KV`) + Cache API | Geo snapshot, docs search index |
-| Styling | `tailwindcss@4` (CSS-first `@theme`), `shadcn/ui`, Radix UI, `vaul`, `lucide-react`, `sonner` (toasts), `next-themes` | No `tailwind.config.js`; tokens live in `src/app/globals.css` |
-| Motion | `motion` (import from `motion/react`), `gsap` + `ScrollTrigger`, `lenis`, `@rive-app/react-canvas`, `@lucasmarkes/hairline` | See `03-DESIGN.md §9`; `hairline` must be verified before install (`07 Phase 1`) |
-| Maps | `maplibre-gl` (native GeoJSON clustering, which uses Supercluster internally) | CARTO Dark Matter / Positron styles, bounded to Sri Lanka |
-| Docs | `fumadocs-ui`, `fumadocs-core` + unified/remark/rehype pipeline | Content in D1, rendered without eval (`02-TRD.md §8`) |
-| i18n | `next-intl` | Locales `en` (default), `si`, `ta`; prefix `always` |
-| Forms | `react-hook-form`, `zod`, `@hookform/resolvers` | Same zod schema validates client and server |
+| Runtime & tooling | **Bun 1.x** (package manager, scripts, `bun test`, runtime for web + worker) | `bun.lock` only. Node 22 LTS is the web-container fallback (ADR-0012) |
+| Web app | `next@15` (App Router, TypeScript strict), `output: "standalone"` | SSR, ISR (`revalidateTag`), Server Actions, middleware. Run with `bun server.js` |
+| Jobs | `pg-boss@10` in a separate Bun process (`apps/worker`) | Release sync, geo snapshot, emails, cleanup, OG images, search index |
+| Database | **PostgreSQL 17** + `drizzle-orm` (`drizzle-orm/postgres-js`, `postgres` driver) + `drizzle-kit` | Schema in `05-SCHEMA.md` (pg-core) |
+| Cache & limits | **Valkey 8** + `iovalkey` | Rate limits, geo/stats cache, Better Auth secondary storage |
+| Object storage | **Garage** (S3-compatible, AGPL-3.0, single binary) + `@aws-sdk/client-s3` + `@aws-sdk/s3-request-presigner` | Buckets: `uploads` (private), `public` (website mode via `cdn.ceybyte.com`: tiles, media, OG) |
+| Off-site backups | Cloudflare R2 (free 10 GB) via `rclone` + `pg_dump` | Nightly, 30-day retention (`02-TRD.md §14`) |
+| Reactive alt. | `convex` (not installed) | `05-SCHEMA.md §8`, ADR only |
+| Auth | `better-auth` (Drizzle pg adapter, `admin` + `emailOTP` plugins, email + password, Google) | Roles: `merchant`, `admin` |
+| Deploy | **Dokploy** (Docker Compose, Traefik) on Ubuntu 24.04 LTS | Images built in GitHub Actions → GHCR → Dokploy webhook |
+| Edge | Cloudflare free: DNS, proxy/CDN, WAF managed rules, Turnstile, Origin CA cert (Full strict TLS) | Static and tile caching at the edge |
+| Map tiles | Protomaps `sri-lanka.pmtiles` in Garage `public` bucket, `pmtiles` + `@protomaps/basemaps` | No CARTO (commercial licence, ADR-0008) |
+| Installer CDN | GitHub Releases on `ceybyte/cbpos-releases` | Manifest read server-side only (`02-TRD.md §7`) |
+| Styling | `tailwindcss@4`, `shadcn/ui`, Radix UI, `vaul`, `lucide-react`, `sonner`, `next-themes` | Tokens in `src/app/globals.css` |
+| Motion | `motion` (`motion/react`), `gsap` + `ScrollTrigger`, `lenis`, `@rive-app/react-canvas`, `@lucasmarkes/hairline@0.5` | `03-DESIGN.md §9`. Hairline verified (ADR-0007) |
+| Maps | `maplibre-gl` (native clustering) | Latin labels (`03-DESIGN.md §8.9`) |
+| Docs | `fumadocs-ui`, `fumadocs-core`, unified/remark/rehype, `@orama/orama` | Markdown in PostgreSQL, rendered at publish by a job (`02-TRD.md §8`) |
+| i18n | `next-intl` (middleware, prefix always) | `en`, `si`, `ta` |
+| Forms | `react-hook-form`, `zod`, `@hookform/resolvers` | Shared zod schemas |
 | Bot defense | Cloudflare Turnstile | Every public form |
-| Analytics | `posthog-js`, `posthog-node` | Proxied via `/ingest`; inputs masked in replay |
-| Email | Resend (free tier) | Auth emails only |
-| Testing | `vitest`, `@testing-library/react`, `@playwright/test`, `@axe-core/playwright` | |
-| Package manager | `pnpm` | Never commit `package-lock.json` or `yarn.lock` |
+| Analytics | `posthog-js`, `posthog-node` (EU Cloud free tier) | Self-hosting PostHog needs ~16 GB RAM, so it stays on cloud (ADR-0013). Proxied via `/ingest` |
+| Email | Resend (free tier) | Auth emails and admin notifications |
+| Monitoring | Dokploy metrics, Uptime Kuma (container), `pino` JSON logs with Docker log rotation | GlitchTip (Sentry-compatible) added when traffic warrants (ADR) |
+| Testing | `bun test` (unit + integration against a disposable Postgres/Valkey/Garage compose stack), `@playwright/test`, `@axe-core/playwright` | Playwright via `bunx` |
 
-**Banned:** Prisma (doesn't fit Workers' bundle limits), `next-auth`, styled-components/emotion, `moment`, `lodash` (full), jQuery, any CSS-in-JS runtime, Google Maps, Mapbox GL (licence), `framer-motion` package name (use `motion`), client-side fetching of `latest.json` directly from GitHub (always go through our API).
+**Banned:** Prisma; `next-auth`; styled-components/emotion; `moment`; full `lodash`; jQuery; CSS-in-JS runtimes; Google Maps; Mapbox GL; CARTO basemaps; MinIO (community edition archived, unpatched); the `framer-motion` package name (use `motion`); fetching `latest.json` from the browser; `npm`/`pnpm`/`yarn` lockfiles; running any service as root inside containers; exposing PostgreSQL, Valkey or Garage admin ports to the internet.
 
 ---
 
 ## 3. Commands
 
-These scripts are the `package.json` contract created in Phase 0 (`07-IMPLEMENTATION_PLAN.md`). Do not rename them.
+These `package.json` scripts are created in Phase 0 (`07-IMPLEMENTATION_PLAN.md`). Don't rename them.
 
 ```bash
-pnpm install                 # install deps
-pnpm dev                     # next dev with Cloudflare bindings via initOpenNextCloudflareForDev()
-pnpm build                   # next build
-pnpm preview                 # opennextjs-cloudflare build && opennextjs-cloudflare preview (real workerd)
-pnpm deploy                  # opennextjs-cloudflare build && opennextjs-cloudflare deploy
-pnpm cf-typegen              # wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts
+bun install                      # deps
+bun run services:up              # docker compose -f compose.dev.yml up -d (postgres, valkey, garage)
+bun run dev                      # bun --bun next dev  +  bun --watch apps/worker/src/index.ts
+bun run build                    # bun --bun next build (standalone)
+bun run start                    # bun .next/standalone/server.js
+bun run worker                   # bun apps/worker/src/index.ts
 
-pnpm db:generate             # drizzle-kit generate  → ./drizzle/*.sql
-pnpm db:migrate:local        # wrangler d1 migrations apply cbpos-db --local
-pnpm db:migrate:remote       # wrangler d1 migrations apply cbpos-db --remote   (CI only)
-pnpm db:seed:local           # tsx scripts/seed.ts → local D1 (districts, demo merchants, docs)
-pnpm db:studio               # drizzle-kit studio (local)
+bun run db:generate              # drizzle-kit generate → drizzle/*.sql
+bun run db:migrate               # drizzle-kit migrate (local; production runs it as the pre-deploy step)
+bun run db:seed                  # bun scripts/seed.ts
+bun run db:studio                # drizzle-kit studio
 
-pnpm lint                    # eslint + prettier --check
-pnpm typecheck               # tsc --noEmit
-pnpm test                    # vitest run
-pnpm test:watch              # vitest
-pnpm e2e                     # playwright test (against pnpm preview)
-pnpm i18n:check              # scripts/i18n-check.ts: key parity + [[TRANSLATE]] scan
-pnpm bundle:check            # wrangler deploy --dry-run --outdir .bundle && size gate (3 MiB gz)
-
-pnpm --filter release-sync dev     # run cron worker locally (wrangler dev --test-scheduled)
-pnpm --filter release-sync deploy  # deploy cron worker
+bun run lint                     # eslint + prettier --check
+bun run typecheck                # tsc --noEmit
+bun run test                     # bun test (needs services:up for integration tests)
+bun run e2e                      # bunx playwright test against a production build
+bun run i18n:check               # key parity + [[TRANSLATE]] scan
+bun run tiles:build              # pmtiles extract → sri-lanka.pmtiles → Garage public bucket
+bun run docker:build             # docker build -f Dockerfile.web / Dockerfile.worker
+bun run backup:test              # restore last night's dump into a scratch DB and run checks
 ```
 
-**Before declaring any task done:** `pnpm lint && pnpm typecheck && pnpm test && pnpm i18n:check`. For changes to the runtime, bindings or middleware, also run `pnpm preview` and `pnpm bundle:check`.
+**Before declaring a task done:** `bun run lint && bun run typecheck && bun run test && bun run i18n:check`. For changes to Docker, Compose, env or middleware, also run `bun run docker:build` and the affected E2E flow against the built image.
 
 ---
 
@@ -111,79 +116,72 @@ pnpm --filter release-sync deploy  # deploy cron worker
 ```
 .
 ├── CLAUDE.md
-├── docs/                          # 01–07 planning suite + adr/
+├── docs/                          # 00–08 planning suite + adr/
 ├── messages/{en,si,ta}.json       # all UI strings
 ├── drizzle/                       # generated SQL migrations (never hand-edit applied ones)
-├── public/
-│   ├── data/lk-districts.json     # 25 districts, 9 provinces, centroids
-│   ├── data/lk-cities.json        # city → district, lat, lng (GPS snap + dropdowns)
-│   ├── rive/*.riv                 # Rive state machines
-│   └── og/                        # static OG fallbacks
-├── scripts/                       # seed, i18n-check, bundle size gate
+├── public/{data,rive,og}/         # lk-districts.json, lk-cities.json, Rive files, OG fallbacks
+├── apps/worker/                   # pg-boss job runner (Bun): release-sync, geo, email, cleanup, render
+├── scripts/                       # seed, i18n-check, tiles, make-admin, backup-test
 ├── e2e/                           # Playwright specs
-├── workers/release-sync/          # standalone cron Worker (GitHub → D1)
+├── deploy/                        # compose.prod.yml, garage.toml, traefik labels, backup scripts
+├── compose.dev.yml                # postgres, valkey, garage for local dev and tests
+├── Dockerfile.web / Dockerfile.worker
 ├── src/
-│   ├── middleware.ts              # next-intl locale routing + admin/dashboard guards
+│   ├── middleware.ts              # next-intl routing + admin/dashboard cookie guards
 │   ├── i18n/{routing,request,navigation}.ts
 │   ├── app/
-│   │   ├── globals.css            # Tailwind v4 @theme tokens (03-DESIGN §3)
-│   │   ├── [locale]/              # all public + merchant routes
-│   │   ├── admin/                 # admin console (English only, not localized)
+│   │   ├── globals.css
+│   │   ├── [locale]/              # public + merchant routes
+│   │   ├── admin/                 # admin console (English only)
 │   │   └── api/                   # route handlers (02-TRD §5)
-│   ├── components/
-│   │   ├── ui/                    # shadcn primitives (generated, then token-adapted)
-│   │   ├── brand/                 # Logo, Kbd, HashBlock, GridCanvas, Crosshair
-│   │   ├── marketing/             # 8 homepage sections
-│   │   ├── map/  docs/  forms/  motion/
-│   ├── features/                  # vertical slices: download-gate, merchants, releases,
-│   │                              # docs, feedback, donations, blog, admin
-│   ├── server/                    # server-only: db, auth, r2, turnstile, ratelimit,
-│   │                              # geo-cache, github, markdown
-│   └── lib/                       # isomorphic: env, money, phone, sri-lanka, analytics
-├── open-next.config.ts
-├── wrangler.jsonc
+│   ├── components/{ui,brand,marketing,map,docs,forms,motion}/
+│   ├── features/                  # vertical slices (schemas, actions, components)
+│   ├── server/                    # server-only: db, auth, s3, valkey, turnstile, ratelimit,
+│   │                              # geo-cache, github, markdown, jobs (enqueue), log
+│   └── lib/                       # isomorphic: enums, env, money, phone, tax, sri-lanka, analytics
 ├── drizzle.config.ts
 └── next.config.ts
 ```
 
 Rules:
 - Anything under `src/server/` starts with `import "server-only";`.
-- A feature's zod schemas live in `src/features/<feature>/schema.ts` and are imported by both the form and the route handler.
-- Components never import from `src/server/`. They receive data as props or call Server Actions.
+- `apps/worker` imports from `src/server` and `src/lib` (path alias `@/`); it never imports React.
+- A feature's zod schemas live in `src/features/<feature>/schema.ts` and are shared by the form and the server.
 
 ---
 
 ## 5. Coding rules
 
 ### 5.1 TypeScript
-- `strict: true`, `noUncheckedIndexedAccess: true`. No `any`. Use `unknown` and narrow it.
-- Prefer `type` over `interface` unless declaration merging is needed.
-- Use discriminated unions for states (`{ status: "idle" } | { status: "submitting" } | …`) instead of boolean soup.
-- Filenames are kebab-case. Component exports are PascalCase. One component per file unless the others are private helpers.
+- `strict: true`, `noUncheckedIndexedAccess: true`. No `any`; use `unknown` and narrow.
+- Prefer `type` over `interface`. Discriminated unions for states.
+- Filenames kebab-case; component exports PascalCase.
 
-### 5.2 Cloudflare runtime
-- Get bindings with `getCloudflareContext()` from `@opennextjs/cloudflare`. **Create the Drizzle client and the Better Auth instance per request.** Never put them in module scope, because D1 bindings are request-scoped.
-- No `fs` and no `eval`. Sharp/image processing is not available, so use `next/image` with `unoptimized` or Cloudflare Images (paid, banned for now). Pre-size images at build time.
-- Worker CPU time is limited (10 ms on the free plan). Any route that does real work must be statically prerendered or cached. See the rendering matrix in `02-TRD.md §6`.
-- Use `ctx.waitUntil()` (via `getCloudflareContext().ctx`) for fire-and-forget logging and cache writes. Never `await` analytics on the request path.
+### 5.2 Server runtime (Bun on the VPS)
+- One Drizzle client and one Valkey client per process (module scope is fine here, unlike Workers). Pool size: web 10, worker 5 (`max` in `postgres()`).
+- Anything slower than ~100 ms or retried (email, GitHub calls, rendering, image work, geo snapshot rebuilds) runs as a pg-boss job, never inline in a request.
+- Secrets come from environment variables injected by Dokploy, validated by `src/lib/env.ts` (zod) at boot. The process exits if any are missing.
+- Containers run as a non-root user with a read-only root filesystem; writable paths are explicit volumes (`.next/cache`).
 
 ### 5.3 Data & APIs
-- All input is validated with zod at the boundary. Route handlers return `{ ok: true, data } | { ok: false, error: { code, message } }` with correct HTTP status codes.
-- Error `code`s are SCREAMING_SNAKE and documented in `02-TRD.md §5.3`. User-facing messages come from `messages/*.json` keyed by code. Never send raw error strings to the client.
-- Use `db.batch([...])` for multi-statement writes (D1 has no interactive transactions).
-- Generate IDs in the app with `crypto.randomUUID()`. Generate timestamps in the app (`new Date()`). No SQL-side defaults, so the schema stays portable.
-- Phone numbers are normalised to E.164 (`+947XXXXXXXX`) by `src/lib/phone.ts` before storage.
+- zod validation at every boundary. Route handlers return `{ ok: true, data } | { ok: false, error: { code, requestId, fields? } }`.
+- Error `code`s are SCREAMING_SNAKE (`02-TRD.md §5.3`); user text comes from `messages/*.json`.
+- Multi-statement writes use `db.transaction(async (tx) => …)`. Credit, supporter and numbering operations use `SERIALIZABLE` with one retry.
+- IDs (`crypto.randomUUID()`) and timestamps are generated in the app; the schema stays SQLite-portable for the `free` branch.
+- Phone numbers are normalised to E.164 by `src/lib/phone.ts`.
 
 ### 5.4 React / Next
-- Server Components by default. Add `"use client"` only for interactivity, motion, maps, Rive and forms.
-- Heavy client libraries (`maplibre-gl`, `@rive-app/react-canvas`, `gsap`, `lenis`) load through `next/dynamic` with `ssr: false` behind an IntersectionObserver or interaction trigger. They must never be in the initial JS of `/`.
-- Mutations use Server Actions for authenticated dashboard and admin work, and route handlers for public, Turnstile-protected forms and webhooks.
-- Links use the locale-aware `Link` from `src/i18n/navigation.ts`, never `next/link` directly in localized routes.
+- Server Components by default; `"use client"` only for interactivity, motion, maps, Rive and forms.
+- Heavy client libraries (`maplibre-gl`, Rive, GSAP, Lenis) load through `next/dynamic` with `ssr: false` behind an IntersectionObserver or interaction. Never in the initial JS of `/`.
+- Mutations: Server Actions for dashboard and admin; route handlers for public Turnstile-protected forms and webhooks.
+- Public pages are static or ISR (`02-TRD.md §6`); only dashboard and admin render per request.
+- Links use the locale-aware `Link` from `src/i18n/navigation.ts`.
 
 ### 5.5 Tests
-- Unit tests (vitest) cover `src/lib/*`: money, phone, VAT/SSCL display math, district lookup, masking projections.
-- **Required test:** `geo.contract.test.ts` asserts that the `/api/merchants/geo` feature properties equal exactly the public key whitelist from `05-SCHEMA.md §7`.
-- E2E (Playwright) covers the 6 flows in `04-APP_FLOW.md` in all three locales, with axe checks on every screen.
+- `bun test` unit: money, phone, tax maths (round-half-even, [C1]/[C2] examples), sri-lanka, projections, manifest zod.
+- **Required test:** `geo.contract.test.ts` asserts the `/api/merchants/geo` properties equal the public whitelist in `05-SCHEMA.md §7`.
+- `bun test` integration against `compose.dev.yml` services: every route handler and Server Action, jobs, webhook idempotency, rate limits.
+- Playwright: the 6 flows in `04-APP_FLOW.md` × 3 locales against the built Docker image, axe on every screen.
 
 ---
 
@@ -274,7 +272,7 @@ A PR fails review if any box can't be honestly ticked.
 - [ ] Public endpoints: Turnstile → rate limit → zod → logic.
 - [ ] No merchant contact fields in any public projection (the contract test passes).
 - [ ] Heavy client libs are dynamically imported.
-- [ ] The bundle gate passes (`pnpm bundle:check`).
+- [ ] New stored data is covered by the backup set (`02-TRD.md §14`).
 
 ---
 
@@ -284,7 +282,7 @@ A PR fails review if any box can't be honestly ticked.
 - **The site never touches shop data.** LAN Sync and PostgreSQL network mode run between the shop's own computers ([G4], [H]). The site never hosts, proxies or stores shop databases, connection strings, sync secrets or sales data. Never add a form field, ticket field or upload purpose that collects a database URL, password or LAN Sync secret. The ticket form warns users to remove these from logs before uploading ([H9]).
 - IP addresses are stored only as `sha256(ip + daily_salt)`. Raw IPs are never persisted.
 - PostHog runs with `maskAllInputs: true` and `mask_all_text: false`. Elements with `data-ph-no-capture` (contact fields, slips, dashboards) are never recorded. Merchant contact data is never sent as event properties.
-- Bank slips and crash logs live in private R2. They're served only through short-lived presigned GET URLs to admins.
+- Bank slips and crash logs live in the private Garage `uploads` bucket. They're served only through short-lived presigned GET URLs to admins.
 - Required disclaimers (copy in `06-SCREEN_BLUEPRINTS_AND_COPY.md`): **as-is software / no warranty**, **tax calculation is the merchant's responsibility, not IRD-certified**, **backups are the merchant's responsibility** (the local database isn't encrypted at rest, and backups need a password, [G1], [G2]), plus the **EULA** for the app itself (none exists in the app yet, UR-06).
 
 ---
@@ -294,8 +292,8 @@ A PR fails review if any box can't be honestly ticked.
 - Conventional Commits, terse: `<type>(<scope>): <imperative summary>`. Scopes: `prd, trd, design, flow, schema, screens, plan, app, api, db, auth, map, docs, gate, donate, feedback, blog, admin, i18n, ui, motion, worker, ci`.
 - One logical change per commit. Commit after each completed checklist item.
 - Branches: `feat/<scope>-<slug>`, `fix/<scope>-<slug>`. `main` is always deployable.
-- Never commit `.dev.vars`, `.env*`, `.wrangler/`, `.open-next/` or real merchant data.
-- Migrations: generated by `pnpm db:generate`, committed with the schema change, applied to remote only by CI.
+- Never commit `.env*`, `.next/`, database dumps or real merchant data.
+- Migrations: generated by `bun run db:generate`, committed with the schema change, applied in production only by the pre-deploy migration step.
 
 ---
 
@@ -305,7 +303,7 @@ A task is done when all of these are true:
 1. It meets the acceptance criteria in `01-PRD.md` for the feature.
 2. It matches the screen blueprint and copy in `06-…`, using tokens from `03-DESIGN.md`.
 3. It handles every state from `04-APP_FLOW.md`: loading, empty, error, success, offline where relevant.
-4. `pnpm lint && pnpm typecheck && pnpm test && pnpm i18n:check` all pass.
+4. `bun run lint && bun run typecheck && bun run test && bun run i18n:check` all pass.
 5. The E2E spec for the flow passes in `en`, `si` and `ta`, with zero axe violations.
 6. The checklists in §8 are ticked in the PR description.
 7. The matching box in `docs/07-IMPLEMENTATION_PLAN.md` is checked in the same PR.
