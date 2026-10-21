@@ -306,10 +306,10 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 - FR-05.1 Fumadocs UI layout: sidebar tree, TOC, breadcrumb, prev/next, "Edit history", "Was this helpful? Yes/No" (→ PostHog event `doc_feedback`).
 - FR-05.2 `⌘K` / `Ctrl+K` and `/` open instant search over the current locale's index. The index is client-side, fetched lazily on first open, results in under 50 ms.
-- FR-05.3 Content is stored in D1 (`docs_articles`) as Markdown with a fixed directive whitelist (`:::callout{type=tip|warn|danger}`, `:kbd[F2]`, `::screenshot{src alt}`, `::video{src}`, `:::steps`). It's rendered without runtime eval (TRD §8).
+- FR-05.3 Content is stored in D1 (`docs_articles`) as Markdown and rendered at build time, with a fixed directive whitelist (`:::callout{type=tip|warn|danger}`, `:kbd[F2]`, `::screenshot{src alt}`, `::video{src}`, `:::steps`). It's rendered without runtime eval (TRD §8).
 - FR-05.4 Every Tax article automatically includes the tax disclaimer callout.
 - FR-05.5 Articles carry `app_version_min`, shown as a badge ("Applies to v1.4+").
-- FR-05.6 Screenshots are stored in R2 under `docs/` and served by a public, cache-friendly path through the Worker (`/media/docs/...`).
+- FR-05.6 Screenshots are stored in the public R2 bucket under `media/docs/` and served from `cdn.ceybyte.com`, cached by Cloudflare. Media requests never touch the Worker.
 - FR-05.7 A printable keyboard-shortcut cheat sheet page (A4, print CSS).
 - FR-05.8 Multi-till articles state the security limits plainly: LAN Sync doesn't verify the Main PC's certificate, so use it only on a trusted shop network [H6]; PostgreSQL network mode has no TLS setting in the app UI and no automatic schema upgrades [H6], [H7]; backups don't include the PostgreSQL data [G4]. They never ask readers to paste connection strings anywhere on the site. Until UR-03 ships, LAN Sync articles carry a warning about the v1.3.0 data-loss bugs.
 
@@ -428,7 +428,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 **Functional requirements**
 - FR-10.1 Posts are per-locale, linked by `translation_key`, stored in D1 as Markdown with the same renderer as docs.
 - FR-10.2 Index page with tag filter, post page with reading time, author, date, cover, and related posts (same tag).
-- FR-10.3 RSS feed per locale (`/{locale}/blog/rss.xml`) and a generated OG image per post (static template, built at publish time and stored in R2).
+- FR-10.3 RSS feed per locale (`/{locale}/blog/rss.xml`) and a generated OG image per post (static template, generated during the site build).
 - FR-10.4 Scheduled publishing: posts with a future `published_at` stay out of the build. The 30-minute cron checks for posts that have become due and triggers a rebuild.
 
 **Acceptance criteria**
