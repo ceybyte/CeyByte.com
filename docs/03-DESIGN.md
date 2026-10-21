@@ -13,7 +13,7 @@
 ## 1. Design principles
 
 1. **Industrial, not decorative.** The site should feel like the inside of a well-built machine: hairline grids, crosshair registration marks, monospace numbers. Every visual element signals precision.
-2. **Proof over promise.** Real CB-POS screens, real hashes, real map pins, real counts. If something can't be shown truthfully, it isn't shown.
+2. **Proof over promise.** Real CB POS screens, real hashes, real map pins, real counts. If something can't be shown truthfully, it isn't shown.
 3. **The download button is the only loud thing.** `#39FF14` is reserved for the primary action, used once per viewport.
 4. **Three scripts, one rhythm.** Sinhala and Tamil are first-class. The layout absorbs taller line-heights and longer words without breaking.
 5. **Keyboard-first like the product.** Visible focus everywhere, `<kbd>` hints on interactive elements, shortcuts (`⌘K`, `/`, `Esc`).
@@ -342,7 +342,7 @@ Rules, applied once in `globals.css` and never per component:
 - Accordion triggers, tabs and badges: `py-2` minimum. Badges in `si`/`ta` get `py-1` instead of `py-0.5`.
 - Never truncate Sinhala/Tamil headings with `line-clamp-1`. Use `line-clamp-2` minimum for card titles.
 - `font-synthesis: none` globally, so the browser never fakes bold Indic glyphs.
-- Keep CB-POS glossary terms (`CB-POS`, `VAT`, `SSCL`, `MRP`, `.EXE`) in Latin within `si`/`ta` sentences. Wrap them in `<span lang="en">` so they get Latin metrics.
+- Keep CB POS glossary terms (`CB POS`, `VAT`, `SSCL`, `MRP`, `.EXE`) in Latin within `si`/`ta` sentences. Wrap them in `<span lang="en">` so they get Latin metrics.
 
 ---
 
@@ -397,23 +397,23 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 
 ### 6.2 Product photography & mockups
 - **Backdrop:** `#18181B` studio black, seamless, no horizon line.
-- **Content:** real CB-POS screens only. None exist yet [L1], so they're captured for launch (UR-20): install the current release, choose **Load Demo Data** (80 Sri Lankan products with EN/SI/TA names, customers, 15 days of sales [I2]), turn on VAT registration and the tax breakdown, then capture the sales screen, payment dialog (split payment), receipt preview, Tax Liability report and Settings › Hardware in each UI language at 1920×1080. Thermal receipt photos come from a real 80 mm printer. Their Sinhala/Tamil text is genuine, and their item names print in English, as the app does [F2].
-- **App brand overlap:** the app's own colours are navy `#001F3F` and the same cyan `#00BCEB` [L1]. Its logo and monogram files can be used for the download page and favicon fallback, but the site wordmark stays `[CB-POS]` (see PRD OQ-3).
+- **Content:** real CB POS screens only. None exist yet [L1], so they're captured for launch (UR-20): install the current release, choose **Load Demo Data** (80 Sri Lankan products with EN/SI/TA names, customers, 15 days of sales [I2]), turn on VAT registration and the tax breakdown, then capture the sales screen, payment dialog (split payment), receipt preview, Tax Liability report and Settings › Hardware in each UI language at 1920×1080. Thermal receipt photos come from a real 80 mm printer. Their Sinhala/Tamil text is genuine, and their item names print in English, as the app does [F2].
+- **App brand overlap:** the app's own colours are navy `#001F3F` and the same cyan `#00BCEB` [L1]. Its logo and monogram files can be used for the download page and favicon fallback. The site wordmark is `[CB POS]`, the same name the app uses.
 - **Treatment:** borderless screens floating at a slight isometric angle (rotateX 8°, rotateY −12° for the hero), cyan rim glow, no device frames, no browser chrome, no reflections, no gradient overlays.
-- **Hardware shots:** a real 80mm thermal printer, barcode scanner and digital scale, photographed on the same backdrop with a single cyan rim light. If no real photos exist, use a Hairline figure (§9.6) instead. Never stock photos, and never an agent-drawn imitation of the CB-POS UI.
+- **Hardware shots:** a real 80mm thermal printer, barcode scanner and digital scale, photographed on the same backdrop with a single cyan rim light. If no real photos exist, use a Hairline figure (§9.6) instead. Never stock photos, and never an agent-drawn imitation of the CB POS UI.
 - **Formats:** AVIF + WebP fallback, pre-sized at build (`640/960/1280/1920`). Hero poster ≤ 120 KB.
-- **Alt text:** describes the actual screen ("CB-POS billing screen showing 1.250 kg Samba rice, VAT Rs. 45.76"), translated per locale.
+- **Alt text:** describes the actual screen ("CB POS billing screen showing 1.250 kg Samba rice, VAT Rs. 45.76"), translated per locale.
 
 ---
 
 ## 7. Brand elements
 
 ### 7.1 Logo — `<Logo />` (`src/components/brand/logo.tsx`)
-- Wordmark: `[CB-POS]` in JetBrains Mono 700, brackets in `--text-muted`, letters in `--text`.
+- Wordmark: `[CB POS]` in JetBrains Mono 700 (the space is a non-breaking space and keeps its full monospace width), brackets in `--text-muted`, letters in `--text`.
 - Status dot: 8×8 px `--cyan` circle, top-right of the closing bracket (offset −2px), `animate-pulse-dot`. The pulse stops under reduced motion.
 - Sizes: `sm` (16px text, header mobile), `md` (20px, header), `lg` (32px, footer).
 - Clear space: one bracket width on all sides. Never recolour the dot green or gold.
-- Accessible name: `aria-label="CB-POS home"`. The dot is `aria-hidden`.
+- Accessible name: `aria-label="CB POS home"`. The dot is `aria-hidden`.
 
 ### 7.2 Keycap — `<Kbd />`
 - `font-mono text-xs font-medium`, `bg-kbd text-white`, `border border-[--kbd-border]`, `rounded-sm`, `px-1.5 min-h-6`, bottom inset `box-shadow: inset 0 -2px 0 #000` (the single allowed inset, giving a keycap feel).
@@ -421,7 +421,7 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 - Combos: `<Kbd>Ctrl</Kbd>+<Kbd>K</Kbd>`. `⌘` is shown on macOS (detected via `navigator.userAgentData?.platform`), `Ctrl` elsewhere.
 
 ### 7.3 Hash block — `<HashBlock />`
-- Label (`SHA-256 · CB-POS-Setup-1.4.2.exe`) as an eyebrow, the hash in `text-hash`, a copy button (`Copy` → `Check` for 1.5 s; announced via `aria-live="polite"`: "Hash copied").
+- Label (`SHA-256 · CBPOSSetup-1.3.0.exe`) as an eyebrow, the hash in `text-hash`, a copy button (`Copy` → `Check` for 1.5 s; announced via `aria-live="polite"`: "Hash copied").
 - Surface: `surface` with a hairline border, `rounded-sm`, `p-3`.
 
 ---
@@ -445,7 +445,7 @@ Sizes: `sm` (min-h 32, px-3, text-sm), `md` (min-h 40, px-4), `lg` (min-h 48, px
 
 Props: `asChild`, `loading` (spinner replaces the leading icon, keeps width, `aria-busy`), `kbd` (optional shortcut hint rendered as `<Kbd>` at the trailing edge, hidden < md).
 
-The primary Download button pattern: `[⬇ Download CB-POS — Free]` with a subtext line under it (outside the button): `Windows 10/11 · 64-bit · v1.4.2 · 80.3 MB` in `text-xs text-muted font-mono`.
+The primary Download button pattern: `[⬇ Download CB POS — Free]` with a subtext line under it (outside the button): `Windows 10/11 · 64-bit · v1.4.2 · 80.3 MB` in `text-xs text-muted font-mono`.
 
 ### 8.2 Form controls
 - **Input/Textarea/Select:** `bg-surface border-hairline rounded-sm min-h-10 px-3 py-2`. Focus: `border-cyan` + focus ring. Invalid: `border-error` + an error message below (`text-xs text-error`, with an `AlertCircle` 14px icon), linked via `aria-describedby`.
@@ -481,14 +481,14 @@ Radix Accordion, `type="single" collapsible`. Trigger: `text-h4` (si/ta: line-he
 - `≥ md`: Radix Dialog. `max-w-[560px]`, `bg-surface border-hairline rounded-md`, header with a step indicator (`1 / 2` mono plus a 2-segment progress bar in cyan), close `X` (Esc).
 - `< md`: Vaul `Drawer` with `snapPoints={[0.92]}`, a drag handle (36×4 px `--hairline`, rounded-full), `data-lenis-prevent` on the scroll body, and inputs that scroll into view above the keyboard (`scrollIntoView({ block: "center" })` on focus).
 - Body slots: `StepYourShop`, `StepLocation`, `WhatNext`. The modal container keeps a stable `layoutId="download-modal"`, so the morph into What Next animates size (§9.3).
-- Footer: secondary "Back" (step 2), primary "Continue" (step 1) / "Download CB-POS" (step 2). The primary is disabled until the form is valid, with the reason shown in a muted helper line, not as a tooltip.
+- Footer: secondary "Back" (step 2), primary "Continue" (step 1) / "Download CB POS" (step 2). The primary is disabled until the form is valid, with the reason shown in a muted helper line, not as a tooltip.
 - Mini-map (step 2): a 100% × 200px MapLibre instance (lazy) with a single draggable cyan pin, bounds locked. A "Detect my location" button sits above it (`LocateFixed` icon, secondary). If WebGL is unavailable, the map is hidden and the fields still work.
 
 ### 8.9 Map elements
 - **Pin (standard):** a 10px circle `--cyan` with a 2px `--canvas` stroke and a halo (`circle-blur` 0.6, radius 18, opacity 0.25).
 - **Pin (supporter):** a 12px circle `--gold`, with a gold halo.
 - **Cluster:** a circle with a radius stepped by count (18 / 24 / 32 px at <10 / <100 / ≥100), `--surface-elevated` fill, 1px `--cyan` stroke, count label in JetBrains Mono 12px `--text`. If `supporters > 0`, the stroke becomes 2px `--gold`.
-- **Popup:** `bg-surface border-hairline rounded-md p-4 w-64`. Content order: shop name (`text-h4`), category · city (muted), "CB-POS user since Aug 2026" (mono xs), Supporter badge, "Get directions →" link.
+- **Popup:** `bg-surface border-hairline rounded-md p-4 w-64`. Content order: shop name (`text-h4`), category · city (muted), "CB POS user since Aug 2026" (mono xs), Supporter badge, "Get directions →" link.
 - **Basemap:** self-hosted Protomaps tiles (`sri-lanka.pmtiles`) with `@protomaps/basemaps` flavours: `dark` recoloured so land = `--canvas`, water = `#141414`, roads = `--hairline`, boundaries = `--hairline-grid`, labels = `--text-muted`; and `light` for the light theme. Labels use Latin-script names (`lang: "en"`) in every locale, because MapLibre can't shape Sinhala or Tamil conjuncts yet. Localized names appear in the panel and popups (HTML text, shaped by the browser).
 - **Attribution:** `© OpenStreetMap contributors · Protomaps`, always visible.
 - **Map chrome:** zoom controls restyled (`surface`, hairline, 32px), attribution kept and legible (`text-xs muted`), and a compass hidden (no rotation: `dragRotate: false`, `pitchWithRotate: false`).
@@ -624,9 +624,9 @@ Runtime: `@rive-app/react-canvas` with self-hosted WASM (`/rive/rive.wasm`), loa
 
 | File | Artboard | State machine | Inputs | Behaviour |
 |---|---|---|---|---|
-| `hero-pos.riv` | `Terminal` | `HeroSM` | `hover: boolean`, `scan: trigger`, `lang: number (0 en, 1 si, 2 ta)` | The real CB-POS sales screen, rebuilt from the UR-20 captures (no invented UI). Idle: the cursor blinks in the search box. `scan` adds an item line and the total ticks up. `hover` brightens the rim light. `lang` switches the app UI language, which CB-POS supports in all three [F1]. Until captures exist, the hero uses a static capture or the Hairline `Keyboard` figure |
+| `hero-pos.riv` | `Terminal` | `HeroSM` | `hover: boolean`, `scan: trigger`, `lang: number (0 en, 1 si, 2 ta)` | The real CB POS sales screen, rebuilt from the UR-20 captures (no invented UI). Idle: the cursor blinks in the search box. `scan` adds an item line and the total ticks up. `hover` brightens the rim light. `lang` switches the app UI language, which CB POS supports in all three [F1]. Until captures exist, the hero uses a static capture or the Hairline `Keyboard` figure |
 | `bento-offline.riv` | `Offline` | `OfflineSM` | `online: boolean` | A Wi-Fi glyph and router LED. With `online=false`, the LED goes red and the bill keeps printing |
-| `bento-receipt.riv` | `Receipt` | `ReceiptSM` | `lang: number` | Thermal printer feeding the receipt in EN/SI/TA (the text is baked from real CB-POS receipts) |
+| `bento-receipt.riv` | `Receipt` | `ReceiptSM` | `lang: number` | Thermal printer feeding the receipt in EN/SI/TA (the text is baked from real CB POS receipts) |
 | `success-check.riv` | `Check` | `CheckSM` | `play: trigger` | 600 ms check draw for "Download started" |
 
 The client wires `hero-pos` `lang` to the current locale. `scan` fires every 4 s while the hero is in view, and pauses when the tab is hidden.
@@ -704,7 +704,7 @@ Bold, direct, engineering-confident, zero fluff. Short sentences. Numbers before
 | Avoid | Use |
 |---|---|
 | "Experience seamless, next-gen billing!" | "Bills in 0 ms. Even when the internet is down." |
-| "Submit" | "Download CB-POS" / "Send ticket" / "Upload slip" |
+| "Submit" | "Download CB POS" / "Send ticket" / "Upload slip" |
 | "Oops! Something went wrong 😢" | "Couldn't send. Check your connection and try again." |
 | "IRD-certified tax engine" | "Calculates 18% VAT and 2.5% SSCL from your MRP." |
 | "Join thousands of happy merchants" | "{n} shops in {d}/25 districts." (live numbers) |

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Product | Ceybyte.com — web platform for CB-POS |
+| Product | Ceybyte.com — web platform for CB POS |
 | Version | 1.0 |
 | Date | 2026-10-21 |
 | Status | Approved for build |
@@ -13,7 +13,7 @@
 
 ## 1. Executive summary
 
-**CB-POS** is free Windows Point of Sale software for Sri Lankan retail shops, published by Ceylon Byte as proprietary freeware. It is offline-first (local SQLite) and keyboard-first. Every product statement below comes from `00-CBPOS_FACTS.md`, with the fact ID in brackets:
+**CB POS** is free Windows Point of Sale software for Sri Lankan retail shops, published by Ceylon Byte as proprietary freeware. It is offline-first (local SQLite) and keyboard-first. Every product statement below comes from `00-CBPOS_FACTS.md`, with the fact ID in brackets:
 
 - backward VAT from the shelf MRP (`base = MRP / 1.18` at the default 18%), plus SSCL at 2.5% on 50% of the VAT-exclusive base. Both switch on only when the shop ticks "Business is VAT Registered" [C1], [C2]
 - tax worked out per bill, shown on receipts and A4 tax invoices when enabled, and summarised in a Tax Liability report and a Tax Filing Summary [C1], [C4]
@@ -25,7 +25,7 @@
 - AES-encrypted `.ZIP` backups (manual, after shift close, and automatically on app close once a backup password is set) [G2]
 - several tills on one shop's LAN through LAN Sync, or a shared PostgreSQL server the shop runs (network mode). Both are opt-in, and neither involves a Ceybyte server [G4], [H]
 
-**Ceybyte.com** is how shop owners find, trust, download and get help with CB-POS. It has five jobs:
+**Ceybyte.com** is how shop owners find, trust, download and get help with CB POS. It has five jobs:
 
 1. **Convert:** turn a visiting shop owner into an installed user in under 3 minutes, in their own language.
 2. **Distribute:** serve the latest installer from GitHub Releases with its SHA-256 hash. The installer isn't code-signed yet [A5].
@@ -33,7 +33,7 @@
 4. **Prove:** show real adoption on a live Sri Lanka Merchant Map, without exposing shop owners' phone numbers.
 5. **Sustain:** collect donations by bank transfer and reward supporters with a gold map pin.
 
-**Constraint (branch `free`):** the platform runs at **Rs. 0 / month** until product-market fit: Cloudflare Workers Static Assets + one Hono Worker, D1, R2, KV, Turnstile; GitHub Actions for builds; PostHog and Resend free tiers. Every public page is static HTML (`02-TRD.md` D1). The full server architecture for a VPS lives on branch `main`.
+**Constraint (branch `free`):** the platform runs at **Rs. 0 / month** until product-market fit: Cloudflare Workers Static Assets + one Hono Worker, D1, R2, KV, Turnstile; GitHub Actions for builds (public repo, free runners); PostHog and Resend free tiers. Every public page is static HTML (`02-TRD.md` D1). The full server architecture for a VPS lives on branch `main`.
 
 ### 1.1 Problem
 
@@ -45,20 +45,20 @@ Sri Lankan small retailers are stuck choosing between:
 
 ### 1.2 Why a web platform
 
-CB-POS is offline-first software. Its only automatic network call is an update check to GitHub on launch, which sends no business data [A7]. Everything else that touches a network (LAN Sync, PostgreSQL network mode, SMTP email, network printers) is opt-in and stays between the shop's own machines and services [A8]. The website is Ceybyte's only online touchpoint, so it must carry trust (real UI, real hashes, real shops, honest disclaimers), handle onboarding (setup guide, docs) and build community (tracker, map, donations).
+CB POS is offline-first software. Its only automatic network call is an update check to GitHub on launch, which sends no business data [A7]. Everything else that touches a network (LAN Sync, PostgreSQL network mode, SMTP email, network printers) is opt-in and stays between the shop's own machines and services [A8]. The website is Ceybyte's only online touchpoint, so it must carry trust (real UI, real hashes, real shops, honest disclaimers), handle onboarding (setup guide, docs) and build community (tracker, map, donations).
 
 ---
 
 ## 2. Goals, non-goals, success metrics
 
 ### 2.1 Goals
-- G1. Make downloading CB-POS the obvious, fast, low-risk action for a Sri Lankan shop owner on a phone or PC.
-- G2. Build a consented, privacy-safe merchant directory showing CB-POS adoption across all 25 districts.
+- G1. Make downloading CB POS the obvious, fast, low-risk action for a Sri Lankan shop owner on a phone or PC.
+- G2. Build a consented, privacy-safe merchant directory showing CB POS adoption across all 25 districts.
 - G3. Cut repeat support questions with searchable trilingual docs and a public tracker.
 - G4. Fund development locally without ads or paywalls.
 
 ### 2.2 Non-goals (v1)
-- Selling CB-POS, licences or subscriptions. CB-POS is free, permanently.
+- Selling CB POS, licences or subscriptions. CB POS is free, permanently.
 - Anything that touches shop data. LAN Sync and PostgreSQL network mode run between the shop's own computers [G4]. The website never receives sales data, database URLs, credentials or LAN Sync secrets, and the app sends it no telemetry [A8].
 - Remote sales dashboards on ceybyte.com.
 - Selling hardware (printers, scanners, scales). Docs may list tested hardware; no affiliate links in v1.
@@ -98,7 +98,7 @@ Personas are written without gendered pronouns on purpose.
 
 ### P2 — Kavitha, pharmacy and mini-mart manager (Jaffna)
 - 34, Tamil-first, comfortable on a smartphone, runs a pharmacy counter plus a small grocery section that sells weighed goods (rice, dhal).
-- Pain: 3-decimal weights for loose goods; wants Tamil on receipts for customers. (CB-POS doesn't track expiry dates [D4], so the site must not imply it does.)
+- Pain: 3-decimal weights for loose goods; wants Tamil on receipts for customers. (CB POS doesn't track expiry dates [D4], so the site must not imply it does.)
 - Needs: Tamil docs with screenshots, a guide to scale-label barcodes [E3], a way to report bugs without calling Colombo.
 
 ### P3 — Ravindu, POS installer and IT freelancer (Colombo / Gampaha)
@@ -155,7 +155,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-01.5 Each locale has its own content for docs and blog posts, linked by `translation_key`. If a translation is missing, show the English article with a banner in the user's language ("This article is not yet available in Sinhala") plus `hreflang` metadata. Never mix languages inside one article.
 - FR-01.6 Numbers, prices and dates: digits are always Western (0–9). Prices use `Rs. 1,250.00`. Dates use the locale's month names via `Intl.DateTimeFormat(locale)`, with the Gregorian calendar.
 - FR-01.7 SEO: `hreflang` alternates for all three locales plus `x-default`, a localized `<title>`/description, and a sitemap per locale.
-- FR-01.8 Fixed glossary: `CB-POS`, `VAT`, `SSCL`, `MRP`, `AVCO`, `.EXE`, `.ZIP`, `SQLite`, `ESC/POS` stay in Latin script in every locale.
+- FR-01.8 Fixed glossary (the product name is always "CB POS", joined by a non-breaking space): `CB POS`, `VAT`, `SSCL`, `MRP`, `AVCO`, `.EXE`, `.ZIP`, `SQLite`, `ESC/POS` stay in Latin script in every locale.
 - FR-01.9 CI blocks deploys while any `[[TRANSLATE]]` marker remains in `si` or `ta` message files.
 
 **Acceptance criteria**
@@ -168,10 +168,10 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 ### F-02 — Product Showcase (8-section homepage)
 
-**Goal:** a shop owner understands what CB-POS does, believes it, and clicks Download within one scroll session.
+**Goal:** a shop owner understands what CB POS does, believes it, and clicks Download within one scroll session.
 
 **Sections** (copy in `06 §3`)
-1. **Hero:** end result plus "without the fear", the `#39FF14` Download CTA, and a 3D CB-POS mockup (Rive).
+1. **Hero:** end result plus "without the fear", the `#39FF14` Download CTA, and a 3D CB POS mockup (Rive).
 2. **Social proof & telemetry strip:** `0 ms` network lag · `Rs. 0 / mo` · `{n}/25` districts · `18% + 2.5%` VAT/SSCL calculated, plus a live map teaser.
 3. **Problem:** cloud POS internet drops, the monthly subscription trap, manual tax and weighing errors.
 4. **Solution bento grid:** 6 interactive cards — Keyboard Cashiering, Offline SQLite, Dual-Tax Engine, Hardware Hub, Trilingual Receipts, 3-Decimal Weighing & Backups.
@@ -192,7 +192,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
   - **Receipts:** an EN/SI/TA tab switch showing the same receipt's text in each language. Item names stay in English, as on real thermal receipts [F2].
   - **Weighing:** scanning a scale label (`20 00042 01250 C`) adds `1.250 kg` [D2], [E3].
 - FR-02.5 The Dual-Tax card runs the same maths as the app [C1], [C2]: `base = mrp / 1.18`, `vat = mrp − base`, `sscl = base × 0.50 × 0.025`, each rounded to 2 dp with **round-half-even** (Python's default, which the app uses). The customer still pays the MRP; VAT and SSCL are backed out of it. Default example: MRP `1,180.00` → before VAT `1,000.00`, VAT `180.00`, SSCL `12.50`. The card says "Applies when VAT registration is on in Settings" and carries "Example only — see tax disclaimer".
-- FR-02.6 Every mockup is a real CB-POS screen capture (or a Rive rebuild from real captures). Fake data must look Sri Lankan (products like "Samba Rice 5kg", Rs. prices).
+- FR-02.6 Every mockup is a real CB POS screen capture (or a Rive rebuild from real captures). Fake data must look Sri Lankan (products like "Samba Rice 5kg", Rs. prices).
 - FR-02.7 The live map teaser is a static, pre-rendered SVG or PNG of the cluster map with the live count. Clicking it goes to F-04. It does not load MapLibre on the homepage.
 
 **Acceptance criteria**
@@ -224,8 +224,8 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 | City | select filtered by district, with free-text fallback | required |
 | Detect My Location | button | Uses the browser Geolocation API. Fills lat/lng and snaps district/city to the nearest entry in `lk-cities.json`. Rejects coordinates outside Sri Lanka's bounds |
 | Map pin | draggable mini-map | Starts at the city centroid (or GPS). Dragging updates lat/lng. Constrained to Sri Lanka bounds |
-| Show my shop on the public CB-POS map | checkbox | default **unchecked** (PDPA: opt-in) |
-| Terms acceptance | checkbox | **required**: "I understand CB-POS is free software provided as-is, that I am responsible for my own tax calculations and IRD filings, and that I am responsible for backing up my local data." Links to the legal pages |
+| Show my shop on the public CB POS map | checkbox | default **unchecked** (PDPA: opt-in) |
+| Terms acceptance | checkbox | **required**: "I understand CB POS is free software provided as-is, that I am responsible for my own tax calculations and IRD filings, and that I am responsible for backing up my local data." Links to the legal pages |
 | Turnstile | widget | invisible/managed |
 
 **On submit**
@@ -249,7 +249,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-03.6 Contact fields carry `data-ph-no-capture` and are excluded from analytics.
 
 **Acceptance criteria**
-- AC-03.1 A user completes both steps and the browser starts downloading `CB-POS-Setup-{version}.exe` from `github.com/ceybyte/cbpos-releases/releases/download/...` within 1 s of submit.
+- AC-03.1 A user completes both steps and the browser starts downloading `CBPOSSetup-{version}.exe` from `github.com/ceybyte/cbpos-releases/releases/download/...` within 1 s of submit.
 - AC-03.2 Submitting with GPS coordinates outside lat 5.8–10.0 / lng 79.5–82.0 shows the localized error `LOCATION_OUTSIDE_SRI_LANKA`.
 - AC-03.3 `merchants.is_public_on_map` is `false` unless the user ticked the box.
 - AC-03.4 The modal is fully operable by keyboard: focus is trapped, `Esc` closes it (with a confirm if dirty), `Enter` advances, and Vaul's drag-to-dismiss on mobile works.
@@ -259,7 +259,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 ### F-04 — Sri Lanka Merchant Map
 
-**Goal:** show CB-POS's real reach and let people find nearby shops using it, without exposing private contact data.
+**Goal:** show CB POS's real reach and let people find nearby shops using it, without exposing private contact data.
 
 **Functional requirements**
 - FR-04.1 MapLibre GL JS with **self-hosted Protomaps vector tiles** (a Sri Lanka extract of OpenStreetMap in one `.pmtiles` file), styled with the Protomaps `dark` flavour recoloured to our tokens (dark theme) and the `light` flavour (light theme). This gives the CARTO Dark Matter look without CARTO's commercial licence, which Ceybyte would need [ADR-0008]. Map labels use Latin-script names in every locale, because MapLibre doesn't shape Sinhala or Tamil text correctly yet. The side panel, filters and popups carry the localized names. Bounds are locked to Sri Lanka (`maxBounds` lng 79.5–82.0, lat 5.8–10.0). minZoom 6.5, maxZoom 16.
@@ -268,7 +268,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-04.4 Pins:
   - standard merchant: `#00BCEB` dot with a cyan halo
   - supporter: `#FFD700` dot with a gold halo and a "Gold Supporter" badge in the popup
-- FR-04.5 Popup and sheet: shop name, category, city, district, "CB-POS user since {month year}", and a Supporter badge if applicable. "Get directions" opens `https://www.google.com/maps/dir/?api=1&destination={lat},{lng}`. No contact buttons.
+- FR-04.5 Popup and sheet: shop name, category, city, district, "CB POS user since {month year}", and a Supporter badge if applicable. "Get directions" opens `https://www.google.com/maps/dir/?api=1&destination={lat},{lng}`. No contact buttons.
 - FR-04.6 Side panel (desktop) or bottom sheet (mobile):
   - district filter (25)
   - category filter
@@ -276,7 +276,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
   - search by shop name or city (client-side over the loaded FeatureCollection)
   - a list of results in the current viewport
 - FR-04.7 District coverage panel: a 25-cell grid with each district lit when it has ≥1 listed shop. Clicking a cell flies to that district.
-- FR-04.8 "Add my shop" CTA: if signed in → dashboard listing editor; otherwise → the Download Gate (every shop on the map is a CB-POS downloader).
+- FR-04.8 "Add my shop" CTA: if signed in → dashboard listing editor; otherwise → the Download Gate (every shop on the map is a CB POS downloader).
 - FR-04.9 Public coordinates are rounded to 4 decimal places (~11 m).
 - FR-04.10 "Report this listing" link → a prefilled `feedback_tickets` entry of type `listing_report`.
 
@@ -350,7 +350,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
   - type
   - title (8–120 chars)
   - description (Markdown, 20–5,000 chars)
-  - CB-POS version (select from `releases`)
+  - CB POS version (select from `releases`)
   - Windows version
   - severity (`bug` only: `crash`, `blocks_billing`, `wrong_output`, `cosmetic`)
   - optional crash log upload (`.log`, `.txt`, `.zip` ≤ 5 MB to R2)
@@ -438,7 +438,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 
 ### F-11 — Donations & Supporter Badges
 
-**Goal:** let supporters fund CB-POS with a plain bank transfer, verified by an admin.
+**Goal:** let supporters fund CB POS with a plain bank transfer, verified by an admin.
 
 **Payment method (v1): bank transfer only**
 | Method | How the donor pays | Verification |
@@ -481,10 +481,10 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 | Slug | Content |
 |---|---|
 | `terms` | Terms of use for the website |
-| `eula` | CB-POS End User Licence Agreement: proprietary freeware by Ceylon Byte, free to use, no copying, modifying or redistributing, provided as-is, no warranty, limitation of liability. Nothing like this exists in the app today [K1], [K2], so the site publishes it and the gate links it (UR-06 adds it to the installer) |
+| `eula` | CB POS End User Licence Agreement: proprietary freeware by Ceylon Byte, free to use, no copying, modifying or redistributing, provided as-is, no warranty, limitation of liability. Nothing like this exists in the app today [K1], [K2], so the site publishes it and the gate links it (UR-06 adds it to the installer) |
 | `privacy` | PDPA-aligned privacy notice for the website: what is collected (gate, tickets, donations, auth), purpose, retention, public map fields, processors (Cloudflare, PostHog, Resend, GitHub), rights (access, correction, deletion), contact. Plus an **app network disclosure**: the update check to `raw.githubusercontent.com` on every launch (no business data), and the opt-in connections (SMTP, LAN Sync, PostgreSQL, network printers) [A7], [A8] |
-| `tax-disclaimer` | CB-POS calculates VAT 18% (backward from MRP) and SSCL 2.5% per configured rates. It is not certified, approved or endorsed by the IRD. Merchants are responsible for verifying rates, registration thresholds and filings with a qualified accountant. Rates can change by law, so update CB-POS and check settings |
-| `data-safety` | The CB-POS database is a plain SQLite file in `%LOCALAPPDATA%\CB POS` and isn't encrypted at rest [G1]. Backups are AES-encrypted `.ZIP` files that need a backup password; without one, automatic backups are skipped [G2]. Ceybyte has no access to shop data and can't recover it. Lost backup passwords can't be recovered. In network mode the data lives on the shop's PostgreSQL server, which CB-POS backups don't cover [G4]. Moving to a new PC means re-entering email, network and sync passwords [G3] |
+| `tax-disclaimer` | CB POS calculates VAT 18% (backward from MRP) and SSCL 2.5% per configured rates. It is not certified, approved or endorsed by the IRD. Merchants are responsible for verifying rates, registration thresholds and filings with a qualified accountant. Rates can change by law, so update CB POS and check settings |
+| `data-safety` | The CB POS database is a plain SQLite file in `%LOCALAPPDATA%\CB POS` and isn't encrypted at rest [G1]. Backups are AES-encrypted `.ZIP` files that need a backup password; without one, automatic backups are skipped [G2]. Ceybyte has no access to shop data and can't recover it. Lost backup passwords can't be recovered. In network mode the data lives on the shop's PostgreSQL server, which CB POS backups don't cover [G4]. Moving to a new PC means re-entering email, network and sync passwords [G3] |
 | `cookies` | Cookies used: locale, gate, claim, auth session, PostHog (with consent banner choices) |
 
 **Functional requirements**
@@ -521,15 +521,14 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 - A3. No payment gateway is integrated in v1. Choosing one (card and/or LankaQR) is a future ADR.
 - A4. Native Sinhala and Tamil translators are available for UI strings and legal pages before launch.
 - A5. The installer is currently unsigned. A code-signing certificate is the first funding goal. Until then, SmartScreen guidance is mandatory in the "What Next?" step and the FAQ.
-- A6. No CB-POS screenshots exist yet [L1]. They must be captured from the app (UR-20) before the homepage ships. Brand assets (logo, monogram, icons, Noto fonts) exist in the app repo [L1].
-- A7. Product facts are re-audited against every tagged CB-POS release (`00-CBPOS_FACTS.md`). The audit at launch covers `v1.3.0` plus unreleased work up to `88a7858`.
+- A6. No CB POS screenshots exist yet [L1]. They must be captured from the app (UR-20) before the homepage ships. Brand assets (logo, monogram, icons, Noto fonts) exist in the app repo [L1].
+- A7. Product facts are re-audited against every tagged CB POS release (`00-CBPOS_FACTS.md`). The audit at launch covers `v1.3.0` plus unreleased work up to `88a7858`.
 
 ## 7. Risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
 | Free Workers plan limits (10 ms CPU per request, 100k Worker requests/day) | API errors or blocked requests | Pages are static and free; only `/api/*` counts. Heavy work happens at build time. Escalation: Workers Paid ($5/mo), or move to the `main` VPS architecture |
-| GitHub Actions minutes run out (private repo) | Content can't publish | Coalesced builds (~4 min each), minutes shown in admin; making the site repo public removes the limit |
 | Fake or spam map listings | Map loses credibility | Turnstile, rate limits, phone dedupe, admin moderation queue, "Report listing" |
 | SmartScreen warnings scare users | Lower installs | Explicit "What Next?" guidance with screenshots; publish hashes; code-signing as funding goal #1 |
 | Self-hosted map tiles go stale or fail to load | Map out of date or blank | Rebuild the Sri Lanka extract quarterly (scripted). If tiles fail, fall back to list-only mode. `MAP_STYLE_*` env can point at another style |
@@ -548,7 +547,7 @@ A reference code (`CB-DN-7K3Q9P`) is shown before payment so the donor can put i
 
 ## 9. Open questions
 
-- OQ-1. Should the WhatsApp community link go to one group, or per-language groups (`en`/`si`/`ta`)? Default: one community with per-language groups.
+- OQ-1. ~~WhatsApp: one group or per-language groups?~~ **Resolved 2026-10-21:** one community link, `https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM` (`WHATSAPP_COMMUNITY_URL`).
 - OQ-2. Should supporters without a shop listing get a public profile? Default: supporters wall entry only.
-- OQ-3. Brand name: the app calls itself **"CB POS"** (space) everywhere [K2], while this brief uses **"CB-POS"** with the `[CB-POS]` logo. Default: keep `CB-POS` on the website and ask the app team to align (or the reverse). Pick one before launch.
+- OQ-3. ~~Brand name~~ **Resolved 2026-10-21:** **CB POS** (with a space), matching the app [K2]. The wordmark is `[CB POS]`. In UI strings the space is a non-breaking space (`CB\u00A0POS`) so the name never wraps.
 - OQ-4. The app's installer runs in 32-bit mode and can't be called "64-bit" until UR-11 ships [A2]. Default: say "Windows 10 or later".

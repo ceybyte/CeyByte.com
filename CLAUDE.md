@@ -1,6 +1,6 @@
 # CLAUDE.md — Ceybyte.com Repository Constitution
 
-Ceybyte.com is the official web platform for **CB-POS**: free (proprietary freeware), offline-first, keyboard-first Windows Point of Sale software for Sri Lankan retail shops, published by Ceylon Byte. Several tills can share data through **LAN Sync** or a shared **PostgreSQL network mode** that the shop hosts itself. There is no cloud service. This site is where people see the product, download the installer, read the trilingual docs, report bugs, donate, and find shops that use it on the live Sri Lanka Merchant Map.
+Ceybyte.com is the official web platform for **CB POS**: free (proprietary freeware), offline-first, keyboard-first Windows Point of Sale software for Sri Lankan retail shops, published by Ceylon Byte. Several tills can share data through **LAN Sync** or a shared **PostgreSQL network mode** that the shop hosts itself. There is no cloud service. This site is where people see the product, download the installer, read the trilingual docs, report bugs, donate, and find shops that use it on the live Sri Lanka Merchant Map.
 
 This file has the rules for every developer and AI agent working in this repo. If a rule here conflicts with what you would usually do, the rule here wins.
 
@@ -10,7 +10,7 @@ This file has the rules for every developer and AI agent working in this repo. I
 
 | Doc | Owns | Read when |
 |---|---|---|
-| `docs/00-CBPOS_FACTS.md` | **What the CB-POS app actually does**, audited from its source with `path:line` evidence | Before writing or reviewing any sentence about the product |
+| `docs/00-CBPOS_FACTS.md` | **What the CB POS app actually does**, audited from its source with `path:line` evidence | Before writing or reviewing any sentence about the product |
 | `docs/08-UPSTREAM_REQUESTS.md` | App changes the site depends on, with status | Before claiming a feature that isn't shipped yet |
 | `docs/01-PRD.md` | What we build and why. Features `F-01`–`F-12`, acceptance criteria | Before starting any feature |
 | `docs/02-TRD.md` | Architecture, routes, APIs, caching, security, free-tier budget | Before touching `apps/api`, `wrangler.jsonc`, the build pipeline |
@@ -32,8 +32,8 @@ This file has the rules for every developer and AI agent working in this repo. I
 
 1. **$0/month.** Every service must fit its free tier (budget in `02-TRD.md §14`). Anything that bills needs an ADR in `docs/adr/`.
 2. **Never leak merchant contact data.** `phone`, `whatsapp`, `telegram`, `full_name`, IP addresses and claim tokens never appear in any public response, page, cache entry, log line or analytics event. Public queries use the explicit projections in `packages/shared/src/db/projections.ts`. Never use `select()` without columns on `merchants`.
-3. **Product truth.** Every claim about CB-POS (features, tax maths, hardware, shortcuts, privacy, file names) must match `docs/00-CBPOS_FACTS.md`. Copy tables in `06` cite the fact ID (`[C2]`). Features marked `open` in `08-UPSTREAM_REQUESTS.md` are never advertised. When the facts say UNKNOWN, the site says nothing.
-3a. **Never claim IRD approval or certification.** CB-POS *calculates* 18% VAT and 2.5% SSCL. It is not *certified*, *approved* or *endorsed* by the Inland Revenue Department. Every tax claim links to `/{locale}/legal/tax-disclaimer`.
+3. **Product truth.** Every claim about CB POS (features, tax maths, hardware, shortcuts, privacy, file names) must match `docs/00-CBPOS_FACTS.md`. Copy tables in `06` cite the fact ID (`[C2]`). Features marked `open` in `08-UPSTREAM_REQUESTS.md` are never advertised. When the facts say UNKNOWN, the site says nothing.
+3a. **Never claim IRD approval or certification.** CB POS *calculates* 18% VAT and 2.5% SSCL. It is not *certified*, *approved* or *endorsed* by the Inland Revenue Department. Every tax claim links to `/{locale}/legal/tax-disclaimer`.
 4. **Never fabricate numbers.** Shop counts, district coverage and donation totals are fetched live from the API at runtime. If the API can't answer, the number is hidden, never guessed.
 5. **Trilingual by construction.** No user-facing string is hardcoded in a component. Every string lives in `messages/{en,si,ta}.json`. A PR that adds an `en` key without matching `si` and `ta` keys fails CI (it may use the `[[TRANSLATE]]` marker, which blocks production deploys).
 6. **Sinhala and Tamil are written by native speakers, never machine-translated into production.** Agents may draft them but must mark them `[[TRANSLATE]]`.
@@ -189,7 +189,7 @@ Rules:
 - **Hairlines, not shadows.** 1px `--hairline` borders and the architectural grid with `+` crosshairs. No drop shadows, except the cyan rim glow on product mockups and the focus ring.
 - **Monospace** (`JetBrains Mono`) for prices, tax math, versions, SHA-256 hashes and `<kbd>`.
 - **Sinhala/Tamil:** +15% line-height, one weight step lighter, `letter-spacing: 0`, no Geist (it has no Indic glyphs). This is enforced via `:lang(si)`/`:lang(ta)` selectors, not per component.
-- **Mockups:** real CB-POS UI captures only, borderless, no fake browser chrome, on a `#18181B` backdrop with a cyan rim glow.
+- **Mockups:** real CB POS UI captures only, borderless, no fake browser chrome, on a `#18181B` backdrop with a cyan rim glow.
 
 ---
 
@@ -234,13 +234,14 @@ A PR fails review if any box can't be honestly ticked.
 ### 8.1 Copy
 - [ ] No filler words: *seamless, revolutionize, unlock, elevate, empower, cutting-edge, robust, leverage, game-changer, in today's fast-paced world, effortless*.
 - [ ] Every headline states a concrete outcome or number ("Bill in 0 ms network lag", not "Next-gen retail experience").
+- [ ] The product is written **CB POS** (non-breaking space), never "CB-POS" or "CBPOS". The company is Ceylon Byte; the site is ceybyte.com.
 - [ ] No exclamation marks in UI copy. No emoji in UI copy.
 - [ ] Prices are written `Rs. 1,250.00` (space after `Rs.`, comma thousands, 2 dp) in `font-mono`.
 - [ ] Product claims cite a fact ID from `00-CBPOS_FACTS.md` and match it exactly. Banned claims (each one is false or unshipped today): "100% offline" (the app checks GitHub for updates on every launch, [A7]); "Cloud Sync" or any cloud service ([H]); "IRD compliant" / "2026 mandate" ([C5]); email receipts ([A8]); expiry, batch or serial tracking ([D4]); live scale connection ([E3]); customer display ([E4]); SMS/WhatsApp receipts ([F3]); per-bill receipt language or Sinhala/Tamil item names on thermal receipts ([F2]); portable .ZIP build ([A3]); "64-bit installer" ([A2]).
 - [ ] Data claims: "Your sales are saved on your own PC" is true in standalone mode. When describing LAN Sync or network mode, say the data stays on the shop's own computers and server.
 - [ ] Tax claims say *calculates*, never *certified/approved/compliant-guaranteed*, and link the disclaimer.
 - [ ] Each string exists in `en`, `si` and `ta` (or carries `[[TRANSLATE]]`).
-- [ ] Button labels are verbs: "Download CB-POS", "Send ticket", "Upload slip". Never "Submit" or "Click here".
+- [ ] Button labels are verbs: "Download CB POS", "Send ticket", "Upload slip". Never "Submit" or "Click here".
 
 ### 8.2 Visual
 - [ ] Only tokens; no raw hex; no arbitrary colour values.
@@ -251,7 +252,7 @@ A PR fails review if any box can't be honestly ticked.
 - [ ] Border radius comes only from the scale (`0`, `4px`, `6px`, `9999px` for pills and dots).
 - [ ] Layout holds at 320, 375, 414 and 768 px with 16px gutters: no horizontal scroll (`overflow-x: clip` on `html` and `body`), no two-line buttons or nav links, image grid tracks use `minmax(0, 1fr)`, long headings wrap with `overflow-wrap: anywhere; min-width: 0` (hallmark gates 34, 49–53).
 - [ ] No italic headings or italic emphasis words inside headings (hallmark gate 38a).
-- [ ] Product imagery is real CB-POS screenshots ([L1]: none exist yet, UR-20) or Hairline figures. Never a mocked-up POS screen invented by an agent.
+- [ ] Product imagery is real CB POS screenshots ([L1]: none exist yet, UR-20) or Hairline figures. Never a mocked-up POS screen invented by an agent.
 - [ ] Sinhala and Tamil versions screenshotted and checked for diacritic clipping.
 - [ ] Contrast was checked in both light and dark themes.
 

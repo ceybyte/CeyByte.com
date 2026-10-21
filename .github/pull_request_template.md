@@ -4,7 +4,7 @@
 
 ## Product truth
 
-- [ ] Every claim about the CB-POS app cites a fact ID from `docs/00-CBPOS_FACTS.md` and matches it
+- [ ] Every claim about the CB POS app cites a fact ID from `docs/00-CBPOS_FACTS.md` and matches it
 - [ ] Nothing marked `open` in `docs/08-UPSTREAM_REQUESTS.md` is advertised
 
 ## Design gates (CLAUDE.md §7) — required for any UI change

@@ -70,7 +70,6 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [ ] `next-intl` static export: `setRequestLocale` + `generateStaticParams`, no middleware.
 - [ ] drizzle-kit emits partial unique indexes and `check()` for SQLite.
 - [ ] MapLibre Sinhala/Tamil label shaping, re-tested with a sample style. If it now shapes correctly, revisit ADR-0008's Latin-label rule.
-- [ ] GitHub Actions minutes: is the site repo public (unlimited) or private (2,000/month)?
 
 ### 0.2 Skills
 - [ ] `bunx skills add emilkowalski/skills`, `bunx skills add Nutlope/hallmark`, `bunx skills add pbakaus/impeccable`; commit `.claude/skills` and the lockfile.
@@ -175,7 +174,7 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Goal:** S01 with all 8 sections, live stats and motion (F-02).
 
-**Prerequisite:** real CB-POS captures from UR-20 (or a static capture taken by the team following `03 §6.2`). No hero ships with an invented UI.
+**Prerequisite:** real CB POS captures from UR-20 (or a static capture taken by the team following `03 §6.2`). No hero ships with an invented UI.
 
 - [ ] `GET /api/stats` (KV `stats:v1` → D1 fallback, Cache API 300 s) + `useStats()` hook with skeleton/hidden states.
 - [ ] Hero: copy from `06 §3.1` with fact IDs checked, CTA (gate stub until P6), meta line from `.content/releases.json`, capture with rim glow, Hairline `Keyboard` figure.
@@ -274,9 +273,9 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [ ] S11 pages: terms, **EULA**, privacy (with the app network disclosure [A7], [A8]), tax disclaimer, data safety, cookies. Summary boxes, version stamps, "English prevails". Reviewed by a Sri Lankan lawyer (or at least against PDPA obligations).
 - [ ] `terms_version` wired into the gate; inline disclaimers per FR-12.1.
 - [ ] CI grep for banned claims (`CLAUDE.md §8.1`) across `messages/*.json` and `.content`.
-- [ ] Re-run the CB-POS facts audit against the newest tag; update copy for anything that changed. Confirm the status of UR-01, UR-02, UR-03 and adjust What Next / multi-till docs.
+- [ ] Re-run the CB POS facts audit against the newest tag; update copy for anything that changed. Confirm the status of UR-01, UR-02, UR-03 and adjust What Next / multi-till docs.
 - [ ] Sinhala and Tamil for all M1 strings, legal pages and seed docs; `bun run i18n:check --strict` passes; native-speaker screenshot review of S01, S02, S03, S05.
-- [ ] Decide PRD OQ-3 (CB-POS vs CB POS) and apply everywhere.
+- [ ] Check every page, meta tag and OG image uses "CB POS" with a non-breaking space (PRD OQ-3).everywhere.
 
 ### 9.2 Hardening
 - [ ] `/security-review`; fix findings. Webhook negative tests. Turnstile enforced on every public POST (integration test enumerates routes).
@@ -344,7 +343,7 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [ ] OG images per post; RSS per locale; sitemap includes posts.
 - [ ] Docs video embeds (`::video`, captions required).
 - [ ] Payment gateway ADR (card and/or LankaQR): fees, donation eligibility, webhook security. Build only after approval.
-- [ ] Launch posts: "CB-POS is free", "How CB-POS works out VAT and SSCL from MRP" (with the disclaimer and [C1]/[C2] examples), a first shop story (written consent).
+- [ ] Launch posts: "CB POS is free", "How CB POS works out VAT and SSCL from MRP" (with the disclaimer and [C1]/[C2] examples), a first shop story (written consent).
 - [ ] **Design gates.**
 
 **Exit (M3):** blog live in EN, with SI/TA posts as translations arrive.
@@ -355,7 +354,7 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 - [ ] Weekly: PostHog funnels against `01 §2.3`; pick one conversion experiment.
 - [ ] Weekly: free-tier usage against `02 §14`; any metric past 60% → ADR (Workers Paid, or move to `main`).
-- [ ] Per CB-POS release: re-run the facts audit, update `00`/`08`, update docs and copy, blog post if notable, mark linked tickets `shipped`.
+- [ ] Per CB POS release: re-run the facts audit, update `00`/`08`, update docs and copy, blog post if notable, mark linked tickets `shipped`.
 - [ ] Monthly: dependency updates (minor/patch), Lighthouse, axe sweep, translation backlog, skill updates reviewed.
 - [ ] Quarterly: rebuild map tiles; legal review (tax rates, PDPA guidance); tax disclaimer still matches the app.
 
