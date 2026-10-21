@@ -983,7 +983,7 @@ Query: `db.select(PUBLIC_GEO_COLUMNS).from(merchants).where(publicMapWhere)`.
 2. **Lint rule** `no-bare-merchant-select`: flags `db.select().from(merchants)` and `db.query.merchants.findMany()` without `columns` outside `src/features/admin/**` and `src/features/merchants/owner.ts`.
 3. **Log redaction:** `apps/api/src/lib/log.ts` drops keys matching `/phone|whatsapp|telegram|full_?name|email|contact|ip$/i`.
 4. **PostHog:** contact inputs carry `data-ph-no-capture`, `maskAllInputs: true`, and server events are built from an allow-list of property names.
-5. **R2:** the bucket is private. Public media is served only through `/media/[...key]` with a prefix allow-list (`docs/`, `blog/`, `screenshots/public/`, `og/`).
+5. **R2:** `cbpos-uploads` is private. Public files live only in `cbpos-public` (`cdn.ceybyte.com`); a private object becomes public only through an admin action that copies it (screenshots).
 
 ---
 
