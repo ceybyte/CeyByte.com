@@ -1,0 +1,22 @@
+# Local secrets for the API Worker (branch `free`). Copy to apps/api/.dev.vars.
+# Production secrets are set with `wrangler secret put`. Never commit a real .dev.vars.
+# Full list and purpose: docs/02-TRD.md §2.3. Non-secret vars live in apps/api/wrangler.jsonc.
+
+BETTER_AUTH_SECRET=change-me-to-32-random-bytes
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+RESEND_API_KEY=
+
+# Cloudflare Turnstile test secret (always passes)
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+
+# R2 S3-API token scoped to cbpos-uploads (local dev can use a dev bucket)
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+
+GITHUB_WEBHOOK_SECRET=dev-webhook-secret
+GITHUB_DISPATCH_TOKEN=
+GITHUB_API_TOKEN=
+
+IP_HASH_PEPPER=dev-pepper
+CLAIM_TOKEN_SECRET=dev-claim-secret

@@ -1,0 +1,32 @@
+name: Website bug
+description: Something on ceybyte.com is broken or wrong.
+labels: ["bug", "website"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      placeholder: https://ceybyte.com/si/docs/...
+    validations:
+      required: true
+  - type: dropdown
+    id: locale
+    attributes:
+      label: Language
+      options: ["English", "සිංහල (Sinhala)", "தமிழ் (Tamil)"]
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+      placeholder: Android 14, Chrome 130 / Windows 11, Edge
+  - type: markdown
+    attributes:
+      value: "Please don't include phone numbers, passwords or other personal details in this public issue."

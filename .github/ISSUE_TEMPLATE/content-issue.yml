@@ -1,0 +1,24 @@
+name: Docs or translation issue
+description: A docs page, translation or piece of copy is wrong, unclear or missing.
+labels: ["content"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem?
+      options: ["Wrong information", "Unclear wording", "Translation error", "Text clipped or broken (Sinhala/Tamil)", "Missing page"]
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: Details
+      description: Quote the text and suggest a fix if you can.
+    validations:
+      required: true

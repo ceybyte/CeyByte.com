@@ -10,7 +10,7 @@ This file has the rules for every developer and AI agent working in this repo. I
 
 | Doc | Owns | Read when |
 |---|---|---|
-| `docs/00-CBPOS_FACTS.md` | **What the CB POS app actually does**, audited from its source with `path:line` evidence | Before writing or reviewing any sentence about the product |
+| `docs/00-CBPOS_FACTS.md` (**local only, gitignored**) | **What the CB POS app actually does**, audited from its source with `path:line` evidence. It isn't committed because this repo is public and the audit cites the private app repo and unfixed weaknesses. Get it from a maintainer, or regenerate it by running the audit prompt against the app repo, and save it at this path | Before writing or reviewing any sentence about the product |
 | `docs/08-UPSTREAM_REQUESTS.md` | App changes the site depends on, with status | Before claiming a feature that isn't shipped yet |
 | `docs/01-PRD.md` | What we build and why. Features `F-01`–`F-12`, acceptance criteria | Before starting any feature |
 | `docs/02-TRD.md` | Architecture, routes, APIs, caching, security, free-tier budget | Before touching `apps/api`, `wrangler.jsonc`, the build pipeline |

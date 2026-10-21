@@ -1,0 +1,7 @@
+# Default reviewers for everything in this repo.
+* @HMAHD
+
+# Product truth, legal and privacy-sensitive areas need an explicit maintainer review.
+/docs/01-PRD.md @HMAHD
+/docs/05-SCHEMA.md @HMAHD
+/CLAUDE.md @HMAHD
