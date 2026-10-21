@@ -1,4 +1,4 @@
-# 05 — Data Schema (Drizzle ORM · D1/SQLite · Postgres-portable)
+# 05 — Data Schema (Drizzle ORM · PostgreSQL 17 · SQLite-portable) · branch `main`
 
 | | |
 |---|---|
@@ -6,7 +6,7 @@
 | Date | 2026-10-21 |
 | Status | Approved for build. **Highest-precedence doc** (see `CLAUDE.md §0`) |
 | Code | `src/lib/enums.ts`, `src/server/db/schema.ts`, `src/server/db/relations.ts`, `src/server/db/projections.ts` |
-| Migrations | `drizzle/` via `pnpm db:generate`; applied with `wrangler d1 migrations apply` |
+| Migrations | `drizzle/` via `bun run db:generate`; applied by `drizzle-kit migrate` in the pre-deploy step (migration role) |
 
 ---
 
@@ -18,14 +18,14 @@
 | Column names | snake_case in SQL, camelCase keys in TypeScript |
 | Primary keys | `text` UUID v4 from `crypto.randomUUID()`, generated in the app |
 | Public IDs | Separate short IDs for anything shown in URLs or public JSON (`m_7Kq3P9`, `CB-0142`, `CB-DN-7K3Q9P`). Internal UUIDs never leave the server in public responses |
-| Timestamps | `integer` with `{ mode: "timestamp_ms" }` → JS `Date`. Set by the app (`$defaultFn`/`$onUpdateFn`), never by SQL defaults |
-| Booleans | `integer` with `{ mode: "boolean" }` |
+| Timestamps | `timestamp with time zone` (`mode: "date"`). Set by the app (`$defaultFn`/`$onUpdateFn`), never by SQL defaults, so the `free` branch's SQLite copy stays identical |
+| Booleans | `boolean` |
 | Money | `amount_cents` integer, LKR. `Rs. 1,250.00` = `125000` |
 | Enums | `text` with a TypeScript `enum` option + zod at the boundary + `CHECK` for the critical ones |
-| JSON | `text` with `{ mode: "json" }` + `$type<T>()`, always parsed through zod on read for untrusted shapes |
+| JSON | `jsonb` + `$type<T>()`, parsed through zod on read for untrusted shapes. Never queried inside SQL (portability) |
 | Soft delete | `deleted_at` on `merchants` only. Everything else hard-deletes or uses status |
-| Foreign keys | Declared. D1 enforces foreign keys. `onDelete` is explicit on every FK |
-| Batch limits | D1 allows at most 100 bound parameters per statement. Chunk bulk inserts (`chunk(rows, Math.floor(100 / columnsPerRow))`) |
+| Foreign keys | Declared, `onDelete` explicit on every FK |
+| Transactions | `db.transaction()`. Numbering, credit and supporter recomputation run `SERIALIZABLE` with one retry on serialization failure |
 
 ---
 
@@ -241,9 +241,9 @@ erDiagram
 import "server-only";
 import { sql } from "drizzle-orm";
 import {
-  sqliteTable, text, integer, real, index, uniqueIndex, primaryKey, check,
-  type AnySQLiteColumn,
-} from "drizzle-orm/sqlite-core";
+  pgTable, text, integer, doublePrecision, boolean, timestamp, jsonb,
+  index, uniqueIndex, primaryKey, check, type AnyPgColumn,
+} from "drizzle-orm/pg-core";
 import {
   ROLES, LOCALES, DISTRICTS, BUSINESS_CATEGORIES, MERCHANT_STATUSES, LOCATION_SOURCES,
   MERCHANT_LOG_EVENTS, RELEASE_CHANNELS, RELEASE_SOURCES, CONTENT_STATUSES, BLOG_STATUSES,
@@ -253,23 +253,22 @@ import {
 
 /* ---------- column helpers ---------- */
 const pk = () => text("id").primaryKey().$defaultFn(() => crypto.randomUUID());
-const createdAt = () =>
-  integer("created_at", { mode: "timestamp_ms" }).notNull().$defaultFn(() => new Date());
+const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" });
+const createdAt = () => ts("created_at").notNull().$defaultFn(() => new Date());
 const updatedAt = () =>
-  integer("updated_at", { mode: "timestamp_ms" })
+  ts("updated_at")
     .notNull()
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date());
-const ts = (name: string) => integer(name, { mode: "timestamp_ms" });
-const bool = (name: string) => integer(name, { mode: "boolean" });
+const bool = (name: string) => boolean(name);
 
 /* =====================================================================
  * AUTH (Better Auth core + admin plugin). Field keys must match Better
  * Auth's expected names; column names are snake_case.
- * Configure: drizzleAdapter(db, { provider: "sqlite", usePlural: true, schema })
+ * Configure: drizzleAdapter(db, { provider: "pg", usePlural: true, schema })
  * ===================================================================== */
 
-export const users = sqliteTable(
+export const users = pgTable(
   "users",
   {
     id: pk(),
@@ -290,7 +289,7 @@ export const users = sqliteTable(
   (t) => [uniqueIndex("users_email_uq").on(t.email)],
 );
 
-export const sessions = sqliteTable(
+export const sessions = pgTable(
   "sessions",
   {
     id: pk(),
@@ -306,7 +305,7 @@ export const sessions = sqliteTable(
   (t) => [uniqueIndex("sessions_token_uq").on(t.token), index("sessions_user_idx").on(t.userId)],
 );
 
-export const accounts = sqliteTable(
+export const accounts = pgTable(
   "accounts",
   {
     id: pk(),
@@ -329,7 +328,7 @@ export const accounts = sqliteTable(
   ],
 );
 
-export const verifications = sqliteTable(
+export const verifications = pgTable(
   "verifications",
   {
     id: pk(),
@@ -346,7 +345,7 @@ export const verifications = sqliteTable(
  * MERCHANTS (download gate + map directory)
  * ===================================================================== */
 
-export const merchants = sqliteTable(
+export const merchants = pgTable(
   "merchants",
   {
     id: pk(),
@@ -364,8 +363,8 @@ export const merchants = sqliteTable(
     category: text("category", { enum: BUSINESS_CATEGORIES }).notNull(),
     district: text("district", { enum: DISTRICTS }).notNull(),
     city: text("city").notNull(),
-    lat: real("lat").notNull(), // stored at 6 dp; public output rounded to 4 dp
-    lng: real("lng").notNull(),
+    lat: doublePrecision("lat").notNull(), // stored at 6 dp; public output rounded to 4 dp
+    lng: doublePrecision("lng").notNull(),
     locationSource: text("location_source", { enum: LOCATION_SOURCES }).notNull(),
 
     isPublicOnMap: bool("is_public_on_map").notNull().default(false),
@@ -397,14 +396,14 @@ export const merchants = sqliteTable(
   ],
 );
 
-export const merchantLogs = sqliteTable(
+export const merchantLogs = pgTable(
   "merchant_logs",
   {
     id: pk(),
     merchantId: text("merchant_id").references(() => merchants.id, { onDelete: "cascade" }),
     releaseId: text("release_id").references(() => releases.id, { onDelete: "set null" }),
     event: text("event", { enum: MERCHANT_LOG_EVENTS }).notNull(),
-    meta: text("meta", { mode: "json" }).$type<Record<string, string | number | boolean | null>>(),
+    meta: jsonb("meta").$type<Record<string, string | number | boolean | null>>(),
     ipHash: text("ip_hash"),          // sha256(ip + daily salt), never the raw IP
     country: text("country"),         // request.cf.country (ISO-2)
     uaFamily: text("ua_family"),      // "chrome-android", "edge-windows"; never the full UA
@@ -424,7 +423,7 @@ export const merchantLogs = sqliteTable(
  * from the GitHub API until UR-08 adds them to the manifest.
  * ===================================================================== */
 
-export const releases = sqliteTable(
+export const releases = pgTable(
   "releases",
   {
     id: pk(),
@@ -432,7 +431,7 @@ export const releases = sqliteTable(
     channel: text("channel", { enum: RELEASE_CHANNELS }).notNull().default("stable"),
     title: text("title").notNull(),
     notesMd: text("notes_md").notNull().default(""),
-    notesHast: text("notes_hast", { mode: "json" }).$type<unknown>(),
+    notesHast: jsonb("notes_hast").$type<unknown>(),
     minOs: text("min_os").notNull().default("Windows 10 or later"), // installer MinVersion=10.0 [A2]
     releaseDate: text("release_date").notNull(),    // manifest release_date, YYYY-MM-DD
     publishedAt: ts("published_at").notNull(),      // GitHub release published_at
@@ -455,26 +454,26 @@ export const releases = sqliteTable(
   },
   (t) => [
     uniqueIndex("releases_version_channel_uq").on(t.version, t.channel),
-    uniqueIndex("releases_latest_per_channel_uq").on(t.channel).where(sql`${t.isLatest} = 1`),
+    uniqueIndex("releases_latest_per_channel_uq").on(t.channel).where(sql`${t.isLatest} = true`),
     index("releases_published_idx").on(t.publishedAt),
     check("releases_exe_sha", sql`length(${t.exeSha256}) = 64`),
   ],
 );
 
 /* =====================================================================
- * DOCS (Fumadocs UI, content in D1)
+ * DOCS (Fumadocs UI, content in PostgreSQL)
  * Categories are locale-independent (titles per locale in columns, as the
  * set is small and fixed at 3 locales). Articles are one row per locale,
  * grouped by translation_key. Slugs are shared across locales so that
  * /en/docs/x/y ↔ /si/docs/x/y.
  * ===================================================================== */
 
-export const docsCategories = sqliteTable(
+export const docsCategories = pgTable(
   "docs_categories",
   {
     id: pk(),
     slug: text("slug").notNull(), // "getting-started"
-    parentId: text("parent_id").references((): AnySQLiteColumn => docsCategories.id, { onDelete: "set null" }),
+    parentId: text("parent_id").references((): AnyPgColumn => docsCategories.id, { onDelete: "set null" }),
     titleEn: text("title_en").notNull(),
     titleSi: text("title_si").notNull(),
     titleTa: text("title_ta").notNull(),
@@ -491,7 +490,7 @@ export const docsCategories = sqliteTable(
 
 export type TocItem = { depth: 2 | 3; id: string; text: string };
 
-export const docsArticles = sqliteTable(
+export const docsArticles = pgTable(
   "docs_articles",
   {
     id: pk(),
@@ -502,8 +501,8 @@ export const docsArticles = sqliteTable(
     title: text("title").notNull(),
     summary: text("summary").notNull().default(""),
     bodyMd: text("body_md").notNull(),
-    bodyHast: text("body_hast", { mode: "json" }).$type<unknown>(),   // rendered at publish
-    tocJson: text("toc_json", { mode: "json" }).$type<TocItem[]>(),
+    bodyHast: jsonb("body_hast").$type<unknown>(),   // rendered at publish
+    tocJson: jsonb("toc_json").$type<TocItem[]>(),
     searchText: text("search_text"),                                   // plain text for the Orama index
     status: text("status", { enum: CONTENT_STATUSES }).notNull().default("draft"),
     sortOrder: integer("sort_order").notNull().default(0),
@@ -524,7 +523,7 @@ export const docsArticles = sqliteTable(
  * FEEDBACK TRACKER
  * ===================================================================== */
 
-export const feedbackTickets = sqliteTable(
+export const feedbackTickets = pgTable(
   "feedback_tickets",
   {
     id: pk(),
@@ -550,7 +549,7 @@ export const feedbackTickets = sqliteTable(
 
     reporterUserId: text("reporter_user_id").references(() => users.id, { onDelete: "set null" }),
     reportedMerchantId: text("reported_merchant_id").references(() => merchants.id, { onDelete: "set null" }),
-    duplicateOfId: text("duplicate_of_id").references((): AnySQLiteColumn => feedbackTickets.id, { onDelete: "set null" }),
+    duplicateOfId: text("duplicate_of_id").references((): AnyPgColumn => feedbackTickets.id, { onDelete: "set null" }),
     resolvedInReleaseId: text("resolved_in_release_id").references(() => releases.id, { onDelete: "set null" }),
 
     adminResponseMd: text("admin_response_md"),
@@ -567,7 +566,7 @@ export const feedbackTickets = sqliteTable(
   ],
 );
 
-export const feedbackVotes = sqliteTable(
+export const feedbackVotes = pgTable(
   "feedback_votes",
   {
     ticketId: text("ticket_id").notNull().references(() => feedbackTickets.id, { onDelete: "cascade" }),
@@ -581,7 +580,7 @@ export const feedbackVotes = sqliteTable(
  * DONATIONS
  * ===================================================================== */
 
-export const donations = sqliteTable(
+export const donations = pgTable(
   "donations",
   {
     id: pk(),
@@ -626,7 +625,7 @@ export const donations = sqliteTable(
  * BLOG
  * ===================================================================== */
 
-export const blogPosts = sqliteTable(
+export const blogPosts = pgTable(
   "blog_posts",
   {
     id: pk(),
@@ -636,12 +635,12 @@ export const blogPosts = sqliteTable(
     title: text("title").notNull(),
     excerpt: text("excerpt").notNull(),
     bodyMd: text("body_md").notNull(),
-    bodyHast: text("body_hast", { mode: "json" }).$type<unknown>(),
-    tocJson: text("toc_json", { mode: "json" }).$type<TocItem[]>(),
+    bodyHast: jsonb("body_hast").$type<unknown>(),
+    tocJson: jsonb("toc_json").$type<TocItem[]>(),
     coverImageKey: text("cover_image_key"), // R2 blog/{postId}/...
     coverAlt: text("cover_alt"),
     ogImageKey: text("og_image_key"),
-    tags: text("tags", { mode: "json" }).$type<string[]>().notNull().default(sql`'[]'`),
+    tags: jsonb("tags").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
     status: text("status", { enum: BLOG_STATUSES }).notNull().default("draft"),
     readingMinutes: integer("reading_minutes").notNull().default(1),
     seoTitle: text("seo_title"),
@@ -662,7 +661,7 @@ export const blogPosts = sqliteTable(
  * ADMIN AUDIT LOG (supporting table, required by F-08)
  * ===================================================================== */
 
-export const adminAuditLog = sqliteTable(
+export const adminAuditLog = pgTable(
   "admin_audit_log",
   {
     id: pk(),
@@ -671,7 +670,7 @@ export const adminAuditLog = sqliteTable(
     action: text("action").notNull(),          // "donation.approve", "merchant.status", "release_sync_invalid"
     entityType: text("entity_type").notNull(), // "donation" | "merchant" | "ticket" | "doc" | "post" | "release" | "user"
     entityId: text("entity_id"),
-    diff: text("diff", { mode: "json" }).$type<{ before?: unknown; after?: unknown; note?: string }>(),
+    diff: jsonb("diff").$type<{ before?: unknown; after?: unknown; note?: string }>(),
     createdAt: createdAt(),
   },
   (t) => [
@@ -731,20 +730,20 @@ export const donationsRelations = relations(s.donations, ({ one }) => ({
 }));
 ```
 
-### 4.2 Client factory — `src/server/db/index.ts`
+### 4.2 Client — `src/server/db/index.ts`
 
 ```ts
 import "server-only";
-import { drizzle } from "drizzle-orm/d1";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { env } from "@/lib/env";
 import * as schema from "./schema";
 import * as relations from "./relations";
 
-export async function getDb() {
-  const { env } = await getCloudflareContext({ async: true });
-  return drizzle(env.DB, { schema: { ...schema, ...relations } });
-}
-export type Db = Awaited<ReturnType<typeof getDb>>;
+// One pool per process (web: 10, worker: 5). Works on Bun and on the Node fallback.
+const client = postgres(env.DATABASE_URL, { max: env.DB_POOL_MAX, prepare: true, idle_timeout: 30 });
+export const db = drizzle(client, { schema: { ...schema, ...relations } });
+export type Db = typeof db;
 ```
 
 ### 4.3 `drizzle.config.ts`
@@ -752,15 +751,11 @@ export type Db = Awaited<ReturnType<typeof getDb>>;
 ```ts
 import { defineConfig } from "drizzle-kit";
 export default defineConfig({
-  dialect: "sqlite",
+  dialect: "postgresql",
   schema: "./src/server/db/schema.ts",
   out: "./drizzle",
-  driver: "d1-http", // only for drizzle-kit studio against remote; migrations go through wrangler
-  dbCredentials: {
-    accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,
-    databaseId: process.env.CLOUDFLARE_D1_ID!,
-    token: process.env.CLOUDFLARE_D1_TOKEN!,
-  },
+  dbCredentials: { url: process.env.MIGRATION_DATABASE_URL ?? process.env.DATABASE_URL! },
+  strict: true,
 });
 ```
 
@@ -799,16 +794,16 @@ export default defineConfig({
 Append-only. Retained 18 months, then deleted by the cleanup cron. `ip_hash` rotates daily (salted), so it can't be joined across days.
 
 ### 5.3 `releases`
-One row per (version, channel). The partial unique index guarantees at most one `is_latest` row per channel. The sync worker flips `is_latest` in a single `db.batch([...])`: clear the old flag, then set the new one.
+One row per (version, channel). The partial unique index guarantees at most one `is_latest` row per channel. The sync job flips `is_latest` in one transaction: clear the old flag, then set the new one.
 
 ### 5.4 `docs_categories`, `docs_articles`
 - An article is reachable at `/{locale}/docs/{category.slug}/{article.slug}`. Nested categories prepend parent slugs.
-- Publishing sets `status='published'`, `published_at` (first time only), `body_hast`, `toc_json` and `search_text`.
+- Publishing sets `status='published'` and `published_at` (first time only); the `render-content` job then fills `body_hast`, `toc_json` and `search_text`.
 - Fallback lookup: `WHERE translation_key = ? AND locale IN (?, 'en') ORDER BY locale = ? DESC LIMIT 1`.
 
 ### 5.5 `feedback_tickets`, `feedback_votes`
-- `public_number` is assigned at insert: `INSERT … SELECT COALESCE(MAX(public_number), 0) + 1 FROM feedback_tickets`, inside the same batch. D1 serialises writes per database, so this is race-safe.
-- `vote_count` is denormalised and updated in the same batch as the vote insert or delete (`UPDATE … SET vote_count = vote_count ± 1`).
+- `public_number` is assigned at insert: `INSERT … SELECT COALESCE(MAX(public_number), 0) + 1 FROM feedback_tickets`, inside a `SERIALIZABLE` transaction with one retry, so concurrent submissions can't collide (the unique index is the final guard).
+- `vote_count` is denormalised and updated in the same transaction as the vote insert or delete (`UPDATE … SET vote_count = vote_count ± 1`).
 
 ### 5.6 `donations`
 - `reference_code`: `CB-DN-` + 6 chars from `ABCDEFGHJKMNPQRSTUVWXYZ23456789` (no ambiguous characters).
@@ -834,69 +829,25 @@ Append-only. Kept indefinitely (small). `diff.before`/`diff.after` **must not** 
 
 ---
 
-## 6. Postgres portability
+## 6. SQLite portability (branch `free`)
 
-> This section covers **the website's own database** only. It's unrelated to the CB-POS app's own optional PostgreSQL network mode, whose schema belongs to the desktop app and lives on servers the shops run [H].
+> This section covers **the website's own database** only. It's unrelated to the CB-POS app's optional PostgreSQL network mode, whose schema belongs to the desktop app and lives on servers the shops run [H].
 
-The schema avoids SQLite-only features so it can move to Postgres (e.g. Neon or Supabase) with a mechanical rewrite of `sqlite-core` to `pg-core`, should D1 limits be outgrown.
+The same tables run on Cloudflare D1 (SQLite) on branch `free`. Keeping the two in step is a rule, not an aspiration: a column added here is added there in the same PR (or the PR says why not).
 
-| SQLite (D1) | Postgres equivalent | Rule that keeps it portable |
+| PostgreSQL (`main`) | SQLite / D1 (`free`) | Rule that keeps it portable |
 |---|---|---|
-| `text` uuid PK | `uuid` PK | IDs generated in the app |
-| `integer {mode:"timestamp_ms"}` | `timestamp with time zone` | App-side defaults only |
-| `integer {mode:"boolean"}` | `boolean` | — |
-| `real` (lat/lng) | `double precision` (or PostGIS `geography(Point)`) | No spatial SQL in queries. Bounds filtering is in app code or simple BETWEEN |
-| `text {mode:"json"}` | `jsonb` | JSON is never queried inside SQL. It's parsed in the app |
-| `text {enum}` + CHECK | `pgEnum` or `text` + CHECK | Enum values are in `src/lib/enums.ts` only |
-| Partial unique index `.where(sql…)` | Same (Postgres supports partial indexes) | Predicates use only `IS NULL` / `= 1` (rewrite `= 1` → `= true`) |
-| `db.batch([...])` | `db.transaction(async tx => …)` | All multi-write logic goes through `src/server/db/tx.ts` `runAtomic(db, ops)`, which picks batch or transaction per driver |
-| `COALESCE(MAX(n),0)+1` | Same, or a sequence | — |
+| `text` PK (UUID string) | `text` PK | IDs generated in the app |
+| `timestamp with time zone` | `integer {mode:"timestamp_ms"}` | App-side defaults only |
+| `boolean` | `integer {mode:"boolean"}` | — |
+| `double precision` (lat/lng) | `real` | No spatial SQL; bounds checked with `BETWEEN` |
+| `jsonb` | `text {mode:"json"}` | JSON never queried inside SQL |
+| `text {enum}` + CHECK | same | Enum values only in `src/lib/enums.ts` |
+| Partial unique index `… = true` | `… = 1` | Predicates use only `IS NULL` / boolean equality |
+| `db.transaction()` | `db.batch([...])` | Multi-write logic sits behind `runAtomic(db, ops)` |
+| `COALESCE(MAX(n),0)+1` in a serializable tx | same in a batch | — |
 
-**Forbidden in queries:** `json_extract`, `strftime`, `unixepoch`, `ROWID`, `INSERT OR REPLACE` (use `onConflictDoUpdate`), `GLOB`, `LIKE` without `lower()` on both sides (Postgres `LIKE` is case-sensitive).
-
-Example: `merchants` in `pg-core` (reference only):
-
-```ts
-import { pgTable, uuid, text, doublePrecision, boolean, timestamp, uniqueIndex, index, check } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
-
-export const merchants = pgTable("merchants", {
-  id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  publicId: text("public_id").notNull(),
-  ownerUserId: uuid("owner_user_id"),
-  fullName: text("full_name").notNull(),
-  phone: text("phone").notNull(),
-  whatsapp: text("whatsapp"),
-  telegram: text("telegram"),
-  shopName: text("shop_name").notNull(),
-  category: text("category").notNull(),
-  district: text("district").notNull(),
-  city: text("city").notNull(),
-  lat: doublePrecision("lat").notNull(),
-  lng: doublePrecision("lng").notNull(),
-  locationSource: text("location_source").notNull(),
-  isPublicOnMap: boolean("is_public_on_map").notNull().default(false),
-  status: text("status").notNull().default("listed"),
-  isSupporter: boolean("is_supporter").notNull().default(false),
-  supporterSince: timestamp("supporter_since", { withTimezone: true }),
-  termsVersion: text("terms_version").notNull(),
-  termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }).notNull(),
-  claimTokenHash: text("claim_token_hash"),
-  claimRedeemedAt: timestamp("claim_redeemed_at", { withTimezone: true }),
-  preferredLocale: text("preferred_locale").notNull().default("en"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().$defaultFn(() => new Date()),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().$defaultFn(() => new Date()),
-  deletedAt: timestamp("deleted_at", { withTimezone: true }),
-}, (t) => [
-  uniqueIndex("merchants_public_id_uq").on(t.publicId),
-  uniqueIndex("merchants_phone_active_uq").on(t.phone).where(sql`${t.deletedAt} IS NULL`),
-  index("merchants_map_idx").on(t.status, t.isPublicOnMap, t.deletedAt),
-  check("merchants_lat_lk", sql`${t.lat} BETWEEN 5.8 AND 10.0`),
-  check("merchants_lng_lk", sql`${t.lng} BETWEEN 79.5 AND 82.0`),
-]);
-```
-
----
+**Forbidden in queries:** `jsonb` operators (`->`, `@>`), `ILIKE`, `RETURNING` on multi-row upserts relied on for logic, arrays, `generate_series`, `DISTINCT ON`, window functions in hot paths, PostGIS. Use plain SQL both engines understand, and `lower(x) LIKE lower(y)` for case-insensitive search.
 
 ## 7. Public data masking rules
 
