@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.ico  binary
+*.riv  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.pmtiles binary
+
+bun.lock linguist-generated=true
+drizzle/meta/** linguist-generated=true
+docs/** linguist-documentation=true

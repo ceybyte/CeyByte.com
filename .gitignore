@@ -1,0 +1,57 @@
+# --- Private / never commit ---
+# CB POS facts audit: cites the private app repo and unfixed app weaknesses.
+docs/00-CBPOS_FACTS.md
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.dump
+*.sql.gz
+backups/
+
+# --- Dependencies ---
+node_modules/
+.pnp
+.pnp.js
+
+# --- Next.js / build output ---
+.next/
+out/
+build/
+dist/
+next-env.d.ts
+*.tsbuildinfo
+
+# --- Tests ---
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.lighthouseci/
+
+# --- Local services (docker volumes bound into the repo) ---
+.data/
+.garage/
+
+# --- Map tiles (built by scripts/tiles.ts, uploaded to Garage) ---
+*.pmtiles
+
+# --- Logs ---
+*.log
+npm-debug.log*
+bun-debug.log*
+
+# --- OS / editors ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+
+# --- Other package managers (Bun only) ---
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
