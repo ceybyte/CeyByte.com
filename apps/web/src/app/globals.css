@@ -1,3 +1,338 @@
+/*
+ * CB POS design system foundation. Source of truth: docs/03-DESIGN.md §3, §4, §9.6.
+ * Change the doc and this file together.
+ */
 @import "tailwindcss";
+@import "tw-animate-css";
 
-/* Design tokens from docs/03-DESIGN.md §3 land here in Phase 1. */
+/* Dark is the default theme. Light is opt-in via <html data-theme="light">. */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+@custom-variant dark (&:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *));
+
+:root {
+  color-scheme: dark;
+
+  /* 60 — canvas */
+  --canvas: #1e1e1e;
+
+  /* 30 — structure */
+  --surface: #252526;
+  --surface-elevated: #2d2d30;
+  --surface-legal: #18181b;
+  --hairline: #3e3e42;
+  --hairline-grid: #333337;
+  --text: #ffffff;
+  --text-muted: #aaaaaa;
+  --text-inverse: #121212;
+
+  /* 10 — accents */
+  --primary: #39ff14;
+  --primary-hover: #5cff3d;
+  --primary-press: #2fd611;
+  --primary-foreground: #121212;
+  --azure-300: #0eaae9;
+  --azure-400: #0393dd;
+  --azure-500: #017fd2;
+  --azure-600: #016cc7;
+  --azure: var(--azure-400); /* fills, pins */
+  --azure-text: var(--azure-300); /* links, focus (dark) */
+  --azure-gradient: linear-gradient(105deg, #0eaae9 0%, #0393dd 38%, #017fd2 68%, #016cc7 100%);
+  --glow-azure: rgba(3, 147, 221, 0.18);
+  --gold: #ffd700;
+  --gold-text: #ffd700;
+  --warning: #ffdc00;
+  --warning-text: #ffdc00;
+  --error: #ff4136;
+  --success: #39ff14;
+
+  /* fixed */
+  --kbd-bg: #141414;
+  --kbd-border: #3e3e42;
+  --mockup-backdrop: #18181b;
+
+  /* radii */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  /* motion (easing curves live in @theme below) */
+  --dur-press: 120ms;
+  --dur-hover: 180ms;
+  --dur-enter: 240ms;
+  --dur-modal: 320ms;
+  --dur-reveal: 600ms;
+
+  /* layout */
+  --gutter: 16px;
+  --content-max: 1280px;
+  --header-h: 64px;
+  --grid-cell: 64px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --canvas: #f8f9fa;
+  --surface: #ffffff;
+  --surface-elevated: #f1f3f5;
+  --surface-legal: #f1f1f3;
+  --hairline: #d0d3d8;
+  --hairline-grid: #e4e6ea;
+  --text: #121212;
+  --text-muted: #5f6368;
+  --azure-text: var(--azure-600);
+  --glow-azure: rgba(1, 108, 199, 0.1);
+  --gold-text: #8a6d00;
+  --warning-text: #8a6d00;
+  --error: #c8211a;
+  --success: #1e7a0e;
+}
+
+@theme inline {
+  /* colours → bg-canvas, text-muted, border-hairline, etc. */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-legal: var(--surface-legal);
+  --color-hairline: var(--hairline);
+  --color-hairline-grid: var(--hairline-grid);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-inverse: var(--text-inverse);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-press: var(--primary-press);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-azure: var(--azure);
+  --color-azure-text: var(--azure-text);
+  --color-gold: var(--gold);
+  --color-gold-text: var(--gold-text);
+  --color-warning: var(--warning);
+  --color-warning-text: var(--warning-text);
+  --color-error: var(--error);
+  --color-success: var(--success);
+  --color-kbd: var(--kbd-bg);
+
+  /* shadcn compatibility aliases */
+  --color-background: var(--canvas);
+  --color-foreground: var(--text);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--text);
+  --color-popover: var(--surface-elevated);
+  --color-popover-foreground: var(--text);
+  --color-secondary: var(--surface-elevated);
+  --color-secondary-foreground: var(--text);
+  --color-muted-foreground: var(--text-muted);
+  --color-accent: var(--surface-elevated);
+  --color-accent-foreground: var(--text);
+  --color-destructive: var(--error);
+  --color-border: var(--hairline);
+  --color-input: var(--hairline);
+  --color-ring: var(--azure-text);
+
+  /* type */
+  --font-display:
+    var(--font-geist), var(--font-noto-sinhala), var(--font-noto-tamil), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    var(--font-inter), var(--font-noto-sinhala), var(--font-noto-tamil), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* radii (only these exist) */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-full: 9999px;
+
+  /* motion */
+  --animate-pulse-dot: pulse-dot 2s var(--ease-in-out) infinite;
+}
+
+/* Easing curves are literal theme values (an inline self-reference would make them invalid). */
+@theme {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@layer base {
+  html {
+    background: var(--canvas);
+    color: var(--text);
+  }
+  body {
+    @apply bg-canvas text-text font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  :focus-visible {
+    outline: 2px solid var(--azure-text);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  ::selection {
+    background: var(--azure-300);
+    color: var(--text-inverse);
+  }
+  html {
+    caret-color: var(--azure-text);
+    scrollbar-color: var(--hairline) var(--canvas);
+    accent-color: var(--azure);
+  }
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+  .num,
+  kbd,
+  code,
+  pre {
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Type scale (03-DESIGN §4.2) */
+@utility text-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 1.6rem + 5vw, 5.5rem);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+@utility text-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+@utility text-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+@utility text-h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+@utility text-h4 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+@utility text-lead {
+  font-size: 1.25rem;
+  line-height: 1.55;
+}
+@utility text-stat {
+  font-family: var(--font-mono);
+  font-size: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+@utility text-hash {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+/* Sinhala & Tamil script rules (03-DESIGN §4.3) */
+:lang(si),
+:lang(ta) {
+  --lh-scale: 1.15; /* +15% line-height */
+  letter-spacing: 0 !important; /* negative tracking breaks conjuncts and ligatures */
+  text-transform: none !important;
+}
+:lang(si) {
+  font-family: var(--font-noto-sinhala), var(--font-inter), sans-serif;
+}
+:lang(ta) {
+  font-family: var(--font-noto-tamil), var(--font-inter), sans-serif;
+}
+
+/* Headlines: Geist has no Indic glyphs → Noto, one weight step lighter */
+:lang(si) :is(.text-display, .text-h1, .text-h2),
+:lang(ta) :is(.text-display, .text-h1, .text-h2) {
+  font-weight: 700;
+  line-height: calc(1.1 * var(--lh-scale));
+}
+:lang(si) :is(.text-h3, .text-h4, b, strong, th),
+:lang(ta) :is(.text-h3, .text-h4, b, strong, th) {
+  font-weight: 600;
+  line-height: calc(1.25 * var(--lh-scale));
+}
+:lang(si) :is(p, li, label, input, textarea, select, button, td, .text-body, .text-body-lg, .text-sm),
+:lang(ta) :is(p, li, label, input, textarea, select, button, td, .text-body, .text-body-lg, .text-sm) {
+  line-height: calc(1.6 * var(--lh-scale));
+}
+
+/* Tamil words run long: scale display sizes down so headlines wrap in 2–3 lines */
+:lang(ta) .text-display {
+  font-size: clamp(2.25rem, 1.4rem + 3.8vw, 4.5rem);
+}
+:lang(ta) .text-h1 {
+  font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3.1rem);
+}
+:lang(ta) :is(h1, h2, h3, .card-title) {
+  overflow-wrap: anywhere;
+  hyphens: none;
+}
+
+/* Numbers, prices, kbd and hashes stay Latin mono in every locale */
+:lang(si) :is(.text-stat, .text-hash, .num, kbd, code),
+:lang(ta) :is(.text-stat, .text-hash, .num, kbd, code) {
+  font-family: var(--font-mono);
+  line-height: normal;
+}
+
+/* Hairline figures theme mapping (03-DESIGN §9.6) */
+.hairline-scope {
+  --hairline-plate: var(--canvas);
+  --hairline-hi: var(--azure-text); /* what is lit */
+  --hairline-edge: var(--text-muted); /* silhouettes */
+  --hairline-mid: var(--hairline); /* other strokes */
+  --hairline-lo: var(--hairline-grid); /* what recedes */
+  --hairline-stroke: 0.9;
+}
