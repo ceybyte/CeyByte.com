@@ -83,6 +83,7 @@ Already verified on 2026-10-21: `@lucasmarkes/hairline@0.5.1` (MIT), the three d
 - [ ] TS strict + `noUncheckedIndexedAccess`; ESLint/Prettier; custom rules `no-raw-color`, `no-bare-merchant-select`.
 - [ ] `bun test` setup (unit + integration with service containers); Playwright config against the built image.
 - [ ] `scripts/i18n-check.ts`.
+- [ ] Restore `.github/dependabot.yml` from `docs/adr/dependabot.main.yml.txt` once `package.json`, the workflows and the Dockerfiles exist (it was paused because Dependabot fails on a docs-only branch).
 - [ ] GitHub Actions `ci.yml` (services, tests, image build, E2E) and `deploy.yml` (GHCR push + Dokploy webhook, inactive until Phase 9).
 
 **Verify:** `bun run services:up && bun run dev` serves the placeholder; `bun run docker:build` produces both images; the web image passes `/api/health` against the dev services.
