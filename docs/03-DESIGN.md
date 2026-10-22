@@ -699,14 +699,27 @@ The client wires `hero-pos` `lang` to the current locale. `scan` fires every 4 s
 
 ## 11. Voice in the UI
 
-Bold, direct, engineering-confident, zero fluff. Short sentences. Numbers before adjectives.
+Write like a helpful person who knows shops and knows software, talking across the counter. Plain, warm and specific. The reader is a busy shop owner reading in their second or third language, often on a phone, and often worried about something: losing sales, a tax mistake, a virus warning, a bill they can't afford. The copy's job is to make them feel understood, then give them the fact that settles the worry.
+
+**Psychology rules (use where they matter, not everywhere):**
+
+1. **Name the worry, then the fact.** "The internet drops, and the bill stops." comes before "Each sale saves to your own computer first." People trust a page that describes their day correctly.
+2. **Reassure at anxious moments.** Forms that ask for a phone number, the SmartScreen warning, the tax disclaimer, the donation step and delete actions each say what happens next and what stays private.
+3. **Leave them in control.** Optional is said plainly. There's always a way out ("Keep my name private", "remove the listing at any time"). No countdowns, no pressure, no guilt. Donating never changes the software.
+4. **Be honest about limits.** Say what CB POS doesn't do (no IRD certification, no cable connection to scales, no code signing yet) in the same calm voice as what it does. Admitting a limit is what makes the rest believable.
+5. **Short, whole sentences.** One idea each, so Sinhala and Tamil translators can carry the meaning. No idioms that won't translate.
+6. **Numbers before adjectives.** Only numbers we can prove ([C1], live API counts). Never invented ones.
+
+**Humanizer rules** (from `.claude/skills/humanizer`): no "not X, but Y" framing, no one-line dramatic closers, no forced groups of three, no em or en dashes in UI strings, no AI vocabulary (*seamless, robust, leverage, unlock, elevate*), no bold run-in labels, no exclamation marks, no emoji, no chatbot residue ("Great question", "I hope this helps").
 
 | Avoid | Use |
 |---|---|
-| "Experience seamless, next-gen billing!" | "Bills in 0 ms. Even when the internet is down." |
-| "Submit" | "Download CB POS" / "Send ticket" / "Upload slip" |
-| "Oops! Something went wrong 😢" | "Couldn't send. Check your connection and try again." |
-| "IRD-certified tax engine" | "Calculates 18% VAT and 2.5% SSCL from your MRP." |
-| "Join thousands of happy merchants" | "{n} shops in {d}/25 districts." (live numbers) |
+| "Experience seamless, next-gen billing!" | "Keep billing when the internet goes down." |
+| "Submit" | "Download CB POS" / "Send for checking" / "Upload your slip" |
+| "Oops! Something went wrong 😢" | "We couldn't send that. Check your connection and try again." |
+| "IRD-certified tax engine" | "CB POS works out 18% VAT and 2.5% SSCL from your MRP. The IRD hasn't certified it." |
+| "Join thousands of happy merchants" | "{shops} shops in {covered} districts, updated live" |
+| "Invalid input" | "That doesn't look like a Sri Lankan number. Try something like 77 123 4567." |
+| "Support us! Every rupee counts!" | "Giving is entirely optional, and the software is the same either way." |
 
 Full copy is in `06-SCREEN_BLUEPRINTS_AND_COPY.md`.
