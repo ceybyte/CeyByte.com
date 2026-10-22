@@ -12,7 +12,7 @@ export function Kbd({ className, pressed = false, ...props }: KbdProps) {
       data-pressed={pressed || undefined}
       className={cn(
         "bg-kbd border-hairline inline-flex min-h-6 min-w-6 items-center justify-center rounded-sm border px-1.5",
-        "font-mono text-xs font-medium text-white shadow-[inset_0_-2px_0_#000]",
+        "font-mono text-xs font-medium text-[var(--kbd-text)] shadow-[inset_0_-2px_0_var(--kbd-edge)]",
         "transition-[transform,box-shadow,border-color] duration-[var(--dur-press)] ease-out",
         "data-pressed:border-azure-text data-pressed:translate-y-px data-pressed:shadow-none",
         className,

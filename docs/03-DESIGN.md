@@ -498,7 +498,7 @@ The primary Download button pattern: `[⬇ Download CB POS — Free]` with a sub
 1px border in the variant colour at 40% (`border-[--variant]/40`, all sides), `bg-surface`, `p-4`, never a thicker side stripe, icon + title + body. Variants: `tip` (azure), `warn` (warning), `danger` (error), `tax` (warning + fixed copy + disclaimer link).
 
 ### 8.7 Accordion (FAQ)
-Radix Accordion, `type="single" collapsible`. Trigger: `text-h4` (si/ta: line-height scaled), `py-5`, with a `Plus` icon that rotates 45° to an ×. Items are separated by hairlines. Content animates with `grid-template-rows: 0fr → 1fr` (220 ms ease-out) so there's no height measurement. FAQ structured data (`FAQPage`) is emitted from the same data.
+Radix Accordion, `type="single" collapsible`. Trigger: `text-h4` (si/ta: line-height scaled), `py-5`, with a `Plus` icon that rotates 45° to an ×. Items are separated by hairlines. The panel opens at full height instantly and its content fades and slides in (`opacity` + `translateY(-4px)`, 200 ms ease-out); closing is instant. No height or grid-row animation (hallmark: transform and opacity only). FAQ structured data (`FAQPage`) is emitted from the same data.
 
 ### 8.8 DownloadModal (responsive dialog/drawer)
 - `≥ md`: Radix Dialog. `max-w-[560px]`, `bg-surface border-hairline rounded-md`, header with a step indicator (`1 / 2` mono plus a 2-segment progress bar in azure), close `X` (Esc).
@@ -584,7 +584,7 @@ Rules (following the `emilkowalski/skills` guidance in `CLAUDE.md §7`):
 | Dual-tax calculator | input change | Before-VAT, VAT and SSCL values crossfade digits (each digit `y ±6`, 140 ms), mono. Maths uses round-half-even to match the app [C1] |
 | Receipt language tabs | tab change | Receipt paper `clipPath: inset(0 0 100% 0) → inset(0)` 320 ms, like a printer feed. Headings and totals change language; item names stay English [F2] |
 | Scale label | in view | A label barcode `20 00042 01250 C` slides under a scan line; the cart line appears with `1.250 kg` (`spring.gentle`, 400 ms). No live-scale readout, because the app reads weight only from labels [E3] |
-| FAQ accordion | open/close | CSS grid-rows 220 ms + Plus icon rotate 45° (`spring.snappy`) |
+| FAQ accordion | open/close | Content fades and slides in 200 ms on open; close is instant. Plus icon rotates 45° (200 ms ease-out) |
 | Download gate step change | Continue/Back | Direction-aware: next = `x 24→0, opacity 0→1`; back = `x −24→0`. `AnimatePresence mode="popLayout"`, 240 ms |
 | Gate → What Next | submit success | Container `layout` (`spring.modal`) resizes. Content crossfades. A Rive `success_check` plays once |
 | Dialog open | open | Overlay opacity 0→1 (180 ms). Panel `scale .96→1, opacity, y 8→0` (`spring.modal`). Close is 75% duration |

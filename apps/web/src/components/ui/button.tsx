@@ -76,7 +76,12 @@ function Button({
       {...props}
       disabled={props.disabled || loading}
     >
-      {loading && <Loader2 className="animate-spin" aria-hidden />}
+      {loading && (
+        // Held back 300 ms so quick actions never flash a spinner (hallmark: spinners that flash).
+        <span className="spinner-delayed inline-flex" aria-hidden>
+          <Loader2 className="animate-spin" />
+        </span>
+      )}
       {children}
       {kbd && <Kbd className="ml-1 hidden md:inline-flex">{kbd}</Kbd>}
     </button>

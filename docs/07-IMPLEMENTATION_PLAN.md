@@ -101,19 +101,20 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Goal:** tokens, fonts, primitives and motion foundations from `03-DESIGN.md`, on a dev-only styleguide, with every component through the design gates.
 
-- [ ] `globals.css`: tokens, `@theme inline`, utilities, `:lang(si|ta)` rules, reduced motion, `.hairline-scope` mapping (`03 §3, §4, §9.6`).
-- [ ] Fonts with per-locale preload. `next-themes` provider and toggle.
-- [ ] shadcn init (Tailwind v4) and the component set (`button input textarea select checkbox dialog drawer accordion tabs badge table sonner command popover tooltip skeleton separator switch radio-group label`), adapted to tokens.
-- [ ] Brand: `Logo`, `Kbd`, `HashBlock`, `GridCanvas`, `Crosshair`, `StatTile`, `Callout`, `FileDrop`, `PhoneInput`.
-- [ ] Motion: tokens, `Reveal`, `MotionConfig`, `SmoothScroll` (lazy), `useCountUp`.
-- [ ] Hairline wrapper `<Figure name=… />` (lazy per figure, translated labels, reduced-motion `intensity={0}`).
-- [ ] Rive: self-hosted WASM, `RiveLazy` with poster fallback.
-- [ ] `/_styleguide` (excluded from production export) showing every state in both themes × 3 locales.
-- [ ] **Design gates:** `emil-design-eng` on every component; `impeccable audit` + `critique` on the styleguide; fix or log findings (ADR-0010 for Inter).
+- [x] `globals.css`: tokens (Vivid Azure from the Ceylon Byte logo, ADR-0017/brand), `@theme inline`, utilities, `:lang(si|ta)` rules, reduced motion, `.hairline-scope` mapping, themed selection/caret/scrollbar (03 §3, §4, §9.6). Assembled from the doc's CSS blocks.
+- [x] Fonts (`apps/web/src/app/fonts.ts`): Geist, Inter, JetBrains Mono, Noto Sans Sinhala/Tamil as variables; script fonts not preloaded until Phase 3. `next-themes` provider (dark default, `data-theme`) and `ThemeToggle`.
+- [x] shadcn primitives (button, input, textarea, label, checkbox, dialog, drawer, accordion, tabs, badge, tooltip, sonner, skeleton, separator, switch, radio-group, select, popover) via a hand-written `components.json` (no `init`, which would overwrite our tokens), adapted: no shadows, no shadcn focus rings (global azure outline), named transitions, 4/6 px radii, azure (not green) for checked controls, tooltip skip-delay.
+- [x] Brand: `Logo` (azure slash from the CB monogram), `LogoSlash`, `Kbd`, `HashBlock`, `GridCanvas`, `Crosshair`, `StatTile` (container-query sizing, never wraps), `Callout` (1 px all-round border), `FileDrop`, `PhoneInput`, `ThemeToggle`. Company mark + icons from `docs/brand/source` via `scripts/brand-assets.ts`.
+- [x] Motion: tokens, `Reveal` (full transform strings), `MotionProvider` (`reducedMotion="user"`), `useCountUp`, `SmoothScroll` (Lenis + GSAP, lazy, fine pointers only).
+- [x] Hairline `<Figure name=… />` wrapper (lazy per figure, `play={false}`, `intensity` 0 under reduced motion).
+- [ ] Rive: self-hosted WASM + `RiveLazy`. **Deferred to Phase 5**: no `.riv` assets exist yet, and an unused wrapper would ship dead code.
+- [x] Styleguide at `/styleguide/` (dev only; Next treats `_folders` as private, and the web build deletes `out/styleguide`).
+- [x] `no-raw-color` ESLint rule (`apps/web/eslint.config.mjs`): flags hex, `rgb()`, `hsl()`, `oklch()` in component code; verified with a probe file.
+- [x] **Design gates:** impeccable PRODUCT.md (owner-approved) + craft floor (ADR-0017: no eyebrows/section numbers/side stripes); emil review (keyboard actions never animate, hover gated, origin-aware popovers, tooltip skip-delay); two batched screenshot rounds (desktop dark/light, mobile) → fixed tabs/`muted` clash, stat wrapping, control contrast (3:1); impeccable detector: 0 findings; hallmark audit: 2 critical (brand-pinned exceptions, ADR-0010/0018) · 3 major (fixed: accordion height animation, spinner flash, token improvisation) · 3 minor (noted).
 
-**Verify:** visual snapshots of `/_styleguide`, axe clean, Sinhala/Tamil clipping check at 320/375/414/768.
+**Verify:** visual snapshots of `/styleguide`, axe clean, Sinhala/Tamil clipping check at 320/375/414/768. ✅ 2026-10-22: no console errors, no horizontal overflow at 1280/375, no clipped Sinhala/Tamil in buttons, accordion triggers or tabs; E2E + axe pass.
 
-**Exit:** every component in `03 §8` exists with all states and passed its gates.
+**Exit:** every component in `03 §8` exists with all states and passed its gates. ✅ Met, except Rive (deferred above) and the DownloadModal/map/table compositions, which are built with their screens (Phases 6–8).
 
 ---
 

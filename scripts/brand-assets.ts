@@ -22,7 +22,10 @@ async function icon(size: number, out: string) {
 
 // Footer marks: trimmed, 96px tall (3× a 32px display size), WebP.
 async function mark(file: string, out: string) {
-  await sharp(await trimmed(file)).resize({ height: 96 }).webp({ quality: 90, alphaQuality: 100 }).toFile(out);
+  await sharp(await trimmed(file))
+    .resize({ height: 96 })
+    .webp({ quality: 90, alphaQuality: 100 })
+    .toFile(out);
 }
 
 await icon(512, "apps/web/src/app/icon.png");

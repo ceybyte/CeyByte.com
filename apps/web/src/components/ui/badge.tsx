@@ -12,7 +12,7 @@ const badgeVariants = cva(
         neutral: "border-hairline bg-surface text-text",
         supporter: "border-gold/40 bg-gold/10 text-gold-text",
         version: "border-hairline font-mono text-muted",
-        locale: "border-hairline px-1.5 font-mono text-[0.6875rem] text-muted",
+        locale: "border-hairline px-1.5 font-mono text-2xs text-muted",
       },
     },
     defaultVariants: { variant: "neutral" },

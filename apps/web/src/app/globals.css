@@ -48,6 +48,8 @@
   /* fixed */
   --kbd-bg: #141414;
   --kbd-border: #3e3e42;
+  --kbd-edge: #050505; /* keycap bottom edge */
+  --kbd-text: #f8f9fa; /* keycaps stay dark in both themes */
   --mockup-backdrop: #18181b;
 
   /* radii */
@@ -122,6 +124,8 @@
   --color-error: var(--error);
   --color-success: var(--success);
   --color-kbd: var(--kbd-bg);
+  --color-kbd-edge: var(--kbd-edge);
+  --text-2xs: 0.6875rem;
 
   /* shadcn compatibility aliases */
   --color-background: var(--canvas);
@@ -162,6 +166,22 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+}
+
+/* Radial fade for the architectural grid (alpha mask only, not a palette colour). */
+@utility mask-radial-fade {
+  mask-image: radial-gradient(ellipse at center, #000 40%, transparent 85%);
+}
+
+@keyframes spinner-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@utility spinner-delayed {
+  opacity: 0;
+  animation: spinner-in 120ms var(--ease-out) 300ms forwards;
 }
 
 @keyframes pulse-dot {
