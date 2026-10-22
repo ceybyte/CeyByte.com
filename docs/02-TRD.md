@@ -625,7 +625,7 @@ Fonts: `next/font/google` (self-hosted at build), `display: "swap"`, script subs
 |---|---|---|
 | Unit | `bun test` | `packages/shared`: money, phone, tax maths (round-half-even, [C1]/[C2] examples), sri-lanka, projections, manifest zod, HMAC |
 | Contract | `bun test` | `geo.contract.test.ts`, error codes ↔ message keys |
-| API integration | `vitest` + `@cloudflare/vitest-pool-workers` | Every route against local D1/R2/KV; webhook idempotency; rate limits; admin 404 |
+| API integration | `vitest` + `@cloudflare/vitest-plugin` | Every route against local D1/R2/KV; webhook idempotency; rate limits; admin 404 |
 | Build | `bun run build` in CI | Static export succeeds for 3 locales; no page uses dynamic APIs |
 | E2E | Playwright against `bun run preview` | The 6 flows in `04-APP_FLOW.md` × 3 locales, Pixel 7 + desktop |
 | A11y | `@axe-core/playwright` | Every screen, zero violations |

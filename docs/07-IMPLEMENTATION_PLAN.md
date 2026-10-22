@@ -64,29 +64,29 @@ gantt
 
 ### 0.1 Verify (record in `docs/adr/0000-phase0-verification.md`)
 Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, static assets free and unlimited), `@lucasmarkes/hairline@0.5.1` (MIT), the three design skills, CARTO's commercial licence requirement. Re-check anything older than 30 days at start.
-- [ ] `ratelimits` wrangler syntax and availability on the free plan.
-- [ ] `run_worker_first` array syntax and `not_found_handling: "404-page"` with `html_handling: "auto-trailing-slash"`.
-- [ ] Better Auth + `better-auth-cloudflare` with Hono on D1 (Drizzle adapter, `emailOTP`, `admin`).
-- [ ] `next-intl` static export: `setRequestLocale` + `generateStaticParams`, no middleware.
-- [ ] drizzle-kit emits partial unique indexes and `check()` for SQLite.
-- [ ] MapLibre Sinhala/Tamil label shaping, re-tested with a sample style. If it now shapes correctly, revisit ADR-0008's Latin-label rule.
+- [x] `ratelimits` wrangler syntax (dry-run deploy). Free-plan availability confirmed at the first real deploy.
+- [x] `run_worker_first` array syntax and `not_found_handling: "404-page"` with `html_handling: "auto-trailing-slash"`.
+- [ ] Better Auth + `better-auth-cloudflare` with Hono on D1 (Drizzle adapter, `emailOTP`, `admin`). *Moved to the start of Phase 2.*
+- [ ] `next-intl` static export: `setRequestLocale` + `generateStaticParams`, no middleware. *Moved to the start of Phase 3.*
+- [ ] drizzle-kit emits partial unique indexes and `check()` for SQLite. *Moved to the start of Phase 2.*
+- [ ] MapLibre Sinhala/Tamil label shaping, re-tested with a sample style. If it now shapes correctly, revisit ADR-0008's Latin-label rule. *Moved to the start of Phase 7.*
 
 ### 0.2 Skills
-- [ ] `bunx skills add emilkowalski/skills`, `bunx skills add Nutlope/hallmark`, `bunx skills add pbakaus/impeccable`; commit `.claude/skills` and the lockfile.
-- [ ] `.github/pull_request_template.md` design-gate table present (already committed).
+- [x] `bunx skills add emilkowalski/skills`, `bunx skills add Nutlope/hallmark`, `bunx skills add pbakaus/impeccable`; commit `.claude/skills` and the lockfile.
+- [x] `.github/pull_request_template.md` design-gate table present (already committed).
 
 ### 0.3 Scaffold
-- [ ] `bun init`; root `package.json` with `workspaces: ["apps/*", "packages/*"]`; `bun.lock` committed.
-- [ ] `apps/web`: `bun create next-app@15` (TS, App Router, `src/`, Tailwind v4); `next.config.ts` with `output: "export"`, `trailingSlash: true`, `images: { unoptimized: true }`; `dev`/`build` scripts use `bun --bun next`.
-- [ ] `apps/api`: Hono app, `wrangler.jsonc` from `02-TRD §2.2`, `src/index.ts` exporting `fetch` and `scheduled`, `/api/health` route.
-- [ ] `packages/shared`: `enums.ts`, `schemas/`, `db/`, `money.ts`, `phone.ts`, `tax.ts`, `sri-lanka.ts` stubs with `bun test` set up.
-- [ ] Cloudflare resources: D1 `cbpos-db` + `cbpos-db-preview`; R2 `cbpos-uploads` (private, CORS) and `cbpos-public` (custom domain `cdn.ceybyte.com`, CORS with `Range`); KV `CACHE_KV`; Turnstile widget.
-- [ ] `.dev.vars.example` with every secret in `02-TRD §2.3`. `.gitignore`: `.dev.vars`, `.wrangler/`, `apps/web/out`, `apps/web/.content`.
-- [ ] Root scripts exactly as in `CLAUDE.md §3`. `bun run dev` runs web + Worker together, with `/api` proxied to `:8787` in dev.
-- [ ] TS `strict` + `noUncheckedIndexedAccess`, project references (`tsc -b`). ESLint + Prettier; custom rules `no-raw-color`, `no-bare-merchant-select`.
-- [ ] Vitest + `@cloudflare/vitest-pool-workers` in `apps/api`. Playwright config against `bun run preview`.
-- [ ] `scripts/i18n-check.ts` (Bun).
-- [ ] GitHub Actions `ci.yml` and `deploy.yml` (`02-TRD §17`) with `oven-sh/setup-bun`.
+- [x] `bun init`; root `package.json` with `workspaces: ["apps/*", "packages/*"]`; `bun.lock` committed.
+- [x] `apps/web`: `bun create next-app@15` (TS, App Router, `src/`, Tailwind v4); `next.config.ts` with `output: "export"`, `trailingSlash: true`, `images: { unoptimized: true }`; `dev`/`build` scripts use `bun --bun next`.
+- [x] `apps/api`: Hono app, `wrangler.jsonc` from `02-TRD §2.2`, `/api/health` route. (`scheduled` and the cron triggers are added in Phase 6 with the first job, so no empty handler ships.)
+- [x] `packages/shared`: `enums.ts` with tests, `bun test` set up. (`schemas/`, `db/`, `money`, `phone`, `tax`, `sri-lanka` are written for real in Phase 2 rather than as empty stubs.)
+- [ ] **Blocked on account owner.** Cloudflare resources: D1 `cbpos-db` + `cbpos-db-preview`; R2 `cbpos-uploads` (private, CORS) and `cbpos-public` (custom domain `cdn.ceybyte.com`, CORS with `Range`); KV `CACHE_KV`; Turnstile widget.
+- [x] `.dev.vars.example` with every secret in `02-TRD §2.3`. `.gitignore`: `.dev.vars`, `.wrangler/`, `apps/web/out`, `apps/web/.content`.
+- [x] Root scripts as in `CLAUDE.md §3` (each later script is added by the phase that builds it: `build:content` P4, `db:*` P2, `tiles:build` P7). `bun run dev` runs web + Worker together, with `/api` proxied to `:8787` in dev.
+- [x] TS `strict` + `noUncheckedIndexedAccess` (per-workspace `tsc --noEmit` from `tsconfig.base.json`). ESLint + Prettier. Custom rules `no-raw-color` (Phase 1) and `no-bare-merchant-select` (Phase 2) land with the code they guard.
+- [x] Vitest + `@cloudflare/vitest-plugin` in `apps/api`. Playwright config against `bun run preview`, with an axe smoke test.
+- [x] `scripts/i18n-check.ts` (Bun).
+- [x] GitHub Actions `ci.yml` and `deploy.yml` (`02-TRD §17`) with `oven-sh/setup-bun`. Deploy skips until Cloudflare secrets exist.
 
 **Verify:** `bun install && bun run lint && bun run typecheck && bun run test && bun run build && bun run preview` serves the placeholder page and `/api/health`. A PR gets a preview URL.
 

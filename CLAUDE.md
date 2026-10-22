@@ -50,7 +50,7 @@ Major versions are locked. Upgrading a major version or swapping a library needs
 
 | Layer | Package(s) | Notes |
 |---|---|---|
-| Runtime & tooling | **Bun 1.x**: package manager (`bun.lock`), script runner, unit test runner (`bun test`), and the runtime for `next dev`/`next build` (`bun --bun`) | Production API code runs in Cloudflare's `workerd`, not Bun. That's the only place Bun can't be used |
+| Runtime & tooling | **Bun 1.x** (pinned in `packageManager`, hoisted linker via `bunfig.toml`): package manager (`bun.lock`), script runner, unit test runner (`bun test`), and the runtime for `next dev`/`next build` (`bun --bun`) | Production API code runs in Cloudflare's `workerd`, not Bun. That's the only place Bun can't be used |
 | Web app | `next@15` (App Router, TypeScript strict) with `output: "export"`, `trailingSlash: true`, `images.unoptimized: true` | `apps/web`. Static HTML for every public route × 3 locales |
 | API | `hono@4` on Cloudflare Workers, typed client via `hono/client` | `apps/api`. Same Worker serves the static assets, the API, a few rewrites and the cron jobs |
 | Hosting | Cloudflare Workers Static Assets + `wrangler@4` | Asset requests are free and unlimited. Only `run_worker_first` paths invoke the Worker |
@@ -72,7 +72,7 @@ Major versions are locked. Upgrading a major version or swapping a library needs
 | Bot defense | Cloudflare Turnstile | Every public form |
 | Analytics | `posthog-js` (EU Cloud, free tier) | Proxied through `/ingest/*` on the Worker |
 | Email | Resend (free tier) | Auth emails only |
-| Testing | `bun test` (pure logic), `vitest` + `@cloudflare/vitest-pool-workers` (API with real bindings), `@playwright/test`, `@axe-core/playwright` | Run with `bunx` |
+| Testing | `bun test` (pure logic), `vitest` + `@cloudflare/vitest-plugin` (API with real bindings), `@playwright/test`, `@axe-core/playwright` | Run with `bunx` |
 
 **Banned:** OpenNext and any SSR runtime on Workers (the 10 ms CPU limit per request makes SSR fragile on the free plan, ADR-0001); Prisma; `next-auth`; styled-components/emotion; `moment`; full `lodash`; jQuery; CSS-in-JS runtimes; Google Maps; Mapbox GL; CARTO basemaps; the `framer-motion` package name (use `motion`); fetching `latest.json` from the browser; `npm`/`pnpm`/`yarn` lockfiles.
 
@@ -98,9 +98,9 @@ bun run db:seed:local             # bun scripts/seed.ts → local D1
 bun run db:studio                 # drizzle-kit studio
 
 bun run lint                      # eslint + prettier --check
-bun run typecheck                 # tsc -b (all workspaces)
+bun run typecheck                 # tsc --noEmit in every workspace
 bun run test                      # bun test (packages/shared, apps/web/src/lib) + bunx vitest run (apps/api)
-bun run e2e                       # bunx playwright test against bun run preview
+bun run e2e                       # playwright test against bun run preview (macOS 13: PW_CHANNEL=chrome)
 bun run i18n:check                # key parity + [[TRANSLATE]] scan
 bun run tiles:build               # pmtiles extract → sri-lanka.pmtiles (quarterly)
 ```
@@ -176,7 +176,7 @@ Rules:
 ### 5.5 Tests
 - `bun test`: money, phone, tax display maths (round-half-even, `00-CBPOS_FACTS` [C1]/[C2] examples), district lookup, masking projections, manifest zod.
 - **Required test:** `geo.contract.test.ts` asserts the `/api/merchants/geo` feature properties equal the public whitelist in `05-SCHEMA.md §7`.
-- `vitest` with `@cloudflare/vitest-pool-workers`: every API route against local D1/R2/KV, webhook idempotency, rate limits.
+- `vitest` with `@cloudflare/vitest-plugin`: every API route against local D1/R2/KV, webhook idempotency, rate limits.
 - Playwright: the 6 flows in `04-APP_FLOW.md` in all three locales, with axe checks on every screen.
 
 ---

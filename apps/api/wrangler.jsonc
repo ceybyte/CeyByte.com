@@ -29,6 +29,13 @@
     { "binding": "PUBLIC", "bucket_name": "cbpos-public" },
   ],
   "kv_namespaces": [{ "binding": "CACHE_KV", "id": "local-cache-kv" }],
+  "ratelimits": [
+    { "name": "RL_FORMS", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } },
+    { "name": "RL_UPLOADS", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } },
+    { "name": "RL_VOTES", "namespace_id": "1003", "simple": { "limit": 30, "period": 60 } },
+    { "name": "RL_AUTH", "namespace_id": "1004", "simple": { "limit": 10, "period": 60 } },
+    { "name": "RL_READ", "namespace_id": "1005", "simple": { "limit": 120, "period": 60 } },
+  ],
 
   "vars": {
     "SITE_URL": "http://localhost:8787",
