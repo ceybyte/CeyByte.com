@@ -261,7 +261,9 @@
 
 ## 4. Typography
 
-### 4.1 Families (`src/app/[locale]/layout.tsx`)
+### 4.1 Families (`apps/web/src/app/fonts.ts`)
+
+All five are **self-hosted variable fonts from npm** (`geist`, `@fontsource-variable/*`) loaded with `next/font/local`. Builds never call Google Fonts. The snippet below shows the intended roles; the code uses `localFont` with the same variable names.
 
 ```ts
 import { Geist, Inter, JetBrains_Mono, Noto_Sans_Sinhala, Noto_Sans_Tamil } from "next/font/google";
