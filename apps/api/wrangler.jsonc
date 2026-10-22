@@ -1,7 +1,4 @@
 // Full target config: docs/02-TRD.md §2.2.
-// Not bound yet (each waits on an account-owner action):
-//  - R2 `cbpos-uploads` / `cbpos-public` (UPLOADS, PUBLIC): R2 must be enabled on the account.
-//  - routes / custom domain `ceybyte.com`: the apex still serves another site. Deploys go to workers.dev.
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "cbpos",
@@ -15,6 +12,7 @@
     "not_found_handling": "404-page",
     "run_worker_first": ["/api/*"],
   },
+  // `ceybyte.com` custom domain is added once the old apex DNS records are deleted (they block it).
   "workers_dev": true,
   "preview_urls": true,
   "observability": { "enabled": true, "head_sampling_rate": 0.1 },
@@ -26,6 +24,10 @@
       "database_id": "c787bb6e-94f1-4589-be30-795fdde65c3a",
       "migrations_dir": "drizzle",
     },
+  ],
+  "r2_buckets": [
+    { "binding": "UPLOADS", "bucket_name": "cbpos-uploads" },
+    { "binding": "PUBLIC", "bucket_name": "cbpos-public" },
   ],
   "kv_namespaces": [
     {
@@ -43,7 +45,7 @@
   ],
 
   "vars": {
-    "SITE_URL": "http://localhost:8787",
+    "SITE_URL": "https://ceybyte.com",
     "CDN_URL": "https://cdn.ceybyte.com",
     "RELEASES_REPO": "ceybyte/cbpos-releases",
     "RELEASE_MANIFEST_URL": "https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json",
