@@ -1,6 +1,7 @@
 // Full target config: docs/02-TRD.md §2.2.
-// Resource IDs are filled in once the Cloudflare resources exist (07 Phase 0.3).
-// For local dev, Wrangler accepts any database_id / KV id and simulates them.
+// Not bound yet (each waits on an account-owner action):
+//  - R2 `cbpos-uploads` / `cbpos-public` (UPLOADS, PUBLIC): R2 must be enabled on the account.
+//  - routes / custom domain `ceybyte.com`: the apex still serves another site. Deploys go to workers.dev.
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "cbpos",
@@ -14,21 +15,25 @@
     "not_found_handling": "404-page",
     "run_worker_first": ["/api/*"],
   },
+  "workers_dev": true,
+  "preview_urls": true,
   "observability": { "enabled": true, "head_sampling_rate": 0.1 },
 
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "cbpos-db",
-      "database_id": "local-cbpos-db",
+      "database_id": "c787bb6e-94f1-4589-be30-795fdde65c3a",
       "migrations_dir": "drizzle",
     },
   ],
-  "r2_buckets": [
-    { "binding": "UPLOADS", "bucket_name": "cbpos-uploads" },
-    { "binding": "PUBLIC", "bucket_name": "cbpos-public" },
+  "kv_namespaces": [
+    {
+      "binding": "CACHE_KV",
+      "id": "b6b9f2dca26b4747bffa864274399855",
+      "preview_id": "ebeace85e4cd415a8552b7d2b5a7d8a9",
+    },
   ],
-  "kv_namespaces": [{ "binding": "CACHE_KV", "id": "local-cache-kv" }],
   "ratelimits": [
     { "name": "RL_FORMS", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } },
     { "name": "RL_UPLOADS", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } },
