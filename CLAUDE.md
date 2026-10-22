@@ -196,7 +196,7 @@ Rules:
 
 ## 7. Design skills (mandatory gates)
 
-Every design decision goes through these skills: layout, type, colour, spacing, component shape, motion and UI copy. They are how this repo avoids AI slop. All three were verified on GitHub on 2026-10-21.
+Every design decision goes through these skills: layout, type, colour, spacing, component shape, motion and UI copy. They are how this repo avoids AI slop. All four were verified on GitHub (humanizer on 2026-10-22).
 
 ### 7.1 Install (once per machine, project scope)
 
@@ -204,6 +204,7 @@ Every design decision goes through these skills: layout, type, colour, spacing, 
 bunx skills add emilkowalski/skills     # MIT. emil-design-eng, animate, improve-animations, review-animations, animation-performance, find-animation-opportunities, pick-ui-library, ask-sonner, break-ui, …
 bunx skills add Nutlope/hallmark        # MIT. hallmark (default build + audit / redesign / study)
 bunx skills add pbakaus/impeccable      # Apache-2.0. impeccable (shape, craft, audit, critique, polish, animate, …)
+bunx skills add blader/humanizer        # MIT. humanizer (removes AI-writing patterns from copy)
 ```
 
 Skills install into `.claude/skills/`. Commit the lockfile the installer writes, so every contributor and agent runs the same versions. Review a skill's diff before accepting an update.
@@ -215,6 +216,7 @@ Skills install into `.claude/skills/`. Commit the lockfile the installer writes,
 | Starting a new page or section | `hallmark` (default build), then `impeccable shape` for the screen's visual plan | Hallmark pre-emit critique scores **≥ 3 on all six axes** (Philosophy, Hierarchy, Execution, Specificity, Restraint, Variety). Paste the score line in the PR |
 | Building or changing a component | `emil-design-eng` (component craft), `impeccable craft` | The component exists in `/_styleguide` with every state |
 | Adding or changing motion | `emil-design-eng` answers its four questions (is it necessary, what does it communicate, which easing, how fast) → `animate` → `animation-performance` | `review-animations` verdict is **approve**, pasted in the PR |
+| Writing or changing any user-facing copy | `humanizer` (`.claude/skills/humanizer`) over every string, then the psychology rules in `03-DESIGN.md §11` | No humanizer pattern left in the diff; every anxious moment (phone field, SmartScreen, tax, donation, delete) says what happens next and what stays private |
 | Before opening a PR touching UI | `hallmark audit <route>` and `impeccable audit` + `impeccable critique` | Zero hallmark slop-test gate failures. Every impeccable finding is fixed or logged as an accepted exception |
 | Final pass before launch of a screen | `impeccable polish` | Screenshot review in `en`, `si`, `ta`, light and dark, at 320 / 375 / 414 / 768 / 1280 px |
 
@@ -234,6 +236,8 @@ A PR fails review if any box can't be honestly ticked.
 
 ### 8.1 Copy
 - [ ] No filler words: *seamless, revolutionize, unlock, elevate, empower, cutting-edge, robust, leverage, game-changer, in today's fast-paced world, effortless*.
+- [ ] The copy passed `humanizer`: no em or en dashes in UI strings, no "not X but Y", no forced triads, no one-line dramatic closers, no chatbot phrasing.
+- [ ] Where the reader might be worried, the copy names the worry first, then the fact, and says what happens next. No pressure, guilt or countdowns.
 - [ ] Every headline states a concrete outcome or number ("Bill in 0 ms network lag", not "Next-gen retail experience").
 - [ ] The product is written **CB POS** (non-breaking space), never "CB-POS" or "CBPOS". The company is Ceylon Byte; the site is ceybyte.com.
 - [ ] No exclamation marks in UI copy. No emoji in UI copy.
