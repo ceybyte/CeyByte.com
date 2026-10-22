@@ -167,7 +167,7 @@ GitHub Actions secrets: `CLOUDFLARE_API_TOKEN` (Workers, D1, R2, KV edit), `CLOU
 | Env | URL | D1 | Deploy |
 |---|---|---|---|
 | local | `localhost:3000` (web, `/api` proxied) + `localhost:8787` (Worker) | `--local` (Miniflare) | — |
-| preview | `cbpos-preview.<acct>.workers.dev` | `cbpos-db-preview` | Every PR |
+| preview | `cbpos-preview.hasendra.workers.dev` | `cbpos-db-preview` (R2 `cbpos-uploads-preview`, `cbpos-public-preview`) | `ci.yml` `preview` job on every PR and push to `free` |
 | production | `ceybyte.com` | `cbpos-db` | Push to `free` or `content-published` dispatch |
 
 ---
@@ -597,7 +597,7 @@ Figures checked against Cloudflare's docs on 2026-10-21. Re-check in Phase 0.
 | Static asset requests | Free and unlimited | ~all page views | — |
 | Worker requests (`run_worker_first` + API) | 100,000 / day | ~3,000 / day | > 60k/day |
 | Worker CPU | 10 ms / request | API calls ≪ 5 ms | Any route p95 > 7 ms |
-| Worker size | 64 MiB uncompressed (startup ≤ 1 s) | < 2 MiB | Startup time in `wrangler deploy` output |
+| Worker size | 64 MiB uncompressed (startup ≤ 1 s) | ~2.8 MiB (482 KiB gzip) after Phase 2, mostly Better Auth | Startup time in `wrangler deploy` output |
 | D1 | 5 M rows read/day, 100 k rows written/day, 500 MB per DB | < 20 k reads/day | DB > 300 MB |
 | KV | 100 k reads/day, 1 k writes/day | ~5 k reads, < 100 writes | Writes > 600/day |
 | R2 | 10 GB, 1 M Class A, 10 M Class B / month; free egress | < 1 GB (tiles ~100–200 MB) | > 7 GB |

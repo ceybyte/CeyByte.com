@@ -47,3 +47,49 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # 02-TRD §2.4 / §17: migrate cbpos-db-preview and deploy cbpos-preview. Skipped for forks (no secrets).
+  preview:
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: preview
+      cancel-in-progress: true
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PREVIEW_URL: https://cbpos-preview.hasendra.workers.dev
+    steps:
+      - name: Skip without Cloudflare secrets
+        id: guard
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "Cloudflare secrets unavailable (fork PR); skipping preview." >> "$GITHUB_STEP_SUMMARY"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v5
+        if: steps.guard.outputs.ready == 'true'
+      - uses: oven-sh/setup-bun@v2
+        if: steps.guard.outputs.ready == 'true'
+        with:
+          bun-version-file: package.json
+      - run: bun install --frozen-lockfile
+        if: steps.guard.outputs.ready == 'true'
+      - name: Migrate preview D1
+        if: steps.guard.outputs.ready == 'true'
+        working-directory: apps/api
+        run: bunx wrangler d1 migrations apply cbpos-db-preview --remote --env preview
+      - run: bun run build
+        if: steps.guard.outputs.ready == 'true'
+      - name: Deploy preview
+        if: steps.guard.outputs.ready == 'true'
+        working-directory: apps/api
+        run: bunx wrangler deploy --env preview
+      - name: Smoke test
+        if: steps.guard.outputs.ready == 'true'
+        run: |
+          curl -fsS "$PREVIEW_URL/api/health"
+          test "$(curl -s -o /dev/null -w '%{http_code}' "$PREVIEW_URL/api/admin/overview")" = "404"

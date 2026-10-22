@@ -41,6 +41,11 @@ jobs:
           bun-version-file: package.json
       - run: bun install --frozen-lockfile
         if: steps.guard.outputs.ready == 'true'
+      # Content rebuilds (repository_dispatch) never change the schema, so only pushes migrate.
+      - name: Migrate production D1
+        if: steps.guard.outputs.ready == 'true' && github.event_name != 'repository_dispatch'
+        working-directory: apps/api
+        run: bunx wrangler d1 migrations apply cbpos-db --remote
       - run: bun run build
         if: steps.guard.outputs.ready == 'true'
       - run: bun run deploy
@@ -49,5 +54,6 @@ jobs:
         if: steps.guard.outputs.ready == 'true'
         run: |
           curl -fsS "$DEPLOY_URL/api/health"
+          test "$(curl -s -o /dev/null -w '%{http_code}' "$DEPLOY_URL/api/admin/overview")" = "404"
           curl -fsS -o /dev/null "$DEPLOY_URL/"
           test "$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' https://www.ceybyte.com/x/?y=1)" = "301 https://ceybyte.com/x/?y=1"

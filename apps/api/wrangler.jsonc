@@ -58,4 +58,50 @@
     "ENVIRONMENT": "production",
     "EMAIL_FROM": "CB POS <no-reply@ceybyte.com>",
   },
+
+  // 02-TRD §2.4. `wrangler deploy --env preview` → cbpos-preview on workers.dev, with its own D1 and R2 so test
+  // data never touches production. Bindings and vars aren't inherited by environments, so all are repeated.
+  "env": {
+    "preview": {
+      "name": "cbpos-preview",
+      "routes": [],
+      "workers_dev": true,
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "cbpos-db-preview",
+          "database_id": "6725d22f-3312-44b1-90de-6ab4a1373d42",
+          "migrations_dir": "drizzle",
+        },
+      ],
+      "r2_buckets": [
+        { "binding": "UPLOADS", "bucket_name": "cbpos-uploads-preview" },
+        { "binding": "PUBLIC", "bucket_name": "cbpos-public-preview" },
+      ],
+      "kv_namespaces": [{ "binding": "CACHE_KV", "id": "ebeace85e4cd415a8552b7d2b5a7d8a9" }],
+      "ratelimits": [
+        { "name": "RL_FORMS", "namespace_id": "2001", "simple": { "limit": 5, "period": 60 } },
+        { "name": "RL_UPLOADS", "namespace_id": "2002", "simple": { "limit": 10, "period": 60 } },
+        { "name": "RL_VOTES", "namespace_id": "2003", "simple": { "limit": 30, "period": 60 } },
+        { "name": "RL_AUTH", "namespace_id": "2004", "simple": { "limit": 10, "period": 60 } },
+        { "name": "RL_READ", "namespace_id": "2005", "simple": { "limit": 120, "period": 60 } },
+      ],
+      "vars": {
+        "SITE_URL": "https://cbpos-preview.hasendra.workers.dev",
+        "CDN_URL": "https://cdn.ceybyte.com",
+        "RELEASES_REPO": "ceybyte/cbpos-releases",
+        "RELEASE_MANIFEST_URL": "https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json",
+        "SITE_REPO": "ceybyte/CeyByte.com",
+        "R2_ACCOUNT_ID": "a5d5786c14afdfda66e133ab0817982f",
+        // Cloudflare's always-pass test site key; preview pairs it with the matching test secret.
+        "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+        "POSTHOG_HOST": "https://eu.i.posthog.com",
+        "WHATSAPP_COMMUNITY_URL": "https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM",
+        "LOCALES_ENABLED": "en,si,ta",
+        // Not "production": without RESEND_API_KEY, OTP codes go to Workers Logs instead of email.
+        "ENVIRONMENT": "preview",
+        "EMAIL_FROM": "CB POS <no-reply@ceybyte.com>",
+      },
+    },
+  },
 }
