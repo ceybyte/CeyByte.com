@@ -35,8 +35,10 @@
 | | Text primary | `#FFFFFF` | `#121212` |
 | | Text muted | `#AAAAAA` | `#5F6368` |
 | **10%** | Primary action fill (Download) | `#39FF14` + text `#121212` bold | `#39FF14` + text `#121212` bold |
-| | Electric cyan (focus, links, glow) | `#00BCEB` | fill `#00BCEB` / **text** `#006E8C` |
-| | Cyan ambient glow | `rgba(0,188,235,0.15)` | `rgba(0,188,235,0.10)` |
+| | Vivid Azure, solid (fills, map pins) | `#0393DD` | `#0393DD` |
+| | Vivid Azure, text and focus | `#0EAAE9` | `#016CC7` |
+| | Azure brand gradient (logo slash, glow, progress, rim light only) | `#0EAAE9 → #0393DD → #017FD2 → #016CC7` | same |
+| | Azure ambient glow | `rgba(3,147,221,0.18)` | `rgba(1,108,199,0.10)` |
 | | Supporter gold | `#FFD700` | fill `#FFD700` / text `#8A6D00` |
 | | Warning | `#FFDC00` | fill `#FFDC00` / text `#8A6D00` |
 | | Error | `#FF4136` | `#C8211A` |
@@ -51,20 +53,22 @@
 | `#FFFFFF` on `#1E1E1E` | 16.7 : 1 | Body |
 | `#AAAAAA` on `#1E1E1E` | 7.2 : 1 | Muted body |
 | `#AAAAAA` on `#2D2D30` | 5.9 : 1 | Muted on hover surfaces |
-| `#00BCEB` on `#1E1E1E` | 7.4 : 1 | Links (dark) |
+| `#0EAAE9` on `#1E1E1E` | 6.3 : 1 | Links, focus (dark) |
+| `#0EAAE9` on `#252526` | 5.8 : 1 | Links on surfaces (dark) |
+| `#0393DD` on `#1E1E1E` | 4.9 : 1 | Azure fills and large text (dark) |
 | `#FF4136` on `#1E1E1E` | 4.8 : 1 | Error text (dark) |
 | `#121212` on `#39FF14` | ≈ 14 : 1 | Primary button |
 | `#121212` on `#F8F9FA` | 18 : 1 | Body (light) |
 | `#5F6368` on `#F8F9FA` | 5.7 : 1 | Muted (light) |
-| `#006E8C` on `#F8F9FA` | 5.5 : 1 | Links (light) |
+| `#016CC7` on `#F8F9FA` | 5.0 : 1 | Links, focus (light) |
 | `#C8211A` on `#F8F9FA` | 5.4 : 1 | Error (light) |
 | `#1E7A0E` on `#F8F9FA` | 5.2 : 1 | Success (light) |
 
-**Forbidden pairs:** `#39FF14`, `#FFDC00`, `#FFD700` or `#00BCEB` as **text** on light backgrounds (all < 3 : 1). In light mode they are fills only, always paired with `#121212` text.
+**Forbidden pairs:** `#39FF14`, `#FFDC00`, `#FFD700` or `#0EAAE9` as **text** on light backgrounds (all < 3 : 1). In light mode they are fills only, always paired with `#121212` text.
 
 ### 2.2 Accent budget per viewport
 - `#39FF14`: at most **one** element (the primary CTA). The sticky header CTA hides while the hero CTA is in view (IntersectionObserver).
-- `#00BCEB`: focus rings, links, one ambient glow, map pins, small data highlights.
+- Azure: focus rings, links, map pins, small data highlights. The four-stop **azure gradient** (from the Ceylon Byte logo) appears only on the logo slash, the one ambient glow, the gate progress bar and the mockup rim light; never on text (impeccable bans gradient text) and never as a large fill.
 - `#FFD700`: only supporter pins, supporter badges and the donate page's primary button.
 
 ---
@@ -100,9 +104,14 @@
   --primary-hover: #5cff3d;
   --primary-press: #2fd611;
   --primary-foreground: #121212;
-  --cyan: #00bceb;
-  --cyan-text: #00bceb;
-  --glow-cyan: rgba(0, 188, 235, 0.15);
+  --azure-300: #0eaae9;
+  --azure-400: #0393dd;
+  --azure-500: #017fd2;
+  --azure-600: #016cc7;
+  --azure: var(--azure-400);           /* fills, pins */
+  --azure-text: var(--azure-300);      /* links, focus (dark) */
+  --azure-gradient: linear-gradient(105deg, #0eaae9 0%, #0393dd 38%, #017fd2 68%, #016cc7 100%);
+  --glow-azure: rgba(3, 147, 221, 0.18);
   --gold: #ffd700;
   --gold-text: #ffd700;
   --warning: #ffdc00;
@@ -120,10 +129,7 @@
   --radius-sm: 4px;
   --radius-md: 6px;
 
-  /* motion */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  /* motion (easing curves live in @theme below) */
   --dur-press: 120ms;
   --dur-hover: 180ms;
   --dur-enter: 240ms;
@@ -150,8 +156,8 @@
   --hairline-grid: #e4e6ea;
   --text: #121212;
   --text-muted: #5f6368;
-  --cyan-text: #006e8c;
-  --glow-cyan: rgba(0, 188, 235, 0.10);
+  --azure-text: var(--azure-600);
+  --glow-azure: rgba(1, 108, 199, 0.10);
   --gold-text: #8a6d00;
   --warning-text: #8a6d00;
   --error: #c8211a;
@@ -173,8 +179,8 @@
   --color-primary-hover: var(--primary-hover);
   --color-primary-press: var(--primary-press);
   --color-primary-foreground: var(--primary-foreground);
-  --color-cyan: var(--cyan);
-  --color-cyan-text: var(--cyan-text);
+  --color-azure: var(--azure);
+  --color-azure-text: var(--azure-text);
   --color-gold: var(--gold);
   --color-gold-text: var(--gold-text);
   --color-warning: var(--warning);
@@ -198,7 +204,7 @@
   --color-destructive: var(--error);
   --color-border: var(--hairline);
   --color-input: var(--hairline);
-  --color-ring: var(--cyan);
+  --color-ring: var(--azure-text);
 
   /* type */
   --font-display: var(--font-geist), var(--font-noto-sinhala), var(--font-noto-tamil), ui-sans-serif, system-ui, sans-serif;
@@ -212,22 +218,27 @@
   --radius-full: 9999px;
 
   /* motion */
-  --ease-out: var(--ease-out);
-  --ease-in-out: var(--ease-in-out);
   --animate-pulse-dot: pulse-dot 2s var(--ease-in-out) infinite;
 }
 
+/* Easing curves are literal theme values (an inline self-reference would make them invalid). */
+@theme {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+}
+
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 188, 235, 0.55); }
-  50%      { opacity: 0.85; transform: scale(0.92); box-shadow: 0 0 0 6px rgba(0, 188, 235, 0); }
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
 }
 
 @layer base {
   html { background: var(--canvas); color: var(--text); }
   body { @apply font-sans antialiased bg-canvas text-text; text-rendering: optimizeLegibility; }
-  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: var(--radius-sm); }
-  ::selection { background: var(--cyan); color: var(--text-inverse); }
-  html { caret-color: var(--cyan); scrollbar-color: var(--hairline) var(--canvas); accent-color: var(--cyan); }
+  :focus-visible { outline: 2px solid var(--azure-text); outline-offset: 2px; border-radius: var(--radius-sm); }
+  ::selection { background: var(--azure-300); color: var(--text-inverse); }
+  html { caret-color: var(--azure-text); scrollbar-color: var(--hairline) var(--canvas); accent-color: var(--azure); }
   a { text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
   .num, kbd, code, pre { font-variant-numeric: tabular-nums slashed-zero; }
 }
@@ -360,7 +371,7 @@ Rules, applied once in `globals.css` and never per component:
 - A full-bleed background behind sections: 1px `--hairline-grid` lines every `--grid-cell` (64px), drawn with CSS `background-image: linear-gradient(...)`, masked with a radial fade (`mask-image: radial-gradient(ellipse at center, #000 40%, transparent 85%)`).
 - **Crosshairs (`<Crosshair />`):** 9×9 px `+` glyphs (1px strokes, `--hairline`) placed at section corners and card-grid intersections, absolutely positioned at the line crossings. Max 4 per section.
 - **Section rules:** each section starts with a full-width 1px top border (`--hairline-grid`). Headings carry the section on their own: no eyebrow/kicker labels and no section numbers (impeccable craft floor; ADR-0017).
-- **Ambient glow:** one `radial-gradient(600px circle at var(--x) var(--y), var(--glow-cyan), transparent 70%)` per page, behind the hero mockup. On the final banner it follows the pointer (desktop only).
+- **Ambient glow:** one `radial-gradient(600px circle at var(--x) var(--y), var(--glow-azure), transparent 70%)` per page, behind the hero mockup. On the final banner it follows the pointer (desktop only).
 
 ### 5.4 Radius & elevation
 - Radius: `0` (sections, grid tiles, bento outer frame), `4px` (buttons, inputs, kbd, badges), `6px` (cards, dialogs, sheets top corners, map popups), `full` (status dots, pills, avatar).
@@ -398,9 +409,9 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 ### 6.2 Product photography & mockups
 - **Backdrop:** `#18181B` studio black, seamless, no horizon line.
 - **Content:** real CB POS screens only. None exist yet [L1], so they're captured for launch (UR-20): install the current release, choose **Load Demo Data** (80 Sri Lankan products with EN/SI/TA names, customers, 15 days of sales [I2]), turn on VAT registration and the tax breakdown, then capture the sales screen, payment dialog (split payment), receipt preview, Tax Liability report and Settings › Hardware in each UI language at 1920×1080. Thermal receipt photos come from a real 80 mm printer. Their Sinhala/Tamil text is genuine, and their item names print in English, as the app does [F2].
-- **App brand overlap:** the app's own colours are navy `#001F3F` and the same cyan `#00BCEB` [L1]. Its logo and monogram files can be used for the download page and favicon fallback. The site wordmark is `[CB POS]`, the same name the app uses.
-- **Treatment:** borderless screens floating at a slight isometric angle (rotateX 8°, rotateY −12° for the hero), cyan rim glow, no device frames, no browser chrome, no reflections, no gradient overlays.
-- **Hardware shots:** a real 80mm thermal printer, barcode scanner and digital scale, photographed on the same backdrop with a single cyan rim light. If no real photos exist, use a Hairline figure (§9.6) instead. Never stock photos, and never an agent-drawn imitation of the CB POS UI.
+- **Brand source:** the site's accent is Vivid Azure from the Ceylon Byte CB monogram (`docs/brand/source/`). The desktop app still uses navy `#001F3F` and cyan `#00BCEB` [L1]; aligning it is UR-21.
+- **Treatment:** borderless screens floating at a slight isometric angle (rotateX 8°, rotateY −12° for the hero), azure rim glow, no device frames, no browser chrome, no reflections, no gradient overlays.
+- **Hardware shots:** a real 80mm thermal printer, barcode scanner and digital scale, photographed on the same backdrop with a single azure rim light. If no real photos exist, use a Hairline figure (§9.6) instead. Never stock photos, and never an agent-drawn imitation of the CB POS UI.
 - **Formats:** AVIF + WebP fallback, pre-sized at build (`640/960/1280/1920`). Hero poster ≤ 120 KB.
 - **Alt text:** describes the actual screen ("CB POS billing screen showing 1.250 kg Samba rice, VAT Rs. 45.76"), translated per locale.
 
@@ -410,14 +421,26 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 
 ### 7.1 Logo — `<Logo />` (`src/components/brand/logo.tsx`)
 - Wordmark: `[CB POS]` in JetBrains Mono 700 (the space is a non-breaking space and keeps its full monospace width), brackets in `--text-muted`, letters in `--text`.
-- Status dot: 8×8 px `--cyan` circle, top-right of the closing bracket (offset −2px), `animate-pulse-dot`. The pulse stops under reduced motion.
+- **Slash:** the parallelogram slash from the Ceylon Byte CB monogram, drawn as inline SVG and filled with the azure gradient, set between `CB` and `POS` at cap height (replaces the old round status dot). A slow opacity pulse (`animate-pulse-dot`, 2 s) marks it as live; the pulse stops under reduced motion.
 - Sizes: `sm` (16px text, header mobile), `md` (20px, header), `lg` (32px, footer).
-- Clear space: one bracket width on all sides. Never recolour the dot green or gold.
-- Accessible name: `aria-label="CB POS home"`. The dot is `aria-hidden`.
+- Clear space: one bracket width on all sides. Never recolour the slash green or gold, and never use the gradient elsewhere in the wordmark.
+- Accessible name: `aria-label="CB POS home"`. The slash is `aria-hidden`.
+
+### 7.1a Company mark — the CB monogram
+
+Source files: `docs/brand/source/` (originals, not served). Web copies are generated by `bun scripts/brand-assets.ts`.
+
+| Asset | Where it's used |
+|---|---|
+| `src/app/icon.png` (512) and `apple-icon.png` (180): white CB mark on a `#1E1E1E` tile | Favicon, home-screen icon, PWA icon |
+| `public/brand/cb-mark-white.webp` / `cb-mark-black.webp` (96 px tall) | Footer company line "Ceylon Byte" (white mark in dark theme, black in light), download page, OG image template |
+| `ceylon-bytes-cover-*.png` | **Not used.** Spelling ("Bytes") differs from the company name, and the lettering has a baked drop shadow. Kept as source only |
+
+The product wordmark `[CB POS]` (§7.1) and the company mark are separate: the product leads everywhere; the monogram signs the work.
 
 ### 7.2 Keycap — `<Kbd />`
 - `font-mono text-xs font-medium`, `bg-kbd text-white`, `border border-[--kbd-border]`, `rounded-sm`, `px-1.5 min-h-6`, bottom inset `box-shadow: inset 0 -2px 0 #000` (the single allowed inset, giving a keycap feel).
-- Active state (key pressed, or matching keyboard input in the bento demo): `translateY(1px)`, inset shadow removed, cyan 1px border.
+- Active state (key pressed, or matching keyboard input in the bento demo): `translateY(1px)`, inset shadow removed, azure 1px border.
 - Combos: `<Kbd>Ctrl</Kbd>+<Kbd>K</Kbd>`. `⌘` is shown on macOS (detected via `navigator.userAgentData?.platform`), `Ctrl` elsewhere.
 
 ### 7.3 Hash block — `<HashBlock />`
@@ -435,9 +458,9 @@ Each component's file, variants, states, and the rules it has to follow. shadcn 
 | Variant | Fill | Text | Border | Hover | Press |
 |---|---|---|---|---|---|
 | `primary` | `--primary` | `--primary-foreground`, **700** | none | `--primary-hover` | `--primary-press`, `scale(.97)` |
-| `secondary` | `--surface` | `--text` | `--hairline` | `surface-elevated`, border `--cyan` at 40% | `scale(.98)` |
+| `secondary` | `--surface` | `--text` | `--hairline` | `surface-elevated`, border `--azure` at 40% | `scale(.98)` |
 | `ghost` | transparent | `--text` | none | `surface-elevated` | `scale(.98)` |
-| `link` | transparent | `--cyan-text` | none | underline (offset 4px) | — |
+| `link` | transparent | `--azure-text` | none | underline (offset 4px) | — |
 | `destructive` | transparent | `--error` | `--error` | fill `--error`, text white | `scale(.98)` |
 | `gold` (donate page primary only) | `--gold` | `#121212` | none | brightness 1.05 | `scale(.97)` |
 
@@ -448,12 +471,12 @@ Props: `asChild`, `loading` (spinner replaces the leading icon, keeps width, `ar
 The primary Download button pattern: `[⬇ Download CB POS — Free]` with a subtext line under it (outside the button): `Windows 10/11 · 64-bit · v1.4.2 · 80.3 MB` in `text-xs text-muted font-mono`.
 
 ### 8.2 Form controls
-- **Input/Textarea/Select:** `bg-surface border-hairline rounded-sm min-h-10 px-3 py-2`. Focus: `border-cyan` + focus ring. Invalid: `border-error` + an error message below (`text-xs text-error`, with an `AlertCircle` 14px icon), linked via `aria-describedby`.
+- **Input/Textarea/Select:** `bg-surface border-hairline rounded-sm min-h-10 px-3 py-2`. Focus: `border-azure` + focus ring. Invalid: `border-error` + an error message below (`text-xs text-error`, with an `AlertCircle` 14px icon), linked via `aria-describedby`.
 - **Label:** above the field, `text-sm font-medium`. Required fields get no asterisk; optional fields get a "(optional)" suffix in muted.
 - **PhoneInput (`+94`):** a fixed, non-editable prefix segment `+94` (mono, `surface-elevated`, left-rounded) plus a 9-digit input (`inputMode="numeric"`, `autoComplete="tel-national"`). Paste of `07X…`, `+947X…` or `947X…` is normalised. Live format: `77 123 4567`.
 - **Select (district/city):** Radix Select. District is a long list (25), so use type-ahead. City uses a combobox (cmdk) with a free-text fallback ("Use '{typed}'").
-- **Checkbox:** 18px, `rounded-sm`, checked fill `--cyan` with a `#121212` check. The label is clickable and wraps.
-- **Dropzone (`<FileDrop />`):** a dashed `--hairline` 1px border, `rounded-md`, `min-h-36`. States: idle (icon + "Drop slip here or browse" + "JPG, PNG or PDF · max 5 MB"), drag-over (border `--cyan`, glow), uploading (progress bar 2px `--cyan` + percentage in mono), done (file chip + "Replace"), error (border `--error` + message). Keyboard: Enter/Space opens the picker.
+- **Checkbox:** 18px, `rounded-sm`, checked fill `--azure` with a `#121212` check. The label is clickable and wraps.
+- **Dropzone (`<FileDrop />`):** a dashed `--hairline` 1px border, `rounded-md`, `min-h-36`. States: idle (icon + "Drop slip here or browse" + "JPG, PNG or PDF · max 5 MB"), drag-over (border `--azure`, glow), uploading (progress bar 2px `--azure` + percentage in mono), done (file chip + "Replace"), error (border `--error` + message). Keyboard: Enter/Space opens the picker.
 
 ### 8.3 Card & BentoCard
 - **Card:** `bg-surface border border-hairline rounded-md p-6`. Hover (if interactive): `bg-surface-elevated`, border `--hairline` → `rgba(0,188,235,.4)`, 180 ms.
@@ -467,27 +490,27 @@ The primary Download button pattern: `[⬇ Download CB POS — Free]` with a sub
 | Variant | Style |
 |---|---|
 | `supporter` | `bg-gold/10 text-gold-text border border-gold/40` + `Award` 12px icon, label "Gold Supporter" |
-| `status-*` (tickets) | Neutral surface + 6px coloured dot: open `--cyan`, triaged `--text-muted`, planned `--warning`, in_progress `--cyan`, shipped `--success`, closed/wont_fix `--text-muted`, duplicate `--text-muted` |
+| `status-*` (tickets) | Neutral surface + 6px coloured dot: open `--azure`, triaged `--text-muted`, planned `--warning`, in_progress `--azure`, shipped `--success`, closed/wont_fix `--text-muted`, duplicate `--text-muted` |
 | `version` | mono `v1.4+`, hairline border |
 | `locale` | mono `EN` / `SI` / `TA`, for fallback search results |
 
 ### 8.6 Callout (docs/legal)
-1px border in the variant colour at 40% (`border-[--variant]/40`, all sides), `bg-surface`, `p-4`, never a thicker side stripe, icon + title + body. Variants: `tip` (cyan), `warn` (warning), `danger` (error), `tax` (warning + fixed copy + disclaimer link).
+1px border in the variant colour at 40% (`border-[--variant]/40`, all sides), `bg-surface`, `p-4`, never a thicker side stripe, icon + title + body. Variants: `tip` (azure), `warn` (warning), `danger` (error), `tax` (warning + fixed copy + disclaimer link).
 
 ### 8.7 Accordion (FAQ)
 Radix Accordion, `type="single" collapsible`. Trigger: `text-h4` (si/ta: line-height scaled), `py-5`, with a `Plus` icon that rotates 45° to an ×. Items are separated by hairlines. Content animates with `grid-template-rows: 0fr → 1fr` (220 ms ease-out) so there's no height measurement. FAQ structured data (`FAQPage`) is emitted from the same data.
 
 ### 8.8 DownloadModal (responsive dialog/drawer)
-- `≥ md`: Radix Dialog. `max-w-[560px]`, `bg-surface border-hairline rounded-md`, header with a step indicator (`1 / 2` mono plus a 2-segment progress bar in cyan), close `X` (Esc).
+- `≥ md`: Radix Dialog. `max-w-[560px]`, `bg-surface border-hairline rounded-md`, header with a step indicator (`1 / 2` mono plus a 2-segment progress bar in azure), close `X` (Esc).
 - `< md`: Vaul `Drawer` with `snapPoints={[0.92]}`, a drag handle (36×4 px `--hairline`, rounded-full), `data-lenis-prevent` on the scroll body, and inputs that scroll into view above the keyboard (`scrollIntoView({ block: "center" })` on focus).
 - Body slots: `StepYourShop`, `StepLocation`, `WhatNext`. The modal container keeps a stable `layoutId="download-modal"`, so the morph into What Next animates size (§9.3).
 - Footer: secondary "Back" (step 2), primary "Continue" (step 1) / "Download CB POS" (step 2). The primary is disabled until the form is valid, with the reason shown in a muted helper line, not as a tooltip.
-- Mini-map (step 2): a 100% × 200px MapLibre instance (lazy) with a single draggable cyan pin, bounds locked. A "Detect my location" button sits above it (`LocateFixed` icon, secondary). If WebGL is unavailable, the map is hidden and the fields still work.
+- Mini-map (step 2): a 100% × 200px MapLibre instance (lazy) with a single draggable azure pin, bounds locked. A "Detect my location" button sits above it (`LocateFixed` icon, secondary). If WebGL is unavailable, the map is hidden and the fields still work.
 
 ### 8.9 Map elements
-- **Pin (standard):** a 10px circle `--cyan` with a 2px `--canvas` stroke and a halo (`circle-blur` 0.6, radius 18, opacity 0.25).
+- **Pin (standard):** a 10px circle `--azure` with a 2px `--canvas` stroke and a halo (`circle-blur` 0.6, radius 18, opacity 0.25).
 - **Pin (supporter):** a 12px circle `--gold`, with a gold halo.
-- **Cluster:** a circle with a radius stepped by count (18 / 24 / 32 px at <10 / <100 / ≥100), `--surface-elevated` fill, 1px `--cyan` stroke, count label in JetBrains Mono 12px `--text`. If `supporters > 0`, the stroke becomes 2px `--gold`.
+- **Cluster:** a circle with a radius stepped by count (18 / 24 / 32 px at <10 / <100 / ≥100), `--surface-elevated` fill, 1px `--azure` stroke, count label in JetBrains Mono 12px `--text`. If `supporters > 0`, the stroke becomes 2px `--gold`.
 - **Popup:** `bg-surface border-hairline rounded-md p-4 w-64`. Content order: shop name (`text-h4`), category · city (muted), "CB POS user since Aug 2026" (mono xs), Supporter badge, "Get directions →" link.
 - **Basemap:** self-hosted Protomaps tiles (`sri-lanka.pmtiles`) with `@protomaps/basemaps` flavours: `dark` recoloured so land = `--canvas`, water = `#141414`, roads = `--hairline`, boundaries = `--hairline-grid`, labels = `--text-muted`; and `light` for the light theme. Labels use Latin-script names (`lang: "en"`) in every locale, because MapLibre can't shape Sinhala or Tamil conjuncts yet. Localized names appear in the panel and popups (HTML text, shaped by the browser).
 - **Attribution:** `© OpenStreetMap contributors · Protomaps`, always visible.
@@ -507,7 +530,7 @@ Radix Accordion, `type="single" collapsible`. Trigger: `text-h4` (si/ta: line-he
 `sonner` via the shadcn `Sonner` component. Bottom-right on desktop, top on mobile. `surface-elevated` + hairline, `rounded-md`, max 1 visible. Only for confirmations after actions (copied, saved, vote counted). Never for errors that need a fix; those stay inline.
 
 ### 8.12 Data table (admin)
-Plain shadcn `Table`: sticky header, row height 44px, zebra off, hover `surface-elevated`, selected row on `surface-elevated` with a 1px cyan outline inset (no thick side stripe). Numbers right-aligned in mono. Keyboard row focus (`j/k`), rendered as `aria-rowindex`.
+Plain shadcn `Table`: sticky header, row height 44px, zebra off, hover `surface-elevated`, selected row on `surface-elevated` with a 1px azure outline inset (no thick side stripe). Numbers right-aligned in mono. Keyboard row focus (`j/k`), rendered as `aria-rowindex`.
 
 ### 8.13 Skeletons & empty states
 - **Skeleton:** `bg-surface-elevated` blocks with a 1.2 s opacity pulse (0.5↔1), never a shimmer gradient.
@@ -542,6 +565,11 @@ Rules (following the `emilkowalski/skills` guidance in `CLAUDE.md §7`):
 - Interruptible: use springs for anything the user can reverse mid-way (hover, toggles, the drawer).
 - Stagger ≤ 40 ms per child, max 6 children staggered. The rest appear together.
 - Nothing animates on every scroll frame except the defined GSAP scrubs (§9.4).
+- **Keyboard-initiated actions never animate** (emil review, 2026-10-22): `⌘K`/`/` search open/close, `j/k` list moves and admin shortcuts are instant.
+- **Hover effects only on hover-capable pointers:** wrap hover motion in `@media (hover: hover) and (pointer: fine)` (Tailwind: the `hover:` variant is configured this way in `globals.css`).
+- **Popovers, dropdowns and tooltips scale from their trigger** (`transform-origin: var(--radix-*-content-transform-origin)`); dialogs stay centred.
+- **Tooltips:** first open waits 400 ms; neighbouring tooltips open instantly with no animation (Radix `skipDelayDuration`).
+- **Motion's `x`/`y` shorthands aren't hardware-accelerated.** For animations that run while the page loads (hero, reveals), animate a full `transform` string instead.
 
 ### 9.2 Motion (Framer Motion) specs
 
@@ -549,8 +577,8 @@ Rules (following the `emilkowalski/skills` guidance in `CLAUDE.md §7`):
 |---|---|---|
 | Section reveal | 20% in view, once | `opacity 0→1`, `y 16→0`, `dur.reveal`, `ease.out`; children stagger 40 ms |
 | Primary button | hover / press | hover: `y −1`, `spring.snappy`. Press: `scale .97`, `dur.press` |
-| Bento card | hover/focus-within | Border colour to cyan 40% (CSS 180 ms). Demo area starts its interaction. No card lift |
-| Kbd | matching key down | `y 1`, border cyan, `spring.snappy`. Release returns |
+| Bento card | hover/focus-within | Border colour to azure 40% (CSS 180 ms). Demo area starts its interaction. No card lift |
+| Kbd | matching key down | `y 1`, border azure, `spring.snappy`. Release returns |
 | Telemetry numbers | in view, once | `useSpring(spring.number)` from 0 to the value, displayed with `Intl.NumberFormat`. Done in ≤ 900 ms |
 | Offline toggle (bento) | click/Space | Wi-Fi icon swaps with a `scale .8→1` crossfade. The bill list keeps adding items (a new item every 700 ms, `layout` animation) to prove billing continues |
 | Dual-tax calculator | input change | Before-VAT, VAT and SSCL values crossfade digits (each digit `y ±6`, 140 ms), mono. Maths uses round-half-even to match the app [C1] |
@@ -612,7 +640,7 @@ gsap.ticker.lagSmoothing(0);
 |---|---|---|
 | Hero | `trigger: hero, start: top top, end: bottom top, scrub: 0.6` | Mockup `y: 0 → −60`, `rotateX: 8 → 2` (it settles flat as you scroll). Grid canvas `y: 0 → 30` (slower than content, for depth) |
 | Problem | `start: top 70%, end: bottom 60%, scrub: true` | Three problem cards: a red `--error` 1px "fault line" draws across each card in turn (clip-path) |
-| How It Works | `start: top 60%, end: bottom 70%, scrub: 0.5` | A vertical (mobile) / horizontal (desktop) progress hairline fills cyan through steps 1→3. Each step's number goes from muted to `--text` as it's reached |
+| How It Works | `start: top 60%, end: bottom 70%, scrub: 0.5` | A vertical (mobile) / horizontal (desktop) progress hairline fills azure through steps 1→3. Each step's number goes from muted to `--text` as it's reached |
 | Final banner | — | Pointer-follow glow (Motion `useMotionValue`, not GSAP) on desktop |
 
 No pinning longer than 1 viewport, and no scroll snapping.
@@ -639,7 +667,7 @@ The client wires `hero-pos` `lang` to the current locale. `scan` fires every 4 s
 ```css
 .hairline-scope {
   --hairline-plate: var(--canvas);
-  --hairline-hi: var(--cyan);          /* what is lit */
+  --hairline-hi: var(--azure-text);    /* what is lit */
   --hairline-edge: var(--text-muted);  /* silhouettes */
   --hairline-mid: var(--hairline);     /* other strokes */
   --hairline-lo: var(--hairline-grid); /* what recedes */
@@ -685,7 +713,7 @@ The client wires `hero-pos` `lang` to the current locale. `scan` fires every 4 s
 
 ## 10. Accessibility checklist (design-level)
 
-- Focus: a 2px cyan outline with 2px offset on every interactive element, never removed. On primary green buttons, the ring goes `--text` (white in dark, `#121212` in light) so it's visible against green.
+- Focus: a 2px azure outline with 2px offset on every interactive element, never removed. On primary green buttons, the ring goes `--text` (white in dark, `#121212` in light) so it's visible against green.
 - Tap targets ≥ 44×44 on touch. Inline links are excluded but get `py-1`.
 - Each page has a skip link ("Skip to content", "Skip to map results" on `/map`).
 - Colour is never the only signal: status dots carry text labels, and supporter pins have an icon and a badge in popups and lists.

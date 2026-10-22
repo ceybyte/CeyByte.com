@@ -202,7 +202,7 @@ flowchart TD
 ### 3.2 Edge cases
 - **A Tax-category article** always renders the tax-disclaimer callout at the top (injected by the renderer, not by authors).
 - **Index fetch fails:** the dialog shows "Search is unavailable offline" and lists the category links.
-- **Deep link to a heading (`#printer-not-found`):** scroll with header offset and briefly highlight the heading (cyan left border 1.2 s).
+- **Deep link to a heading (`#printer-not-found`):** scroll with header offset and briefly highlight the heading (azure left border 1.2 s).
 
 ### 3.3 Acceptance (E2E `e2e/flows/03-docs.spec.ts`)
 - `⌘K` opens search in all locales. A Sinhala query returns `si` results ranked above `en` fallbacks.

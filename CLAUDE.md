@@ -40,7 +40,7 @@ This file has the rules for every developer and AI agent working in this repo. I
 7. **Static pages, thin API.** Pages are built with `next build` in `output: "export"` mode: no SSR, no ISR, no middleware, no Server Actions, no route handlers in `src/app`. Anything dynamic is either fetched from `/api/*` in the browser or baked in at build time. The API Worker runs in `workerd` with `nodejs_compat`: no `fs`, no `eval`/`new Function`, no long-running work on the request path.
 8. **Every public mutating endpoint** passes, in order: Cloudflare Turnstile → rate limit → zod validation → business logic. No exceptions.
 9. **Money is integer LKR cents** (`amount_cents: number`). Floats are never used for money. Coordinates are `real`.
-10. **Accessibility is not optional.** WCAG 2.2 AA contrast, full keyboard operation (this is a keyboard-first product — the site must be too), visible `#00BCEB` focus rings, `prefers-reduced-motion` respected everywhere.
+10. **Accessibility is not optional.** WCAG 2.2 AA contrast, full keyboard operation (this is a keyboard-first product — the site must be too), visible `#0393DD` focus rings, `prefers-reduced-motion` respected everywhere.
 
 ---
 
@@ -184,13 +184,13 @@ Rules:
 
 ## 6. Design rules (summary — full spec in `docs/03-DESIGN.md`)
 
-- **60-30-10:** 60% canvas `--canvas` (`#1E1E1E` dark / `#F8F9FA` light), 30% neutral structure (surfaces, hairlines, text), 10% accent. Accents are rationed: one `#39FF14` primary CTA per viewport, cyan for focus, links and glow, gold only for supporters.
+- **60-30-10:** 60% canvas `--canvas` (`#1E1E1E` dark / `#F8F9FA` light), 30% neutral structure (surfaces, hairlines, text), 10% accent. Accents are rationed: one `#39FF14` primary CTA per viewport, azure for focus, links and glow, gold only for supporters.
 - **Use tokens only.** No raw hex in components and no arbitrary Tailwind colour values (`bg-[#123456]`). The lint rule `no-raw-color` enforces this.
 - **Primary CTA** = `#39FF14` fill + `#121212` bold text. It is never used as text colour in light mode.
-- **Hairlines, not shadows.** 1px `--hairline` borders and the architectural grid with `+` crosshairs. No drop shadows, except the cyan rim glow on product mockups and the focus ring.
+- **Hairlines, not shadows.** 1px `--hairline` borders and the architectural grid with `+` crosshairs. No drop shadows, except the azure rim glow on product mockups and the focus ring.
 - **Monospace** (`JetBrains Mono`) for prices, tax math, versions, SHA-256 hashes and `<kbd>`.
 - **Sinhala/Tamil:** +15% line-height, one weight step lighter, `letter-spacing: 0`, no Geist (it has no Indic glyphs). This is enforced via `:lang(si)`/`:lang(ta)` selectors, not per component.
-- **Mockups:** real CB POS UI captures only, borderless, no fake browser chrome, on a `#18181B` backdrop with a cyan rim glow.
+- **Mockups:** real CB POS UI captures only, borderless, no fake browser chrome, on a `#18181B` backdrop with a azure rim glow.
 
 ---
 
@@ -247,7 +247,7 @@ A PR fails review if any box can't be honestly ticked.
 ### 8.2 Visual
 - [ ] Only tokens; no raw hex; no arbitrary colour values.
 - [ ] At most one `#39FF14` element per viewport.
-- [ ] No gradients except the defined `--glow-cyan` radial. No glassmorphism, no purple, no generic blob backgrounds.
+- [ ] No gradients except the defined `--glow-azure` radial. No glassmorphism, no purple, no generic blob backgrounds.
 - [ ] No stock photos, no illustrated people, no fake browser chrome, no lorem ipsum.
 - [ ] Icons are Lucide at `1.5` stroke, sized 16/20/24 only. No mixed icon sets.
 - [ ] Border radius comes only from the scale (`0`, `4px`, `6px`, `9999px` for pills and dots).

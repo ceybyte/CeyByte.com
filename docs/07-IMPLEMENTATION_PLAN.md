@@ -234,7 +234,7 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [ ] Style builder: `@protomaps/basemaps` `dark`/`light` flavours recoloured to tokens, `lang: "en"` labels, glyphs and sprites self-hosted on `cbpos-public`.
 - [ ] `GET /api/merchants/geo` (layered read, ETag/304, headers, `RL_READ`); `geo:dirty` debounce in cron.
 - [ ] Static map shell: panel, filters, `DistrictGrid`, results list, skeletons, no-WebGL list mode.
-- [ ] `MerchantMap` client: `pmtiles` protocol, `maxBounds`, zoom 6.5–16, no rotation, clustered source with the supporters `clusterProperties`, cyan/gold layers and halos.
+- [ ] `MerchantMap` client: `pmtiles` protocol, `maxBounds`, zoom 6.5–16, no rotation, clustered source with the supporters `clusterProperties`, azure/gold layers and halos.
 - [ ] Interactions: cluster expansion, popup/sheet (localized names in HTML), filters → `setData`, search, district fly-to, URL state, keyboard list nav, reduced-motion `jumpTo`.
 - [ ] "Add my shop" branch; "Report this listing" (WhatsApp until P10).
 - [ ] **Design gates** on the map page.

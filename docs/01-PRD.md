@@ -266,7 +266,7 @@ Requirement IDs use `FR-<feature>.<n>`. Acceptance criteria use `AC-<feature>.<n
 - FR-04.2 Data comes from `GET /api/merchants/geo`: a GeoJSON FeatureCollection of public, listed merchants only, with the properties whitelist from `05-SCHEMA.md §7` (no phone, WhatsApp, Telegram or owner name).
 - FR-04.3 Clustering uses MapLibre's GeoJSON source (`cluster: true`, `clusterRadius: 50`, `clusterMaxZoom: 13`), which uses Supercluster internally, with `clusterProperties` that count supporters. Cluster bubbles show the count. A cluster containing a supporter gets a thin gold ring.
 - FR-04.4 Pins:
-  - standard merchant: `#00BCEB` dot with a cyan halo
+  - standard merchant: `#0393DD` dot with a azure halo
   - supporter: `#FFD700` dot with a gold halo and a "Gold Supporter" badge in the popup
 - FR-04.5 Popup and sheet: shop name, category, city, district, "CB POS user since {month year}", and a Supporter badge if applicable. "Get directions" opens `https://www.google.com/maps/dir/?api=1&destination={lat},{lng}`. No contact buttons.
 - FR-04.6 Side panel (desktop) or bottom sheet (mobile):

@@ -45,6 +45,7 @@ Status values: `open` · `accepted` · `done in vX.Y.Z` · `declined`.
 | UR-18 | Use the configured rounding mode (ROUND_HALF_UP) for tax, or document banker's rounding | [C1] | open |
 | UR-19 | Fix `loyalty_minimum_redeem` vs `loyalty_min_redeem_points` key mismatch, and the "Transfer" vs "Bank Transfer" shift-summary mismatch | [B2] | open |
 | UR-20 | Capture real screenshots (sales, payment, receipt preview, reports, settings) in EN/SI/TA at 1920×1080 for the website | [L1] | open |
+| UR-21 | Align the app's accent with the Ceylon Byte brand: Vivid Azure (`#0EAAE9 → #0393DD → #017FD2 → #016CC7`) instead of cyan `#00BCEB`, and spell the company "Ceylon Byte" in any cover/wordmark artwork | [L1] | open |
 
 ## Process
 

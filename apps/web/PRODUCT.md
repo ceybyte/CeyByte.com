@@ -38,10 +38,10 @@ Free forever, bills without internet, and works out Sri Lankan VAT and SSCL back
 
 ## Brand Commitments
 
-- Name: **CB POS** (non-breaking space), by **Ceylon Byte**, at **ceybyte.com**. Wordmark `[CB POS]` in monospace with a pulsing cyan dot.
+- Name: **CB POS** (non-breaking space), by **Ceylon Byte**, at **ceybyte.com**. Wordmark `[CB POS]` in monospace with a pulsing azure dot.
 - Voice: bold, direct, engineering-confident, zero fluff; numbers before adjectives.
-- The visual system is specified and binding: `docs/03-DESIGN.md` (dark-first `#1E1E1E` canvas, 60-30-10 with a single `#39FF14` download CTA per viewport, `#00BCEB` cyan, `#FFD700` gold for supporters only, Geist / Inter / Noto Sans Sinhala / Noto Sans Tamil / JetBrains Mono, hairline grids with crosshairs, `@lucasmarkes/hairline` figures).
-- App brand overlap: the desktop app uses navy `#001F3F` and the same cyan `#00BCEB`.
+- The visual system is specified and binding: `docs/03-DESIGN.md` (dark-first `#1E1E1E` canvas, 60-30-10 with a single `#39FF14` download CTA per viewport, `#0393DD` azure, `#FFD700` gold for supporters only, Geist / Inter / Noto Sans Sinhala / Noto Sans Tamil / JetBrains Mono, hairline grids with crosshairs, `@lucasmarkes/hairline` figures).
+- Brand source: Vivid Azure (`#0EAAE9`, `#0393DD`, `#017FD2`, `#016CC7`) from the Ceylon Byte CB monogram, used as a subtle gradient. The desktop app still uses navy `#001F3F` and cyan `#00BCEB`.
 
 ## Evidence on Hand
 
@@ -58,4 +58,4 @@ Free forever, bills without internet, and works out Sri Lankan VAT and SSCL back
 
 ## Accessibility & Inclusion
 
-WCAG 2.2 AA; full keyboard operation with visible cyan focus rings; `prefers-reduced-motion` respected everywhere; Sinhala/Tamil typography rules to prevent diacritic clipping; legible on low-end Android and low-DPI Windows monitors.
+WCAG 2.2 AA; full keyboard operation with visible azure focus rings; `prefers-reduced-motion` respected everywhere; Sinhala/Tamil typography rules to prevent diacritic clipping; legible on low-end Android and low-DPI Windows monitors.
