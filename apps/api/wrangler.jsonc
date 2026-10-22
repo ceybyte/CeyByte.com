@@ -1,0 +1,44 @@
+// Full target config: docs/02-TRD.md §2.2.
+// Resource IDs are filled in once the Cloudflare resources exist (07 Phase 0.3).
+// For local dev, Wrangler accepts any database_id / KV id and simulates them.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "cbpos",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "../web/out",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"],
+  },
+  "observability": { "enabled": true, "head_sampling_rate": 0.1 },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "cbpos-db",
+      "database_id": "local-cbpos-db",
+      "migrations_dir": "drizzle",
+    },
+  ],
+  "r2_buckets": [
+    { "binding": "UPLOADS", "bucket_name": "cbpos-uploads" },
+    { "binding": "PUBLIC", "bucket_name": "cbpos-public" },
+  ],
+  "kv_namespaces": [{ "binding": "CACHE_KV", "id": "local-cache-kv" }],
+
+  "vars": {
+    "SITE_URL": "http://localhost:8787",
+    "CDN_URL": "https://cdn.ceybyte.com",
+    "RELEASES_REPO": "ceybyte/cbpos-releases",
+    "RELEASE_MANIFEST_URL": "https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json",
+    "SITE_REPO": "ceybyte/CeyByte.com",
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+    "POSTHOG_HOST": "https://eu.i.posthog.com",
+    "WHATSAPP_COMMUNITY_URL": "https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM",
+    "LOCALES_ENABLED": "en,si,ta",
+  },
+}

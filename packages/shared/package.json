@@ -1,0 +1,15 @@
+{
+  "name": "@cbpos/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./enums": "./src/enums.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  }
+}

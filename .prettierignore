@@ -1,0 +1,9 @@
+docs/
+.claude/
+*.md
+bun.lock
+skills-lock.json
+**/worker-configuration.d.ts
+**/.next/
+**/out/
+**/.wrangler/

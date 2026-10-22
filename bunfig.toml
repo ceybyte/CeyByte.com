@@ -1,0 +1,3 @@
+[install]
+# Hoisted layout: eslint-config-next and Next's tooling resolve plugins from the root node_modules.
+linker = "hoisted"

@@ -1,0 +1,26 @@
+{
+  "name": "@cbpos/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./app-type": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "mkdir -p ../web/out && wrangler dev --port 8787",
+    "deploy": "wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cbpos/shared": "workspace:*",
+    "hono": "^4"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.4.6",
+    "vitest": "^5",
+    "wrangler": "^4"
+  }
+}

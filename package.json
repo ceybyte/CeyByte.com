@@ -1,0 +1,30 @@
+{
+  "name": "ceybyte-com",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter @cbpos/api --filter @cbpos/web dev",
+    "build": "bun run --filter @cbpos/web build",
+    "preview": "bun run build && bun run --filter @cbpos/api dev",
+    "deploy": "bun run --filter @cbpos/api deploy",
+    "cf-typegen": "bun run --filter @cbpos/api cf-typegen",
+    "lint": "bun run --filter '*' lint && prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "bun run --filter '*' typecheck",
+    "test": "bun run --filter '*' test",
+    "i18n:check": "bun scripts/i18n-check.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "bun-types": "^1.4.3",
+    "eslint": "^9",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "typescript": "^5",
+    "typescript-eslint": "^8.72.0"
+  }
+}

@@ -12,7 +12,14 @@ body:
     id: kind
     attributes:
       label: What kind of problem?
-      options: ["Wrong information", "Unclear wording", "Translation error", "Text clipped or broken (Sinhala/Tamil)", "Missing page"]
+      options:
+        [
+          "Wrong information",
+          "Unclear wording",
+          "Translation error",
+          "Text clipped or broken (Sinhala/Tamil)",
+          "Missing page",
+        ]
     validations:
       required: true
   - type: textarea
