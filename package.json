@@ -10,7 +10,7 @@
     "dev": "bun run --filter @cbpos/api --filter @cbpos/web dev",
     "build": "bun run --filter @cbpos/web build",
     "preview": "bun run build && bun run --filter @cbpos/api dev",
-    "deploy": "bun run --filter @cbpos/api deploy",
+    "deploy": "bun run --filter @cbpos/api --filter @cbpos/www-redirect deploy",
     "cf-typegen": "bun run --filter @cbpos/api cf-typegen",
     "lint": "bun run --filter '*' lint && prettier --check .",
     "format": "prettier --write .",

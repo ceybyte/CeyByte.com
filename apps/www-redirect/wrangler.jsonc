@@ -1,0 +1,10 @@
+// www.ceybyte.com → ceybyte.com (301, path and query kept).
+// Separate from `cbpos` because that Worker serves static assets before any code runs.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "cbpos-www-redirect",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "routes": [{ "pattern": "www.ceybyte.com", "custom_domain": true }],
+  "workers_dev": false,
+}
