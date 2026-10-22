@@ -83,6 +83,7 @@ flowchart LR
 |---|---|---|---|
 | Static site | `apps/web` → `apps/web/out` | Workers Static Assets | Every request not matched by `run_worker_first` |
 | `cbpos` Worker | `apps/api/src/index.ts` (Hono) | `workerd` | `run_worker_first` paths; cron `*/30 * * * *` (release sync, geo debounce) and `15 3 * * *` (cleanup, 08:45 Asia/Colombo) |
+| `cbpos-www-redirect` Worker | `apps/www-redirect/src/index.ts` | `workerd` | Custom domain `www.ceybyte.com`: 301 to `https://ceybyte.com` with path and query. A separate Worker because `cbpos` serves static assets before any code runs, so it can't branch on hostname |
 | Build | `.github/workflows/deploy.yml` | GitHub Actions (Ubuntu, Bun) | Push to `free`; `repository_dispatch` type `content-published` |
 
 ### 2.2 `apps/api/wrangler.jsonc`

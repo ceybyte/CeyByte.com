@@ -81,8 +81,9 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [x] `apps/api`: Hono app, `wrangler.jsonc` from `02-TRD §2.2`, `/api/health` route. (`scheduled` and the cron triggers are added in Phase 6 with the first job, so no empty handler ships.)
 - [x] `packages/shared`: `enums.ts` with tests, `bun test` set up. (`schemas/`, `db/`, `money`, `phone`, `tax`, `sri-lanka` are written for real in Phase 2 rather than as empty stubs.)
 - [x] Cloudflare: D1 `cbpos-db` + `cbpos-db-preview` (APAC), KV `CACHE_KV` (+ preview id), Turnstile widget (`ceybyte.com`, `cbpos.hasendra.workers.dev`, `localhost`; secret stored as a Worker secret). Worker deployed to `https://cbpos.hasendra.workers.dev`; CI deploys on push.
-- [ ] **Waiting on account owner:** enable R2 in the Cloudflare dashboard → create `cbpos-uploads` (private, CORS) and `cbpos-public` (custom domain `cdn.ceybyte.com`, CORS with `Range`) and bind them.
-- [ ] **Waiting on account owner:** decide when `ceybyte.com` moves from the current Express site to the Worker (custom domain route, then set repo variable `DEPLOY_URL`).
+- [x] R2 `cbpos-uploads` (private, CORS in `apps/api/r2/cors-uploads.json`) and `cbpos-public` (custom domain `cdn.ceybyte.com`, CORS with `Range`), both bound.
+- [x] `ceybyte.com` served by the Worker (custom domain); `www.ceybyte.com` → 301 → apex via the `cbpos-www-redirect` Worker. `DEPLOY_URL` repo variable set; deploy smoke-tests apex, API and the redirect.
+- [x] Default branch is `free` (needed: `repository_dispatch` and scheduled workflows only run on the default branch).
 - [x] `.dev.vars.example` with every secret in `02-TRD §2.3`. `.gitignore`: `.dev.vars`, `.wrangler/`, `apps/web/out`, `apps/web/.content`.
 - [x] Root scripts as in `CLAUDE.md §3` (each later script is added by the phase that builds it: `build:content` P4, `db:*` P2, `tiles:build` P7). `bun run dev` runs web + Worker together, with `/api` proxied to `:8787` in dev.
 - [x] TS `strict` + `noUncheckedIndexedAccess` (per-workspace `tsc --noEmit` from `tsconfig.base.json`). ESLint + Prettier. Custom rules `no-raw-color` (Phase 1) and `no-bare-merchant-select` (Phase 2) land with the code they guard.
@@ -92,7 +93,7 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Verify:** `bun install && bun run lint && bun run typecheck && bun run test && bun run build && bun run preview` serves the placeholder page and `/api/health`. A PR gets a preview URL.
 
-**Exit:** preview deploy from CI succeeds. ADR-0000 complete.
+**Exit:** preview deploy from CI succeeds. ADR-0000 complete. ✅ Met 2026-10-22: CI deploys to production `ceybyte.com` on every push to `free`.
 
 ---
 

@@ -126,6 +126,7 @@ bun run tiles:build               # pmtiles extract → sri-lanka.pmtiles (quart
 │   │                                  # markdown (publish-time render), rebuild (repository_dispatch)
 │   ├── src/jobs/                      # release-sync, cleanup, geo-rebuild
 │   └── drizzle/                       # generated migrations
+├── apps/www-redirect/                 # tiny Worker: www.ceybyte.com → 301 → ceybyte.com
 ├── apps/web/                          # Next.js static export
 │   ├── src/app/[locale]/…             # every public, dashboard and admin page (static shells)
 │   ├── src/components/{ui,brand,marketing,map,docs,forms,motion}/
