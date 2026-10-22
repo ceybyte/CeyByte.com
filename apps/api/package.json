@@ -12,11 +12,22 @@
     "cf-typegen": "wrangler types",
     "test": "vitest run",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply cbpos-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply cbpos-db --remote",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7",
     "@cbpos/shared": "workspace:*",
-    "hono": "^4"
+    "@hono/zod-validator": "^0.9",
+    "aws4fetch": "^1",
+    "better-auth": "^1.7",
+    "better-auth-cloudflare": "^0.4",
+    "drizzle-orm": "^0.45",
+    "hono": "^4",
+    "zod": "^4"
   },
   "devDependencies": {
     "@cloudflare/vitest-plugin": "^1.4.6",

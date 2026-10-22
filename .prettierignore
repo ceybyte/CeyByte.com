@@ -7,3 +7,4 @@ skills-lock.json
 **/.next/
 **/out/
 **/.wrangler/
+apps/api/drizzle/

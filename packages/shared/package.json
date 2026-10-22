@@ -5,11 +5,15 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./enums": "./src/enums.ts"
+    "./*": "./src/*.ts"
   },
   "scripts": {
     "test": "bun test",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45",
+    "zod": "^4"
   }
 }
