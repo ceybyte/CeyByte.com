@@ -25,3 +25,4 @@ The reasoning for each is already summarised in `docs/02-TRD.md §1.1`; Phase 0 
 | 0012 | Bun for tooling; production Worker on workerd | Accepted | TRD D11 |
 | 0013 | Bank transfer only for donations; payment gateway deferred | Accepted | PRD F-11 |
 | 0014 | Product name "CB POS" (non-breaking space) | Accepted | PRD OQ-3 |
+| 0017 | Impeccable craft floor adopted: no eyebrow labels or section numbers, no coloured side stripes > 1px, themed browser surfaces | Accepted | DESIGN §5.3, §8 |

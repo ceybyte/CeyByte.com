@@ -227,6 +227,8 @@
   body { @apply font-sans antialiased bg-canvas text-text; text-rendering: optimizeLegibility; }
   :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: var(--radius-sm); }
   ::selection { background: var(--cyan); color: var(--text-inverse); }
+  html { caret-color: var(--cyan); scrollbar-color: var(--hairline) var(--canvas); accent-color: var(--cyan); }
+  a { text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
   .num, kbd, code, pre { font-variant-numeric: tabular-nums slashed-zero; }
 }
 
@@ -283,7 +285,6 @@ const tamil = Noto_Sans_Tamil({ subsets: ["tamil"], weight: ["400", "500", "600"
 | `text-body` | `1rem` | 1.6 | 400 | 0 | sans | Default |
 | `text-sm` | `0.875rem` | 1.5 | 400/500 | 0 | sans | UI, labels |
 | `text-xs` | `0.75rem` | 1.4 | 500 | 0 | sans | Helper text |
-| `text-eyebrow` | `0.75rem` | 1.2 | 500 | 0.12em, UPPERCASE | mono | Section labels `01 / PROBLEM` |
 | `text-stat` | `clamp(2rem, 1.4rem + 2.5vw, 3.5rem)` | 1.0 | 700 | -0.02em | mono | Telemetry numbers |
 | `text-price` | inherit | inherit | 500 | 0 | mono | `Rs. 1,250.00` |
 | `text-hash` | `0.8125rem` | 1.5 | 400 | 0 | mono, `break-all` | SHA-256 |
@@ -297,7 +298,6 @@ Defined as Tailwind v4 utilities in `globals.css`:
 @utility text-h3      { font-family: var(--font-display); font-size: 1.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -0.015em; }
 @utility text-h4      { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; }
 @utility text-lead    { font-size: 1.25rem; line-height: 1.55; }
-@utility text-eyebrow { font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.2; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
 @utility text-stat    { font-family: var(--font-mono); font-size: clamp(2rem, 1.4rem + 2.5vw, 3.5rem); line-height: 1; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 @utility text-hash    { font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.5; word-break: break-all; }
 ```
@@ -330,9 +330,9 @@ Rules, applied once in `globals.css` and never per component:
 :lang(ta) .text-h1      { font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3.1rem); }
 :lang(ta) :is(h1, h2, h3, .card-title) { overflow-wrap: anywhere; hyphens: none; }
 
-/* Eyebrows, numbers, prices, kbd and hashes stay Latin mono in every locale */
-:lang(si) :is(.text-eyebrow, .text-stat, .text-hash, .num, kbd, code),
-:lang(ta) :is(.text-eyebrow, .text-stat, .text-hash, .num, kbd, code) { font-family: var(--font-mono); line-height: normal; }
+/* Numbers, prices, kbd and hashes stay Latin mono in every locale */
+:lang(si) :is(.text-stat, .text-hash, .num, kbd, code),
+:lang(ta) :is(.text-stat, .text-hash, .num, kbd, code) { font-family: var(--font-mono); line-height: normal; }
 ```
 
 **Weight-step rule:** headings step down 800→700 and 700→600; emphasis steps 600→500. **Body text stays at 400 (floor).** Noto Sans Sinhala/Tamil at 300 loses stroke contrast on the low-DPI Windows monitors and budget Android phones our users have. This is a deliberate exception to "one step lighter".
@@ -359,7 +359,7 @@ Rules, applied once in `globals.css` and never per component:
 ### 5.3 Architectural grid canvas (`<GridCanvas />`)
 - A full-bleed background behind sections: 1px `--hairline-grid` lines every `--grid-cell` (64px), drawn with CSS `background-image: linear-gradient(...)`, masked with a radial fade (`mask-image: radial-gradient(ellipse at center, #000 40%, transparent 85%)`).
 - **Crosshairs (`<Crosshair />`):** 9×9 px `+` glyphs (1px strokes, `--hairline`) placed at section corners and card-grid intersections, absolutely positioned at the line crossings. Max 4 per section.
-- **Section rules:** each section starts with a full-width 1px top border (`--hairline-grid`) and an eyebrow label at the left edge: `01 / PROBLEM` (mono).
+- **Section rules:** each section starts with a full-width 1px top border (`--hairline-grid`). Headings carry the section on their own: no eyebrow/kicker labels and no section numbers (impeccable craft floor; ADR-0017).
 - **Ambient glow:** one `radial-gradient(600px circle at var(--x) var(--y), var(--glow-cyan), transparent 70%)` per page, behind the hero mockup. On the final banner it follows the pointer (desktop only).
 
 ### 5.4 Radius & elevation
@@ -421,7 +421,7 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 - Combos: `<Kbd>Ctrl</Kbd>+<Kbd>K</Kbd>`. `⌘` is shown on macOS (detected via `navigator.userAgentData?.platform`), `Ctrl` elsewhere.
 
 ### 7.3 Hash block — `<HashBlock />`
-- Label (`SHA-256 · CBPOSSetup-1.3.0.exe`) as an eyebrow, the hash in `text-hash`, a copy button (`Copy` → `Check` for 1.5 s; announced via `aria-live="polite"`: "Hash copied").
+- A `text-sm` muted label ("SHA-256") and the file name in mono, then the hash in `text-hash`, a copy button (`Copy` → `Check` for 1.5 s; announced via `aria-live="polite"`: "Hash copied").
 - Surface: `surface` with a hairline border, `rounded-sm`, `p-3`.
 
 ---
@@ -457,10 +457,10 @@ The primary Download button pattern: `[⬇ Download CB POS — Free]` with a sub
 
 ### 8.3 Card & BentoCard
 - **Card:** `bg-surface border border-hairline rounded-md p-6`. Hover (if interactive): `bg-surface-elevated`, border `--hairline` → `rgba(0,188,235,.4)`, 180 ms.
-- **BentoCard:** inside a bento frame with shared 1px gridlines (cards sit edge-to-edge, separated by hairlines, with `rounded-none` inner corners and a `rounded-md` outer frame). Slots: eyebrow (`02 / OFFLINE`), title (`text-h3`), one-line description (muted), interactive demo area (`min-h-48`), optional `<Kbd>` hints. Grid: desktop 3×2 with Keyboard and Dual-Tax spanning 2 columns (layout in `06 §3.4`). Mobile: single column.
+- **BentoCard:** inside a bento frame with shared 1px gridlines (cards sit edge-to-edge, separated by hairlines, with `rounded-none` inner corners and a `rounded-md` outer frame). Slots: title (`text-h3`), one-line description (muted), interactive demo area (`min-h-48`), optional `<Kbd>` hints. Grid: desktop 3×2 with Keyboard and Dual-Tax spanning 2 columns (layout in `06 §3.4`). Mobile: single column.
 
 ### 8.4 StatTile (telemetry strip)
-- Number in `text-stat` (mono), label in `text-eyebrow` muted, divided by vertical hairlines. Desktop: 4 tiles in a row plus a map teaser. Mobile: a 2×2 grid, then the teaser.
+- Number in `text-stat` (mono), label in `text-sm` muted Inter (labels are prose, not data, so not mono), divided by vertical hairlines. Desktop: 4 tiles in a row plus a map teaser. Mobile: a 2×2 grid, then the teaser.
 - Count-up on first view (§9.2). Under reduced motion, the final value shows immediately.
 
 ### 8.5 Badge
@@ -472,7 +472,7 @@ The primary Download button pattern: `[⬇ Download CB POS — Free]` with a sub
 | `locale` | mono `EN` / `SI` / `TA`, for fallback search results |
 
 ### 8.6 Callout (docs/legal)
-`border-l-2` with a variant colour, `bg-surface`, `p-4`, icon + title + body. Variants: `tip` (cyan), `warn` (warning), `danger` (error), `tax` (warning + fixed copy + disclaimer link).
+1px border in the variant colour at 40% (`border-[--variant]/40`, all sides), `bg-surface`, `p-4`, never a thicker side stripe, icon + title + body. Variants: `tip` (cyan), `warn` (warning), `danger` (error), `tax` (warning + fixed copy + disclaimer link).
 
 ### 8.7 Accordion (FAQ)
 Radix Accordion, `type="single" collapsible`. Trigger: `text-h4` (si/ta: line-height scaled), `py-5`, with a `Plus` icon that rotates 45° to an ×. Items are separated by hairlines. Content animates with `grid-template-rows: 0fr → 1fr` (220 ms ease-out) so there's no height measurement. FAQ structured data (`FAQPage`) is emitted from the same data.
@@ -507,7 +507,7 @@ Radix Accordion, `type="single" collapsible`. Trigger: `text-h4` (si/ta: line-he
 `sonner` via the shadcn `Sonner` component. Bottom-right on desktop, top on mobile. `surface-elevated` + hairline, `rounded-md`, max 1 visible. Only for confirmations after actions (copied, saved, vote counted). Never for errors that need a fix; those stay inline.
 
 ### 8.12 Data table (admin)
-Plain shadcn `Table`: sticky header, row height 44px, zebra off, hover `surface-elevated`, selected row with a cyan left border 2px. Numbers right-aligned in mono. Keyboard row focus (`j/k`), rendered as `aria-rowindex`.
+Plain shadcn `Table`: sticky header, row height 44px, zebra off, hover `surface-elevated`, selected row on `surface-elevated` with a 1px cyan outline inset (no thick side stripe). Numbers right-aligned in mono. Keyboard row focus (`j/k`), rendered as `aria-rowindex`.
 
 ### 8.13 Skeletons & empty states
 - **Skeleton:** `bg-surface-elevated` blocks with a 1.2 s opacity pulse (0.5↔1), never a shimmer gradient.
@@ -611,7 +611,6 @@ gsap.ticker.lagSmoothing(0);
 | Section | ScrollTrigger | Effect |
 |---|---|---|
 | Hero | `trigger: hero, start: top top, end: bottom top, scrub: 0.6` | Mockup `y: 0 → −60`, `rotateX: 8 → 2` (it settles flat as you scroll). Grid canvas `y: 0 → 30` (slower than content, for depth) |
-| Section eyebrows | `start: top 80%`, once | The hairline next to the eyebrow draws `scaleX 0 → 1` (origin left), 600 ms |
 | Problem | `start: top 70%, end: bottom 60%, scrub: true` | Three problem cards: a red `--error` 1px "fault line" draws across each card in turn (clip-path) |
 | How It Works | `start: top 60%, end: bottom 70%, scrub: 0.5` | A vertical (mobile) / horizontal (desktop) progress hairline fills cyan through steps 1→3. Each step's number goes from muted to `--text` as it's reached |
 | Final banner | — | Pointer-follow glow (Motion `useMotionValue`, not GSAP) on desktop |

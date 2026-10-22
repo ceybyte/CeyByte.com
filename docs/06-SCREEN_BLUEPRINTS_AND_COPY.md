@@ -95,7 +95,6 @@ System states (not counted as screens): `not-found` (Hairline "unplugged cable" 
 
 | Key | Copy |
 |---|---|
-| `home.hero.eyebrow` | FREE WINDOWS POS · SRI LANKA |
 | `home.hero.title` | Bill every customer. Even when the internet doesn't show up. |
 | `home.hero.lead` | CB POS is free point-of-sale software for Sri Lankan shops. It works out VAT and SSCL from your MRP, prints receipts in Sinhala, Tamil or English, and saves every sale on your own PC. [C1] [C2] [E2] [G1] |
 | `home.hero.cta` | Download CB POS — Free |
@@ -127,7 +126,6 @@ Layout: desktop 12-col, copy cols 1–6, mockup cols 7–12. Mobile: copy first,
 
 | Key | Copy |
 |---|---|
-| `home.problem.eyebrow` | 01 / THE PROBLEM |
 | `home.problem.title` | Three leaks that cost shops money every single day. |
 | `home.problem.1.title` | The internet drops. Your cloud POS stops. |
 | `home.problem.1.body` | When the router blinks, a cloud POS can't save the bill. The queue grows, customers leave, and the sale is gone. |
@@ -154,7 +152,6 @@ Desktop layout (3 columns × 3 rows, hairline-separated):
 
 | Key | Copy |
 |---|---|
-| `home.solution.eyebrow` | 02 / THE SOLUTION |
 | `home.solution.title` | Built for the counter, not the cloud. |
 | **Card 1** `home.bento.keyboard.title` | Bill without touching the mouse. |
 | `home.bento.keyboard.body` | Every action has a key: F3 to search, F5 to pay, F12 for exact cash, F6 to hold a bill. Press F1 in the app for the full list. [B1] |
@@ -185,7 +182,6 @@ Tax demo default: MRP `1,180.00` → base `1,000.00`, VAT `180.00`. Rounding is 
 
 | Key | Copy |
 |---|---|
-| `home.how.eyebrow` | 03 / HOW IT WORKS |
 | `home.how.title` | From download to first bill. |
 | `home.how.1.title` | Download the .EXE |
 | `home.how.1.body` | One free installer, about {sizeMb} MB. Windows asks for administrator permission to install. No account, no card. [A3] [A4] |
@@ -205,7 +201,6 @@ Tax demo default: MRP `1,180.00` → base `1,000.00`, VAT `180.00`. Rounding is 
 | `home.faq.4` | Windows says the installer isn't safe. Is it a virus? | No. Windows SmartScreen warns about new apps that aren't code-signed yet. Check that the SHA-256 on the download page matches your `CBPOSSetup` file, then click **More info → Run anyway**. Buying a code-signing certificate is our first funding goal. [A5] |
 | `home.faq.5` | Will it work with my printer, scanner and scale? | Receipt printers: 58mm or 80mm ESC/POS, connected as a Windows printer, over the network, or by USB. Scanners: any that type like a keyboard. Cash drawers: the kind that open through the receipt printer. Scales: CB POS reads the barcode labels your scale prints, not a live cable connection. [E1] [E3] [E4] |
 | `home.faq.title` | Questions shop owners ask before installing. | |
-| `home.faq.eyebrow` | 04 / FAQ | |
 
 ### 3.7 Section 7 — Final conversion banner
 
@@ -241,10 +236,10 @@ Each blueprint lists the layout, components, states and key copy. Each Stitch pr
 Blueprint: §3 above. States: stats loading → skeleton tiles; `shops = 0` → empty teaser copy; release unavailable → CTA still opens the gate, meta line hidden.
 
 **Stitch prompt (desktop, 1440 wide):**
-> Landing page for "CB POS", a free offline Windows point-of-sale for Sri Lankan shops. Sticky header: "[CB POS]" mono logo with a cyan dot at left; nav "Product, Map, Docs, Releases, Donate"; right side a compact language switcher "EN · සිං · தமி", a moon icon, and nothing else. **Hero:** left half has a small mono uppercase eyebrow "FREE WINDOWS POS · SRI LANKA", a huge Geist ExtraBold headline "Bill every customer. Even when the internet doesn't show up.", a muted lead paragraph about 18% VAT, 2.5% SSCL, Sinhala/Tamil/English receipts, then a large neon green #39FF14 button "Download CB POS — Free" with a download icon, a ghost link "See how it works →", a tiny mono line "Windows 10 or later · v1.3.0 · — MB", and three small check items. Right half: an empty borderless #18181B frame labelled in small mono text "real CB POS capture" with a soft cyan rim glow (the real screenshot is dropped in later; do not draw a fake POS interface), and a fine isometric line drawing of a 60-key keyboard behind it. Below: a telemetry strip of four mono stats separated by vertical hairlines: "0 ms", "Rs. 0 / mo", "—/25", "18% + 2.5%" each with a short muted label, plus a small dark map thumbnail of Sri Lanka with cyan dots and the line "— shops. — districts. Live." (dashes stand for live numbers; never invent them) Then a section "01 / THE PROBLEM" with three hairline-bordered cards each with a thin red line across the top; a "02 / THE SOLUTION" bento grid of six cards (keyboard keycaps F3 / Enter / F5, Wi-Fi toggle, MRP→VAT→SSCL calculator in mono, printer connection types with cyan dots, receipt with EN/SI/TA tabs, a scale label barcode becoming a "1.250 kg" cart line); "03 / HOW IT WORKS" with three numbered steps joined by a hairline; "04 / FAQ" accordion with plus icons; a full-width final banner "Your next bill can be on CB POS." with the green button; and a dark #18181B four-column footer with crosshair marks at grid intersections.
+> Landing page for "CB POS", a free offline Windows point-of-sale for Sri Lankan shops. Sticky header: "[CB POS]" mono logo with a cyan dot at left; nav "Product, Map, Docs, Releases, Donate"; right side a compact language switcher "EN · සිං · தமி", a moon icon, and nothing else. **Hero:** left half has a huge Geist ExtraBold headline "Bill every customer. Even when the internet doesn't show up.", a muted lead paragraph about 18% VAT, 2.5% SSCL, Sinhala/Tamil/English receipts, then a large neon green #39FF14 button "Download CB POS — Free" with a download icon, a ghost link "See how it works →", a tiny mono line "Windows 10 or later · v1.3.0 · — MB", and three small check items. Right half: an empty borderless #18181B frame labelled in small mono text "real CB POS capture" with a soft cyan rim glow (the real screenshot is dropped in later; do not draw a fake POS interface), and a fine isometric line drawing of a 60-key keyboard behind it. Below: a telemetry strip of four mono stats separated by vertical hairlines: "0 ms", "Rs. 0 / mo", "—/25", "18% + 2.5%" each with a short muted label, plus a small dark map thumbnail of Sri Lanka with cyan dots and the line "— shops. — districts. Live." (dashes stand for live numbers; never invent them) Then a problem section headed "Three leaks that cost shops money every single day." with three hairline-bordered cards each with a thin red line across the top; a solution bento grid headed "Built for the counter, not the cloud." of six cards (keyboard keycaps F3 / Enter / F5, Wi-Fi toggle, MRP→VAT→SSCL calculator in mono, printer connection types with cyan dots, receipt with EN/SI/TA tabs, a scale label barcode becoming a "1.250 kg" cart line); a how-it-works section with three numbered steps (the numbers carry the install order) joined by a hairline; an FAQ accordion with plus icons; a full-width final banner "Your next bill can be on CB POS." with the green button; and a dark #18181B four-column footer with crosshair marks at grid intersections.
 
 **Stitch prompt (mobile, 390 wide):**
-> Same CB POS landing page at 390px wide. Header shows only the logo, a language button and a hamburger. Hero stacks: eyebrow, headline over 4 lines, lead, full-width green "Download CB POS — Free" button (56px tall), the mono meta line, three check items, then the product screenshot below. The telemetry strip becomes a 2×2 grid of stats followed by a full-width map thumbnail card. Problem cards stack. The bento grid becomes a single column of six cards, each with its small interactive demo. Steps are vertical with a vertical hairline connecting numbers 1–3. FAQ is a full-width accordion. The footer stacks its four columns with hairline separators. 16px side padding, no horizontal scroll.
+> Same CB POS landing page at 390px wide. Header shows only the logo, a language button and a hamburger. Hero stacks: headline over 4 lines, lead, full-width green "Download CB POS — Free" button (56px tall), the mono meta line, three check items, then the product screenshot below. The telemetry strip becomes a 2×2 grid of stats followed by a full-width map thumbnail card. Problem cards stack. The bento grid becomes a single column of six cards, each with its small interactive demo. Steps are vertical with a vertical hairline connecting numbers 1–3. FAQ is a full-width accordion. The footer stacks its four columns with hairline separators. 16px side padding, no horizontal scroll.
 
 ---
 
@@ -397,7 +392,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `docs.copied` | Copied |
 
 **Stitch prompt:**
-> A dark documentation article page. Left sidebar with a collapsible tree (Getting Started expanded, "Install CB POS" highlighted with a cyan left border). Centre: breadcrumb "Docs / Getting Started", H1 "Install CB POS", mono badges "Applies to v1.4+" and "Updated 21 Oct 2026", body text in Inter, a numbered steps component with hairline connectors, a tip callout with a cyan left border, a borderless screenshot of a Windows installer on a #18181B backdrop, inline keycaps "Ctrl" "K", and a code block for a PowerShell command "Get-FileHash .\CBPOSSetup-1.3.0.exe -Algorithm SHA256" with a copy button. Right column: "On this page" table of contents in small muted text with the active item in cyan. Bottom: "Was this helpful? Yes / No" and Previous/Next cards.
+> A dark documentation article page. Left sidebar with a collapsible tree (Getting Started expanded, "Install CB POS" highlighted with a 1px cyan rule). Centre: breadcrumb "Docs / Getting Started", H1 "Install CB POS", mono badges "Applies to v1.4+" and "Updated 21 Oct 2026", body text in Inter, a numbered steps component with hairline connectors, a tip callout with a 1px cyan rule, a borderless screenshot of a Windows installer on a #18181B backdrop, inline keycaps "Ctrl" "K", and a code block for a PowerShell command "Get-FileHash .\CBPOSSetup-1.3.0.exe -Algorithm SHA256" with a copy button. Right column: "On this page" table of contents in small muted text with the active item in cyan. Bottom: "Was this helpful? Yes / No" and Previous/Next cards.
 
 ---
 
@@ -485,7 +480,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 **Detail (`/feedback/CB-0142`)**: title, number, type, status timeline (Open → Triaged → Planned → In progress → Shipped, with dates), body (Markdown), version/Windows/severity chips, public screenshot (if approved), the "Ceybyte team" response block (cyan left border), and a vote button.
 
 **Stitch prompt:**
-> Two dark screens side by side. **Left: "Send a ticket" form.** Three large selectable option cards in a row ("Something is broken" with a bug icon, "I want something new" with a lightbulb, "I have a question" with a message icon; the first is selected with a cyan border). A "Short title" input. Below it, a muted panel "Is it one of these?" listing two similar tickets, each with a mono vote count and a link "Vote for this instead". A Markdown textarea "Describe it", selects for "CB POS version" and "Windows version", a severity radio group, two dashed-border dropzones "Crash log (optional)" and "Screenshot (optional)" (one showing an upload progress bar in cyan at 64%), an optional contact input, and a secondary-styled "Send ticket" button (no green). **Right: ticket detail "CB-0142".** Mono number, title, a horizontal status timeline with five steps (three completed in cyan), chips "v1.3.0", "Windows 11", "Can't bill", the description text, and a response block with a cyan left border labelled "Ceybyte team". A vote box with a count.
+> Two dark screens side by side. **Left: "Send a ticket" form.** Three large selectable option cards in a row ("Something is broken" with a bug icon, "I want something new" with a lightbulb, "I have a question" with a message icon; the first is selected with a cyan border). A "Short title" input. Below it, a muted panel "Is it one of these?" listing two similar tickets, each with a mono vote count and a link "Vote for this instead". A Markdown textarea "Describe it", selects for "CB POS version" and "Windows version", a severity radio group, two dashed-border dropzones "Crash log (optional)" and "Screenshot (optional)" (one showing an upload progress bar in cyan at 64%), an optional contact input, and a secondary-styled "Send ticket" button (no green). **Right: ticket detail "CB-0142".** Mono number, title, a horizontal status timeline with five steps (three completed in cyan), chips "v1.3.0", "Windows 11", "Can't bill", the description text, and a response block with a 1px cyan rule labelled "Ceybyte team". A vote box with a count.
 
 ---
 
@@ -549,7 +544,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 | `blog.empty` | No posts yet in this language. |
 
 **Stitch prompt:**
-> A dark blog index and article. **Index:** title "Blog", a muted lead, a row of tag pills (All, Releases, Tax, Shop stories, Hardware) with the active pill cyan-bordered, and a featured post spanning full width (a cover image of a real POS counter on a #18181B backdrop, title in Geist ExtraBold, excerpt, mono meta "21 Oct 2026 · 5 min read"). Below it, a 3-column grid of post cards separated by hairlines. A small section "Also in English" lists two posts with an "EN" mono tag. **Article:** max 72-character text column, a large title, mono meta, a borderless cover, body with H2s, a pull quote with a cyan left border, a table of VAT examples in mono, and "Related posts" at the end.
+> A dark blog index and article. **Index:** title "Blog", a muted lead, a row of tag pills (All, Releases, Tax, Shop stories, Hardware) with the active pill cyan-bordered, and a featured post spanning full width (a cover image of a real POS counter on a #18181B backdrop, title in Geist ExtraBold, excerpt, mono meta "21 Oct 2026 · 5 min read"). Below it, a 3-column grid of post cards separated by hairlines. A small section "Also in English" lists two posts with an "EN" mono tag. **Article:** max 72-character text column, a large title, mono meta, a borderless cover, body with H2s, a pull quote with a 1px cyan rule, a table of VAT examples in mono, and "Related posts" at the end.
 
 ---
 
@@ -568,7 +563,7 @@ States: loading (panel skeleton + map tiles), empty, error, no-WebGL list mode, 
 Each page has a "Summary" box (`surface-legal`, hairline) at the top in plain language, then the full text. The page uses `surface-legal` as its background tone.
 
 **Stitch prompt:**
-> A calm, text-focused legal page in the dark CB POS style with a #18181B background. Left: a sticky vertical nav (Terms, Privacy, Tax disclaimer, Data safety, Cookies) with the active item marked by a cyan left border. Centre: title "Tax disclaimer", a mono line "Last updated 21 Oct 2026 · Version 2026-10-01", a hairline-bordered "Summary" box with three short plain-language paragraphs, then numbered sections in readable Inter body text (max 70 characters wide). A small note at the end: "If translations differ, the English version applies." No accents except cyan links.
+> A calm, text-focused legal page in the dark CB POS style with a #18181B background. Left: a sticky vertical nav (Terms, Privacy, Tax disclaimer, Data safety, Cookies) with the active item marked by a 1px cyan rule and a surface step. Centre: title "Tax disclaimer", a mono line "Last updated 21 Oct 2026 · Version 2026-10-01", a hairline-bordered "Summary" box with three short plain-language paragraphs, then numbered sections in readable Inter body text (max 70 characters wide). A small note at the end: "If translations differ, the English version applies." No accents except cyan links.
 
 ---
 
@@ -626,7 +621,7 @@ Each page has a "Summary" box (`surface-legal`, hairline) at the top in plain la
 | `dash.settings.delete.cta` | Delete permanently |
 
 **Stitch prompt:**
-> A dark merchant dashboard. Left nav (#252526, hairline right border): logo, then "Overview, My listing, My tickets, My donations, Settings" with the active item marked by a cyan left border. Main area "Your shop": a summary card with shop name "Perera Stores", "Grocery · Kurunegala", a status pill "Listed on the map" with a cyan dot, a gold "Gold Supporter since Aug 2026" badge, and an info strip "CB POS v1.3.1 is available. See what's new". Below it, the "My listing" form: shop name, business type, district and town selects, a 240px dark mini-map with a draggable cyan pin, a toggle "Show my shop on the public map", and a secondary "Save changes" button. At the bottom of Settings, a "Danger zone" card with a red-outlined "Delete permanently" button.
+> A dark merchant dashboard. Left nav (#252526, hairline right border): logo, then "Overview, My listing, My tickets, My donations, Settings" with the active item marked by a 1px cyan rule and a surface step. Main area "Your shop": a summary card with shop name "Perera Stores", "Grocery · Kurunegala", a status pill "Listed on the map" with a cyan dot, a gold "Gold Supporter since Aug 2026" badge, and an info strip "CB POS v1.3.1 is available. See what's new". Below it, the "My listing" form: shop name, business type, district and town selects, a 240px dark mini-map with a draggable cyan pin, a toggle "Show my shop on the public map", and a secondary "Save changes" button. At the bottom of Settings, a "Danger zone" card with a red-outlined "Delete permanently" button.
 
 ---
 
@@ -658,7 +653,7 @@ Each page has a "Summary" box (`surface-legal`, hairline) at the top in plain la
 | `admin.shortcuts.title` | Keyboard shortcuts |
 
 **Stitch prompt:**
-> A dense dark admin console for "CB POS Admin". A top bar with the logo, a global search field showing a "/" keycap hint, and a "?" shortcuts button. A left nav with modules (Overview, Merchants, Donations, Feedback, Docs, Blog, Releases, Users, Audit) and small mono count badges (Donations "7", Feedback "12"). The main area shows the Donations queue in split view: on the left a list of items (mono reference "CB-DN-7K3Q9P", "Rs. 2,500.00", method icon, relative time), with the selected item marked by a cyan left border; on the right a detail pane with a large preview of a bank deposit slip image, a key-value list (Amount, Reference, Method, Display name, Linked shop "Perera Stores · Kurunegala"), and two buttons at the bottom: "Approve" with an "A" keycap and a red-outlined "Reject" with an "R" keycap. Compact 44px rows, mono numbers right-aligned, hairline row separators, no green except a small success toast in the corner reading "Approved CB-DN-7K3Q9P".
+> A dense dark admin console for "CB POS Admin". A top bar with the logo, a global search field showing a "/" keycap hint, and a "?" shortcuts button. A left nav with modules (Overview, Merchants, Donations, Feedback, Docs, Blog, Releases, Users, Audit) and small mono count badges (Donations "7", Feedback "12"). The main area shows the Donations queue in split view: on the left a list of items (mono reference "CB-DN-7K3Q9P", "Rs. 2,500.00", method icon, relative time), with the selected item marked by a 1px cyan rule and a surface step; on the right a detail pane with a large preview of a bank deposit slip image, a key-value list (Amount, Reference, Method, Display name, Linked shop "Perera Stores · Kurunegala"), and two buttons at the bottom: "Approve" with an "A" keycap and a red-outlined "Reject" with an "R" keycap. Compact 44px rows, mono numbers right-aligned, hairline row separators, no green except a small success toast in the corner reading "Approved CB-DN-7K3Q9P".
 
 ---
 

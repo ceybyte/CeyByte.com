@@ -104,7 +104,7 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [ ] `globals.css`: tokens, `@theme inline`, utilities, `:lang(si|ta)` rules, reduced motion, `.hairline-scope` mapping (`03 §3, §4, §9.6`).
 - [ ] Fonts with per-locale preload. `next-themes` provider and toggle.
 - [ ] shadcn init (Tailwind v4) and the component set (`button input textarea select checkbox dialog drawer accordion tabs badge table sonner command popover tooltip skeleton separator switch radio-group label`), adapted to tokens.
-- [ ] Brand: `Logo`, `Kbd`, `HashBlock`, `GridCanvas`, `Crosshair`, `SectionEyebrow`, `StatTile`, `Callout`, `FileDrop`, `PhoneInput`.
+- [ ] Brand: `Logo`, `Kbd`, `HashBlock`, `GridCanvas`, `Crosshair`, `StatTile`, `Callout`, `FileDrop`, `PhoneInput`.
 - [ ] Motion: tokens, `Reveal`, `MotionConfig`, `SmoothScroll` (lazy), `useCountUp`.
 - [ ] Hairline wrapper `<Figure name=… />` (lazy per figure, translated labels, reduced-motion `intensity={0}`).
 - [ ] Rive: self-hosted WASM, `RiveLazy` with poster fallback.
