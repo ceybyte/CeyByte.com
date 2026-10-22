@@ -585,6 +585,8 @@ Each page has a "Summary" box (`surface-legal`, hairline) at the top in plain la
 | `auth.error.invalid` | That code is wrong or has expired. Send a new one. |
 | `auth.otp.send` | Email me a sign-in code |
 | `auth.otp.resend` | Send a new code |
+| `email.otp.subject` | Your CB POS sign-in code: {otp} |
+| `email.otp.body` | Here's your code to sign in to ceybyte.com: {otp}. It works for 10 minutes. If you didn't ask for it, you can ignore this email. Nobody can sign in without the code. |
 | `auth.error.banned` | This account is turned off. Please contact us if you think that's a mistake. |
 
 **Stitch prompt:**

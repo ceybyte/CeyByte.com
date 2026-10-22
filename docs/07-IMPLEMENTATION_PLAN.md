@@ -125,7 +125,7 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [ ] `packages/shared/src/db/{schema,relations,projections}.ts` from `05 §2–7`. `bun run db:generate` → review SQL → `db:migrate:local`.
 - [ ] Hono middleware: request ID, security headers, error envelope (`ApiError` → `ApiResult`), `dbMiddleware`, `requireSession`, `requireRole("admin")` returning 404.
 - [ ] Libraries: `turnstile.ts`, `ratelimit.ts` (+ hourly KV window), `iphash.ts`, `log.ts` (redacting), `r2.ts` (presign PUT/GET, head check, magic bytes), `audit.ts` (redacting), `geo-cache.ts`, `rebuild.ts` (`repository_dispatch`), `github.ts`.
-- [ ] Better Auth at `/api/auth/*`: Drizzle adapter (`usePlural`), `admin`, `emailOTP` via Resend, Google; `emailAndPassword` off; KV secondary storage. `scripts/make-admin.ts`.
+- [ ] Better Auth at `/api/auth/*`: Drizzle adapter (`usePlural`), `admin`, `emailOTP` via Resend, Google; `emailAndPassword` off; sessions in D1 (KV session storage dropped, see 02 §12.2). `scripts/make-admin.ts`.
 - [ ] `packages/shared`: phone (E.164, mobile/landline), money (cents ↔ `Rs. 1,250.00`), tax display maths (round-half-even; MRP 1,180.00 → 1,000.00 / 180.00 / 12.50), sri-lanka (bounds, haversine, nearest city).
 - [ ] `apps/web/public/data/lk-districts.json` (25 districts, names en/si/ta, province, centroid, bbox) and `lk-cities.json` (≥ 300 towns, OSM-derived, ODbL credited).
 - [ ] `scripts/seed.ts` (`05 §9`) → `db:seed:local`.

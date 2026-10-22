@@ -135,7 +135,9 @@ flowchart LR
     "DONATION_ACCOUNT_NAME": "<account name>",
     "DONATION_ACCOUNT_NUMBER": "<account number>",
     "WHATSAPP_COMMUNITY_URL": "https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM",
-    "LOCALES_ENABLED": "en,si,ta"
+    "LOCALES_ENABLED": "en,si,ta",
+    "ENVIRONMENT": "production",
+    "EMAIL_FROM": "CB POS <no-reply@ceybyte.com>"
   }
 }
 ```
@@ -525,7 +527,7 @@ flowchart TD
 | Gate, feedback create, donation create | `RL_FORMS` | 5 / 60 s | ≤ 10 per IP-hash per hour (KV counter, TTL 3600) |
 | Upload presign/confirm | `RL_UPLOADS` | 10 / 60 s | — |
 | Votes, docs feedback | `RL_VOTES` | 30 / 60 s | Vote dedupe table |
-| Auth (OTP send, sign-in) | `RL_AUTH` | 10 / 60 s | Better Auth `rateLimit` with KV secondary storage |
+| Auth (OTP send, sign-in) | `RL_AUTH` | 10 / 60 s | Better Auth's own limiter is off (it stores raw IPs). OTPs allow 5 attempts and expire in 10 min |
 | Public reads | `RL_READ` | 120 / 60 s | — |
 
 Zone backstop: one free WAF rate-limiting rule on `POST /api/*` (block 10 s above 20 requests / 10 s per IP).
@@ -541,7 +543,9 @@ Zone backstop: one free WAF rate-limiting rule on `POST /api/*` (block 10 s abov
 
 ### 12.2 Auth
 - `createAuth(c.env)` per request: Drizzle adapter (`provider: "sqlite"`, `usePlural: true`), `admin({ defaultRole: "merchant", adminRoles: ["admin"] })`, `emailOTP` (Resend), Google. **`emailAndPassword` is disabled** (D5).
-- `better-auth-cloudflare` provides the D1 wiring and the KV secondary storage for sessions and rate limits.
+- `better-auth-cloudflare` provides the D1 wiring only (`autoDetectIpAddress: false`, `geolocationTracking: false`). **Sessions live in D1, not KV.** Better Auth trusts a KV session hit without checking D1, and KV can lag 60 s or more, so a banned or demoted user could keep a working session until it expires. A session lookup is one D1 read, well inside the budget, and the session middleware skips it when there's no session cookie.
+- Better Auth's IP tracking and built-in rate limiter are off, because both store the raw IP. `RL_AUTH` guards `POST /api/auth/sign-in/*` and `/api/auth/email-otp/*`, and a database hook writes the daily IP hash (§11) into `sessions.ip_address`. `user_agent` is left empty.
+- OTP emails come from `EMAIL_FROM` through Resend. Their text lives in `messages/*.json` (`email.otp.*`); a locale whose text still carries `[[TRANSLATE]]` gets the English email. Without `RESEND_API_KEY`, non-production environments log the code instead; production refuses to send.
 - Cookie `__Secure-better-auth.session_token`, `HttpOnly; Secure; SameSite=Lax`, same origin as the site (no CORS).
 - First admin: `bun scripts/make-admin.ts --email` (runs `wrangler d1 execute`).
 
