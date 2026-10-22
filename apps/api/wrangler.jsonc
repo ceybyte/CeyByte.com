@@ -50,9 +50,12 @@
     "RELEASES_REPO": "ceybyte/cbpos-releases",
     "RELEASE_MANIFEST_URL": "https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json",
     "SITE_REPO": "ceybyte/CeyByte.com",
+    "R2_ACCOUNT_ID": "a5d5786c14afdfda66e133ab0817982f",
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFgO5u6onY8WbtL9",
     "POSTHOG_HOST": "https://eu.i.posthog.com",
     "WHATSAPP_COMMUNITY_URL": "https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM",
     "LOCALES_ENABLED": "en,si,ta",
+    "ENVIRONMENT": "production",
+    "EMAIL_FROM": "CB POS <no-reply@ceybyte.com>",
   },
 }
