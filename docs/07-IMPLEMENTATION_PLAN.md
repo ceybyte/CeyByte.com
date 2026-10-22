@@ -122,16 +122,18 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Goal:** `05-SCHEMA.md` live in local and preview D1, Hono API skeleton with the shared middleware, passwordless Better Auth working.
 
-- [ ] `packages/shared/src/db/{schema,relations,projections}.ts` from `05 §2–7`. `bun run db:generate` → review SQL → `db:migrate:local`.
-- [ ] Hono middleware: request ID, security headers, error envelope (`ApiError` → `ApiResult`), `dbMiddleware`, `requireSession`, `requireRole("admin")` returning 404.
-- [ ] Libraries: `turnstile.ts`, `ratelimit.ts` (+ hourly KV window), `iphash.ts`, `log.ts` (redacting), `r2.ts` (presign PUT/GET, head check, magic bytes), `audit.ts` (redacting), `geo-cache.ts`, `rebuild.ts` (`repository_dispatch`), `github.ts`.
-- [ ] Better Auth at `/api/auth/*`: Drizzle adapter (`usePlural`), `admin`, `emailOTP` via Resend, Google; `emailAndPassword` off; sessions in D1 (KV session storage dropped, see 02 §12.2). `scripts/make-admin.ts`.
-- [ ] `packages/shared`: phone (E.164, mobile/landline), money (cents ↔ `Rs. 1,250.00`), tax display maths (round-half-even; MRP 1,180.00 → 1,000.00 / 180.00 / 12.50), sri-lanka (bounds, haversine, nearest city).
-- [ ] `apps/web/public/data/lk-districts.json` (25 districts, names en/si/ta, province, centroid, bbox) and `lk-cities.json` (≥ 300 towns, OSM-derived, ODbL credited).
-- [ ] `scripts/seed.ts` (`05 §9`) → `db:seed:local`.
-- [ ] Tests: unit (`bun test`) for every `packages/shared` module; **`geo.contract.test.ts`**; API integration (vitest pool workers) for auth and the 404 admin rule.
+- [x] `packages/shared/src/db/{schema,relations,projections}.ts` from `05 §2–7`. `bun run db:generate` → review SQL → `db:migrate:local`.
+- [x] Hono middleware: request ID, security headers, error envelope (`ApiError` → `ApiResult`), `dbMiddleware`, `requireSession`, `requireRole("admin")` returning 404.
+- [x] Libraries: `turnstile.ts`, `ratelimit.ts` (+ hourly KV window), `iphash.ts`, `log.ts` (redacting), `r2.ts` (presign PUT/GET, head check, magic bytes), `audit.ts` (redacting), `geo-cache.ts`, `rebuild.ts` (`repository_dispatch`), `github.ts`.
+- [x] Better Auth at `/api/auth/*`: Drizzle adapter (`usePlural`), `admin`, `emailOTP` via Resend, Google; `emailAndPassword` off; sessions in D1 (KV session storage dropped, see 02 §12.2). `scripts/make-admin.ts`.
+- [x] `packages/shared`: phone (E.164, mobile/landline), money (cents ↔ `Rs. 1,250.00`), tax display maths (round-half-even; MRP 1,180.00 → 1,000.00 / 180.00 / 12.50), sri-lanka (bounds, haversine, nearest city).
+- [x] `apps/web/public/data/lk-districts.json` (25 districts, names en/si/ta, province, centroid, bbox) and `lk-cities.json` (≥ 300 towns, OSM-derived, ODbL credited).
+- [x] `scripts/seed.ts` (`05 §9`) → `db:seed:local`.
+- [x] Tests: unit (`bun test`) for every `packages/shared` module; **`geo.contract.test.ts`**; API integration (vitest pool workers) for auth and the 404 admin rule.
 
 **Verify:** OTP sign-in and Google sign-in on preview; `make-admin` works; a merchant gets 404 on `/api/admin/overview`.
+
+> **Status (2026-10-22):** done on preview (`cbpos-preview.hasendra.workers.dev`): OTP sign-in, `make-admin --preview`, merchant and anonymous 404, admin 200, session `ip_address` is the daily hash. **Open:** Google sign-in is wired but off until `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` are set; production OTP email needs `RESEND_API_KEY` and a verified `ceybyte.com` sender in Resend. The 11 seeded docs articles are drafts because `00-CBPOS_FACTS.md` wasn't available; they're written in Phase 8.
 
 **Exit:** migrations apply to `cbpos-db-preview` from CI; auth works on the preview Worker.
 
