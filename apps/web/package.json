@@ -6,7 +6,8 @@
     "dev": "bun --bun next dev --port 3000",
     "build": "bun --bun next build && rm -rf out/styleguide",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test src/lib"
   },
   "dependencies": {
     "@cbpos/shared": "workspace:*",

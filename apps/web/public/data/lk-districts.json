@@ -1,0 +1,480 @@
+{
+  "attribution": "© OpenStreetMap contributors, ODbL 1.0, https://www.openstreetmap.org/copyright",
+  "districts": [
+    {
+      "id": "ampara",
+      "province": "eastern",
+      "name": {
+        "en": "Ampara",
+        "si": "අම්පාර",
+        "ta": "அம்பாறை"
+      },
+      "centroid": [
+        7.0736,
+        81.5295
+      ],
+      "bbox": [
+        80.9779,
+        6.4079,
+        82.081,
+        7.7394
+      ]
+    },
+    {
+      "id": "anuradhapura",
+      "province": "north-central",
+      "name": {
+        "en": "Anuradhapura",
+        "si": "අනුරාධපුර",
+        "ta": "அனுராதபுரம்"
+      },
+      "centroid": [
+        8.3683,
+        80.4716
+      ],
+      "bbox": [
+        79.9523,
+        7.8164,
+        80.9909,
+        8.9202
+      ]
+    },
+    {
+      "id": "badulla",
+      "province": "uva",
+      "name": {
+        "en": "Badulla",
+        "si": "බදුල්ල",
+        "ta": "பதுளை"
+      },
+      "centroid": [
+        7.0836,
+        81.0238
+      ],
+      "bbox": [
+        80.7759,
+        6.5422,
+        81.2716,
+        7.625
+      ]
+    },
+    {
+      "id": "batticaloa",
+      "province": "eastern",
+      "name": {
+        "en": "Batticaloa",
+        "si": "මඩකලපුව",
+        "ta": "மட்டக்களப்பு"
+      },
+      "centroid": [
+        7.8374,
+        81.6201
+      ],
+      "bbox": [
+        81.225,
+        7.3987,
+        82.0153,
+        8.276
+      ]
+    },
+    {
+      "id": "colombo",
+      "province": "western",
+      "name": {
+        "en": "Colombo",
+        "si": "කොළඹ",
+        "ta": "கொழும்பு"
+      },
+      "centroid": [
+        6.847,
+        79.9309
+      ],
+      "bbox": [
+        79.6387,
+        6.669,
+        80.2232,
+        7.025
+      ]
+    },
+    {
+      "id": "galle",
+      "province": "southern",
+      "name": {
+        "en": "Galle",
+        "si": "ගාල්ල",
+        "ta": "காலி"
+      },
+      "centroid": [
+        6.1056,
+        80.1444
+      ],
+      "bbox": [
+        79.7931,
+        5.769,
+        80.4958,
+        6.4423
+      ]
+    },
+    {
+      "id": "gampaha",
+      "province": "western",
+      "name": {
+        "en": "Gampaha",
+        "si": "ගම්පහ",
+        "ta": "கம்பஹா"
+      },
+      "centroid": [
+        7.1188,
+        79.9144
+      ],
+      "bbox": [
+        79.6162,
+        6.9071,
+        80.2127,
+        7.3305
+      ]
+    },
+    {
+      "id": "hambantota",
+      "province": "southern",
+      "name": {
+        "en": "Hambantota",
+        "si": "හම්බන්තොට",
+        "ta": "அம்பாந்தோட்டை"
+      },
+      "centroid": [
+        6.1768,
+        81.2454
+      ],
+      "bbox": [
+        80.6083,
+        5.7755,
+        81.8825,
+        6.578
+      ]
+    },
+    {
+      "id": "jaffna",
+      "province": "northern",
+      "name": {
+        "en": "Jaffna",
+        "si": "යාපනය",
+        "ta": "யாழ்ப்பாணம்"
+      },
+      "centroid": [
+        9.6992,
+        80.0937
+      ],
+      "bbox": [
+        79.422,
+        9.3633,
+        80.7654,
+        10.035
+      ]
+    },
+    {
+      "id": "kalutara",
+      "province": "western",
+      "name": {
+        "en": "Kalutara",
+        "si": "කළුතර",
+        "ta": "களுத்துறை"
+      },
+      "centroid": [
+        6.5745,
+        80.0425
+      ],
+      "bbox": [
+        79.7038,
+        6.3249,
+        80.3813,
+        6.8241
+      ]
+    },
+    {
+      "id": "kandy",
+      "province": "central",
+      "name": {
+        "en": "Kandy",
+        "si": "මහනුවර",
+        "ta": "கண்டி"
+      },
+      "centroid": [
+        7.2143,
+        80.7192
+      ],
+      "bbox": [
+        80.4219,
+        6.9388,
+        81.0165,
+        7.4899
+      ]
+    },
+    {
+      "id": "kegalle",
+      "province": "sabaragamuwa",
+      "name": {
+        "en": "Kegalle",
+        "si": "කෑගල්ල",
+        "ta": "கேகாலை"
+      },
+      "centroid": [
+        7.1133,
+        80.3467
+      ],
+      "bbox": [
+        80.1454,
+        6.83,
+        80.5481,
+        7.3966
+      ]
+    },
+    {
+      "id": "kilinochchi",
+      "province": "northern",
+      "name": {
+        "en": "Kilinochchi",
+        "si": "කිලිනොච්චි",
+        "ta": "கிளிநொச்சி"
+      },
+      "centroid": [
+        9.4498,
+        80.0639
+      ],
+      "bbox": [
+        79.5117,
+        9.2082,
+        80.6162,
+        9.6913
+      ]
+    },
+    {
+      "id": "kurunegala",
+      "province": "north-western",
+      "name": {
+        "en": "Kurunegala",
+        "si": "කුරුණෑගල",
+        "ta": "குருணாகல்"
+      },
+      "centroid": [
+        7.7278,
+        80.2392
+      ],
+      "bbox": [
+        79.9005,
+        7.2579,
+        80.5779,
+        8.1978
+      ]
+    },
+    {
+      "id": "mannar",
+      "province": "northern",
+      "name": {
+        "en": "Mannar",
+        "si": "මන්නාරම",
+        "ta": "மன்னார்"
+      },
+      "centroid": [
+        8.8808,
+        79.9475
+      ],
+      "bbox": [
+        79.4925,
+        8.5244,
+        80.4025,
+        9.2373
+      ]
+    },
+    {
+      "id": "matale",
+      "province": "central",
+      "name": {
+        "en": "Matale",
+        "si": "මාතලේ",
+        "ta": "மாத்தளை"
+      },
+      "centroid": [
+        7.6982,
+        80.7456
+      ],
+      "bbox": [
+        80.4965,
+        7.384,
+        80.9947,
+        8.0123
+      ]
+    },
+    {
+      "id": "matara",
+      "province": "southern",
+      "name": {
+        "en": "Matara",
+        "si": "මාතර",
+        "ta": "மாத்தறை"
+      },
+      "centroid": [
+        6.0583,
+        80.5637
+      ],
+      "bbox": [
+        80.3306,
+        5.719,
+        80.7969,
+        6.3975
+      ]
+    },
+    {
+      "id": "monaragala",
+      "province": "uva",
+      "name": {
+        "en": "Monaragala",
+        "si": "මොනරාගල",
+        "ta": "மொணராகலை"
+      },
+      "centroid": [
+        6.8775,
+        81.2325
+      ],
+      "bbox": [
+        80.8278,
+        6.2965,
+        81.6372,
+        7.4585
+      ]
+    },
+    {
+      "id": "mullaitivu",
+      "province": "northern",
+      "name": {
+        "en": "Mullaitivu",
+        "si": "මුලතිවු",
+        "ta": "முல்லைத்தீவு"
+      },
+      "centroid": [
+        9.2705,
+        80.6511
+      ],
+      "bbox": [
+        80.175,
+        8.9396,
+        81.1271,
+        9.6015
+      ]
+    },
+    {
+      "id": "nuwara-eliya",
+      "province": "central",
+      "name": {
+        "en": "Nuwara Eliya",
+        "si": "නුවර එලිය",
+        "ta": "நுவரெலியா"
+      },
+      "centroid": [
+        7.0126,
+        80.6986
+      ],
+      "bbox": [
+        80.4321,
+        6.7512,
+        80.9652,
+        7.2739
+      ]
+    },
+    {
+      "id": "polonnaruwa",
+      "province": "north-central",
+      "name": {
+        "en": "Polonnaruwa",
+        "si": "පොළොන්නරුව",
+        "ta": "பொலன்னறுவை"
+      },
+      "centroid": [
+        7.9983,
+        81.0463
+      ],
+      "bbox": [
+        80.7494,
+        7.6512,
+        81.3433,
+        8.3453
+      ]
+    },
+    {
+      "id": "puttalam",
+      "province": "north-western",
+      "name": {
+        "en": "Puttalam",
+        "si": "පුත්තලම්",
+        "ta": "புத்தளம்"
+      },
+      "centroid": [
+        7.977,
+        79.822
+      ],
+      "bbox": [
+        79.4907,
+        7.2653,
+        80.1532,
+        8.6887
+      ]
+    },
+    {
+      "id": "ratnapura",
+      "province": "sabaragamuwa",
+      "name": {
+        "en": "Ratnapura",
+        "si": "රත්නපුර",
+        "ta": "இரத்தினபுரி"
+      },
+      "centroid": [
+        6.5795,
+        80.5641
+      ],
+      "bbox": [
+        80.175,
+        6.228,
+        80.9532,
+        6.9311
+      ]
+    },
+    {
+      "id": "trincomalee",
+      "province": "eastern",
+      "name": {
+        "en": "Trincomalee",
+        "si": "තිරිකුණාමළය",
+        "ta": "திருகோணமலை"
+      },
+      "centroid": [
+        8.6296,
+        81.1829
+      ],
+      "bbox": [
+        80.7536,
+        8.1488,
+        81.6123,
+        9.1103
+      ]
+    },
+    {
+      "id": "vavuniya",
+      "province": "northern",
+      "name": {
+        "en": "Vavuniya",
+        "si": "වවුනියා",
+        "ta": "வவுனியா"
+      },
+      "centroid": [
+        8.8361,
+        80.478
+      ],
+      "bbox": [
+        80.1689,
+        8.5459,
+        80.787,
+        9.1264
+      ]
+    }
+  ]
+}
