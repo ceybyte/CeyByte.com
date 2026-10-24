@@ -1,12 +1,12 @@
-export interface TocItem {
+export type TocItem = {
   id: string;
   text: string;
   level: 2 | 3;
-}
+};
 
 export type SupportedLocale = "en" | "si" | "ta";
 
-export interface ProcessMarkdownOptions {
+export type ProcessMarkdownOptions = {
   /**
    * Automatically inject the non-certified tax disclaimer callout.
    * Required for tax documentation per Constraint C5.
@@ -20,11 +20,11 @@ export interface ProcessMarkdownOptions {
    * Shiki syntax highlighter theme name.
    */
   theme?: string;
-}
+};
 
-export interface ProcessMarkdownResult {
+export type ProcessMarkdownResult = {
   html: string;
   toc: TocItem[];
   readingTimeMinutes: number;
   plainText: string;
-}
+};

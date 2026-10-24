@@ -2,26 +2,17 @@ import { defaultSchema, type Options } from "rehype-sanitize";
 
 // Filter out existing restrictive className tuples from defaultSchema
 const baseA = (defaultSchema.attributes?.a || []).filter(
-  (attr) => (typeof attr === "string" ? attr : attr[0]) !== "className"
+  (attr) => (typeof attr === "string" ? attr : attr[0]) !== "className",
 );
 
 const baseCode = (defaultSchema.attributes?.code || []).filter(
-  (attr) => (typeof attr === "string" ? attr : attr[0]) !== "className"
+  (attr) => (typeof attr === "string" ? attr : attr[0]) !== "className",
 );
 
 export const markdownSanitizeSchema: Options = {
   ...defaultSchema,
   clobberPrefix: "",
-  tagNames: [
-    ...(defaultSchema.tagNames || []),
-    "aside",
-    "div",
-    "span",
-    "section",
-    "nav",
-    "svg",
-    "path",
-  ],
+  tagNames: [...(defaultSchema.tagNames || []), "aside", "div", "span", "section", "nav", "svg", "path"],
   attributes: {
     ...defaultSchema.attributes,
     "*": [
@@ -51,13 +42,6 @@ export const markdownSanitizeSchema: Options = {
       "className",
       "ariaHidden",
     ],
-    path: [
-      "d",
-      "fill",
-      "stroke",
-      "strokeWidth",
-      "strokeLinecap",
-      "strokeLinejoin",
-    ],
+    path: ["d", "fill", "stroke", "strokeWidth", "strokeLinecap", "strokeLinejoin"],
   },
 };

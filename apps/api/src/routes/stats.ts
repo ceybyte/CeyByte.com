@@ -40,7 +40,7 @@ export const statsRoutes = new Hono<AppEnv>().get("/stats", async (c) => {
         200,
         {
           "Cache-Control": "public, max-age=300",
-        }
+        },
       );
       if (cache) {
         try {
@@ -96,7 +96,7 @@ export const statsRoutes = new Hono<AppEnv>().get("/stats", async (c) => {
     200,
     {
       "Cache-Control": "public, max-age=300",
-    }
+    },
   );
 
   if (cache) {

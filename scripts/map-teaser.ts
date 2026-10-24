@@ -111,7 +111,7 @@ export function generateMapTeaserSvg(districts: DistrictItem[], width = 600, hei
     <!-- ${n.name} -->
     <circle cx="${n.x}" cy="${n.y}" r="14" fill="url(#nodeGlow)" />
     <circle cx="${n.x}" cy="${n.y}" r="5" fill="#00F5FF" fill-opacity="0.3" stroke="#00F5FF" stroke-width="0.75" />
-    <circle cx="${n.x}" cy="${n.y}" r="2" fill="#ffffff" />`
+    <circle cx="${n.x}" cy="${n.y}" r="2" fill="#ffffff" />`,
       )
       .join("\n")}
   </g>

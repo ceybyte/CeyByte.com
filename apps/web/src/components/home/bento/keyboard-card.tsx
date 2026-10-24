@@ -16,8 +16,12 @@ const KEY_ACTIONS: KeyAction[] = [
   { key: "F3", label: "Find item", output: "> Finding item: 'Keeri Samba 5kg' [FOUND]" },
   { key: "Enter", label: "Add to cart", output: "> Added to cart: Keeri Samba 5kg (Rs. 1,300.00)" },
   { key: "F5", label: "Take pay", output: "> Payment menu: [Cash] [Card] [Credit]" },
-  { key: "F6", label: "Hold bill", output: "> Bill #0142 held on register" },
-  { key: "F12", label: "Exact cash", output: "> Exact cash Rs. 1,300.00 paid · Drawer kicked · Receipt printed ✓" },
+  { key: "F6", label: "Hold bill", output: "> Bill 0142 held on register" },
+  {
+    key: "F12",
+    label: "Exact cash",
+    output: "> Exact cash Rs. 1,300.00 paid · Drawer kicked · Receipt printed ✓",
+  },
   { key: "Esc", label: "Clear", output: "> Action cleared / ready for next sale" },
 ];
 
@@ -38,7 +42,10 @@ export function KeyboardCard({ className }: { className?: string }) {
 
     const handler = (e: KeyboardEvent) => {
       const match = KEY_ACTIONS.find(
-        (a) => a.key.toLowerCase() === e.key.toLowerCase() || (a.key === "Enter" && e.key === "Enter") || (a.key === "Esc" && e.key === "Escape")
+        (a) =>
+          a.key.toLowerCase() === e.key.toLowerCase() ||
+          (a.key === "Enter" && e.key === "Enter") ||
+          (a.key === "Esc" && e.key === "Escape"),
       );
       if (match) {
         e.preventDefault();
@@ -56,33 +63,29 @@ export function KeyboardCard({ className }: { className?: string }) {
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       className={cn(
-        "relative rounded-lg border border-hairline bg-surface p-6 sm:p-8 flex flex-col justify-between overflow-hidden outline-none focus-visible:ring-1 focus-visible:ring-azure/50 transition-colors group",
-        className
+        "border-hairline bg-surface focus-visible:ring-azure/50 group relative flex flex-col justify-between overflow-hidden rounded-lg border p-6 transition-colors outline-none focus-visible:ring-1 sm:p-8",
+        className,
       )}
     >
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="size-10 rounded-md bg-azure/10 border border-azure/20 flex items-center justify-center text-azure">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
             <KeyboardIcon className="size-5" />
           </div>
-          <span className="font-mono text-[11px] text-muted">ZERO MOUSE DEPENDENCY [B1]</span>
+          <span className="text-muted font-mono text-[11px]">ZERO MOUSE DEPENDENCY [B1]</span>
         </div>
 
-        <h3 className="text-xl sm:text-2xl font-bold text-text mb-3">
-          {t("title")}
-        </h3>
+        <h3 className="text-text mb-3 text-xl font-bold sm:text-2xl">{t("title")}</h3>
 
-        <p className="text-muted text-sm sm:text-base leading-relaxed mb-6">
-          {t("body")}
-        </p>
+        <p className="text-muted mb-6 text-sm leading-relaxed sm:text-base">{t("body")}</p>
       </div>
 
       {/* Interactive Keycaps Demo */}
-      <div className="mt-4 pt-4 border-t border-hairline bg-surface-elevated/40 -mx-6 -mb-6 sm:-mx-8 sm:-mb-8 p-6 sm:p-8 rounded-b-lg space-y-4">
+      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-lg border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-mono text-muted/80">{t("demo")}</p>
+          <p className="text-muted/80 font-mono text-xs">{t("demo")}</p>
           {isFocused && (
-            <span className="text-[10px] font-mono text-azure bg-azure/10 px-2 py-0.5 rounded border border-azure/20 animate-pulse">
+            <span className="text-azure bg-azure/10 border-azure/20 animate-pulse rounded border px-2 py-0.5 font-mono text-[10px]">
               KEYBOARD LISTENING
             </span>
           )}
@@ -98,32 +101,39 @@ export function KeyboardCard({ className }: { className?: string }) {
                 type="button"
                 onClick={() => triggerKey(action)}
                 className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1.5 rounded border transition-all text-xs font-mono select-none cursor-pointer",
+                  "flex cursor-pointer items-center gap-1.5 rounded border px-2.5 py-1.5 font-mono text-xs transition-all select-none",
                   isSelected
-                    ? "bg-primary text-primary-foreground border-primary shadow-[0_0_12px_rgba(57,255,20,0.4)] scale-105"
-                    : "bg-[#18181B] text-text border-hairline hover:border-azure/40 hover:bg-[#202024]"
+                    ? "bg-primary text-primary-foreground border-primary scale-105 shadow-md"
+                    : "bg-surface-legal text-text border-hairline hover:border-azure/40 hover:bg-surface-elevated",
                 )}
               >
-                <Kbd className={cn("px-1 py-0.2", isSelected ? "bg-black/20 text-primary-foreground border-transparent" : "")}>
+                <Kbd
+                  className={cn(
+                    "py-0.2 px-1",
+                    isSelected ? "text-primary-foreground border-transparent bg-black/20" : "",
+                  )}
+                >
                   {action.key}
                 </Kbd>
-                <span className="hidden sm:inline text-[11px] opacity-90">{action.label}</span>
+                <span className="hidden text-[11px] opacity-90 sm:inline">{action.label}</span>
               </button>
             );
           })}
         </div>
 
         {/* Mini Console Output */}
-        <div className="rounded bg-[#090a0f] border border-hairline p-3 font-mono text-xs text-azure min-h-[72px] flex flex-col justify-end space-y-1">
-          <div className="flex items-center gap-1 text-[10px] text-muted/60 pb-1 border-b border-hairline/40">
+        <div className="bg-canvas border-hairline text-azure flex min-h-[72px] flex-col justify-end space-y-1 rounded border p-3 font-mono text-xs">
+          <div className="text-muted/60 border-hairline/40 flex items-center gap-1 border-b pb-1 text-[10px]">
             <Terminal className="size-3" />
             <span>TILL ACTION LOG</span>
           </div>
           {consoleLog.length === 0 ? (
-            <span className="text-muted/60 text-[11px] italic">&gt; Click a keycap or focus and press F3 / Enter / F5...</span>
+            <span className="text-muted/60 text-[11px] italic">
+              &gt; Click a keycap or focus and press F3 / Enter / F5...
+            </span>
           ) : (
             consoleLog.map((line, i) => (
-              <p key={i} className="truncate text-azure-text">
+              <p key={i} className="text-azure-text truncate">
                 {line}
               </p>
             ))

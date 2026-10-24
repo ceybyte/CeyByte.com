@@ -12,47 +12,50 @@ export function FinalBannerSection() {
   const locale = useLocale();
 
   return (
-    <section className="relative border-b border-hairline bg-surface py-20 sm:py-28 overflow-hidden">
+    <section className="border-hairline bg-surface relative overflow-hidden border-b py-20 sm:py-28">
       {/* Structural Crosshairs at all 4 corners */}
       <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
       {/* Subtle Radial Azure Glow Backdrop */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-25">
-        <div className="size-[500px] rounded-full bg-azure blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-25">
+        <div className="bg-azure size-[500px] rounded-full blur-[120px]" />
       </div>
 
-      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center">
+      <div className="relative z-10 container mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
         <Reveal>
-          <span className="font-mono text-xs font-semibold tracking-wider uppercase text-primary mb-4 inline-block">
+          <span className="text-primary mb-4 inline-block font-mono text-xs font-semibold tracking-wider uppercase">
             INSTALL IN MINUTES · BILL FOR YEARS
           </span>
 
-          <h2 className="text-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-text leading-tight mb-6">
+          <h2 className="text-display text-text mb-6 text-3xl leading-tight font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
             {t("title")}
           </h2>
 
-          <p className="text-muted text-base sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
+          <p className="text-muted mx-auto mb-10 max-w-2xl text-base leading-relaxed sm:text-lg lg:text-xl">
             {t("body")}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
               asChild
               variant="primary"
               size="xl"
-              className="w-full sm:w-auto shadow-[0_0_24px_rgba(57,255,20,0.3)] hover:shadow-[0_0_36px_rgba(57,255,20,0.5)] transition-shadow duration-300"
+              className="w-full shadow-lg transition-all duration-300 hover:brightness-105 sm:w-auto"
             >
               <Link href={`/${locale}/download`}>
-                <Download className="size-5 mr-1" />
+                <Download className="mr-1 size-5" />
                 <span>{t("cta")}</span>
               </Link>
             </Button>
 
             <Button asChild variant="ghost" size="lg">
-              <Link href={`/${locale}/docs/getting-started/install`} className="inline-flex items-center gap-2 group text-text hover:text-azure-text">
+              <Link
+                href={`/${locale}/docs/getting-started/install`}
+                className="group text-text hover:text-azure-text inline-flex items-center gap-2"
+              >
                 <span>{t("secondary")}</span>
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </Link>

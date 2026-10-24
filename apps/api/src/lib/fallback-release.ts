@@ -3,7 +3,7 @@
  * Embedded in Worker bundle for $0/month zero-D1-query responses.
  */
 
-export interface ReleaseInfo {
+export type ReleaseInfo = {
   id: string;
   version: string;
   channel: string;
@@ -14,17 +14,18 @@ export interface ReleaseInfo {
   sha256: string;
   is_latest: boolean;
   published_at: number;
-}
+};
 
 export const FALLBACK_RELEASE: ReleaseInfo = {
-  "id": "release-0.0.0-dev",
-  "version": "0.0.0-dev",
-  "channel": "stable",
-  "release_date": "2026-01-01",
-  "download_url": "https://github.com/ceybyte/cbpos-releases/releases/download/v0.0.0-dev/CBPOSSetup-0.0.0-dev.exe",
-  "changelog": "Fixture for local and preview environments.",
-  "min_version": "Windows 10 or later",
-  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-  "is_latest": true,
-  "published_at": 1792665010928
+  id: "release-0.0.0-dev",
+  version: "0.0.0-dev",
+  channel: "stable",
+  release_date: "2026-01-01",
+  download_url:
+    "https://github.com/ceybyte/cbpos-releases/releases/download/v0.0.0-dev/CBPOSSetup-0.0.0-dev.exe",
+  changelog: "Fixture for local and preview environments.",
+  min_version: "Windows 10 or later",
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000",
+  is_latest: true,
+  published_at: 1792665010928,
 };

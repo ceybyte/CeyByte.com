@@ -30,49 +30,45 @@ export function ProblemSection() {
   ];
 
   return (
-    <section className="relative border-b border-hairline bg-surface/20 py-20 sm:py-24">
+    <section className="border-hairline bg-surface/20 relative border-b py-20 sm:py-24">
       {/* Structural Crosshairs */}
       <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="max-w-2xl mb-12 sm:mb-16">
-            <span className="font-mono text-xs font-semibold tracking-wider uppercase text-error mb-3 block">
+          <div className="mb-12 max-w-2xl sm:mb-16">
+            <span className="text-error mb-3 block font-mono text-xs font-semibold tracking-wider uppercase">
               THE PROBLEMS WITH TRADITIONAL POS
             </span>
-            <h2 className="text-display text-3xl sm:text-4xl font-bold tracking-tight text-text">
+            <h2 className="text-display text-text text-3xl font-bold tracking-tight sm:text-4xl">
               {t("title")}
             </h2>
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3">
           {problems.map((prob, idx) => {
             const Icon = prob.icon;
             return (
               <Reveal key={prob.id} delay={idx * 0.1}>
-                <div className="relative h-full rounded-lg border border-hairline bg-surface p-6 sm:p-8 flex flex-col justify-between overflow-hidden group hover:border-hairline-elevated transition-colors">
+                <div className="border-hairline bg-surface group hover:border-hairline-elevated relative flex h-full flex-col justify-between overflow-hidden rounded-lg border p-6 transition-colors sm:p-8">
                   {/* 1px Error Fault Line Accent across top (03-DESIGN §9.4) */}
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-error to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+                  <div className="via-error absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent opacity-80 transition-opacity group-hover:opacity-100" />
 
                   <div>
-                    <div className="size-12 rounded-md bg-error/10 border border-error/20 flex items-center justify-center text-error mb-6 group-hover:scale-105 transition-transform">
+                    <div className="bg-error/10 border-error/20 text-error mb-6 flex size-12 items-center justify-center rounded-md border transition-transform group-hover:scale-105">
                       <Icon className="size-6" />
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-bold text-text mb-3 leading-snug">
-                      {prob.title}
-                    </h3>
+                    <h3 className="text-text mb-3 text-lg leading-snug font-bold sm:text-xl">{prob.title}</h3>
 
-                    <p className="text-muted text-sm sm:text-base leading-relaxed">
-                      {prob.body}
-                    </p>
+                    <p className="text-muted text-sm leading-relaxed sm:text-base">{prob.body}</p>
                   </div>
 
-                  <div className="pt-6 mt-6 border-t border-hairline/60 flex items-center justify-between text-xs font-mono text-muted/60">
+                  <div className="border-hairline/60 text-muted/60 mt-6 flex items-center justify-between border-t pt-6 font-mono text-xs">
                     <span>CASE 0{idx + 1}</span>
                     <span className="text-error/80">AVOIDABLE LOSS</span>
                   </div>

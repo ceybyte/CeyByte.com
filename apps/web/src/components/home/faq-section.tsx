@@ -1,12 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Crosshair } from "@/components/brand/crosshair";
 import { Reveal } from "@/components/motion/reveal";
 import { JsonLd, faqSchema } from "@/lib/json-ld";
@@ -23,37 +18,37 @@ export function FaqSection() {
   ];
 
   return (
-    <section className="relative border-b border-hairline bg-surface/20 py-20 sm:py-28">
+    <section className="border-hairline bg-surface/20 relative border-b py-20 sm:py-28">
       {/* Structural Crosshairs */}
       <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
       {/* SEO Schema.org FAQPage Rich Snippet */}
       <JsonLd schema={faqSchema(faqItems)} />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+      <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="font-mono text-xs font-semibold tracking-wider uppercase text-azure mb-3 block">
+          <div className="mx-auto mb-14 max-w-2xl text-center">
+            <span className="text-azure mb-3 block font-mono text-xs font-semibold tracking-wider uppercase">
               FREQUENTLY ASKED QUESTIONS
             </span>
-            <h2 className="text-display text-3xl sm:text-4xl font-bold tracking-tight text-text">
+            <h2 className="text-display text-text text-3xl font-bold tracking-tight sm:text-4xl">
               {t("title")}
             </h2>
           </div>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="rounded-lg border border-hairline bg-surface p-6 sm:p-8">
+          <div className="border-hairline bg-surface rounded-lg border p-6 sm:p-8">
             <Accordion type="single" collapsible className="w-full">
               {faqItems.map((item) => (
-                <AccordionItem key={item.id} value={item.id} className="border-b border-hairline/80 py-2">
-                  <AccordionTrigger className="text-base sm:text-lg font-semibold text-text hover:text-azure-text hover:no-underline transition-colors py-4">
+                <AccordionItem key={item.id} value={item.id} className="border-hairline/80 border-b py-2">
+                  <AccordionTrigger className="text-text hover:text-azure-text py-4 text-base font-semibold transition-colors hover:no-underline sm:text-lg">
                     {item.q}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted text-sm sm:text-base leading-relaxed pb-4">
+                  <AccordionContent className="text-muted pb-4 text-sm leading-relaxed sm:text-base">
                     {item.a}
                   </AccordionContent>
                 </AccordionItem>

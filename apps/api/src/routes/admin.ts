@@ -45,4 +45,3 @@ export const adminRoutes = new Hono<AppEnv>()
       data: status,
     } as const);
   });
-

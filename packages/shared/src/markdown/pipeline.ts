@@ -26,7 +26,7 @@ import type { ProcessMarkdownOptions, ProcessMarkdownResult, TocItem } from "./t
  */
 export async function processMarkdown(
   markdown: string,
-  options: ProcessMarkdownOptions = {}
+  options: ProcessMarkdownOptions = {},
 ): Promise<ProcessMarkdownResult> {
   const { autoTaxDisclaimer = false, locale = "en" } = options;
 

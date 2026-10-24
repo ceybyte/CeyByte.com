@@ -40,74 +40,68 @@ export function TaxCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-hairline bg-surface p-6 sm:p-8 flex flex-col justify-between overflow-hidden transition-colors group",
-        className
+        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-lg border p-6 transition-colors sm:p-8",
+        className,
       )}
     >
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="size-10 rounded-md bg-azure/10 border border-azure/20 flex items-center justify-center text-azure">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
             <Calculator className="size-5" />
           </div>
-          <span className="font-mono text-[11px] text-muted">ROUND-HALF-EVEN MATH [C1] [C2]</span>
+          <span className="text-muted font-mono text-[11px]">ROUND-HALF-EVEN MATH [C1] [C2]</span>
         </div>
 
-        <h3 className="text-xl sm:text-2xl font-bold text-text mb-3">
-          {t("title")}
-        </h3>
+        <h3 className="text-text mb-3 text-xl font-bold sm:text-2xl">{t("title")}</h3>
 
-        <p className="text-muted text-sm sm:text-base leading-relaxed mb-6">
-          {t("body")}
-        </p>
+        <p className="text-muted mb-6 text-sm leading-relaxed sm:text-base">{t("body")}</p>
       </div>
 
       {/* Interactive Calculator Module */}
-      <div className="mt-4 pt-4 border-t border-hairline bg-surface-elevated/40 -mx-6 -mb-6 sm:-mx-8 sm:-mb-8 p-6 sm:p-8 rounded-b-lg space-y-4">
+      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-lg border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
         {/* MRP Input */}
         <div className="space-y-1.5">
-          <div className="flex justify-between items-center">
-            <Label htmlFor={inputId} className="text-xs font-mono text-muted">
+          <div className="flex items-center justify-between">
+            <Label htmlFor={inputId} className="text-muted font-mono text-xs">
               {t("inputLabel")} (SHELF PRICE IN RUPEES)
             </Label>
-            <span className="text-[10px] font-mono text-azure">CUSTOMER PAYS EXACT MRP</span>
+            <span className="text-azure font-mono text-[10px]">CUSTOMER PAYS EXACT MRP</span>
           </div>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted font-mono text-sm">
-              Rs.
-            </span>
+            <span className="text-muted absolute top-1/2 left-3 -translate-y-1/2 font-mono text-sm">Rs.</span>
             <Input
               id={inputId}
               type="text"
               value={mrpInput}
               onChange={(e) => setMrpInput(e.target.value)}
-              className="pl-10 font-mono text-base font-bold bg-[#090a0f] border-hairline text-text focus-visible:ring-azure/50"
+              className="bg-canvas border-hairline text-text focus-visible:ring-azure/50 pl-10 font-mono text-base font-bold"
               placeholder="1,180.00"
             />
           </div>
         </div>
 
         {/* Calculation Breakdown Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="rounded border border-hairline bg-[#090a0f] p-3 font-mono">
-            <span className="text-[10px] text-muted block mb-1">{t("base")}</span>
-            <span className="text-sm font-bold text-text">{formatRupees(breakdown.baseCents)}</span>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="border-hairline bg-canvas rounded border p-3 font-mono">
+            <span className="text-muted mb-1 block text-[10px]">{t("base")}</span>
+            <span className="text-text text-sm font-bold">{formatRupees(breakdown.baseCents)}</span>
           </div>
 
-          <div className="rounded border border-hairline bg-[#090a0f] p-3 font-mono">
-            <span className="text-[10px] text-muted block mb-1">{t("vat")}</span>
-            <span className="text-sm font-bold text-azure-text">{formatRupees(breakdown.vatCents)}</span>
+          <div className="border-hairline bg-canvas rounded border p-3 font-mono">
+            <span className="text-muted mb-1 block text-[10px]">{t("vat")}</span>
+            <span className="text-azure-text text-sm font-bold">{formatRupees(breakdown.vatCents)}</span>
           </div>
 
-          <div className="rounded border border-hairline bg-[#090a0f] p-3 font-mono">
-            <span className="text-[10px] text-muted block mb-1">{t("sscl")}</span>
-            <span className="text-sm font-bold text-primary">{formatRupees(breakdown.ssclCents)}</span>
+          <div className="border-hairline bg-canvas rounded border p-3 font-mono">
+            <span className="text-muted mb-1 block text-[10px]">{t("sscl")}</span>
+            <span className="text-primary text-sm font-bold">{formatRupees(breakdown.ssclCents)}</span>
           </div>
         </div>
 
         {/* Formula & IRD Disclaimer Note */}
-        <div className="space-y-1 text-[11px] font-mono text-muted/80 pt-1">
+        <div className="text-muted/80 space-y-1 pt-1 font-mono text-[11px]">
           <p className="text-muted/60 text-[10px]">{t("formula")}</p>
-          <p className="text-[10px] text-muted/70 italic">{t("note")}</p>
+          <p className="text-muted/70 text-[10px] italic">{t("note")}</p>
         </div>
       </div>
     </div>

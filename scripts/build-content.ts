@@ -21,7 +21,9 @@ if (!existsSync(CONTENT_DIR)) {
 const args = new Set(process.argv.slice(2));
 const target = args.has("--remote") ? "production" : args.has("--preview") ? "preview" : "local";
 const db = target === "preview" ? "cbpos-db-preview" : "cbpos-db";
-const flags = { local: ["--local"], preview: ["--remote", "--env", "preview"], production: ["--remote"] }[target];
+const flags = { local: ["--local"], preview: ["--remote", "--env", "preview"], production: ["--remote"] }[
+  target
+];
 
 interface D1Result<T> {
   results?: T[];

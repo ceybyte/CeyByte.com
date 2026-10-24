@@ -45,43 +45,39 @@ export function ReceiptCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-hairline bg-surface p-6 sm:p-8 flex flex-col justify-between overflow-hidden transition-colors group",
-        className
+        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-lg border p-6 transition-colors sm:p-8",
+        className,
       )}
     >
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="size-10 rounded-md bg-azure/10 border border-azure/20 flex items-center justify-center text-azure">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
             <Languages className="size-5" />
           </div>
-          <span className="font-mono text-[11px] text-muted">TRILINGUAL ESC/POS [E2] [F2]</span>
+          <span className="text-muted font-mono text-[11px]">TRILINGUAL ESC/POS [E2] [F2]</span>
         </div>
 
-        <h3 className="text-xl sm:text-2xl font-bold text-text mb-3">
-          {t("title")}
-        </h3>
+        <h3 className="text-text mb-3 text-xl font-bold sm:text-2xl">{t("title")}</h3>
 
-        <p className="text-muted text-sm sm:text-base leading-relaxed mb-6">
-          {t("body")}
-        </p>
+        <p className="text-muted mb-6 text-sm leading-relaxed sm:text-base">{t("body")}</p>
       </div>
 
       {/* Interactive Thermal Receipt Preview */}
-      <div className="mt-4 pt-4 border-t border-hairline bg-surface-elevated/40 -mx-6 -mb-6 sm:-mx-8 sm:-mb-8 p-6 sm:p-8 rounded-b-lg space-y-4">
+      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-lg border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
         {/* Language Tabs */}
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-mono text-muted flex items-center gap-1.5">
+          <span className="text-muted flex items-center gap-1.5 font-mono text-[11px]">
             <Receipt className="size-3.5" />
             <span>80MM RECEIPT LANG</span>
           </span>
 
-          <div className="inline-flex rounded-md p-0.5 bg-[#090a0f] border border-hairline text-xs font-mono">
+          <div className="bg-canvas border-hairline inline-flex rounded-md border p-0.5 font-mono text-xs">
             <button
               type="button"
               onClick={() => setLang("en")}
               className={cn(
-                "px-2.5 py-1 rounded transition-colors cursor-pointer",
-                lang === "en" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text"
+                "cursor-pointer rounded px-2.5 py-1 transition-colors",
+                lang === "en" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text",
               )}
             >
               EN
@@ -90,8 +86,8 @@ export function ReceiptCard({ className }: { className?: string }) {
               type="button"
               onClick={() => setLang("si")}
               className={cn(
-                "px-2.5 py-1 rounded transition-colors cursor-pointer",
-                lang === "si" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text"
+                "cursor-pointer rounded px-2.5 py-1 transition-colors",
+                lang === "si" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text",
               )}
             >
               සිං
@@ -100,8 +96,8 @@ export function ReceiptCard({ className }: { className?: string }) {
               type="button"
               onClick={() => setLang("ta")}
               className={cn(
-                "px-2.5 py-1 rounded transition-colors cursor-pointer",
-                lang === "ta" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text"
+                "cursor-pointer rounded px-2.5 py-1 transition-colors",
+                lang === "ta" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text",
               )}
             >
               தமி
@@ -110,12 +106,12 @@ export function ReceiptCard({ className }: { className?: string }) {
         </div>
 
         {/* 80mm Thermal Receipt Simulation */}
-        <div className="rounded border border-hairline/80 bg-[#12161f] p-4 font-mono text-xs text-text/90 shadow-inner space-y-2.5 leading-snug">
+        <div className="border-hairline/80 bg-canvas text-text/90 space-y-2.5 rounded border p-4 font-mono text-xs leading-snug shadow-inner">
           {/* Header */}
-          <div className="text-center pb-2 border-b border-dashed border-hairline">
-            <p className="font-bold text-white text-xs">{data.shop}</p>
-            <p className="text-[10px] text-muted">{data.tagline}</p>
-            <p className="text-[10px] text-muted">2026-10-24 14:32 · Till #01 · Bill #0142</p>
+          <div className="border-hairline border-b border-dashed pb-2 text-center">
+            <p className="text-xs font-bold text-white">{data.shop}</p>
+            <p className="text-muted text-[10px]">{data.tagline}</p>
+            <p className="text-muted text-[10px]">2026-10-24 14:32 · Till 01 · Bill 0142</p>
           </div>
 
           {/* Item lines (English per [F2] spec) */}
@@ -131,27 +127,27 @@ export function ReceiptCard({ className }: { className?: string }) {
           </div>
 
           {/* Totals in selected language */}
-          <div className="pt-2 border-t border-dashed border-hairline space-y-1 text-[11px]">
-            <div className="flex justify-between text-muted text-[10px]">
+          <div className="border-hairline space-y-1 border-t border-dashed pt-2 text-[11px]">
+            <div className="text-muted flex justify-between text-[10px]">
               <span>{data.taxLabel}</span>
               <span>Rs. 209.75</span>
             </div>
-            <div className="flex justify-between font-bold text-white text-xs pt-0.5">
+            <div className="flex justify-between pt-0.5 text-xs font-bold text-white">
               <span>{data.totalLabel}</span>
               <span className="text-azure-text">Rs. 1,375.00</span>
             </div>
-            <div className="flex justify-between text-muted text-[10px]">
+            <div className="text-muted flex justify-between text-[10px]">
               <span>{data.cashLabel}</span>
               <span>Rs. 2,000.00</span>
             </div>
-            <div className="flex justify-between text-muted text-[10px]">
+            <div className="text-muted flex justify-between text-[10px]">
               <span>{data.changeLabel}</span>
               <span>Rs. 625.00</span>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="text-center pt-2 border-t border-dashed border-hairline text-[10px] text-muted/80">
+          <div className="border-hairline text-muted/80 border-t border-dashed pt-2 text-center text-[10px]">
             {data.footer}
           </div>
         </div>

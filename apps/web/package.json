@@ -11,7 +11,7 @@
     "build": "bun run build:content && bun run build:search && bun run build:og && bun run build:map-teaser && bun --bun next build && rm -rf out/styleguide && cp public/404.html out/404.html",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "bun test src/lib"
+    "test": "bun test src"
   },
   "dependencies": {
     "@cbpos/shared": "workspace:*",

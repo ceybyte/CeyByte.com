@@ -45,10 +45,7 @@ export interface SearchDoc {
   type: "doc" | "blog";
 }
 
-export async function buildSearchIndices(options?: {
-  contentDir?: string;
-  outputDir?: string;
-}) {
+export async function buildSearchIndices(options?: { contentDir?: string; outputDir?: string }) {
   const contentDir = options?.contentDir ?? resolve(__dirname, "../apps/web/.content");
   const outputDir = options?.outputDir ?? resolve(__dirname, "../apps/web/public/search");
 
@@ -143,7 +140,7 @@ export async function buildSearchIndices(options?: {
     };
 
     console.log(
-      `✓ Search index [${locale}]: ${localeDocs.length} items, ${(stat.size / 1024).toFixed(1)} KB`
+      `✓ Search index [${locale}]: ${localeDocs.length} items, ${(stat.size / 1024).toFixed(1)} KB`,
     );
   }
 

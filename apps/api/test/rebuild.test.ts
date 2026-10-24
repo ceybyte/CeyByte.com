@@ -22,7 +22,7 @@ async function signIn(email: string): Promise<string> {
   expect(sent.status).toBe(200);
 
   const row = await env.DB.prepare(
-    "SELECT value FROM verifications WHERE identifier LIKE ? ORDER BY created_at DESC"
+    "SELECT value FROM verifications WHERE identifier LIKE ? ORDER BY created_at DESC",
   )
     .bind(`%${email}`)
     .first<{ value: string }>();
@@ -33,9 +33,7 @@ async function signIn(email: string): Promise<string> {
     body: JSON.stringify({ email, otp }),
   });
   expect(res.status).toBe(200);
-  const cookie = res
-    .headers.getSetCookie()
-    .find((c) => c.includes("better-auth.session_token"));
+  const cookie = res.headers.getSetCookie().find((c) => c.includes("better-auth.session_token"));
   if (!cookie) throw new Error("no session cookie");
   return cookie.split(";")[0] ?? "";
 }
@@ -72,7 +70,10 @@ describe("Rebuild endpoints (/api/admin/rebuild)", () => {
     });
 
     expect(res.status).toBe(200);
-    const body: any = await res.json();
+    const body = (await res.json()) as {
+      ok: boolean;
+      data: { mode: string; triggered: boolean };
+    };
     expect(body.ok).toBe(true);
     expect(body.data.mode).toBe("mock");
     expect(body.data.triggered).toBe(false);
@@ -86,7 +87,10 @@ describe("Rebuild endpoints (/api/admin/rebuild)", () => {
 
     const res = await call("/admin/rebuild/status", { cookie });
     expect(res.status).toBe(200);
-    const body: any = await res.json();
+    const body = (await res.json()) as {
+      ok: boolean;
+      data: { status: string; conclusion: string; mode: string };
+    };
     expect(body.ok).toBe(true);
     expect(body.data.status).toBe("completed");
     expect(body.data.conclusion).toBe("success");

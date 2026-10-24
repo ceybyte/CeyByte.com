@@ -1,21 +1,14 @@
 import { visit } from "unist-util-visit";
-import type { Root, Parent } from "mdast";
-import type { ContainerDirective, LeafDirective, TextDirective } from "mdast-util-directive";
+import type { Root, RootContent } from "mdast";
+import type { ContainerDirective } from "mdast-util-directive";
 
 export const TAX_DISCLAIMERS = {
   en: "CeyByte POS generates sales reports to assist your tax filing. We are NOT registered tax agents or certified by Inland Revenue Department (IRD). Consult an accountant for certified tax advice.",
   si: "CeyByte POS ඔබගේ බදු වාර්තාකරණයට සහාය වීම සඳහා විකුණුම් වාර්තා සකස් කරයි. අප දේශීය ආදායම් දෙපාර්තමේන්තුව (IRD) විසින් සහතික කරන ලද බදු නියෝජිතයන් නොවේ. සහතික කළ බදු උපදෙස් සඳහා ගණකාධිකාරීවරයෙකුගෙන් විමසන්න.",
-  ta: "CeyByte POS உங்கள் வரி தாக்கலுக்கு உதவ விற்பனை அறிக்கைகளை உருவாக்குகிறது. நாங்கள் உள்நாட்டு இறைவரித் திணைக்களத்தால் (IRD) சான்றளிக்கப்பட்ட வரி முகவர்கள் அல்ல. சான்றளிக்கப்பட்ட வரி ஆலோசனைக்கு கணக்காளரை அணுகவும்.",
+  ta: "CeyByte POS உங்கள் வரி தாக்கலுக்கு உதව விற்பனை அறிக்கைகளை உருவாக்குகிறது. நாங்கள் உள்நாட்டு இறைவரித் திணைக்களத்தால் (IRD) சான்றளிக்கப்பட்ட வரி முகவர்கள் அல்ல. சான்றளிக்கப்பட்ட வரி ஆலோசனைக்கு கணக்காளரை அணுகவும்.",
 } as const;
 
-const CALLOUT_NAMES = new Set([
-  "note",
-  "tip",
-  "important",
-  "warning",
-  "caution",
-  "disclaimer",
-]);
+const CALLOUT_NAMES = new Set(["note", "tip", "important", "warning", "caution", "disclaimer"]);
 
 const CALLOUT_TITLES: Record<string, string> = {
   note: "Note",
@@ -26,10 +19,10 @@ const CALLOUT_TITLES: Record<string, string> = {
   disclaimer: "Disclaimer",
 };
 
-export interface DirectivePluginOptions {
+export type DirectivePluginOptions = {
   autoTaxDisclaimer?: boolean;
   locale?: string;
-}
+};
 
 export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
   const { autoTaxDisclaimer = false, locale = "en" } = options;
@@ -37,9 +30,7 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
   return (tree: Root) => {
     // 1. If autoTaxDisclaimer is requested, prepend a disclaimer directive node
     if (autoTaxDisclaimer) {
-      const disclaimerText =
-        TAX_DISCLAIMERS[locale as keyof typeof TAX_DISCLAIMERS] ||
-        TAX_DISCLAIMERS.en;
+      const disclaimerText = TAX_DISCLAIMERS[locale as keyof typeof TAX_DISCLAIMERS] || TAX_DISCLAIMERS.en;
 
       const disclaimerNode: ContainerDirective = {
         type: "containerDirective",
@@ -58,11 +49,19 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
         ],
       };
 
-      tree.children.unshift(disclaimerNode as any);
+      tree.children.unshift(disclaimerNode as unknown as RootContent);
     }
 
     // 2. Transform directives into HAST representation
-    visit(tree, (node: any) => {
+    visit(tree, (rawNode: unknown) => {
+      const node = rawNode as {
+        type: string;
+        name?: string;
+        attributes?: Record<string, string>;
+        data?: Record<string, unknown>;
+        children?: unknown[];
+      };
+
       if (
         node.type !== "containerDirective" &&
         node.type !== "leafDirective" &&
@@ -71,9 +70,8 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
         return;
       }
 
-      const dir = node as ContainerDirective | LeafDirective | TextDirective;
-      const name = dir.name.toLowerCase();
-      const attributes = dir.attributes || {};
+      const name = (node.name || "").toLowerCase();
+      const attributes = node.attributes || {};
 
       if (CALLOUT_NAMES.has(name)) {
         const title = attributes.title || CALLOUT_TITLES[name] || name;
@@ -114,7 +112,7 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
           children: existingChildren,
         };
 
-        node.children = [headerNode as any, bodyNode as any];
+        node.children = [headerNode as unknown as RootContent, bodyNode as unknown as RootContent];
       } else if (name === "step") {
         const title = attributes.title || "";
         node.data = node.data || {};
@@ -124,7 +122,7 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
         };
 
         const existingChildren = [...(node.children || [])];
-        const headerChildren: any[] = [
+        const headerChildren: unknown[] = [
           {
             type: "text",
             data: {
@@ -164,7 +162,7 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
           children: existingChildren,
         };
 
-        node.children = [headerNode as any, bodyNode as any];
+        node.children = [headerNode as unknown as RootContent, bodyNode as unknown as RootContent];
       }
     });
   };

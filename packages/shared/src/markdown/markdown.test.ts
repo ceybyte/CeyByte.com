@@ -1,10 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import {
-  processMarkdown,
-  extractPlainText,
-  calculateReadingTime,
-  TAX_DISCLAIMERS,
-} from "./index";
+import { processMarkdown, extractPlainText, calculateReadingTime, TAX_DISCLAIMERS } from "./index";
 
 describe("Markdown Processing Engine", () => {
   it("renders basic markdown elements correctly", async () => {

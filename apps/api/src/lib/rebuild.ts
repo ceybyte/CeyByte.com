@@ -1,16 +1,13 @@
 import { log } from "./log";
 
-export interface RebuildTriggerResult {
+export type RebuildTriggerResult = {
   triggered: boolean;
   mode: "github_actions" | "mock";
   message: string;
   ref?: string;
-}
+};
 
-export async function triggerRebuild(
-  env: Env,
-  reason = "admin_manual"
-): Promise<RebuildTriggerResult> {
+export async function triggerRebuild(env: Env, reason = "admin_manual"): Promise<RebuildTriggerResult> {
   const token = env.GITHUB_DISPATCH_TOKEN || env.GITHUB_API_TOKEN;
   const repo = env.SITE_REPO || "ceybyte/CeyByte.com";
 
@@ -52,14 +49,14 @@ export async function triggerRebuild(
   };
 }
 
-export interface RebuildStatusResult {
+export type RebuildStatusResult = {
   status: string;
   conclusion: string | null;
   mode: "github_actions" | "mock";
   html_url?: string;
   created_at?: string;
   updated_at?: string;
-}
+};
 
 export async function getRebuildStatus(env: Env): Promise<RebuildStatusResult> {
   const token = env.GITHUB_DISPATCH_TOKEN || env.GITHUB_API_TOKEN;
@@ -87,7 +84,15 @@ export async function getRebuildStatus(env: Env): Promise<RebuildStatusResult> {
     throw new Error(`GitHub API runs query failed (${res.status}): ${errorText}`);
   }
 
-  const data: any = await res.json();
+  const data = (await res.json()) as {
+    workflow_runs?: Array<{
+      status: string;
+      conclusion: string | null;
+      html_url?: string;
+      created_at?: string;
+      updated_at?: string;
+    }>;
+  };
   const latestRun = data.workflow_runs?.[0];
 
   if (!latestRun) {

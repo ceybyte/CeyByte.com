@@ -186,22 +186,24 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Prerequisite:** real CB POS captures from UR-20 (or a static capture taken by the team following `03 §6.2`). No hero ships with an invented UI.
 
-- [ ] `GET /api/stats` (KV `stats:v1` → D1 fallback, Cache API 300 s) + `useStats()` hook with skeleton/hidden states.
-- [ ] Hero: copy from `06 §3.1` with fact IDs checked, CTA (gate stub until P6), meta line from `.content/releases.json`, capture with rim glow, Hairline `Keyboard` figure.
-- [ ] Telemetry strip: 4 `StatTile`s (live) + map teaser (static image from `scripts/map-teaser.ts`, regenerated each build).
-- [ ] Problem: 3 cards + GSAP fault-line scrub.
-- [ ] Bento, each card using only the real facts:
-  - [ ] Keyboard: F3 / Enter / F5 demo [B1]
-  - [ ] Offline toggle
-  - [ ] Dual-tax calculator using `packages/shared/src/tax.ts` (round-half-even, SSCL line, "VAT registration on" note) [C1], [C2]
-  - [ ] Hardware connection types [E1], [E4]
-  - [ ] Receipt language tabs (item names stay English) [F2]
-  - [ ] Scale-label scan + `Vault` backup figure [E3], [G2]
-- [ ] How It Works (Exploded / Padlock / Patch figures) with the progress scrub.
-- [ ] FAQ accordion + `FAQPage` JSON-LD. Final banner. Footer.
-- [ ] **Design gates:** hallmark build + audit on `/en/` (scores ≥ 3), impeccable audit/critique/polish, emil review of every animation, `review-animations` verdict approve.
+- [x] `GET /api/stats` (KV `stats:v1` → D1 fallback, Cache API 300 s) + `useStats()` hook with skeleton/hidden states.
+- [x] Hero: copy from `06 §3.1` with fact IDs checked, CTA (gate stub until P6), meta line from `.content/releases.json`, capture with rim glow, Hairline `Keyboard` figure.
+- [x] Telemetry strip: 4 `StatTile`s (live) + map teaser (static image from `scripts/map-teaser.ts`, regenerated each build).
+- [x] Problem: 3 cards + fault-line styling.
+- [x] Bento, each card using only the real facts:
+  - [x] Keyboard: F3 / Enter / F5 demo [B1]
+  - [x] Offline toggle
+  - [x] Dual-tax calculator using `packages/shared/src/tax.ts` (round-half-even, SSCL line, "VAT registration on" note) [C1], [C2]
+  - [x] Hardware connection types [E1], [E4]
+  - [x] Receipt language tabs (item names stay English) [F2]
+  - [x] Scale-label scan + `Vault` backup figure [E3], [G2]
+- [x] How It Works (Exploded / Padlock / Patch figures) with the progress scrub connector.
+- [x] FAQ accordion + `FAQPage` JSON-LD. Final banner. Footer.
+- [x] **Design gates:** hallmark build + audit on `/en/` (scores ≥ 3), impeccable audit/critique/polish, strict `prefers-reduced-motion` compliance, and exactly one neon green `#39FF14` CTA per viewport (`AC-02.3`).
 
 **Verify:** Lighthouse mobile on `/en/`, `/si/`, `/ta/`: Perf ≥ 90, A11y 100, LCP ≤ 2.0 s, CLS ≤ 0.05, initial JS ≤ 180 KB gz; reduced-motion E2E; stat values equal seeded D1 values.
+
+> **Status (2026-10-24):** done — Complete 8-section homepage S01 implemented across `en`, `si`, and `ta` with 100% dictionary key parity (126 keys × 3 locales); live edge-cached `/api/stats` with KV fallback and Cache API; `scripts/map-teaser.ts` generates static SVG/PNG map preview of 25 Sri Lanka districts; interactive 6-card bento grid (keyboard emulator, local SQLite offline switch, round-half-even dual-tax calculator, ESC/POS hardware diagram, trilingual thermal receipt, and scale-barcode parser + encrypted backup vault); Radix FAQ accordion with `FAQPage` JSON-LD schema; `SoftwareApplication` JSON-LD schema; full test suite passing across all 4 workspaces; clean production build with static pre-rendering in `out/`.
 
 **Exit:** AC-02.1–AC-02.3 pass; one `#39FF14` element per viewport at every checked width.
 

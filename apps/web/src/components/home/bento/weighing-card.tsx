@@ -21,33 +21,31 @@ export function WeighingCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-hairline bg-surface p-6 sm:p-8 flex flex-col justify-between overflow-hidden transition-colors group",
-        className
+        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-lg border p-6 transition-colors sm:p-8",
+        className,
       )}
     >
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="size-10 rounded-md bg-azure/10 border border-azure/20 flex items-center justify-center text-azure">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
             <Scale className="size-5" />
           </div>
-          <span className="font-mono text-[11px] text-muted">EAN-13 SCALE PARSER & ENCRYPTED BACKUPS [D2] [G2]</span>
+          <span className="text-muted font-mono text-[11px]">
+            EAN-13 SCALE PARSER & ENCRYPTED BACKUPS [D2] [G2]
+          </span>
         </div>
 
-        <h3 className="text-xl sm:text-2xl font-bold text-text mb-3">
-          {t("title")}
-        </h3>
+        <h3 className="text-text mb-3 text-xl font-bold sm:text-2xl">{t("title")}</h3>
 
-        <p className="text-muted text-sm sm:text-base leading-relaxed mb-6">
-          {t("body")}
-        </p>
+        <p className="text-muted mb-6 text-sm leading-relaxed sm:text-base">{t("body")}</p>
       </div>
 
       {/* Interactive Scale Parser & USB Encryption Module */}
-      <div className="mt-4 pt-4 border-t border-hairline bg-surface-elevated/40 -mx-6 -mb-6 sm:-mx-8 sm:-mb-8 p-6 sm:p-8 rounded-b-lg space-y-4">
+      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-lg border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
         {/* Barcode Selector & Dissector */}
-        <div className="rounded border border-hairline bg-[#090a0f] p-4 font-mono text-xs space-y-3">
-          <div className="flex items-center justify-between text-[11px] text-muted pb-1 border-b border-hairline/40">
-            <span className="flex items-center gap-1.5 text-azure">
+        <div className="border-hairline bg-canvas space-y-3 rounded border p-4 font-mono text-xs">
+          <div className="text-muted border-hairline/40 flex items-center justify-between border-b pb-1 text-[11px]">
+            <span className="text-azure flex items-center gap-1.5">
               <Barcode className="size-4" />
               <span>BARCODE SCALE DECODER</span>
             </span>
@@ -58,10 +56,10 @@ export function WeighingCard({ className }: { className?: string }) {
                   type="button"
                   onClick={() => setSelectedBarcodeIndex(idx)}
                   className={cn(
-                    "px-2 py-0.5 rounded text-[10px] cursor-pointer transition-colors",
+                    "cursor-pointer rounded px-2 py-0.5 text-[10px] transition-colors",
                     selectedBarcodeIndex === idx
                       ? "bg-azure text-inverse font-bold"
-                      : "bg-[#18181B] text-muted hover:text-text"
+                      : "bg-surface-legal text-muted hover:text-text",
                   )}
                 >
                   Item 0{idx + 1}
@@ -71,45 +69,47 @@ export function WeighingCard({ className }: { className?: string }) {
           </div>
 
           {/* Barcode Dissection Graphic */}
-          <div className="grid grid-cols-4 gap-2 text-center text-[11px] pt-1">
-            <div className="p-2 rounded bg-[#131822] border border-hairline">
-              <span className="text-[10px] text-muted block mb-0.5">PREFIX</span>
-              <span className="font-bold text-azure">20</span>
-              <span className="text-[9px] text-muted/60 block mt-0.5">Weighed Item</span>
+          <div className="grid grid-cols-4 gap-2 pt-1 text-center text-[11px]">
+            <div className="bg-surface-elevated border-hairline rounded border p-2">
+              <span className="text-muted mb-0.5 block text-[10px]">PREFIX</span>
+              <span className="text-azure font-bold">20</span>
+              <span className="text-muted/60 mt-0.5 block text-[9px]">Weighed Item</span>
             </div>
 
-            <div className="p-2 rounded bg-[#131822] border border-hairline">
-              <span className="text-[10px] text-muted block mb-0.5">PLU CODE</span>
-              <span className="font-bold text-text">{current.plu}</span>
-              <span className="text-[9px] text-muted/60 block mt-0.5 truncate">{current.name}</span>
+            <div className="bg-surface-elevated border-hairline rounded border p-2">
+              <span className="text-muted mb-0.5 block text-[10px]">PLU CODE</span>
+              <span className="text-text font-bold">{current.plu}</span>
+              <span className="text-muted/60 mt-0.5 block truncate text-[9px]">{current.name}</span>
             </div>
 
-            <div className="p-2 rounded bg-primary/10 border border-primary/30">
-              <span className="text-[10px] text-muted block mb-0.5">WEIGHT</span>
-              <span className="font-bold text-primary">{current.weight}</span>
-              <span className="text-[9px] text-primary/80 block mt-0.5">3 Decimals</span>
+            <div className="bg-primary/10 border-primary/30 rounded border p-2">
+              <span className="text-muted mb-0.5 block text-[10px]">WEIGHT</span>
+              <span className="text-primary font-bold">{current.weight}</span>
+              <span className="text-primary/80 mt-0.5 block text-[9px]">3 Decimals</span>
             </div>
 
-            <div className="p-2 rounded bg-[#131822] border border-hairline">
-              <span className="text-[10px] text-muted block mb-0.5">BILL LINE</span>
+            <div className="bg-surface-elevated border-hairline rounded border p-2">
+              <span className="text-muted mb-0.5 block text-[10px]">BILL LINE</span>
               <span className="font-bold text-white">{current.price}</span>
-              <span className="text-[9px] text-muted/60 block mt-0.5">Exact Total</span>
+              <span className="text-muted/60 mt-0.5 block text-[9px]">Exact Total</span>
             </div>
           </div>
         </div>
 
         {/* AES Encrypted USB Backup Assurance Strip */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 rounded border border-hairline bg-[#090a0f] text-xs font-mono">
+        <div className="border-hairline bg-canvas flex flex-col items-start justify-between gap-3 rounded border p-3 font-mono text-xs sm:flex-row sm:items-center">
           <div className="flex items-center gap-2">
-            <div className="size-6 rounded bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+            <div className="bg-primary/10 border-primary/20 text-primary flex size-6 items-center justify-center rounded border">
               <Lock className="size-3.5" />
             </div>
             <div>
-              <p className="font-semibold text-text text-[11px]">AES-256 ENCRYPTED .ZIP BACKUPS</p>
-              <p className="text-muted/60 text-[10px]">Zero cloud exposure · You hold the backup key on your USB drive</p>
+              <p className="text-text text-[11px] font-semibold">AES-256 ENCRYPTED .ZIP BACKUPS</p>
+              <p className="text-muted/60 text-[10px]">
+                Zero cloud exposure · You hold the backup key on your USB drive
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 text-primary text-[10px] font-semibold">
+          <div className="text-primary flex items-center gap-1.5 text-[10px] font-semibold">
             <ShieldCheck className="size-3.5" />
             <span>PROTECTED [G2]</span>
           </div>

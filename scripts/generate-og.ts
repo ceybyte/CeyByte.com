@@ -22,17 +22,14 @@ function loadFonts() {
   if (cachedFonts) return cachedFonts;
 
   const root = resolve(__dirname, "..");
-  const interPath = join(
-    root,
-    "node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2"
-  );
+  const interPath = join(root, "node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2");
   const sinhalaPath = join(
     root,
-    "node_modules/@fontsource-variable/noto-sans-sinhala/files/noto-sans-sinhala-sinhala-wght-normal.woff2"
+    "node_modules/@fontsource-variable/noto-sans-sinhala/files/noto-sans-sinhala-sinhala-wght-normal.woff2",
   );
   const tamilPath = join(
     root,
-    "node_modules/@fontsource-variable/noto-sans-tamil/files/noto-sans-tamil-tamil-wght-normal.woff2"
+    "node_modules/@fontsource-variable/noto-sans-tamil/files/noto-sans-tamil-tamil-wght-normal.woff2",
   );
 
   cachedFonts = {
@@ -62,15 +59,9 @@ export async function renderOgCard(options: OgCardOptions): Promise<Buffer> {
         ? "Noto Sans Tamil, Inter, sans-serif"
         : "Inter, sans-serif";
 
-  const localeBadge =
-    locale === "si" ? "සිංහල" : locale === "ta" ? "தமிழ்" : "English";
+  const localeBadge = locale === "si" ? "සිංහල" : locale === "ta" ? "தமிழ்" : "English";
 
-  const typeLabel =
-    type === "blog"
-      ? "BLOG POST"
-      : type === "page"
-        ? "CEYBYTE POS"
-        : "DOCUMENTATION";
+  const typeLabel = type === "blog" ? "BLOG POST" : type === "page" ? "CEYBYTE POS" : "DOCUMENTATION";
 
   const element = {
     type: "div",
@@ -121,8 +112,7 @@ export async function renderOgCard(options: OgCardOptions): Promise<Buffer> {
                           width: "44px",
                           height: "44px",
                           borderRadius: "10px",
-                          background:
-                            "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                           color: "#ffffff",
                           fontSize: "20px",
                           fontWeight: 700,
@@ -285,8 +275,7 @@ export async function renderOgCard(options: OgCardOptions): Promise<Buffer> {
                     {
                       type: "span",
                       props: {
-                        children:
-                          "No Monthly Fees · VAT & SSCL · Sinhala, Tamil & English",
+                        children: "No Monthly Fees · VAT & SSCL · Sinhala, Tamil & English",
                       },
                     },
                   ],
@@ -349,14 +338,9 @@ export async function renderOgCard(options: OgCardOptions): Promise<Buffer> {
   return resvg.render().asPng();
 }
 
-export async function generateAllOgImages(options?: {
-  contentDir?: string;
-  outputDir?: string;
-}) {
-  const contentDir =
-    options?.contentDir ?? resolve(__dirname, "../apps/web/.content");
-  const publicDir =
-    options?.outputDir ?? resolve(__dirname, "../apps/web/public");
+export async function generateAllOgImages(options?: { contentDir?: string; outputDir?: string }) {
+  const contentDir = options?.contentDir ?? resolve(__dirname, "../apps/web/.content");
+  const publicDir = options?.outputDir ?? resolve(__dirname, "../apps/web/public");
 
   const ogDir = join(publicDir, "og");
   if (!existsSync(ogDir)) {

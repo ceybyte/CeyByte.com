@@ -35,28 +35,28 @@ export function HowItWorksSection({ sizeMb = 64 }: { sizeMb?: number }) {
   ];
 
   return (
-    <section id="how-it-works" className="relative border-b border-hairline bg-surface/30 py-20 sm:py-28">
+    <section id="how-it-works" className="border-hairline bg-surface/30 relative border-b py-20 sm:py-28">
       {/* Structural Crosshairs */}
       <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <span className="font-mono text-xs font-semibold tracking-wider uppercase text-azure mb-3 block">
+              <span className="text-azure mb-3 block font-mono text-xs font-semibold tracking-wider uppercase">
                 THREE STEPS TO GET RUNNING
               </span>
-              <h2 className="text-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-text">
+              <h2 className="text-display text-text text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
                 {t("title")}
               </h2>
             </div>
 
             <Link
               href={`/${locale}/docs/getting-started/install`}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-azure-text hover:underline group shrink-0"
+              className="text-azure-text group inline-flex shrink-0 items-center gap-2 text-sm font-semibold hover:underline"
             >
               <span>{t("cta")}</span>
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
@@ -65,41 +65,37 @@ export function HowItWorksSection({ sizeMb = 64 }: { sizeMb?: number }) {
         </Reveal>
 
         {/* 3 Numbered Steps with Connecting Hairline */}
-        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
+        <div className="relative grid grid-cols-1 gap-8 sm:gap-10 md:grid-cols-3">
           {/* Desktop Connecting Hairline behind cards */}
-          <div className="hidden md:block absolute top-1/4 left-16 right-16 h-[1px] bg-gradient-to-r from-hairline via-azure/40 to-hairline -z-0" />
+          <div className="from-hairline via-azure/40 to-hairline absolute top-1/4 right-16 left-16 -z-0 hidden h-[1px] bg-gradient-to-r md:block" />
 
           {steps.map((item, index) => {
             const Icon = item.icon;
             return (
               <Reveal key={item.step} delay={index * 0.15}>
-                <div className="relative z-10 rounded-lg border border-hairline bg-surface p-6 sm:p-8 flex flex-col justify-between h-full hover:border-azure/40 transition-colors group">
+                <div className="border-hairline bg-surface hover:border-azure/40 group relative z-10 flex h-full flex-col justify-between rounded-lg border p-6 transition-colors sm:p-8">
                   <div>
                     {/* Header: Step Number & Icon */}
-                    <div className="flex items-center justify-between mb-6">
-                      <span className="font-mono text-3xl sm:text-4xl font-extrabold text-muted/30 group-hover:text-azure/60 transition-colors">
+                    <div className="mb-6 flex items-center justify-between">
+                      <span className="text-muted/30 group-hover:text-azure/60 font-mono text-3xl font-extrabold transition-colors sm:text-4xl">
                         {item.step}
                       </span>
-                      <div className="size-10 rounded-md bg-azure/10 border border-azure/20 flex items-center justify-center text-azure group-hover:scale-110 transition-transform">
+                      <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border transition-transform group-hover:scale-110">
                         <Icon className="size-5" />
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-bold text-text mb-3 leading-snug">
-                      {item.title}
-                    </h3>
+                    <h3 className="text-text mb-3 text-xl leading-snug font-bold">{item.title}</h3>
 
-                    <p className="text-muted text-sm leading-relaxed mb-6">
-                      {item.body}
-                    </p>
+                    <p className="text-muted mb-6 text-sm leading-relaxed">{item.body}</p>
                   </div>
 
                   {/* Badge */}
-                  <div className="pt-4 border-t border-hairline/60 flex items-center justify-between">
-                    <span className="font-mono text-[10px] text-azure bg-azure/10 px-2 py-0.5 rounded border border-azure/20 font-semibold">
+                  <div className="border-hairline/60 flex items-center justify-between border-t pt-4">
+                    <span className="text-azure bg-azure/10 border-azure/20 rounded border px-2 py-0.5 font-mono text-[10px] font-semibold">
                       {item.badge}
                     </span>
-                    <CheckCircle2 className="size-4 text-muted/40 group-hover:text-primary transition-colors" />
+                    <CheckCircle2 className="text-muted/40 group-hover:text-primary size-4 transition-colors" />
                   </div>
                 </div>
               </Reveal>

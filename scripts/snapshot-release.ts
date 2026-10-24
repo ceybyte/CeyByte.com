@@ -20,8 +20,7 @@ const DEFAULT_FALLBACK: ReleaseInfo = {
   version: "1.3.0",
   channel: "stable",
   release_date: "2026-09-27",
-  download_url:
-    "https://github.com/ceybyte/cbpos-releases/releases/download/v1.3.0/CBPOSSetup-1.3.0.exe",
+  download_url: "https://github.com/ceybyte/cbpos-releases/releases/download/v1.3.0/CBPOSSetup-1.3.0.exe",
   changelog:
     "Initial stable public release with trilingual receipt printing, VAT/SSCL calculation, and offline SQLite storage.",
   min_version: "1.0.0",
@@ -35,12 +34,8 @@ export async function snapshotRelease(options?: {
   outputPath?: string;
 }): Promise<ReleaseInfo> {
   const root = resolve(__dirname, "..");
-  const releasesPath =
-    options?.releasesJsonPath ??
-    resolve(root, "apps/web/.content/releases.json");
-  const outputPath =
-    options?.outputPath ??
-    resolve(root, "apps/api/src/lib/fallback-release.ts");
+  const releasesPath = options?.releasesJsonPath ?? resolve(root, "apps/web/.content/releases.json");
+  const outputPath = options?.outputPath ?? resolve(root, "apps/api/src/lib/fallback-release.ts");
 
   let release: ReleaseInfo = DEFAULT_FALLBACK;
 
@@ -81,7 +76,7 @@ export async function snapshotRelease(options?: {
  * Embedded in Worker bundle for $0/month zero-D1-query responses.
  */
 
-export interface ReleaseInfo {
+export type ReleaseInfo = {
   id: string;
   version: string;
   channel: string;

@@ -3,9 +3,9 @@ import { toString } from "hast-util-to-string";
 import type { Root, Element } from "hast";
 import type { TocItem } from "./types";
 
-export interface RehypeTocOptions {
+export type RehypeTocOptions = {
   onTocExtracted?: (toc: TocItem[]) => void;
-}
+};
 
 export function rehypeExtractToc(options: RehypeTocOptions = {}) {
   return (tree: Root) => {
