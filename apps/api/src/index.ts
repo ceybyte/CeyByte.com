@@ -6,6 +6,7 @@ import { requestId, securityHeaders } from "./middleware/request";
 import { sessionMiddleware } from "./middleware/session";
 import { adminRoutes } from "./routes/admin";
 import { authRoutes } from "./routes/auth";
+import { statsRoutes } from "./routes/stats";
 import type { AppEnv } from "./types";
 
 /**
@@ -29,7 +30,8 @@ const api = new Hono<AppEnv>()
   .use(requestId, securityHeaders, dbMiddleware, sessionMiddleware)
   .get("/health", (c) => c.json({ ok: true, data: { status: "ok" } } as const))
   .route("/", authRoutes)
-  .route("/", adminRoutes);
+  .route("/", adminRoutes)
+  .route("/", statsRoutes);
 
 // Main worker app: handles root redirect, PostHog reverse proxy, ticket shell rewrite, and /api/* routes.
 const app = new Hono<AppEnv>()
