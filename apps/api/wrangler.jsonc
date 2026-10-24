@@ -10,7 +10,7 @@
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*"],
+    "run_worker_first": ["/", "/api/*", "/ingest/*", "/*/feedback/CB-*"],
   },
   "routes": [{ "pattern": "ceybyte.com", "custom_domain": true }],
   "workers_dev": true,
