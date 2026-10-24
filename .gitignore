@@ -19,6 +19,7 @@ apps/web/out/
 apps/web/.content/*
 !apps/web/.content/fixtures.json
 apps/web/public/search/
+apps/web/public/og/
 dist/
 *.tsbuildinfo
 next-env.d.ts
