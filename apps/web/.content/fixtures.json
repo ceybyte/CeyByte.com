@@ -1,0 +1,137 @@
+{
+  "categories": [
+    {
+      "id": "cat-getting-started",
+      "slug": "getting-started",
+      "title_en": "Getting started",
+      "title_si": "ආරම්භ කිරීම",
+      "title_ta": "தொடங்குதல்",
+      "icon": "Rocket",
+      "sort_order": 0
+    },
+    {
+      "id": "cat-cashiering",
+      "slug": "cashiering",
+      "title_en": "Cashiering",
+      "title_si": "මුදල් අයකැමි",
+      "title_ta": "காசாளர்",
+      "icon": "ShoppingCart",
+      "sort_order": 1
+    },
+    {
+      "id": "cat-tax",
+      "slug": "tax",
+      "title_en": "Tax",
+      "title_si": "බදු",
+      "title_ta": "வரி",
+      "icon": "Percent",
+      "sort_order": 2
+    },
+    {
+      "id": "cat-hardware",
+      "slug": "hardware",
+      "title_en": "Hardware",
+      "title_si": "දෘඩාංග",
+      "title_ta": "வன்பொருள்",
+      "icon": "Printer",
+      "sort_order": 3
+    },
+    {
+      "id": "cat-backup-restore",
+      "slug": "backup-restore",
+      "title_en": "Backup and restore",
+      "title_si": "දත්ත උපස්ථ කිරීම",
+      "title_ta": "காப்புப்பிரதி",
+      "icon": "DatabaseBackup",
+      "sort_order": 4
+    }
+  ],
+  "docs": [
+    {
+      "id": "doc-install-en",
+      "translation_key": "doc-install",
+      "locale": "en",
+      "category_id": "cat-getting-started",
+      "category_slug": "getting-started",
+      "slug": "install",
+      "title": "Install CB POS",
+      "summary": "How to download and install CB POS on Windows 10 or later.",
+      "body_md": "# Install CB POS\n\nCB POS runs on Windows 10 or later as a standalone desktop application. It requires no internet connection to bill.\n\n## Requirements\n\n- Windows 10 (64-bit) or Windows 11\n- 4 GB RAM recommended\n- 500 MB free disk space\n\n## Installation steps\n\n1. Download the installer from the CB POS website.\n2. Run the `CBPOSSetup.exe` installer.\n3. Follow the 2-minute setup wizard.",
+      "status": "published",
+      "sort_order": 0,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-install-si",
+      "translation_key": "doc-install",
+      "locale": "si",
+      "category_id": "cat-getting-started",
+      "category_slug": "getting-started",
+      "slug": "install",
+      "title": "CB POS ස්ථාපනය කිරීම",
+      "summary": "වින්ඩෝස් 10 හෝ ඊට පසු සංස්කරණවල CB POS බාගත කර ස්ථාපනය කරන්නේ කෙසේද.",
+      "body_md": "# CB POS ස්ථාපනය කිරීම\n\nCB POS වින්ඩෝස් 10 හෝ ඊට පසු සංස්කරණවල ස්වාධීන මෘදුකාංගයක් ලෙස ක්‍රියාත්මක වේ.\n\n## අවශ්‍යතා\n\n- වින්ඩෝස් 10 හෝ වින්ඩෝස් 11\n- 4 GB මතකය\n- 500 MB ඉඩ",
+      "status": "published",
+      "sort_order": 0,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-install-ta",
+      "translation_key": "doc-install",
+      "locale": "ta",
+      "category_id": "cat-getting-started",
+      "category_slug": "getting-started",
+      "slug": "install",
+      "title": "CB POS நிறுவுதல்",
+      "summary": "விண்டோஸ் 10 அல்லது அதற்குப் பிந்தையவற்றில் CB POS ஐப் பதிவிறக்கி நிறுவுவது எப்படி.",
+      "body_md": "# CB POS நிறுவுதல்\n\nCB POS விண்டோஸ் 10 அல்லது அதற்குப் பிந்தையவற்றில் தனித்த டெஸ்க்டாப் பயன்பாடாக இயங்குகிறது.\n\n## தேவைகள்\n\n- விண்டோஸ் 10 அல்லது விண்டோஸ் 11\n- 4 GB நினைவகம்\n- 500 MB இடம்",
+      "status": "published",
+      "sort_order": 0,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-vat-and-sscl-en",
+      "translation_key": "doc-vat-and-sscl",
+      "locale": "en",
+      "category_id": "cat-tax",
+      "category_slug": "tax",
+      "slug": "vat-and-sscl",
+      "title": "How VAT and SSCL are calculated",
+      "summary": "Understanding VAT and SSCL calculations from shelf price.",
+      "body_md": "# How VAT and SSCL are calculated\n\nCB POS calculates Sri Lankan 18% VAT and 2.5% SSCL automatically backwards from the shelf price.\n\n:::disclaimer\nCB POS calculations are not certified by the IRD. Always verify with your tax advisor.\n:::\n\n## Calculation Formula\n\nShelf Price = Base Price + SSCL (2.5%) + VAT (18%).",
+      "status": "published",
+      "sort_order": 1,
+      "published_at": 1761500000000
+    }
+  ],
+  "blog": [
+    {
+      "id": "post-welcome-en",
+      "translation_key": "post-welcome",
+      "locale": "en",
+      "slug": "introducing-cb-pos",
+      "title": "Introducing CB POS: Free Point-of-Sale for Sri Lanka",
+      "excerpt": "Why we built a free, offline-first point-of-sale system for retail shops across Sri Lanka.",
+      "body_md": "# Introducing CB POS\n\nWe built CB POS because retail merchants in Sri Lanka deserve reliable, free point-of-sale software that works without the internet.",
+      "tags": ["release", "community"],
+      "status": "published",
+      "reading_minutes": 2,
+      "published_at": 1761500000000
+    }
+  ],
+  "releases": [
+    {
+      "id": "release-1.3.0",
+      "version": "1.3.0",
+      "channel": "stable",
+      "release_date": "2026-09-27",
+      "download_url": "https://github.com/ceybyte/cbpos-releases/releases/download/v1.3.0/CBPOSSetup-1.3.0.exe",
+      "changelog": "Initial stable public release with trilingual receipt printing, VAT/SSCL calculation, and offline SQLite storage.",
+      "min_version": "1.0.0",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "is_latest": true,
+      "is_yanked": false,
+      "published_at": 1758931200000
+    }
+  ]
+}

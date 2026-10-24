@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "bun --bun next dev --port 3000",
-    "build": "bun --bun next build && rm -rf out/styleguide && cp public/404.html out/404.html",
+    "build:content": "bun ../../scripts/build-content.ts",
+    "build": "bun run build:content && bun --bun next build && rm -rf out/styleguide && cp public/404.html out/404.html",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "bun test src/lib"

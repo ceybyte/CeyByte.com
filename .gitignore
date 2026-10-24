@@ -16,7 +16,8 @@ node_modules/
 # --- Builds ---
 apps/web/.next/
 apps/web/out/
-apps/web/.content/
+apps/web/.content/*
+!apps/web/.content/fixtures.json
 apps/web/public/search/
 dist/
 *.tsbuildinfo
