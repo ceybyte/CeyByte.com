@@ -81,14 +81,32 @@ async function run() {
     target === "production" ? "WHERE status = 'published'" : "WHERE status IN ('published', 'draft')";
   const docsQuery = `SELECT a.id, a.translation_key, a.locale, a.category_id, c.slug as category_slug, a.slug, a.title, a.summary, a.body_md, a.status, a.sort_order, a.published_at FROM docs_articles a LEFT JOIN docs_categories c ON a.category_id = c.id ${statusFilter} ORDER BY a.sort_order ASC;`;
   const rawDocs = await queryD1(docsQuery);
-  const docs: unknown[] = rawDocs && rawDocs.length > 0 ? rawDocs : (fallbackData?.docs ?? []);
+  let docs: any[] = rawDocs && rawDocs.length > 0 ? [...rawDocs] : (fallbackData?.docs ?? []);
+  if (fallbackData?.docs) {
+    const presentLocales = new Set(docs.map((d: any) => d.locale));
+    for (const loc of ["en", "si", "ta"]) {
+      if (!presentLocales.has(loc)) {
+        const missing = fallbackData.docs.filter((d: any) => d.locale === loc);
+        docs.push(...missing);
+      }
+    }
+  }
 
   // 3. Blog Posts
   const blogStatusFilter =
     target === "production" ? "WHERE status = 'published'" : "WHERE status IN ('published', 'draft')";
   const blogQuery = `SELECT id, translation_key, locale, slug, title, excerpt, body_md, tags, status, reading_minutes, published_at FROM blog_posts ${blogStatusFilter} ORDER BY published_at DESC;`;
   const rawBlog = await queryD1(blogQuery);
-  const blog: unknown[] = rawBlog && rawBlog.length > 0 ? rawBlog : (fallbackData?.blog ?? []);
+  let blog: any[] = rawBlog && rawBlog.length > 0 ? [...rawBlog] : (fallbackData?.blog ?? []);
+  if (fallbackData?.blog) {
+    const presentLocales = new Set(blog.map((b: any) => b.locale));
+    for (const loc of ["en", "si", "ta"]) {
+      if (!presentLocales.has(loc)) {
+        const missing = fallbackData.blog.filter((b: any) => b.locale === loc);
+        blog.push(...missing);
+      }
+    }
+  }
 
   // 4. Releases
   const releasesQuery =
