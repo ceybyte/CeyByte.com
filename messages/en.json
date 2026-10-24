@@ -60,6 +60,137 @@
     "decline": "Decline",
     "learnMore": "Cookie policy"
   },
+  "home": {
+    "hero": {
+      "title": "Keep billing when the internet goes down.",
+      "lead": "CB POS is free point-of-sale software for Sri Lankan shops. It works out VAT and SSCL from the price on your shelf, prints receipts in Sinhala, Tamil or English, and keeps every sale on your own computer.",
+      "cta": "Download CB POS for free",
+      "ctaMeta": "Windows 10 or later · v{version} · {sizeMb} MB",
+      "secondary": "See how it works",
+      "assurance": {
+        "1": "No monthly fee, now or later",
+        "2": "Bills without the internet",
+        "3": "Your sales stay on your computer"
+      },
+      "mockupAlt": "The CB POS sales screen with 1.250 kg of Samba rice in the cart and the bill total in rupees",
+      "mockupLabel": "real CB POS capture"
+    },
+    "stats": {
+      "lag": "0 ms",
+      "lagLabel": "spent waiting for the internet at the till. Each sale saves to your own computer first.",
+      "price": "Rs. 0 / mo",
+      "priceLabel": "CB POS is free and stays free. There's no paid version waiting for you later.",
+      "districts": "{covered}/25",
+      "districtsLabel": "districts with a CB POS shop on the map",
+      "tax": "18% + 2.5%",
+      "taxLabel": "VAT and SSCL worked out from your shelf price, once VAT registration is on*",
+      "taxNote": "* CB POS calculates these. The IRD hasn't certified it. Read the tax disclaimer."
+    },
+    "mapTeaser": {
+      "title": "{shops} shops in {covered} districts, updated live",
+      "cta": "See the shops on the map",
+      "empty": "No CB POS shop in your district yet. Yours could be the first."
+    },
+    "problem": {
+      "title": "Where a small shop loses money every day",
+      "1": {
+        "title": "The internet drops, and the bill stops.",
+        "body": "When the router blinks, a cloud POS can't save the sale. The queue grows while you wait, and some customers walk out."
+      },
+      "2": {
+        "title": "Paying every month, in busy months and slow ones.",
+        "body": "A subscription charges you whether you sold a lot or very little, and your sales history sits on someone else's server."
+      },
+      "3": {
+        "title": "VAT by calculator, weights by guesswork.",
+        "body": "Working VAT back from the MRP by hand, rounding 1.250 kg down to 1 kg, forgetting SSCL. Each slip is small, but they add up by the end of the month."
+      }
+    },
+    "solution": {
+      "title": "Everything runs on the computer at your counter."
+    },
+    "bento": {
+      "keyboard": {
+        "title": "Bill without reaching for the mouse.",
+        "body": "Every action has a key: F3 finds an item, F5 takes payment, F12 settles in exact cash and F6 holds a bill. Press F1 in CB POS whenever you need the full list.",
+        "demo": "Try it here: press F3, then Enter, then F5"
+      },
+      "offline": {
+        "title": "Turn the Wi-Fi off. Keep selling.",
+        "body": "Each sale is saved on the computer in your shop within milliseconds, so a dropped connection never stops a bill.",
+        "toggleOn": "Wi-Fi on",
+        "toggleOff": "Wi-Fi off, still billing"
+      },
+      "tax": {
+        "title": "VAT and SSCL, worked out from the shelf price.",
+        "body": "Type the MRP and CB POS works backward to the price before VAT, the 18% VAT, and the 2.5% SSCL on half of that price. Your customer still pays the MRP.",
+        "inputLabel": "MRP",
+        "base": "Price before VAT",
+        "vat": "VAT (18%)",
+        "sscl": "SSCL (2.5% on 50%)",
+        "formula": "before VAT = MRP ÷ 1.18 · SSCL = before VAT × 50% × 2.5%",
+        "note": "This applies once VAT registration is on in Settings. The figures are an example, so please check your rates with your accountant."
+      },
+      "hardware": {
+        "title": "Use the printer and scanner you already have.",
+        "body": "CB POS works with 58mm and 80mm ESC/POS receipt printers connected through Windows, your network or USB, with any barcode scanner that types like a keyboard, and with cash drawers that open through the printer.",
+        "status": "Connected"
+      },
+      "receipts": {
+        "title": "Receipts your customers can read.",
+        "body": "Pick Sinhala, Tamil or English for each till's receipts in Settings. CB POS prints Sinhala and Tamil as images, so the letters come out right on ordinary thermal printers. Item names print in English."
+      },
+      "weigh": {
+        "title": "Scan the scale label and the weight is in.",
+        "body": "Rice, dhal and vegetables sell to three decimal places. Scan the barcode label your scale prints and CB POS reads the weight, so nobody types 1.250 kg by hand. You can back everything up to a password-protected, AES-encrypted .ZIP on a USB drive."
+      }
+    },
+    "how": {
+      "title": "From download to your first bill",
+      "1": {
+        "title": "Download the installer",
+        "body": "It's one free file of about {sizeMb} MB, and you don't need an account or a card. Windows will ask your permission to install it."
+      },
+      "2": {
+        "title": "Answer a few setup questions",
+        "body": "Your shop's details, your receipt printer and an admin PIN. After that you can load practice data to try things out, or start with a clean shop."
+      },
+      "3": {
+        "title": "Plug in and make a sale",
+        "body": "Connect your printer and scanner, press F3 to find an item and F5 to take payment."
+      },
+      "cta": "Read the full setup guide"
+    },
+    "faq": {
+      "title": "Questions shop owners ask before installing.",
+      "1": {
+        "q": "Is CB POS really free? What's the catch?",
+        "a": "There's no catch to find. CB POS has no subscription, no trial that runs out, no locked features and no ads. Ceylon Byte keeps building it with help from shops and people who choose to donate."
+      },
+      "2": {
+        "q": "What happens to my sales if the internet goes down?",
+        "a": "Nothing changes at the counter. CB POS saves every sale to a database on your own computer first, so you keep billing without the internet. The only thing it does online by itself is check for a newer version when it starts, and that check sends none of your shop's data. Because your data lives with you, Ceylon Byte can't see it and can't recover it either, so please set a backup password and keep encrypted .ZIP backups on a USB drive."
+      },
+      "3": {
+        "q": "Is CB POS approved by the IRD?",
+        "a": "No, and we won't suggest it is. CB POS works out 18% VAT and 2.5% SSCL from your MRP using the rates you set, but the Inland Revenue Department hasn't certified or endorsed it. Your tax filings are your responsibility, so it's worth checking your settings with your accountant once. Read the tax disclaimer."
+      },
+      "4": {
+        "q": "Windows warned me about the installer. Is it a virus?",
+        "a": "No. Windows shows that warning for new programs that aren't code-signed, and CB POS isn't signed yet. To check your CBPOSSetup file is genuine, compare its SHA-256 with the one on the download page, then click More info and Run anyway. A code-signing certificate is the first thing donations will pay for."
+      },
+      "5": {
+        "q": "Will it work with my printer, scanner and scale?",
+        "a": "Probably, if they're the usual kinds. Receipt printers need to be 58mm or 80mm ESC/POS, connected as a Windows printer, over your network or by USB. Scanners need to type like a keyboard, and cash drawers need to open through the receipt printer. For scales, CB POS reads the barcode labels your scale prints; it doesn't connect to the scale by cable. If you're unsure about a model, ask in the WhatsApp community before you buy anything new."
+      }
+    },
+    "final": {
+      "title": "Your next bill could be on CB POS.",
+      "body": "It's free, it keeps billing without the internet, it works out your VAT, and you can set it up yourself.",
+      "cta": "Download CB POS for free",
+      "secondary": "Read the setup guide"
+    }
+  },
   "errors": {
     "INVALID_PHONE": "That doesn\u2019t look like a Sri Lankan number. Try something like 77\u00a0123\u00a04567.",
     "required": "Please fill this in to continue.",
