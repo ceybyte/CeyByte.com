@@ -143,16 +143,18 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Goal:** trilingual static routing, the Worker's rewrites, header/footer, SEO plumbing, consent-gated analytics (F-01).
 
-- [ ] `next-intl` static setup: `routing.ts`, `request.ts`, `navigation.ts`; `[locale]/layout.tsx` with `generateStaticParams` for 3 locales and `setRequestLocale` in every page.
-- [ ] Worker: `GET /` locale redirect (cookie → `Accept-Language` → `en`), `/{locale}/feedback/CB-*` shell rewrite, `/ingest/*` PostHog proxy.
-- [ ] Trilingual `404.html` page.
-- [ ] Layout: `<html lang>`, fonts, theme, header (language switcher, theme toggle, Download), architectural footer, skip link, offline banner, toaster.
-- [ ] `messages/en.json` from `06 §3–4`; `si.json`/`ta.json` mirrored with `[[TRANSLATE]]`.
-- [ ] SEO: `generateMetadata` with `hreflang` + `x-default`, static `sitemap.xml`/`robots.txt` generated at build, JSON-LD helpers.
-- [ ] `_headers` file (CSP, security headers, cache rules) per `02 §12.3`.
-- [ ] Consent bar + `AnalyticsProvider` (init only after consent) + typed `capture()` over the `04 §7` event union.
+- [x] `next-intl` static setup: `routing.ts`, `request.ts`, `navigation.ts`; `[locale]/layout.tsx` with `generateStaticParams` for 3 locales and `setRequestLocale` in every page.
+- [x] Worker: `GET /` locale redirect (cookie → `Accept-Language` → `en`), `/{locale}/feedback/CB-*` shell rewrite, `/ingest/*` PostHog proxy.
+- [x] Trilingual `404.html` page.
+- [x] Layout: `<html lang>`, fonts, theme, header (language switcher, theme toggle, Download), architectural footer, skip link, offline banner, toaster.
+- [x] `messages/en.json` from `06 §3–4`; `si.json`/`ta.json` mirrored with `[[TRANSLATE]]`.
+- [x] SEO: `generateMetadata` with `hreflang` + `x-default`, static `sitemap.xml`/`robots.txt` generated at build, JSON-LD helpers.
+- [x] `_headers` file (CSP, security headers, cache rules) per `02 §12.3`.
+- [x] Consent bar + `AnalyticsProvider` (init only after consent) + typed `capture()` over the `04 §7` event union.
 
 **Verify:** `/` with `Accept-Language: si-LK` → `307 /si/`; switcher keeps the path; no PostHog requests before consent; CSP report shows no violations.
+
+> **Status (2026-10-24):** done — next-intl static routing configured across en/si/ta with `getRequestConfig` and `setRequestLocale`; Worker intercepts `GET /` with 307 redirect (`NEXT_LOCALE` cookie → `Accept-Language` → `en`), `/ingest/*` PostHog proxy, and `/*/feedback/CB-*` ticket rewrite; trilingual `404.html` static export; `SiteHeader`, `SiteFooter` with crosshair marks, `ConsentBar`, `AnalyticsProvider` with typed event schema, `OfflineBanner`; SEO `sitemap.xml`, `robots.txt`, JSON-LD schemas; `_headers` security rules. Full production static export and worker integration tests pass.
 
 **Exit:** AC-01.1, AC-01.4 (non-strict), AC-12.2 pass in E2E.
 

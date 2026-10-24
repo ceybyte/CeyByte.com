@@ -53,3 +53,6 @@ Thumbs.db
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
