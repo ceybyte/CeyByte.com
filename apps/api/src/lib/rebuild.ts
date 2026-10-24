@@ -1,20 +1,110 @@
-import { githubFetch } from "./github";
 import { log } from "./log";
 
-// 02-TRD §6. Publishing content (or a new release) rebuilds the static site through repository_dispatch.
-// Call from waitUntil; a failed dispatch is logged, never surfaced to the admin request.
+export interface RebuildTriggerResult {
+  triggered: boolean;
+  mode: "github_actions" | "mock";
+  message: string;
+  ref?: string;
+}
 
-export async function triggerRebuild(env: Env, reason: string): Promise<boolean> {
-  if (!env.GITHUB_DISPATCH_TOKEN) {
+export async function triggerRebuild(
+  env: Env,
+  reason = "admin_manual"
+): Promise<RebuildTriggerResult> {
+  const token = env.GITHUB_DISPATCH_TOKEN || env.GITHUB_API_TOKEN;
+  const repo = env.SITE_REPO || "ceybyte/CeyByte.com";
+
+  if (!token) {
     log.warn("rebuild_skipped", { reason, why: "GITHUB_DISPATCH_TOKEN not set" });
-    return false;
+    return {
+      triggered: false,
+      mode: "mock",
+      message: "GITHUB_DISPATCH_TOKEN is not configured; simulated trigger in dev/test",
+    };
   }
-  const res = await githubFetch(
-    env,
-    `/repos/${env.SITE_REPO}/dispatches`,
-    { method: "POST", body: JSON.stringify({ event_type: "content-published", client_payload: { reason } }) },
-    env.GITHUB_DISPATCH_TOKEN,
-  );
-  if (!res.ok) log.error("rebuild_failed", { reason, status: res.status });
-  return res.ok;
+
+  const url = `https://api.github.com/repos/${repo}/actions/workflows/deploy.yml/dispatches`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/vnd.github.v3+json",
+      Authorization: `Bearer ${token}`,
+      "User-Agent": "CeyByte-Admin-Worker",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ref: "main",
+      inputs: {
+        reason,
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`GitHub API dispatch failed (${res.status}): ${errorText}`);
+  }
+
+  return {
+    triggered: true,
+    mode: "github_actions",
+    message: "Workflow dispatch triggered successfully",
+    ref: "main",
+  };
+}
+
+export interface RebuildStatusResult {
+  status: string;
+  conclusion: string | null;
+  mode: "github_actions" | "mock";
+  html_url?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export async function getRebuildStatus(env: Env): Promise<RebuildStatusResult> {
+  const token = env.GITHUB_DISPATCH_TOKEN || env.GITHUB_API_TOKEN;
+  const repo = env.SITE_REPO || "ceybyte/CeyByte.com";
+
+  if (!token) {
+    return {
+      status: "completed",
+      conclusion: "success",
+      mode: "mock",
+    };
+  }
+
+  const url = `https://api.github.com/repos/${repo}/actions/workflows/deploy.yml/runs?per_page=1`;
+  const res = await fetch(url, {
+    headers: {
+      Accept: "application/vnd.github.v3+json",
+      Authorization: `Bearer ${token}`,
+      "User-Agent": "CeyByte-Admin-Worker",
+    },
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`GitHub API runs query failed (${res.status}): ${errorText}`);
+  }
+
+  const data: any = await res.json();
+  const latestRun = data.workflow_runs?.[0];
+
+  if (!latestRun) {
+    return {
+      status: "idle",
+      conclusion: null,
+      mode: "github_actions",
+    };
+  }
+
+  return {
+    status: latestRun.status,
+    conclusion: latestRun.conclusion,
+    mode: "github_actions",
+    html_url: latestRun.html_url,
+    created_at: latestRun.created_at,
+    updated_at: latestRun.updated_at,
+  };
 }
