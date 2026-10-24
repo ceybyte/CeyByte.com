@@ -1,8 +1,71 @@
 {
   "email": {
     "otp": {
-      "subject": "[[TRANSLATE]] Your CB POS sign-in code: {otp}",
-      "body": "[[TRANSLATE]] Here's your code to sign in to ceybyte.com:\n\n{otp}\n\nIt works for 10 minutes. If you didn't ask for it, you can ignore this email. Nobody can sign in without the code.\n\nCeylon Byte"
+      "subject": "ඔබගේ CB\u00a0POS ලොගින් කේතය: {otp}",
+      "body": "[[TRANSLATE]]"
     }
+  },
+  "site": {
+    "skip": "[[TRANSLATE]]",
+    "offline": "[[TRANSLATE]]",
+    "loading": "[[TRANSLATE]]",
+    "error": "[[TRANSLATE]]",
+    "reload": "[[TRANSLATE]]",
+    "goHome": "[[TRANSLATE]]"
+  },
+  "nav": {
+    "ariaLabel": "[[TRANSLATE]]",
+    "product": "[[TRANSLATE]]",
+    "map": "[[TRANSLATE]]",
+    "docs": "[[TRANSLATE]]",
+    "releases": "[[TRANSLATE]]",
+    "donate": "[[TRANSLATE]]",
+    "download": "[[TRANSLATE]]",
+    "openMenu": "[[TRANSLATE]]",
+    "closeMenu": "[[TRANSLATE]]",
+    "langSwitcher": "[[TRANSLATE]]",
+    "theme": "[[TRANSLATE]]"
+  },
+  "footer": {
+    "mission": "[[TRANSLATE]]",
+    "latest": "Latest: v{version} \u00b7 {channel}",
+    "col": {
+      "product": "[[TRANSLATE]]",
+      "community": "[[TRANSLATE]]",
+      "legal": "[[TRANSLATE]]"
+    },
+    "links": {
+      "download": "[[TRANSLATE]]",
+      "releases": "[[TRANSLATE]]",
+      "docs": "[[TRANSLATE]]",
+      "shortcuts": "[[TRANSLATE]]",
+      "map": "[[TRANSLATE]]",
+      "feedback": "[[TRANSLATE]]",
+      "donate": "[[TRANSLATE]]",
+      "whatsapp": "[[TRANSLATE]]",
+      "blog": "[[TRANSLATE]]",
+      "terms": "[[TRANSLATE]]",
+      "privacy": "[[TRANSLATE]]",
+      "taxDisclaimer": "[[TRANSLATE]]",
+      "dataSafety": "[[TRANSLATE]]",
+      "cookies": "[[TRANSLATE]]"
+    },
+    "legalLine": "[[TRANSLATE]]",
+    "copyright": "\u00a9 {year} Ceylon Byte.",
+    "build": "build {sha}"
+  },
+  "consent": {
+    "body": "[[TRANSLATE]]",
+    "accept": "[[TRANSLATE]]",
+    "decline": "[[TRANSLATE]]",
+    "learnMore": "[[TRANSLATE]]"
+  },
+  "errors": {
+    "INVALID_PHONE": "[[TRANSLATE]]",
+    "required": "[[TRANSLATE]]",
+    "LOCATION_OUTSIDE_SRI_LANKA": "[[TRANSLATE]]",
+    "RATE_LIMITED": "[[TRANSLATE]]",
+    "TURNSTILE_FAILED": "[[TRANSLATE]]",
+    "INTERNAL": "[[TRANSLATE]]"
   }
 }

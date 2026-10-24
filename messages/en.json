@@ -1,8 +1,71 @@
 {
   "email": {
     "otp": {
-      "subject": "Your CB POS sign-in code: {otp}",
+      "subject": "Your CB\u00a0POS sign-in code: {otp}",
       "body": "Here's your code to sign in to ceybyte.com:\n\n{otp}\n\nIt works for 10 minutes. If you didn't ask for it, you can ignore this email. Nobody can sign in without the code.\n\nCeylon Byte"
     }
+  },
+  "site": {
+    "skip": "Skip to content",
+    "offline": "You\u2019re offline. CB\u00a0POS works offline \u2014 this website doesn\u2019t.",
+    "loading": "Loading\u2026",
+    "error": "Something went wrong.",
+    "reload": "Reload",
+    "goHome": "Go home"
+  },
+  "nav": {
+    "ariaLabel": "Main navigation",
+    "product": "Product",
+    "map": "Map",
+    "docs": "Docs",
+    "releases": "Releases",
+    "donate": "Donate",
+    "download": "Download CB\u00a0POS",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+    "langSwitcher": "Choose language",
+    "theme": "Toggle theme"
+  },
+  "footer": {
+    "mission": "Free point-of-sale software for Sri Lankan shops, made in Sri Lanka by Ceylon Byte.",
+    "latest": "Latest: v{version} \u00b7 {channel}",
+    "col": {
+      "product": "Product",
+      "community": "Community",
+      "legal": "Legal"
+    },
+    "links": {
+      "download": "Download",
+      "releases": "Releases",
+      "docs": "Docs",
+      "shortcuts": "Keyboard shortcuts",
+      "map": "Merchant map",
+      "feedback": "Feedback",
+      "donate": "Donate",
+      "whatsapp": "WhatsApp community",
+      "blog": "Blog",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "taxDisclaimer": "Tax disclaimer",
+      "dataSafety": "Data safety",
+      "cookies": "Cookies"
+    },
+    "legalLine": "CB\u00a0POS comes as is, without a warranty. Its tax calculations aren\u2019t certified by the IRD, and keeping backups of your data is up to you.",
+    "copyright": "\u00a9 {year} Ceylon Byte. Made in Sri Lanka.",
+    "build": "build {sha}"
+  },
+  "consent": {
+    "body": "This site uses PostHog to understand how people use CB\u00a0POS. No personal details leave your browser.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "learnMore": "Cookie policy"
+  },
+  "errors": {
+    "INVALID_PHONE": "That doesn\u2019t look like a Sri Lankan number. Try something like 77\u00a0123\u00a04567.",
+    "required": "Please fill this in to continue.",
+    "LOCATION_OUTSIDE_SRI_LANKA": "That point is outside Sri Lanka. Drag the pin to where your shop is.",
+    "RATE_LIMITED": "Too many attempts. Try again in {seconds}s.",
+    "TURNSTILE_FAILED": "The security check failed. Please try again.",
+    "INTERNAL": "Something went wrong on our end. Try again or contact support with request ID {requestId}."
   }
 }
