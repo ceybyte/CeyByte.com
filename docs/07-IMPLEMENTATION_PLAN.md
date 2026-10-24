@@ -164,15 +164,17 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Goal:** the publish → rebuild → deploy loop works end to end, because docs, blog and releases all depend on it (`02 §6`).
 
-- [ ] `scripts/build-content.ts`: `wrangler d1 execute --json` (local or remote by flag) → `apps/web/.content/*.json`.
-- [ ] `packages/shared/src/markdown/`: unified pipeline, directive whitelist, sanitize schema, Shiki, TOC and plain-text extraction. Unit tests with fixtures, including XSS attempts.
-- [ ] Search index builder (Orama per locale → `public/search/{locale}.json` + manifest).
-- [ ] OG image generator (satori + resvg under Bun).
-- [ ] `scripts/snapshot-release.ts` → `FALLBACK_RELEASE` constant in the Worker.
-- [ ] `rebuild.ts` (`repository_dispatch: content-published`) and `GET /api/admin/rebuild/status` (latest workflow run).
-- [ ] `deploy.yml` handles `repository_dispatch` with a concurrency group that cancels in-progress runs.
+- [x] `scripts/build-content.ts`: `wrangler d1 execute --json` (local or remote by flag) → `apps/web/.content/*.json` with fallback merging.
+- [x] `packages/shared/src/markdown/`: unified pipeline, directive whitelist (`note`, `tip`, `important`, `warning`, `caution`, `step`, `disclaimer`), auto tax disclaimer injection [C5], extended GitHub sanitize schema, dual-theme Shiki, TOC and plain-text extraction. Unit tests pass (directives, XSS sanitization, TOC, reading time).
+- [x] Search index builder (Orama per locale with custom unicode tokenizer for Sinhala/Tamil → `public/search/{locale}.json` + manifest).
+- [x] OG image generator (satori + resvg under Bun rendering 1200×630 cards with trilingual Inter/Noto fonts into `public/og/{locale}/*.png` and `og-default.png`).
+- [x] `scripts/snapshot-release.ts` → `FALLBACK_RELEASE` constant in `apps/api/src/lib/fallback-release.ts`.
+- [x] `rebuild.ts` (`repository_dispatch: content-published`) and `GET /api/admin/rebuild/status` (latest workflow run) with admin authentication.
+- [x] `deploy.yml` handles `repository_dispatch` with a concurrency group that cancels in-progress runs.
 
 **Verify:** insert a published doc row in preview D1 → trigger dispatch → the page is live on preview within 5 minutes; a second publish during the build cancels the first run.
+
+> **Status (2026-10-24):** done — `build-content.ts` extracts D1 tables into static json; `@cbpos/shared/markdown` pipeline implements unified Remark/Rehype engine with callouts, IRD non-certified disclaimer [C5], dual-theme Shiki code blocks, safe HTML sanitization, and TOC; Orama static search builder creates trilingual searchable indices (`en`, `si`, `ta`); Satori + Resvg generates 1200×630 OG image cards; `snapshot-release.ts` emits `FALLBACK_RELEASE` constant for $0/mo Worker responses; admin rebuild trigger and status endpoints integrated with full test coverage. Full production build pipeline (`build:content` → `build:search` → `build:og` → `next build`) passes with 0 errors.
 
 **Exit:** publish-to-live works on preview with real content.
 

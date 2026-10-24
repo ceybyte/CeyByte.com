@@ -23,7 +23,7 @@ export async function triggerRebuild(
     };
   }
 
-  const url = `https://api.github.com/repos/${repo}/actions/workflows/deploy.yml/dispatches`;
+  const url = `https://api.github.com/repos/${repo}/dispatches`;
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -33,8 +33,8 @@ export async function triggerRebuild(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      ref: "main",
-      inputs: {
+      event_type: "content-published",
+      client_payload: {
         reason,
       },
     }),
@@ -48,8 +48,7 @@ export async function triggerRebuild(
   return {
     triggered: true,
     mode: "github_actions",
-    message: "Workflow dispatch triggered successfully",
-    ref: "main",
+    message: "repository_dispatch (content-published) triggered successfully",
   };
 }
 
