@@ -208,6 +208,12 @@ describe("Shared Schemas", () => {
       }
     });
 
+    it("validates FeedbackVoteSchema", () => {
+      expect(FeedbackVoteSchema.safeParse({ turnstileToken: "abc" }).success).toBe(true);
+      expect(FeedbackVoteSchema.safeParse({}).success).toBe(true);
+      expect(FeedbackVoteSchema.safeParse({ turnstileToken: 123 as unknown as string }).success).toBe(false);
+    });
+
     it("validates FeedbackAdminUpdateSchema", () => {
       const valid = {
         status: "planned",

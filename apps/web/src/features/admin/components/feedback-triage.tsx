@@ -1,11 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  AdminFeedbackTicket,
-  fetchAdminFeedback,
-  updateAdminFeedback,
-} from "../api";
+import { useCallback, useEffect, useState } from "react";
+import { AdminFeedbackTicket, fetchAdminFeedback, updateAdminFeedback } from "../api";
 
 export function FeedbackTriage() {
   const [tickets, setTickets] = useState<AdminFeedbackTicket[]>([]);
@@ -25,7 +21,7 @@ export function FeedbackTriage() {
   const [isPublic, setIsPublic] = useState<boolean>(true);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
-  const loadTickets = async () => {
+  const loadTickets = useCallback(async () => {
     try {
       setLoading(true);
       const res = await fetchAdminFeedback({
@@ -49,11 +45,11 @@ export function FeedbackTriage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter, typeFilter, search]);
 
   useEffect(() => {
     loadTickets();
-  }, [statusFilter, typeFilter]);
+  }, [loadTickets]);
 
   useEffect(() => {
     if (selectedTicket) {
@@ -84,9 +80,7 @@ export function FeedbackTriage() {
 
       setMessage({ text: "Ticket updated successfully", type: "success" });
       setSelectedTicket((prev) => (prev ? { ...prev, ...updated } : updated));
-      setTickets((prev) =>
-        prev.map((t) => (t.id === updated.id ? { ...t, ...updated } : t)),
-      );
+      setTickets((prev) => prev.map((t) => (t.id === updated.id ? { ...t, ...updated } : t)));
     } catch {
       setMessage({ text: "Failed to update ticket", type: "error" });
     } finally {
@@ -95,9 +89,9 @@ export function FeedbackTriage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] bg-zinc-950 text-zinc-100 rounded-xl border border-zinc-800 overflow-hidden">
+    <div className="flex h-[calc(100vh-8rem)] flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100">
       {/* Header Bar */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-900/60">
+      <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900/60 px-6 py-4">
         <div>
           <h1 className="text-xl font-bold tracking-tight">Feedback Triage (F-08)</h1>
           <p className="text-xs text-zinc-400">
@@ -111,12 +105,12 @@ export function FeedbackTriage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && loadTickets()}
-            className="px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-md focus:outline-none focus:border-zinc-500 w-48"
+            className="w-48 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-xs focus:border-zinc-500 focus:outline-none"
           />
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-2.5 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-md text-zinc-300 focus:outline-none"
+            className="rounded-md border border-zinc-700 bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-300 focus:outline-none"
           >
             <option value="all">All Types</option>
             <option value="bug">Bugs</option>
@@ -127,7 +121,7 @@ export function FeedbackTriage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-2.5 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-md text-zinc-300 focus:outline-none"
+            className="rounded-md border border-zinc-700 bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-300 focus:outline-none"
           >
             <option value="all">All Statuses</option>
             <option value="open">Open</option>
@@ -137,11 +131,11 @@ export function FeedbackTriage() {
             <option value="shipped">Shipped</option>
             <option value="closed">Closed</option>
             <option value="duplicate">Duplicate</option>
-            <option value="wont_fix">Won't Fix</option>
+            <option value="wont_fix">Won&apos;t Fix</option>
           </select>
           <button
             onClick={() => loadTickets()}
-            className="px-3 py-1.5 text-xs font-medium bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-md"
+            className="rounded-md border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs font-medium hover:bg-zinc-700"
           >
             Refresh
           </button>
@@ -151,7 +145,7 @@ export function FeedbackTriage() {
       {/* Main split pane */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Queue List */}
-        <div className="w-96 border-r border-zinc-800 flex flex-col bg-zinc-900/30 overflow-y-auto">
+        <div className="flex w-96 flex-col overflow-y-auto border-r border-zinc-800 bg-zinc-900/30">
           {loading ? (
             <div className="p-8 text-center text-xs text-zinc-500">Loading queue...</div>
           ) : tickets.length === 0 ? (
@@ -161,31 +155,27 @@ export function FeedbackTriage() {
               <button
                 key={t.id}
                 onClick={() => setSelectedTicket(t)}
-                className={`flex flex-col p-4 text-left border-b border-zinc-800/60 transition-colors ${
+                className={`flex flex-col border-b border-zinc-800/60 p-4 text-left transition-colors ${
                   selectedTicket?.id === t.id
-                    ? "bg-zinc-800/80 border-l-2 border-l-azure-500"
+                    ? "border-l-azure-500 border-l-2 bg-zinc-800/80"
                     : "hover:bg-zinc-850"
                 }`}
               >
-                <div className="flex items-center justify-between w-full mb-1">
-                  <span className="font-mono text-xs font-semibold text-zinc-300">
-                    {t.formattedNumber}
-                  </span>
+                <div className="mb-1 flex w-full items-center justify-between">
+                  <span className="font-mono text-xs font-semibold text-zinc-300">{t.formattedNumber}</span>
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold ${
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase ${
                       t.status === "shipped"
-                        ? "bg-emerald-950 text-emerald-400 border border-emerald-800/50"
+                        ? "border border-emerald-800/50 bg-emerald-950 text-emerald-400"
                         : t.status === "planned"
-                          ? "bg-amber-950 text-amber-400 border border-amber-800/50"
-                          : "bg-zinc-800 text-zinc-400 border border-zinc-700"
+                          ? "border border-amber-800/50 bg-amber-950 text-amber-400"
+                          : "border border-zinc-700 bg-zinc-800 text-zinc-400"
                     }`}
                   >
                     {t.status}
                   </span>
                 </div>
-                <div className="text-sm font-medium text-zinc-200 line-clamp-2 mb-2">
-                  {t.title}
-                </div>
+                <div className="mb-2 line-clamp-2 text-sm font-medium text-zinc-200">{t.title}</div>
                 <div className="flex items-center gap-2 text-[11px] text-zinc-500">
                   <span className="capitalize">{t.type.replace("_", " ")}</span>
                   <span>•</span>
@@ -204,13 +194,13 @@ export function FeedbackTriage() {
 
         {/* Right: Ticket Detail & Edit Controls */}
         {selectedTicket ? (
-          <div className="flex-1 flex flex-col overflow-y-auto p-6 space-y-6">
+          <div className="flex flex-1 flex-col space-y-6 overflow-y-auto p-6">
             {message && (
               <div
-                className={`p-3 rounded-md text-xs font-medium ${
+                className={`rounded-md p-3 text-xs font-medium ${
                   message.type === "success"
-                    ? "bg-emerald-950/80 text-emerald-300 border border-emerald-800"
-                    : "bg-red-950/80 text-red-300 border border-red-800"
+                    ? "border border-emerald-800 bg-emerald-950/80 text-emerald-300"
+                    : "border border-red-800 bg-red-950/80 text-red-300"
                 }`}
               >
                 {message.text}
@@ -220,20 +210,20 @@ export function FeedbackTriage() {
             {/* Top metadata row */}
             <div className="flex items-start justify-between">
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-mono text-sm font-bold text-azure-400">
+                <div className="mb-1 flex items-center gap-2">
+                  <span className="text-azure-400 font-mono text-sm font-bold">
                     {selectedTicket.formattedNumber}
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 uppercase font-medium">
+                  <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs font-medium text-zinc-300 uppercase">
                     {selectedTicket.type}
                   </span>
                   {selectedTicket.severity && (
-                    <span className="text-xs px-2 py-0.5 rounded bg-rose-950/80 text-rose-400 border border-rose-800/50 font-medium">
+                    <span className="rounded border border-rose-800/50 bg-rose-950/80 px-2 py-0.5 text-xs font-medium text-rose-400">
                       {selectedTicket.severity}
                     </span>
                   )}
                   {!selectedTicket.isPublic && (
-                    <span className="text-xs px-2 py-0.5 rounded bg-purple-950/80 text-purple-400 border border-purple-800/50 font-medium">
+                    <span className="rounded border border-purple-800/50 bg-purple-950/80 px-2 py-0.5 text-xs font-medium text-purple-400">
                       Private Ticket
                     </span>
                   )}
@@ -247,21 +237,17 @@ export function FeedbackTriage() {
             </div>
 
             {/* Description Body */}
-            <div className="p-4 bg-zinc-900/80 border border-zinc-800 rounded-lg">
-              <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900/80 p-4">
+              <h3 className="mb-2 text-xs font-semibold tracking-wider text-zinc-400 uppercase">
                 Description
               </h3>
-              <p className="text-sm text-zinc-300 whitespace-pre-wrap font-sans">
-                {selectedTicket.bodyMd}
-              </p>
+              <p className="font-sans text-sm whitespace-pre-wrap text-zinc-300">{selectedTicket.bodyMd}</p>
             </div>
 
             {/* Versions & Private Details */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-zinc-900/60 border border-zinc-800 rounded-lg space-y-2">
-                <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-                  Environment
-                </h3>
+              <div className="space-y-2 rounded-lg border border-zinc-800 bg-zinc-900/60 p-4">
+                <h3 className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">Environment</h3>
                 <div className="text-xs text-zinc-300">
                   <span className="text-zinc-500">App Version:</span>{" "}
                   {selectedTicket.appVersion || "Not specified"}
@@ -272,8 +258,8 @@ export function FeedbackTriage() {
                 </div>
               </div>
 
-              <div className="p-4 bg-zinc-900/60 border border-zinc-800 rounded-lg space-y-2">
-                <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+              <div className="space-y-2 rounded-lg border border-zinc-800 bg-zinc-900/60 p-4">
+                <h3 className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
                   Private Reporter Info (Admin Only)
                 </h3>
                 <div className="text-xs text-zinc-300">
@@ -287,7 +273,7 @@ export function FeedbackTriage() {
                       href={selectedTicket.crashLogUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-azure-400 underline hover:text-azure-300"
+                      className="text-azure-400 hover:text-azure-300 underline"
                     >
                       Download cbpos_logs.txt
                     </a>
@@ -300,20 +286,18 @@ export function FeedbackTriage() {
 
             {/* Screenshots section */}
             {(selectedTicket.screenshotPrivateUrl || selectedTicket.screenshotPublicKey) && (
-              <div className="p-4 bg-zinc-900/60 border border-zinc-800 rounded-lg space-y-3">
+              <div className="space-y-3 rounded-lg border border-zinc-800 bg-zinc-900/60 p-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                  <h3 className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
                     Screenshot Attachment
                   </h3>
                   {selectedTicket.screenshotPublicKey ? (
-                    <span className="text-xs text-emerald-400 font-medium">
-                      ✓ Approved for Public
-                    </span>
+                    <span className="text-xs font-medium text-emerald-400">✓ Approved for Public</span>
                   ) : (
                     <button
                       onClick={() => handleSave(true)}
                       disabled={saving}
-                      className="px-3 py-1 text-xs font-medium bg-amber-600 hover:bg-amber-500 text-white rounded"
+                      className="rounded bg-amber-600 px-3 py-1 text-xs font-medium text-white hover:bg-amber-500"
                     >
                       Approve & Publish Screenshot
                     </button>
@@ -325,7 +309,7 @@ export function FeedbackTriage() {
                       href={selectedTicket.screenshotPrivateUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs text-azure-400 underline"
+                      className="text-azure-400 text-xs underline"
                     >
                       View Full Attached Screenshot
                     </a>
@@ -335,18 +319,18 @@ export function FeedbackTriage() {
             )}
 
             {/* Triage controls */}
-            <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-lg space-y-4">
-              <h3 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+            <div className="space-y-4 rounded-lg border border-zinc-800 bg-zinc-900 p-4">
+              <h3 className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
                 Triage & Status Transitions
               </h3>
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Status</label>
+                  <label className="mb-1 block text-xs text-zinc-400">Status</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-zinc-800 border border-zinc-700 rounded text-zinc-200"
+                    className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs text-zinc-200"
                   >
                     <option value="open">Open</option>
                     <option value="triaged">Triaged</option>
@@ -355,16 +339,16 @@ export function FeedbackTriage() {
                     <option value="shipped">Shipped</option>
                     <option value="closed">Closed</option>
                     <option value="duplicate">Duplicate</option>
-                    <option value="wont_fix">Won't Fix</option>
+                    <option value="wont_fix">Won&apos;t Fix</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Severity</label>
+                  <label className="mb-1 block text-xs text-zinc-400">Severity</label>
                   <select
                     value={severity}
                     onChange={(e) => setSeverity(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-zinc-800 border border-zinc-700 rounded text-zinc-200"
+                    className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs text-zinc-200"
                   >
                     <option value="">None</option>
                     <option value="crash">Crash</option>
@@ -375,37 +359,35 @@ export function FeedbackTriage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Resolved in Release ID</label>
+                  <label className="mb-1 block text-xs text-zinc-400">Resolved in Release ID</label>
                   <input
                     type="text"
                     placeholder="Release UUID (e.g. v1.5.0)"
                     value={resolvedReleaseId}
                     onChange={(e) => setResolvedReleaseId(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-zinc-800 border border-zinc-700 rounded text-zinc-200"
+                    className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs text-zinc-200"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs text-zinc-400 mb-1">
-                  Official Team Response (Markdown)
-                </label>
+                <label className="mb-1 block text-xs text-zinc-400">Official Team Response (Markdown)</label>
                 <textarea
                   rows={3}
                   value={adminResponse}
                   onChange={(e) => setAdminResponse(e.target.value)}
                   placeholder="Official Ceybyte team comment displayed on the public ticket detail..."
-                  className="w-full p-2.5 text-xs bg-zinc-800 border border-zinc-700 rounded text-zinc-200 focus:outline-none focus:border-zinc-500"
+                  className="w-full rounded border border-zinc-700 bg-zinc-800 p-2.5 text-xs text-zinc-200 focus:border-zinc-500 focus:outline-none"
                 />
               </div>
 
               <div className="flex items-center justify-between pt-2">
-                <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2 text-xs text-zinc-300">
                   <input
                     type="checkbox"
                     checked={isPublic}
                     onChange={(e) => setIsPublic(e.target.checked)}
-                    className="rounded bg-zinc-800 border-zinc-700 text-azure-500"
+                    className="text-azure-500 rounded border-zinc-700 bg-zinc-800"
                   />
                   <span>Visible on Public Board</span>
                 </label>
@@ -413,7 +395,7 @@ export function FeedbackTriage() {
                 <button
                   onClick={() => handleSave(false)}
                   disabled={saving}
-                  className="px-5 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-md shadow transition-colors disabled:opacity-50"
+                  className="rounded-md bg-emerald-600 px-5 py-2 text-xs font-semibold text-white shadow transition-colors hover:bg-emerald-500 disabled:opacity-50"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
@@ -421,7 +403,7 @@ export function FeedbackTriage() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-sm text-zinc-500">
+          <div className="flex flex-1 items-center justify-center text-sm text-zinc-500">
             Select a ticket from the left queue to view details and triage.
           </div>
         )}

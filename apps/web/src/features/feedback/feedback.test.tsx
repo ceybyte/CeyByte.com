@@ -89,9 +89,7 @@ describe("Feedback Tracker UI Components (S07, S08, F-07)", () => {
   });
 
   test("VoteButton renders up-chevron and vote count", () => {
-    const html = renderToString(
-      <VoteButton ticketNumber="CB-0142" initialVotes={24} hasVoted={true} />,
-    );
+    const html = renderToString(<VoteButton ticketNumber="CB-0142" initialVotes={24} hasVoted={true} />);
     expect(html).toContain("24");
   });
 

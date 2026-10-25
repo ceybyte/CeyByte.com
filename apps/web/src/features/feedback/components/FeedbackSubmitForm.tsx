@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Bug, Lightbulb, HelpCircle, Upload, Check, Loader2, ArrowRight } from "lucide-react";
+import { TurnstileWidget } from "@/components/gate/turnstile-widget";
 import { SimilarTicket } from "../types";
 import { fetchSimilarTickets, presignAndUploadFile, submitTicket } from "../api";
 
@@ -11,10 +12,7 @@ interface FeedbackSubmitFormProps {
   initialType?: "bug" | "feature" | "question";
 }
 
-export function FeedbackSubmitForm({
-  locale,
-  initialType = "bug",
-}: FeedbackSubmitFormProps) {
+export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubmitFormProps) {
   const [type, setType] = useState<"bug" | "feature" | "question">(initialType);
   const [title, setTitle] = useState("");
   const [bodyMd, setBodyMd] = useState("");
@@ -22,6 +20,7 @@ export function FeedbackSubmitForm({
   const [windowsVersion, setWindowsVersion] = useState("Windows 11");
   const [severity, setSeverity] = useState<string>("wrong_output");
   const [contactPrivate, setContactPrivate] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   // Similar tickets
   const [similarTickets, setSimilarTickets] = useState<SimilarTicket[]>([]);
@@ -140,6 +139,7 @@ export function FeedbackSubmitForm({
         draftId,
         crashLogKey,
         screenshotKey,
+        turnstileToken: turnstileToken || undefined,
       });
 
       setCreatedTicket({
@@ -156,37 +156,37 @@ export function FeedbackSubmitForm({
 
   if (createdTicket) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <div className="w-12 h-12 bg-azure-950 border border-azure-700/60 rounded-full flex items-center justify-center mx-auto mb-4 text-azure-400">
-          <Check className="w-6 h-6" />
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <div className="bg-azure-950 border-azure-700/60 text-azure-400 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border">
+          <Check className="h-6 w-6" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-100 mb-2">Ticket submitted</h2>
-        <p className="text-sm text-zinc-400 mb-6">
-          Ticket <span className="font-mono text-azure-400 font-bold">{createdTicket.formattedNumber}</span> is in.
-          We&apos;ll post updates on it here.
+        <h2 className="mb-2 text-2xl font-bold text-zinc-100">Ticket submitted</h2>
+        <p className="mb-6 text-sm text-zinc-400">
+          Ticket <span className="text-azure-400 font-mono font-bold">{createdTicket.formattedNumber}</span>{" "}
+          is in. We&apos;ll post updates on it here.
         </p>
 
         {type === "question" ? (
-          <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-xl text-left mb-6 space-y-3">
-            <h3 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+          <div className="mb-6 space-y-3 rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-left">
+            <h3 className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
               Thank you. These pages might already answer your question:
             </h3>
-            <ul className="text-xs text-azure-400 space-y-2">
+            <ul className="text-azure-400 space-y-2 text-xs">
               <li>
-                <Link href={`/${locale}/docs`} className="hover:underline flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5" />
+                <Link href={`/${locale}/docs`} className="flex items-center gap-1.5 hover:underline">
+                  <ArrowRight className="h-3.5 w-3.5" />
                   <span>Documentation Center & Guides</span>
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/docs/receipts`} className="hover:underline flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5" />
+                <Link href={`/${locale}/docs/receipts`} className="flex items-center gap-1.5 hover:underline">
+                  <ArrowRight className="h-3.5 w-3.5" />
                   <span>Setting up 58mm & 80mm Receipt Printers</span>
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/docs/tax`} className="hover:underline flex items-center gap-1.5">
-                  <ArrowRight className="w-3.5 h-3.5" />
+                <Link href={`/${locale}/docs/tax`} className="flex items-center gap-1.5 hover:underline">
+                  <ArrowRight className="h-3.5 w-3.5" />
                   <span>Configuring VAT & SSCL in CB POS</span>
                 </Link>
               </li>
@@ -196,10 +196,10 @@ export function FeedbackSubmitForm({
           <div className="flex items-center justify-center gap-3">
             <Link
               href={`/${locale}/feedback/${createdTicket.formattedNumber}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-5 py-2.5 text-xs font-semibold text-zinc-100 transition-colors hover:bg-zinc-700"
             >
               <span>View your ticket ({createdTicket.formattedNumber})</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link
               href={`/${locale}/feedback`}
@@ -214,24 +214,22 @@ export function FeedbackSubmitForm({
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="mx-auto max-w-2xl px-4 py-8">
       <div className="mb-8">
         <Link
           href={`/${locale}/feedback`}
-          className="text-xs text-zinc-500 hover:text-zinc-300 mb-3 inline-block"
+          className="mb-3 inline-block text-xs text-zinc-500 hover:text-zinc-300"
         >
           ← Back to feedback board
         </Link>
-        <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100">
-          Tell us what happened
-        </h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100">Tell us what happened</h1>
         <p className="mt-1 text-sm text-zinc-400">
           We read every report and keep our development roadmap public.
         </p>
       </div>
 
       {error && (
-        <div className="p-3 mb-6 rounded-lg text-xs font-medium bg-red-950/80 text-red-300 border border-red-800">
+        <div className="mb-6 rounded-lg border border-red-800 bg-red-950/80 p-3 text-xs font-medium text-red-300">
           {error}
         </div>
       )}
@@ -239,61 +237,61 @@ export function FeedbackSubmitForm({
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Type Option Cards */}
         <div>
-          <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
+          <label className="mb-2 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
             What&apos;s this about?
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <button
               type="button"
               onClick={() => setType("bug")}
-              className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all ${
+              className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all ${
                 type === "bug"
-                  ? "bg-zinc-900 border-azure-500 shadow-md ring-1 ring-azure-500/30"
-                  : "bg-zinc-950 border-zinc-800 hover:border-zinc-700 text-zinc-400"
+                  ? "border-azure-500 ring-azure-500/30 bg-zinc-900 shadow-md ring-1"
+                  : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700"
               }`}
             >
-              <Bug className={`w-5 h-5 mb-2 ${type === "bug" ? "text-rose-400" : "text-zinc-500"}`} />
+              <Bug className={`mb-2 h-5 w-5 ${type === "bug" ? "text-rose-400" : "text-zinc-500"}`} />
               <span className="text-xs font-semibold text-zinc-200">Something isn&apos;t working</span>
-              <span className="text-[10px] text-zinc-500 mt-0.5">Bug or error</span>
+              <span className="mt-0.5 text-[10px] text-zinc-500">Bug or error</span>
             </button>
 
             <button
               type="button"
               onClick={() => setType("feature")}
-              className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all ${
+              className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all ${
                 type === "feature"
-                  ? "bg-zinc-900 border-azure-500 shadow-md ring-1 ring-azure-500/30"
-                  : "bg-zinc-950 border-zinc-800 hover:border-zinc-700 text-zinc-400"
+                  ? "border-azure-500 ring-azure-500/30 bg-zinc-900 shadow-md ring-1"
+                  : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700"
               }`}
             >
               <Lightbulb
-                className={`w-5 h-5 mb-2 ${type === "feature" ? "text-amber-400" : "text-zinc-500"}`}
+                className={`mb-2 h-5 w-5 ${type === "feature" ? "text-amber-400" : "text-zinc-500"}`}
               />
               <span className="text-xs font-semibold text-zinc-200">I&apos;d like something new</span>
-              <span className="text-[10px] text-zinc-500 mt-0.5">Feature request</span>
+              <span className="mt-0.5 text-[10px] text-zinc-500">Feature request</span>
             </button>
 
             <button
               type="button"
               onClick={() => setType("question")}
-              className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all ${
+              className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all ${
                 type === "question"
-                  ? "bg-zinc-900 border-azure-500 shadow-md ring-1 ring-azure-500/30"
-                  : "bg-zinc-950 border-zinc-800 hover:border-zinc-700 text-zinc-400"
+                  ? "border-azure-500 ring-azure-500/30 bg-zinc-900 shadow-md ring-1"
+                  : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700"
               }`}
             >
               <HelpCircle
-                className={`w-5 h-5 mb-2 ${type === "question" ? "text-azure-400" : "text-zinc-500"}`}
+                className={`mb-2 h-5 w-5 ${type === "question" ? "text-azure-400" : "text-zinc-500"}`}
               />
               <span className="text-xs font-semibold text-zinc-200">I have a question</span>
-              <span className="text-[10px] text-zinc-500 mt-0.5">Help & advice</span>
+              <span className="mt-0.5 text-[10px] text-zinc-500">Help & advice</span>
             </button>
           </div>
         </div>
 
         {/* Short Title */}
         <div>
-          <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1">
+          <label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
             Short title
           </label>
           <input
@@ -303,32 +301,30 @@ export function FeedbackSubmitForm({
             placeholder="For example, receipts cut off halfway on a 58mm printer"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3.5 py-2.5 text-sm bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700"
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none"
           />
         </div>
 
         {/* Similar Tickets Panel ("Is it one of these?") */}
         {similarTickets.length > 0 && (
-          <div className="p-4 bg-zinc-900/80 border border-zinc-800 rounded-xl space-y-2.5">
+          <div className="space-y-2.5 rounded-xl border border-zinc-800 bg-zinc-900/80 p-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+              <span className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
                 Is it one of these?
               </span>
-              {searchingSimilar && <Loader2 className="w-3.5 h-3.5 animate-spin text-azure-400" />}
+              {searchingSimilar && <Loader2 className="text-azure-400 h-3.5 w-3.5 animate-spin" />}
             </div>
             <div className="divide-y divide-zinc-800/80">
               {similarTickets.map((st) => (
-                <div key={st.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                <div key={st.id} className="flex items-center justify-between gap-3 py-2.5 text-xs">
                   <div className="flex items-center gap-2 truncate">
-                    <span className="font-mono text-zinc-400 font-semibold">
-                      {st.formattedNumber}
-                    </span>
-                    <span className="text-zinc-200 truncate">{st.title}</span>
+                    <span className="font-mono font-semibold text-zinc-400">{st.formattedNumber}</span>
+                    <span className="truncate text-zinc-200">{st.title}</span>
                   </div>
                   <Link
                     href={`/${locale}/feedback/${st.formattedNumber}`}
                     target="_blank"
-                    className="flex-shrink-0 text-xs text-azure-400 hover:text-azure-300 font-medium underline"
+                    className="text-azure-400 hover:text-azure-300 flex-shrink-0 text-xs font-medium underline"
                   >
                     Vote for this one instead ({st.voteCount} votes)
                   </Link>
@@ -340,8 +336,8 @@ export function FeedbackSubmitForm({
 
         {/* Description Body */}
         <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+          <div className="mb-1 flex items-center justify-between">
+            <label className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
               Tell us more
             </label>
             <span className="text-[11px] text-zinc-500">
@@ -358,20 +354,20 @@ export function FeedbackSubmitForm({
             value={bodyMd}
             onChange={(e) => setBodyMd(e.target.value)}
             placeholder="Describe details, steps to reproduce, or why this feature would help your store..."
-            className="w-full p-3 text-sm bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700"
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none"
           />
         </div>
 
         {/* Environment (Version & Windows) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1">
+            <label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
               CB POS version
             </label>
             <select
               value={appVersion}
               onChange={(e) => setAppVersion(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-none"
+              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200 focus:outline-none"
             >
               <option value="1.4.2">v1.4.2 (Latest)</option>
               <option value="1.4.0">v1.4.0</option>
@@ -381,13 +377,13 @@ export function FeedbackSubmitForm({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1">
+            <label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
               Windows version
             </label>
             <select
               value={windowsVersion}
               onChange={(e) => setWindowsVersion(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-none"
+              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200 focus:outline-none"
             >
               <option value="Windows 11">Windows 11</option>
               <option value="Windows 10">Windows 10</option>
@@ -400,10 +396,10 @@ export function FeedbackSubmitForm({
         {/* Severity (only for bugs) */}
         {type === "bug" && (
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
+            <label className="mb-2 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
               How much is this affecting you?
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {[
                 { id: "crash", label: "CB POS closes or crashes" },
                 { id: "blocks_billing", label: "I can't bill customers" },
@@ -412,10 +408,10 @@ export function FeedbackSubmitForm({
               ].map((opt) => (
                 <label
                   key={opt.id}
-                  className={`flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer text-xs transition-colors ${
+                  className={`flex cursor-pointer items-center gap-2.5 rounded-lg border p-3 text-xs transition-colors ${
                     severity === opt.id
-                      ? "bg-zinc-900 border-zinc-700 text-zinc-100"
-                      : "bg-zinc-950 border-zinc-800/80 text-zinc-400 hover:text-zinc-300"
+                      ? "border-zinc-700 bg-zinc-900 text-zinc-100"
+                      : "border-zinc-800/80 bg-zinc-950 text-zinc-400 hover:text-zinc-300"
                   }`}
                 >
                   <input
@@ -435,62 +431,57 @@ export function FeedbackSubmitForm({
 
         {/* Error log upload [J1] [H9] */}
         {type === "bug" && (
-          <div className="p-4 bg-zinc-900/40 border border-zinc-800 rounded-xl space-y-2">
+          <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+              <label className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
                 Error log (optional)
               </label>
               {uploadingCrashLog && (
-                <span className="text-[11px] text-azure-400 flex items-center gap-1">
-                  <Loader2 className="w-3 h-3 animate-spin" /> Uploading log...
+                <span className="text-azure-400 flex items-center gap-1 text-[11px]">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Uploading log...
                 </span>
               )}
               {crashLogKey && (
-                <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                  <Check className="w-3 h-3" /> cbpos_logs.txt uploaded
+                <span className="flex items-center gap-1 text-[11px] text-emerald-400">
+                  <Check className="h-3 w-3" /> cbpos_logs.txt uploaded
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-zinc-500 leading-relaxed">
+            <p className="text-[11px] leading-relaxed text-zinc-500">
               In CB POS, go to Settings › Admin Tools › Error Logs and click Export Logs. It saves{" "}
-              <code className="text-zinc-300 font-mono">cbpos_logs.txt</code>, up to 5 MB. Please remove any passwords
-              or network addresses before you upload it. Only our team sees logs. [J1] [H9]
+              <code className="font-mono text-zinc-300">cbpos_logs.txt</code>, up to 5 MB. Please remove any
+              passwords or network addresses before you upload it. Only our team sees logs. [J1] [H9]
             </p>
-            <label className="flex items-center justify-center gap-2 p-3 border border-dashed border-zinc-700 hover:border-zinc-600 rounded-lg cursor-pointer bg-zinc-950/60 text-xs text-zinc-400 hover:text-zinc-200 transition-colors">
-              <Upload className="w-4 h-4 text-zinc-500" />
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-700 bg-zinc-950/60 p-3 text-xs text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200">
+              <Upload className="h-4 w-4 text-zinc-500" />
               <span>{crashLogFile ? crashLogFile.name : "Select cbpos_logs.txt, .log or .zip"}</span>
-              <input
-                type="file"
-                accept=".txt,.log,.zip"
-                onChange={handleCrashLogSelect}
-                className="hidden"
-              />
+              <input type="file" accept=".txt,.log,.zip" onChange={handleCrashLogSelect} className="hidden" />
             </label>
           </div>
         )}
 
         {/* Screenshot upload */}
-        <div className="p-4 bg-zinc-900/40 border border-zinc-800 rounded-xl space-y-2">
+        <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+            <label className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
               Screenshot (optional)
             </label>
             {uploadingScreenshot && (
-              <span className="text-[11px] text-azure-400 flex items-center gap-1">
-                <Loader2 className="w-3 h-3 animate-spin" /> Uploading image...
+              <span className="text-azure-400 flex items-center gap-1 text-[11px]">
+                <Loader2 className="h-3 w-3 animate-spin" /> Uploading image...
               </span>
             )}
             {screenshotKey && (
-              <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                <Check className="w-3 h-3" /> Screenshot attached
+              <span className="flex items-center gap-1 text-[11px] text-emerald-400">
+                <Check className="h-3 w-3" /> Screenshot attached
               </span>
             )}
           </div>
-          <p className="text-[11px] text-zinc-500 leading-relaxed">
+          <p className="text-[11px] leading-relaxed text-zinc-500">
             PNG or JPG, up to 5 MB. We keep it private unless we mark it safe to show.
           </p>
-          <label className="flex items-center justify-center gap-2 p-3 border border-dashed border-zinc-700 hover:border-zinc-600 rounded-lg cursor-pointer bg-zinc-950/60 text-xs text-zinc-400 hover:text-zinc-200 transition-colors">
-            <Upload className="w-4 h-4 text-zinc-500" />
+          <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-700 bg-zinc-950/60 p-3 text-xs text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200">
+            <Upload className="h-4 w-4 text-zinc-500" />
             <span>{screenshotFile ? screenshotFile.name : "Select PNG or JPG image"}</span>
             <input
               type="file"
@@ -503,7 +494,7 @@ export function FeedbackSubmitForm({
 
         {/* Contact Input */}
         <div>
-          <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1">
+          <label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
             Email or phone (optional)
           </label>
           <input
@@ -512,15 +503,20 @@ export function FeedbackSubmitForm({
             placeholder="077 123 4567 or email@example.com"
             value={contactPrivate}
             onChange={(e) => setContactPrivate(e.target.value)}
-            className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700"
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none"
           />
-          <p className="text-[11px] text-zinc-500 mt-1">
+          <p className="mt-1 text-[11px] text-zinc-500">
             Only the Ceylon Byte team sees this, and only to follow up on your ticket.
           </p>
         </div>
 
+        {/* Turnstile verification widget */}
+        <div className="py-2">
+          <TurnstileWidget action="feedback" onToken={setTurnstileToken} />
+        </div>
+
         {/* Submit Button (Secondary / Outline - Single Green Button Rule) */}
-        <div className="pt-4 flex items-center justify-end gap-3">
+        <div className="flex items-center justify-end gap-3 pt-4">
           <Link
             href={`/${locale}/feedback`}
             className="px-4 py-2 text-xs font-medium text-zinc-400 hover:text-zinc-200"
@@ -530,7 +526,7 @@ export function FeedbackSubmitForm({
           <button
             type="submit"
             disabled={submitting || uploadingCrashLog || uploadingScreenshot}
-            className="px-6 py-2.5 text-xs font-semibold rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 transition-colors shadow-sm disabled:opacity-50"
+            className="rounded-lg border border-zinc-700 bg-zinc-800 px-6 py-2.5 text-xs font-semibold text-zinc-100 shadow-sm transition-colors hover:bg-zinc-700 disabled:opacity-50"
           >
             {submitting ? "Sending ticket..." : "Send ticket"}
           </button>

@@ -8,15 +8,7 @@ export interface PublicFeedbackTicket {
   appVersion?: string | null;
   windowsVersion?: string | null;
   severity?: "crash" | "blocks_billing" | "wrong_output" | "cosmetic" | null;
-  status:
-    | "open"
-    | "triaged"
-    | "planned"
-    | "in_progress"
-    | "shipped"
-    | "closed"
-    | "duplicate"
-    | "wont_fix";
+  status: "open" | "triaged" | "planned" | "in_progress" | "shipped" | "closed" | "duplicate" | "wont_fix";
   voteCount: number;
   hasVoted?: boolean;
   screenshotPublicKey?: string | null;

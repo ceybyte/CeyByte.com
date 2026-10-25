@@ -9,16 +9,24 @@ interface TicketDetailClientProps {
 }
 
 export function TicketDetailClient({ initialNumber, locale }: TicketDetailClientProps) {
-  const [ticketNumber, setTicketNumber] = useState(initialNumber);
-
-  useEffect(() => {
-    if (initialNumber === "ticket" && typeof window !== "undefined") {
+  const [ticketNumber, setTicketNumber] = useState(() => {
+    if (typeof window !== "undefined") {
       const match = window.location.pathname.match(/\/feedback\/(CB-\d+)/i);
       if (match && match[1]) {
+        return match[1].toUpperCase();
+      }
+    }
+    return initialNumber;
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const match = window.location.pathname.match(/\/feedback\/(CB-\d+)/i);
+      if (match && match[1] && match[1].toUpperCase() !== ticketNumber) {
         setTicketNumber(match[1].toUpperCase());
       }
     }
-  }, [initialNumber]);
+  }, [initialNumber, ticketNumber]);
 
   return <TicketDetailView ticketNumber={ticketNumber} locale={locale} />;
 }

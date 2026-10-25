@@ -24,13 +24,13 @@ export function FeedbackFilters({
   onSearchChange,
 }: FeedbackFiltersProps) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl mb-6">
+    <div className="mb-6 flex flex-col justify-between gap-4 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 md:flex-row md:items-center">
       {/* Type Tabs */}
-      <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+      <div className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-950 p-1">
         <button
           type="button"
           onClick={() => onTypeChange("all")}
-          className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+          className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
             currentType === "all"
               ? "bg-zinc-800 text-zinc-100 shadow-sm"
               : "text-zinc-400 hover:text-zinc-200"
@@ -41,7 +41,7 @@ export function FeedbackFilters({
         <button
           type="button"
           onClick={() => onTypeChange("bug")}
-          className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+          className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
             currentType === "bug"
               ? "bg-zinc-800 text-zinc-100 shadow-sm"
               : "text-zinc-400 hover:text-zinc-200"
@@ -52,7 +52,7 @@ export function FeedbackFilters({
         <button
           type="button"
           onClick={() => onTypeChange("feature")}
-          className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+          className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
             currentType === "feature"
               ? "bg-zinc-800 text-zinc-100 shadow-sm"
               : "text-zinc-400 hover:text-zinc-200"
@@ -66,13 +66,13 @@ export function FeedbackFilters({
       <div className="flex flex-wrap items-center gap-3">
         {/* Search */}
         <div className="relative flex-1 sm:w-60">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Search className="absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
           <input
             type="text"
             placeholder="Search feedback..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700"
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 py-1.5 pr-3 pl-9 text-xs text-zinc-200 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none"
           />
         </div>
 
@@ -80,7 +80,7 @@ export function FeedbackFilters({
         <select
           value={currentStatus}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="px-3 py-1.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-300 focus:outline-none focus:border-zinc-700"
+          className="rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-1.5 text-xs text-zinc-300 focus:border-zinc-700 focus:outline-none"
         >
           <option value="all">Any status</option>
           <option value="open">Open</option>
@@ -90,18 +90,16 @@ export function FeedbackFilters({
           <option value="shipped">Shipped</option>
           <option value="closed">Closed</option>
           <option value="duplicate">Duplicate</option>
-          <option value="wont_fix">Won't fix</option>
+          <option value="wont_fix">Won&apos;t fix</option>
         </select>
 
         {/* Sort Select / Toggle */}
-        <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+        <div className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-950 p-1">
           <button
             type="button"
             onClick={() => onSortChange("votes")}
-            className={`px-2.5 py-1 text-xs font-medium rounded ${
-              currentSort === "votes"
-                ? "bg-zinc-800 text-zinc-100"
-                : "text-zinc-400 hover:text-zinc-200"
+            className={`rounded px-2.5 py-1 text-xs font-medium ${
+              currentSort === "votes" ? "bg-zinc-800 text-zinc-100" : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             Most votes
@@ -109,10 +107,8 @@ export function FeedbackFilters({
           <button
             type="button"
             onClick={() => onSortChange("newest")}
-            className={`px-2.5 py-1 text-xs font-medium rounded ${
-              currentSort === "newest"
-                ? "bg-zinc-800 text-zinc-100"
-                : "text-zinc-400 hover:text-zinc-200"
+            className={`rounded px-2.5 py-1 text-xs font-medium ${
+              currentSort === "newest" ? "bg-zinc-800 text-zinc-100" : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             Newest

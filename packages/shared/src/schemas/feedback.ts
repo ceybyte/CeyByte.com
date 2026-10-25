@@ -27,8 +27,14 @@ export const FeedbackSubmitSchema = z.object({
 export type FeedbackSubmitInput = z.infer<typeof FeedbackSubmitSchema>;
 
 export const FeedbackQuerySchema = z.object({
-  type: z.enum([...TICKET_TYPES, "all"]).optional().default("all"),
-  status: z.enum([...TICKET_STATUSES, "all"]).optional().default("all"),
+  type: z
+    .enum([...TICKET_TYPES, "all"])
+    .optional()
+    .default("all"),
+  status: z
+    .enum([...TICKET_STATUSES, "all"])
+    .optional()
+    .default("all"),
   sort: z.enum(["votes", "newest"]).optional().default("votes"),
   page: z.coerce.number().int().positive().optional().default(1),
   pageSize: z.coerce.number().int().positive().max(50).optional().default(20),

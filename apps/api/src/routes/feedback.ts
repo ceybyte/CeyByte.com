@@ -248,12 +248,27 @@ export const feedbackRoutes = new Hono<AppEnv>()
       throw new ApiError("NOT_FOUND");
     }
 
-    const { isPublic: _omit, ...publicFields } = row;
-
     return c.json({
       ok: true,
       data: {
-        ...publicFields,
+        id: row.id,
+        publicNumber: row.publicNumber,
+        type: row.type,
+        title: row.title,
+        bodyMd: row.bodyMd,
+        appVersion: row.appVersion,
+        windowsVersion: row.windowsVersion,
+        severity: row.severity,
+        status: row.status,
+        voteCount: row.voteCount,
+        screenshotPublicKey: row.screenshotPublicKey,
+        duplicateOfId: row.duplicateOfId,
+        resolvedInReleaseId: row.resolvedInReleaseId,
+        releaseVersion: row.releaseVersion,
+        adminResponseMd: row.adminResponseMd,
+        adminRespondedAt: row.adminRespondedAt,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
         formattedNumber: formatTicketNumber(row.publicNumber),
       },
     } as const);

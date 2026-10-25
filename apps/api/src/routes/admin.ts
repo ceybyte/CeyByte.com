@@ -388,10 +388,10 @@ export const adminRoutes = new Hono<AppEnv>()
 
     const conditions = [];
     if (status && status !== "all") {
-      conditions.push(eq(feedbackTickets.status, status as any));
+      conditions.push(eq(feedbackTickets.status, status as (typeof feedbackTickets.$inferSelect)["status"]));
     }
     if (type && type !== "all") {
-      conditions.push(eq(feedbackTickets.type, type as any));
+      conditions.push(eq(feedbackTickets.type, type as (typeof feedbackTickets.$inferSelect)["type"]));
     }
     if (search && search.trim().length > 0) {
       conditions.push(like(feedbackTickets.title, `%${search.trim()}%`));
@@ -505,9 +505,9 @@ export const adminRoutes = new Hono<AppEnv>()
     await auditInsert(db, {
       actorUserId: user?.id ?? null,
       action: "feedback.update",
-      entityType: "feedback",
+      entityType: "ticket",
       entityId: id,
-      diff: d,
+      diff: { after: d },
     });
 
     const updated = await db

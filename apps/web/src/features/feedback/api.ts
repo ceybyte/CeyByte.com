@@ -46,12 +46,9 @@ export async function fetchTicket(ticketNumber: string): Promise<PublicFeedbackT
 
 export async function fetchSimilarTickets(query: string): Promise<SimilarTicket[]> {
   if (!query || query.trim().length < 2) return [];
-  const res = await fetch(
-    `${API_BASE}/api/feedback/similar?q=${encodeURIComponent(query.trim())}`,
-    {
-      headers: { Accept: "application/json" },
-    },
-  );
+  const res = await fetch(`${API_BASE}/api/feedback/similar?q=${encodeURIComponent(query.trim())}`, {
+    headers: { Accept: "application/json" },
+  });
 
   if (!res.ok) return [];
   const json = (await res.json()) as { ok: boolean; data: SimilarTicket[] };
