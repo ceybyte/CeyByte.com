@@ -15,7 +15,7 @@ const LANGUAGES: Record<Locale, { short: string; full: string }> = {
   ta: { short: "தமி", full: "தமிழ்" },
 };
 
-export function LanguageSwitcher({ className }: { className?: string }) {
+export function LanguageSwitcher({ className, ariaLabel }: { className?: string; ariaLabel?: string }) {
   const t = useTranslations("nav");
   const locale = useLocale() as Locale;
   const router = useRouter();
@@ -34,7 +34,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
   }
 
   return (
-    <nav aria-label={t("langSwitcher")} className={cn("flex items-center gap-0", className)}>
+    <nav aria-label={ariaLabel ?? t("langSwitcher")} className={cn("flex items-center gap-0", className)}>
       {(Object.keys(LANGUAGES) as Locale[]).map((lang, i) => (
         <span key={lang} className="flex items-center">
           {i > 0 && (
@@ -46,7 +46,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             type="button"
             onClick={() => switchLocale(lang)}
             aria-current={lang === locale ? "true" : undefined}
-            aria-label={LANGUAGES[lang].full}
+            aria-label={`${LANGUAGES[lang].short} (${LANGUAGES[lang].full})`}
             title={LANGUAGES[lang].full}
             className={cn(
               "font-mono text-xs leading-none transition-colors duration-[--dur-hover]",

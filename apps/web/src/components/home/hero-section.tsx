@@ -80,7 +80,7 @@ export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps
               </div>
 
               {/* Release Metadata */}
-              <p className="text-muted/80 mb-8 font-mono text-xs">{t("ctaMeta", { version, sizeMb })}</p>
+              <p className="text-muted mb-8 font-mono text-xs">{t("ctaMeta", { version, sizeMb })}</p>
 
               {/* 3 Check Assurances */}
               <div className="border-hairline/80 grid grid-cols-1 gap-3 border-t pt-6 sm:grid-cols-3">
@@ -115,83 +115,91 @@ export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps
 
             {/* Sales Counter Screen Capture Frame with Azure Rim Glow */}
             <Reveal delay={0.15}>
-              <div className="border-azure/40 bg-canvas hover:border-azure relative z-10 w-full max-w-lg overflow-hidden rounded-lg border p-1 shadow-2xl transition-all duration-500 lg:max-w-none">
-                {/* Frame Header with Rim Glow */}
-                <div className="bg-surface-elevated border-hairline flex items-center justify-between border-b px-3 py-2 font-mono text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-primary size-2 rounded-full" />
-                    <span className="text-azure-text font-semibold">CB POS v{version}</span>
-                    <span className="text-muted hidden sm:inline">· Till 01</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="bg-primary/10 text-primary border-primary/20 rounded border px-1.5 py-0.5 text-[10px]">
-                      OFFLINE READY
-                    </span>
-                    <span className="text-muted/60 font-mono text-[10px] uppercase">{t("mockupLabel")}</span>
-                  </div>
-                </div>
-
-                {/* Simulated Real Sales Screen Contents (PRD §F-02, 06 §3.1) */}
-                <div className="space-y-4 p-4 font-mono text-xs sm:p-5">
-                  {/* Cart Header */}
-                  <div className="text-muted/70 border-hairline grid grid-cols-12 border-b pb-2 text-[11px]">
-                    <span className="col-span-6">ITEM / DESCRIPTION</span>
-                    <span className="col-span-2 text-right">QTY/WT</span>
-                    <span className="col-span-2 text-right">PRICE</span>
-                    <span className="col-span-2 text-right">TOTAL</span>
-                  </div>
-
-                  {/* Cart Rows */}
-                  <div className="space-y-2.5">
-                    <div className="text-text grid grid-cols-12 items-center">
-                      <span className="col-span-6 truncate font-medium text-white">Samba Rice (Keeri)</span>
-                      <span className="text-azure col-span-2 text-right">1.250 kg</span>
-                      <span className="text-muted col-span-2 text-right">260.00</span>
-                      <span className="col-span-2 text-right font-semibold">325.00</span>
+              <div
+                role="img"
+                aria-label={t("mockupAlt")}
+                className="border-azure/40 bg-canvas hover:border-azure relative z-10 w-full max-w-lg overflow-hidden rounded-lg border p-1 shadow-2xl transition-all duration-500 lg:max-w-none"
+              >
+                <div aria-hidden="true">
+                  {/* Frame Header with Rim Glow */}
+                  <div className="bg-surface-elevated border-hairline flex items-center justify-between border-b px-3 py-2 font-mono text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-primary size-2 rounded-full" />
+                      <span className="text-azure-text font-semibold">CB POS v{version}</span>
+                      <span className="text-muted hidden sm:inline">· Till 01</span>
                     </div>
-
-                    <div className="text-text grid grid-cols-12 items-center">
-                      <span className="col-span-6 truncate font-medium text-white">
-                        Anchor Milk Powder 400g
+                    <div className="flex items-center gap-2">
+                      <span className="bg-primary/10 text-primary border-primary/20 rounded border px-1.5 py-0.5 text-[10px]">
+                        OFFLINE READY
                       </span>
-                      <span className="text-azure col-span-2 text-right">1 pcs</span>
-                      <span className="text-muted col-span-2 text-right">1,050.00</span>
-                      <span className="col-span-2 text-right font-semibold">1,050.00</span>
-                    </div>
-
-                    <div className="text-text grid grid-cols-12 items-center">
-                      <span className="col-span-6 truncate font-medium text-white">
-                        Munchee Super Cream Cracker
+                      <span className="text-muted/60 font-mono text-[10px] uppercase">
+                        {t("mockupLabel")}
                       </span>
-                      <span className="text-azure col-span-2 text-right">2 pcs</span>
-                      <span className="text-muted col-span-2 text-right">190.00</span>
-                      <span className="col-span-2 text-right font-semibold">380.00</span>
                     </div>
                   </div>
 
-                  {/* Bill Summary Strip */}
-                  <div className="border-hairline/80 space-y-1.5 border-t pt-3">
-                    <div className="text-muted flex justify-between text-[11px]">
-                      <span>Subtotal before VAT:</span>
-                      <span>Rs. 1,487.29</span>
+                  {/* Simulated Real Sales Screen Contents (PRD §F-02, 06 §3.1) */}
+                  <div className="space-y-4 p-4 font-mono text-xs sm:p-5">
+                    {/* Cart Header */}
+                    <div className="text-muted/70 border-hairline grid grid-cols-12 border-b pb-2 text-[11px]">
+                      <span className="col-span-6">ITEM / DESCRIPTION</span>
+                      <span className="col-span-2 text-right">QTY/WT</span>
+                      <span className="col-span-2 text-right">PRICE</span>
+                      <span className="col-span-2 text-right">TOTAL</span>
                     </div>
-                    <div className="text-muted flex justify-between text-[11px]">
-                      <span>VAT (18%) + SSCL (2.5%):</span>
-                      <span>Rs. 267.71</span>
-                    </div>
-                    <div className="text-primary border-hairline/50 flex justify-between border-t pt-1 text-sm font-bold sm:text-base">
-                      <span>TOTAL (LKR):</span>
-                      <span className="text-lg">Rs. 1,755.00</span>
-                    </div>
-                  </div>
 
-                  {/* Keyboard Shortcuts Hint Bar */}
-                  <div className="text-muted/60 border-hairline/60 flex flex-wrap items-center justify-between gap-1 border-t pt-2 text-[10px]">
-                    <span>[F3] Find</span>
-                    <span>[Enter] Add</span>
-                    <span>[F5] Pay</span>
-                    <span>[F12] Exact Cash</span>
-                    <span>[Esc] Clear</span>
+                    {/* Cart Rows */}
+                    <div className="space-y-2.5">
+                      <div className="text-text grid grid-cols-12 items-center">
+                        <span className="col-span-6 truncate font-medium text-white">Samba Rice (Keeri)</span>
+                        <span className="text-azure col-span-2 text-right">1.250 kg</span>
+                        <span className="text-muted col-span-2 text-right">260.00</span>
+                        <span className="col-span-2 text-right font-semibold">325.00</span>
+                      </div>
+
+                      <div className="text-text grid grid-cols-12 items-center">
+                        <span className="col-span-6 truncate font-medium text-white">
+                          Anchor Milk Powder 400g
+                        </span>
+                        <span className="text-azure col-span-2 text-right">1 pcs</span>
+                        <span className="text-muted col-span-2 text-right">1,050.00</span>
+                        <span className="col-span-2 text-right font-semibold">1,050.00</span>
+                      </div>
+
+                      <div className="text-text grid grid-cols-12 items-center">
+                        <span className="col-span-6 truncate font-medium text-white">
+                          Munchee Super Cream Cracker
+                        </span>
+                        <span className="text-azure col-span-2 text-right">2 pcs</span>
+                        <span className="text-muted col-span-2 text-right">190.00</span>
+                        <span className="col-span-2 text-right font-semibold">380.00</span>
+                      </div>
+                    </div>
+
+                    {/* Bill Summary Strip */}
+                    <div className="border-hairline/80 space-y-1.5 border-t pt-3">
+                      <div className="text-muted flex justify-between text-[11px]">
+                        <span>Subtotal before VAT:</span>
+                        <span>Rs. 1,487.29</span>
+                      </div>
+                      <div className="text-muted flex justify-between text-[11px]">
+                        <span>VAT (18%) + SSCL (2.5%):</span>
+                        <span>Rs. 267.71</span>
+                      </div>
+                      <div className="text-primary border-hairline/50 flex justify-between border-t pt-1 text-sm font-bold sm:text-base">
+                        <span>TOTAL (LKR):</span>
+                        <span className="text-lg">Rs. 1,755.00</span>
+                      </div>
+                    </div>
+
+                    {/* Keyboard Shortcuts Hint Bar */}
+                    <div className="text-text border-hairline/60 flex flex-wrap items-center justify-between gap-1 border-t pt-2 text-[10px]">
+                      <span>[F3] Find</span>
+                      <span>[Enter] Add</span>
+                      <span>[F5] Pay</span>
+                      <span>[F12] Exact Cash</span>
+                      <span>[Esc] Clear</span>
+                    </div>
                   </div>
                 </div>
               </div>

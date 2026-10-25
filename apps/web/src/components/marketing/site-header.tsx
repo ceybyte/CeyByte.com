@@ -37,7 +37,7 @@ export function SiteHeader() {
     >
       <div className="mx-auto flex h-full max-w-[--content-max] items-center gap-4 px-[--gutter]">
         {/* Logo */}
-        <Link href="/" aria-label="CB POS — home" className="shrink-0 rounded-[--radius-sm]">
+        <Link href="/" className="shrink-0 rounded-[--radius-sm]">
           <Logo size="md" />
         </Link>
 
@@ -75,7 +75,7 @@ export function SiteHeader() {
                 variant="secondary"
                 size="sm"
                 asChild
-                className="hidden md:inline-flex items-center gap-1.5"
+                className="hidden items-center gap-1.5 md:inline-flex"
               >
                 <Link href="/dashboard">
                   <LayoutDashboard className="size-3.5" />
@@ -83,12 +83,7 @@ export function SiteHeader() {
                 </Link>
               </Button>
             ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="hidden md:inline-flex"
-              >
+              <Button variant="ghost" size="sm" asChild className="hidden md:inline-flex">
                 <Link href="/login">
                   <span>{t("signIn")}</span>
                 </Link>
