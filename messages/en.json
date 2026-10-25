@@ -493,5 +493,43 @@
       "districtsCovered": "Districts Covered",
       "activeMerchants": "Active Merchants"
     }
+  },
+  "legal": {
+    "nav": {
+      "terms": "Terms of Service",
+      "eula": "EULA",
+      "privacy": "Privacy Policy",
+      "tax": "Tax Disclaimer",
+      "data": "Data Safety",
+      "cookies": "Cookies Policy"
+    },
+    "updated": "Last updated {date} · Version {version}",
+    "prevails": "If translations differ, the English version applies.",
+    "tax": {
+      "title": "Tax Disclaimer",
+      "summary": "When you turn on VAT registration, CB POS works out VAT backward from the MRP (price before VAT = MRP ÷ 1.18 at 18%) and SSCL at 2.5% on 50% of that price before VAT, using the rates you set. Amounts are rounded to the cent with round-half-even. CB POS is not certified, approved or endorsed by the Inland Revenue Department. You're responsible for checking rates, registration thresholds and filings with a qualified accountant. [C1] [C2] [C5]"
+    },
+    "data": {
+      "title": "Data Safety & Storage",
+      "summary": "CB POS keeps your data in a SQLite file on your PC. The file isn't encrypted, so protect the Windows account it lives in. Backups are AES-encrypted .ZIP files that need a backup password; without one, automatic backups don't run. Ceybyte can't see or recover your data. If you use network mode, your PostgreSQL server holds the data and CB POS backups don't cover it. [G1] [G2] [G4]"
+    },
+    "asIs": {
+      "summary": "CB POS is free, proprietary software by Ceylon Byte, provided \"as is\" without warranty of any kind. You may use it for free but not copy, modify or redistribute it. Ceylon Byte isn't liable for losses from its use, including lost data, incorrect tax calculations or business interruption, to the extent Sri Lankan law allows. [K1]"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "summary": "We collect what each feature needs: shop details from the download form, tickets you send, donations you make, and account details if you sign up. Phone numbers are never public. The CB POS app itself checks GitHub for updates each time it starts, sending no shop data, and sends nothing else unless you set up email, LAN Sync, a network database or a network printer. You can ask us to correct or delete your data at any time. [A7] [A8]"
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "summary": "These terms govern your access to ceybyte.com, software downloads, and participation in the merchant directory. By downloading CB POS or browsing this site, you accept these terms under the laws of Sri Lanka."
+    },
+    "eula": {
+      "title": "End User License Agreement (EULA)"
+    },
+    "cookies": {
+      "title": "Cookies Policy",
+      "summary": "CeyByte does not use advertising or tracking cookies. We use Cloudflare Turnstile security cookies to prevent automated bot attacks on forms and local storage to remember your theme preference."
+    }
   }
 }
