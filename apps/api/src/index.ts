@@ -13,6 +13,7 @@ import { statsRoutes } from "./routes/stats";
 import { webhooksRoutes } from "./routes/webhooks";
 import { docsFeedbackRoutes } from "./routes/docs-feedback";
 import { uploadsRoutes } from "./routes/uploads";
+import { feedbackRoutes } from "./routes/feedback";
 import { syncReleases } from "./lib/releases-sync";
 import { rebuildIfDirty } from "./lib/geo-cache";
 import { makeDb } from "./lib/db";
@@ -46,6 +47,7 @@ const api = new Hono<AppEnv>()
   .route("/", merchantsRoutes)
   .route("/", docsFeedbackRoutes)
   .route("/", uploadsRoutes)
+  .route("/", feedbackRoutes)
   .route("/", webhooksRoutes);
 
 // Main worker app: handles root redirect, PostHog reverse proxy, ticket shell rewrite, and /api/* routes.
@@ -87,9 +89,10 @@ const app = new Hono<AppEnv>()
       headers: res.headers,
     });
   })
+  .route("/api", api)
   // Feedback ticket shell rewrite (02-TRD §3, 07 §Phase 3).
   // Serves /{locale}/feedback/ticket/ shell for dynamic CB-{number} paths.
-  .get("/*/feedback/CB-*", async (c) => {
+  .get("/:locale{(?:en|si|ta)}/feedback/CB-*", async (c) => {
     if (!c.env.ASSETS) {
       return c.notFound();
     }
@@ -101,8 +104,7 @@ const app = new Hono<AppEnv>()
       return c.env.ASSETS.fetch(new Request(rewriteUrl.toString(), c.req.raw));
     }
     return c.env.ASSETS.fetch(c.req.raw);
-  })
-  .route("/api", api);
+  });
 
 app.onError(onError);
 app.notFound(onNotFound);
