@@ -532,5 +532,102 @@
       "title": "Cookies Policy",
       "summary": "CeyByte does not use advertising or tracking cookies. We use Cloudflare Turnstile security cookies to prevent automated bot attacks on forms and local storage to remember your theme preference."
     }
+  },
+  "feedback": {
+    "title": "Feedback",
+    "lead": "Tell us what's broken or what you'd like next. We read every ticket and post updates on it here.",
+    "new": {
+      "bug": "Report a problem",
+      "feature": "Suggest a feature"
+    },
+    "tabs": {
+      "all": "All",
+      "bugs": "Bugs",
+      "features": "Features"
+    },
+    "filter": {
+      "status": "Any status"
+    },
+    "sort": {
+      "votes": "Most votes",
+      "newest": "Newest"
+    },
+    "status": {
+      "open": "Open",
+      "triaged": "Triaged",
+      "planned": "Planned",
+      "in_progress": "In progress",
+      "shipped": "Shipped",
+      "closed": "Closed",
+      "duplicate": "Duplicate",
+      "wont_fix": "Won't fix"
+    },
+    "shippedIn": "Fixed in v{version}",
+    "empty": "No tickets match these filters.",
+    "clear": "Clear filters",
+    "vote": "Vote",
+    "voted": "Voted",
+    "officialResponse": "Official response"
+  },
+  "ticket": {
+    "new": {
+      "title": "Tell us what happened",
+      "subtitle": "We read every report and keep our development roadmap public."
+    },
+    "type": {
+      "label": "What's this about?",
+      "bug": "Something isn't working",
+      "feature": "I'd like something new",
+      "question": "I have a question"
+    },
+    "title": {
+      "label": "Short title",
+      "placeholder": "For example, receipts cut off halfway on a 58mm printer"
+    },
+    "similar": {
+      "title": "Is it one of these?",
+      "vote": "Vote for this one instead"
+    },
+    "body": {
+      "label": "Tell us more",
+      "placeholder": "Describe details, steps to reproduce, or why this feature would help your store...",
+      "help": {
+        "bug": "What were you doing, what did you expect, and what happened instead?",
+        "feature": "Markdown supported"
+      }
+    },
+    "version": {
+      "label": "CB POS version",
+      "unknown": "I'm not sure"
+    },
+    "windows": {
+      "label": "Windows version"
+    },
+    "severity": {
+      "label": "How much is this affecting you?",
+      "crash": "CB POS closes or crashes",
+      "blocksBilling": "I can't bill customers",
+      "wrongOutput": "Totals or receipts are wrong",
+      "cosmetic": "Something looks wrong"
+    },
+    "log": {
+      "label": "Error log (optional)",
+      "help": "In CB POS, go to Settings › Admin Tools › Error Logs and click Export Logs. It saves cbpos_logs.txt, up to 5 MB. Please remove any passwords or network addresses before you upload it. Only our team sees logs. [J1] [H9]"
+    },
+    "shot": {
+      "label": "Screenshot (optional)",
+      "help": "PNG or JPG, up to 5 MB. We keep it private unless we mark it safe to show."
+    },
+    "contact": {
+      "label": "Email or phone (optional)",
+      "help": "Only the Ceylon Byte team sees this, and only to follow up on your ticket."
+    },
+    "submit": "Send ticket",
+    "submitting": "Sending ticket...",
+    "created": "Ticket {number} is in. We'll post updates on it here.",
+    "questionDone": "Thank you. These pages might already answer your question:",
+    "timeline": {
+      "title": "Progress Timeline"
+    }
   }
 }
