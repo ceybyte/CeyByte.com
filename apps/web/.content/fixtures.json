@@ -19,13 +19,22 @@
       "sort_order": 1
     },
     {
+      "id": "cat-products-inventory",
+      "slug": "products-inventory",
+      "title_en": "Products and inventory",
+      "title_si": "නිෂ්පාදන සහ තොග",
+      "title_ta": "தயாரிப்புகள் மற்றும் சரக்கு",
+      "icon": "Package",
+      "sort_order": 2
+    },
+    {
       "id": "cat-tax",
       "slug": "tax",
       "title_en": "Tax",
       "title_si": "බදු",
       "title_ta": "வரி",
       "icon": "Percent",
-      "sort_order": 2
+      "sort_order": 3
     },
     {
       "id": "cat-hardware",
@@ -34,7 +43,16 @@
       "title_si": "දෘඩාංග",
       "title_ta": "வன்பொருள்",
       "icon": "Printer",
-      "sort_order": 3
+      "sort_order": 4
+    },
+    {
+      "id": "cat-receipts",
+      "slug": "receipts",
+      "title_en": "Receipts",
+      "title_si": "රිසිට්පත්",
+      "title_ta": "ரசீதுகள்",
+      "icon": "ReceiptText",
+      "sort_order": 5
     },
     {
       "id": "cat-backup-restore",
@@ -43,7 +61,34 @@
       "title_si": "දත්ත උපස්ථ කිරීම",
       "title_ta": "காப்புப்பிரதி",
       "icon": "DatabaseBackup",
-      "sort_order": 4
+      "sort_order": 6
+    },
+    {
+      "id": "cat-multiple-tills",
+      "slug": "multiple-tills",
+      "title_en": "Multiple tills",
+      "title_si": "බහු කවුන්ටර",
+      "title_ta": "பல பணப்பதிவேடுகள்",
+      "icon": "Network",
+      "sort_order": 7
+    },
+    {
+      "id": "cat-troubleshooting",
+      "slug": "troubleshooting",
+      "title_en": "Troubleshooting",
+      "title_si": "ගැටළු නිරාකරණය",
+      "title_ta": "பிழைத்திருத்தம்",
+      "icon": "Wrench",
+      "sort_order": 8
+    },
+    {
+      "id": "cat-release-notes",
+      "slug": "release-notes",
+      "title_en": "Release notes",
+      "title_si": "නිකුත් කිරීම් සටහන්",
+      "title_ta": "வெளியீட்டுக் குறிப்புகள்",
+      "icon": "History",
+      "sort_order": 9
     }
   ],
   "docs": [
@@ -55,8 +100,8 @@
       "category_slug": "getting-started",
       "slug": "install",
       "title": "Install CB POS",
-      "summary": "How to download and install CB POS on Windows 10 or later.",
-      "body_md": "# Install CB POS\n\nCB POS runs on Windows 10 or later as a standalone desktop application. It requires no internet connection to bill.\n\n## Requirements\n\n- Windows 10 (64-bit) or Windows 11\n- 4 GB RAM recommended\n- 500 MB free disk space\n\n## Installation steps\n\n1. Download the installer from the CB POS website.\n2. Run the `CBPOSSetup.exe` installer.\n3. Follow the 2-minute setup wizard.",
+      "summary": "How to download and install CB POS on Windows 10 or later using the 2-minute setup wizard.",
+      "body_md": "# Install CB POS\n\nCB POS runs on Windows 10 (64-bit) or Windows 11 as a standalone desktop application [A2]. It is completely offline-first and requires no internet connection to bill your customers [A2].\n\n## System Requirements\n\n- **Operating System:** Windows 10 (64-bit, version 1809 or later) or Windows 11 [A2]\n- **Memory:** 4 GB RAM minimum (8 GB recommended for fast lookups with large item catalogs)\n- **Storage:** 500 MB free disk space for the program and database\n\n## Installation Steps\n\n1. Download the installer `CBPOSSetup-1.3.0.exe` from the official Ceylon Byte website [A3].\n2. Open the downloaded file to launch the setup wizard.\n3. By default, CB POS installs into your user application directory (`%LOCALAPPDATA%\\Programs\\CB POS`) [A4]. This means you do not need Windows Administrator privileges or UAC elevation to install and run the program [A4].\n4. Follow the setup wizard prompts. Installation takes under two minutes on most computers.\n\n:::callout{type=tip}\nFor POS technicians deploying CB POS across many stores, the installer supports Inno Setup silent flags: run `CBPOSSetup-1.3.0.exe /SILENT` or `/VERYSILENT` in PowerShell [A4].\n:::\n",
       "status": "published",
       "sort_order": 0,
       "published_at": 1761500000000
@@ -70,7 +115,7 @@
       "slug": "install",
       "title": "CB POS ස්ථාපනය කිරීම",
       "summary": "වින්ඩෝස් 10 හෝ ඊට පසු සංස්කරණවල CB POS බාගත කර ස්ථාපනය කරන්නේ කෙසේද.",
-      "body_md": "# CB POS ස්ථාපනය කිරීම\n\nCB POS වින්ඩෝස් 10 හෝ ඊට පසු සංස්කරණවල ස්වාධීන මෘදුකාංගයක් ලෙස ක්‍රියාත්මක වේ.\n\n## අවශ්‍යතා\n\n- වින්ඩෝස් 10 හෝ වින්ඩෝස් 11\n- 4 GB මතකය\n- 500 MB ඉඩ",
+      "body_md": "# CB POS ස්ථාපනය කිරීම\n\nCB POS වින්ඩෝස් 10 හෝ ඊට පසු සංස්කරණවල ස්වාධීන මෘදුකාංගයක් ලෙස ක්‍රියාත්මක වේ [A2].\n\n## අවශ්‍යතා\n\n- වින්ඩෝස් 10 (64-bit) හෝ වින්ඩෝස් 11 [A2]\n- 4 GB මතකය\n- 500 MB නිදහස් ඉඩ\n\n## ස්ථාපන පියවර\n\n1. වෙබ් අඩවියෙන් `CBPOSSetup.exe` බාගත කරන්න [A3].\n2. ස්ථාපන ගොනුව ක්‍රියාත්මක කරන්න.\n3. මිනිත්තු 2ක සරල පියවර අනුගමනය කරන්න [A4].",
       "status": "published",
       "sort_order": 0,
       "published_at": 1761500000000
@@ -84,9 +129,79 @@
       "slug": "install",
       "title": "CB POS நிறுவுதல்",
       "summary": "விண்டோஸ் 10 அல்லது அதற்குப் பிந்தையவற்றில் CB POS ஐப் பதிவிறக்கி நிறுவுவது எப்படி.",
-      "body_md": "# CB POS நிறுவுதல்\n\nCB POS விண்டோஸ் 10 அல்லது அதற்குப் பிந்தையவற்றில் தனித்த டெஸ்க்டாப் பயன்பாடாக இயங்குகிறது.\n\n## தேவைகள்\n\n- விண்டோஸ் 10 அல்லது விண்டோஸ் 11\n- 4 GB நினைவகம்\n- 500 MB இடம்",
+      "body_md": "# CB POS நிறுவுதல்\n\nCB POS விண்டோஸ் 10 அல்லது அதற்குப் பிந்தையவற்றில் தனித்த டெஸ்க்டாப் பயன்பாடாக இயங்குகிறது [A2].\n\n## தேவைகள்\n\n- விண்டோஸ் 10 (64-bit) அல்லது விண்டோஸ் 11 [A2]\n- 4 GB நினைவகம்\n- 500 MB இடம்\n\n## நிறுவல் படிகள்\n\n1. இணையதளத்தில் இருந்து `CBPOSSetup.exe` ஐப் பதிவிறக்கவும் [A3].\n2. நிறுவல் கோப்பைத் திறக்கவும்.\n3. எளிய படிகளைப் பின்பற்றி நிறுவவும் [A4].",
       "status": "published",
       "sort_order": 0,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-smartscreen-en",
+      "translation_key": "doc-smartscreen",
+      "locale": "en",
+      "category_id": "cat-getting-started",
+      "category_slug": "getting-started",
+      "slug": "smartscreen",
+      "title": "Get past Windows SmartScreen",
+      "summary": "Why Windows displays a blue 'Windows protected your PC' prompt and how to proceed safely.",
+      "body_md": "# Get past Windows SmartScreen\n\nWhen you run the CB POS installer on Windows 10 or 11, Microsoft Defender SmartScreen may display a blue dialog titled **\"Windows protected your PC\"** [A5].\n\n## Why does this appear?\n\nThis is completely normal for new freeware software. Windows SmartScreen displays this alert on any executable that has not yet built up a cryptographic reputation via an EV code-signing certificate [A5]. Certified certificates cost upwards of $400 USD annually. As a 100% free community project, Ceylon Byte is currently raising funds through user donations to purchase an official code-signing certificate [A5].\n\n## How to proceed\n\n1. Click **\"More info\"** link on the SmartScreen dialog [A5].\n2. Click the **\"Run anyway\"** button at the bottom [A5].\n\n:::callout{type=tip}\nYou can verify that your installer has not been modified by checking its SHA-256 checksum in PowerShell:\n```powershell\nGet-FileHash .\\CBPOSSetup-1.3.0.exe -Algorithm SHA256\n```\nThe checksum must match the value published on our official Releases page.\n:::\n",
+      "status": "published",
+      "sort_order": 1,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-first-login-en",
+      "translation_key": "doc-first-login",
+      "locale": "en",
+      "category_id": "cat-getting-started",
+      "category_slug": "getting-started",
+      "slug": "first-login",
+      "title": "First login and the default PIN",
+      "summary": "Logging into CB POS for the first time and changing the default administrator PIN.",
+      "body_md": "# First login and the default PIN\n\nWhen you open CB POS for the first time, the login screen prompts you for an employee PIN.\n\n## Default Administrator Account\n\n- **Default PIN:** `1234` [I1]\n- **Role:** Administrator (Full Permissions)\n\n## Changing Your PIN\n\nFor security, change the default administrator PIN before processing your first customer sale [I1]:\n\n1. Log in with `1234` [I1].\n2. Go to **Settings** › **Users & Security**.\n3. Select the Administrator user profile.\n4. Click **Change PIN**, type your new 4-digit to 6-digit numeric PIN, and save.\n5. You can also create cashier profiles with restricted permissions (e.g., blocking price edits or refunds) [I1].\n",
+      "status": "published",
+      "sort_order": 2,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-first-sale-en",
+      "translation_key": "doc-first-sale",
+      "locale": "en",
+      "category_id": "cat-getting-started",
+      "category_slug": "getting-started",
+      "slug": "first-sale",
+      "title": "Make your first sale",
+      "summary": "Walkthrough of cashiering workflow: searching items, adding to cart, and tendering payment.",
+      "body_md": "# Make your first sale\n\nCB POS is designed for fast, high-volume retail cashiering [B1]. You can operate the entire billing screen using just your keyboard or a barcode scanner.\n\n## Step-by-Step Billing\n\n1. **Scan or Search:** Scan an item's barcode, or press `F3` to search by product name or code [B1].\n2. **Adjust Quantity:** Use `+` and `-` on your number pad to adjust item quantity, or type a quantity and press `*` [B1].\n3. **Hold a Bill:** If a customer needs to pick another item, press `F6` to hold the bill, attend to the next customer, and press `F7` to recall the held bill [B1].\n4. **Tender Payment:**\n   - Press `F12` for **Quick Cash** (customer pays exact total amount) [B1].\n   - Press `F5` to open the standard cash tender dialog, enter the cash amount received, and view the exact change owed [B1].\n   - Press `F10` for split payment (e.g. part Cash, part Card or Credit Book) [B1].\n5. **Receipt:** The thermal receipt prints automatically and the cash drawer kicks open [E1].\n",
+      "status": "published",
+      "sort_order": 3,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-keyboard-shortcuts-en",
+      "translation_key": "doc-keyboard-shortcuts",
+      "locale": "en",
+      "category_id": "cat-cashiering",
+      "category_slug": "cashiering",
+      "slug": "keyboard-shortcuts",
+      "title": "Keyboard shortcuts",
+      "summary": "Complete keyboard keymap for mouse-free retail billing in CB POS.",
+      "body_md": "# Keyboard shortcuts\n\nCB POS is keyboard-first [B1]. Mastering these shortcuts lets your cashiers bill twice as fast during peak hours.\n\n| Shortcut | Action | Description |\n|---|---|---|\n| `F3` | Item Search | Opens item search popup by name or SKU [B1] |\n| `F5` | Tender / Pay | Opens payment dialog to enter cash received [B1] |\n| `F10` | Split Payment | Pay with multiple methods (Cash, Card, Loyalty, Credit) [B1] |\n| `F12` | Quick Cash | Completes bill immediately with exact cash [B1] |\n| `F6` | Hold Bill | Holds current cart and clears screen for next customer [B1] |\n| `F7` | Recall Bill | Restores previously held customer carts [B1] |\n| `+` / `-` | Quantity | Increase or decrease quantity of selected line [B1] |\n| `Delete` | Remove Line | Removes selected item from the current bill [B1] |\n| `Esc` | Clear / Cancel | Clears search box or cancels current modal [B1] |\n| `F8` | Loyalty / Customer | Looks up customer profile by mobile number [B2] |\n\n:::callout{type=tip}\nPrint a physical copy for your cashiers using our [Printable Shortcuts Cheat Sheet](/docs/shortcuts/print) [B1].\n:::\n",
+      "status": "published",
+      "sort_order": 4,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-vat-registration-en",
+      "translation_key": "doc-vat-registration",
+      "locale": "en",
+      "category_id": "cat-tax",
+      "category_slug": "tax",
+      "slug": "vat-registration",
+      "title": "Turn on VAT registration",
+      "summary": "Configuring VAT registration and tax rates for registered businesses.",
+      "body_md": "# Turn on VAT registration\n\nBy default, CB POS bills products at their shelf MRP without separating tax components [C1]. If your business is registered for Value Added Tax (VAT) with the Inland Revenue Department (IRD), you can turn on VAT calculations in settings.\n\n## How to Enable VAT\n\n1. Open CB POS and navigate to **Settings** › **Business Profile** [C1].\n2. Check the box labelled **\"Business is VAT Registered\"** [C1].\n3. Enter your shop's official Taxpayer Identification Number (TIN) and VAT registration number [C1].\n4. Confirm the standard VAT rate (defaults to 18%) [C1].\n5. Save your settings.\n\nOnce enabled, receipts and A4 tax invoices will display the mandatory tax breakdown and your TIN/VAT numbers [C1][C4].\n",
+      "status": "published",
+      "sort_order": 5,
       "published_at": 1761500000000
     },
     {
@@ -97,41 +212,97 @@
       "category_slug": "tax",
       "slug": "vat-and-sscl",
       "title": "How VAT and SSCL are calculated",
-      "summary": "Understanding VAT and SSCL calculations from shelf price.",
-      "body_md": "# How VAT and SSCL are calculated\n\nCB POS calculates Sri Lankan 18% VAT and 2.5% SSCL automatically backwards from the shelf price.\n\n:::disclaimer\nCB POS calculations are not certified by the IRD. Always verify with your tax advisor.\n:::\n\n## Calculation Formula\n\nShelf Price = Base Price + SSCL (2.5%) + VAT (18%).",
+      "summary": "Understanding backward VAT from shelf MRP and Social Security Contribution Levy (SSCL) formulas.",
+      "body_md": "# How VAT and SSCL are calculated\n\nIn Sri Lanka, retail prices on shelf items are maximum retail prices (MRP) inclusive of tax [C1]. CB POS automatically derives the base price, VAT, and SSCL backward from the shelf price so your cashiers do not need to do manual calculations [C1][C2].\n\n## The Mathematical Formulas\n\nWhen **Business is VAT Registered** is active [C1]:\n\n1. **Base Price (VAT Exclusive):**\n   $$\\text{Base} = \\frac{\\text{MRP}}{1 + \\text{VAT Rate}}$$\n   At the standard 18% rate: `Base = MRP / 1.18` [C1].\n\n2. **VAT Amount:**\n   $$\\text{VAT} = \\text{MRP} - \\text{Base}$$\n   This guarantees that `Base + VAT` always exactly equals the shelf MRP [C1].\n\n3. **SSCL Calculation:**\n   Social Security Contribution Levy (SSCL) is calculated at 2.5% on 50% of the VAT-exclusive base [C2]:\n   $$\\text{SSCL} = \\text{Base} \\times 50\\% \\times 2.5\\%$$\n\n## Worked Example\n\nFor an item with shelf MRP of **Rs. 1,180.00** [C1][C2]:\n- **Base Price:** Rs. 1,000.00\n- **VAT (18%):** Rs. 180.00\n- **SSCL (2.5% on 50% base):** Rs. 12.50\n- **Customer Pays:** Rs. 1,180.00\n",
       "status": "published",
-      "sort_order": 1,
+      "sort_order": 6,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-receipt-printer-en",
+      "translation_key": "doc-receipt-printer",
+      "locale": "en",
+      "category_id": "cat-hardware",
+      "category_slug": "hardware",
+      "slug": "receipt-printer",
+      "title": "Connect a receipt printer",
+      "summary": "Setting up 58mm and 80mm ESC/POS thermal printers with Sinhala and Tamil printing support.",
+      "body_md": "# Connect a receipt printer\n\nCB POS supports standard 58mm and 80mm ESC/POS thermal printers connected via USB, Ethernet (LAN), or virtual Windows COM ports [E1].\n\n## Setting up your printer\n\n1. Plug your printer into your PC via USB and install the manufacturer's Windows printer driver [E1].\n2. In CB POS, go to **Settings** › **Printers & Hardware** [E1].\n3. Select your receipt paper width: **58mm** or **80mm** [E1].\n4. Choose your printer from the Windows printer dropdown.\n5. Click **Test Print** to verify receipt feed and cash drawer kick [E1].\n\n## Sinhala and Tamil Receipt Printing\n\nStandard thermal receipt printers do not have Sinhala or Tamil fonts built into their hardware ROM [E2]. CB POS solves this by rendering Sinhala and Tamil text as sharp monochrome bitmap graphics before sending them to the printer via ESC/POS raster graphics commands [E2]. This means you can print receipts in Sinhala or Tamil on any cheap standard thermal printer [E2]!\n",
+      "status": "published",
+      "sort_order": 7,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-scale-labels-en",
+      "translation_key": "doc-scale-labels",
+      "locale": "en",
+      "category_id": "cat-hardware",
+      "category_slug": "hardware",
+      "slug": "scale-labels",
+      "title": "Scale-label barcodes",
+      "summary": "Configuring 3-decimal weighing scale barcodes for loose grains and vegetables.",
+      "body_md": "# Scale-label barcodes\n\nFor grocery stores, pharmacies, and mini-marts selling loose commodities (rice, dhal, sugar, vegetables), CB POS provides native support for 3-decimal weight quantities [D2] and barcode-printing scales [E3].\n\n## Supported Barcode Standard\n\nCB POS parses standard EAN-13 weight-embedded retail barcodes [E3]:\n\n```\n2 0 I I I I W W W W W C\n```\n- `20` or `21`: Standard retail prefix for variable-weight items [E3]\n- `IIII`: 4-digit internal Item Code matching your product database [E3]\n- `WWWWW`: 5-digit weight in grams (e.g., `01250` = 1.250 kg) [E3]\n- `C`: Standard EAN checksum digit\n\n## How Cashiering Works with Scales\n\nWhen a cashier scans a scale label printed at your weighing counter, CB POS instantly identifies the product, enters `1.250 kg` into the quantity column, and multiplies it by your per-kilogram price automatically [E3].\n",
+      "status": "published",
+      "sort_order": 8,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-backup-and-restore-en",
+      "translation_key": "doc-backup-and-restore",
+      "locale": "en",
+      "category_id": "cat-backup-restore",
+      "category_slug": "backup-restore",
+      "slug": "backup-and-restore",
+      "title": "Back up and restore",
+      "summary": "Protecting your business data with AES-256 encrypted backups.",
+      "body_md": "# Back up and restore\n\nBecause CB POS is offline-first, your sales, inventory, and accounting data reside safely on your local computer's drive [G2]. To protect against hardware failure or accidental damage, regular backups are essential.\n\n## Automated Backups\n\n- **Shift Close Prompt:** When a cashier closes their register shift, CB POS prompts to take an encrypted backup [G2].\n- **App Close Auto-Backup:** In **Settings** › **Backup & Security**, you can set a master backup password and choose a backup directory (such as a USB pen drive or external hard drive). CB POS will then create an encrypted `.ZIP` backup automatically every time the software closes [G2].\n\n## Backup Encryption\n\nAll CB POS backup archives are compressed and encrypted using AES-256 encryption [G2]. Even if an unauthorized person copies your backup file, they cannot access your financial records without your secret password [G2].\n\n## Restoring on a New Computer\n\n1. Install CB POS on the new computer [A2].\n2. On the initial setup screen, choose **Restore from Backup** [G3].\n3. Select your `.ZIP` backup file and type your backup password [G3].\n4. All your inventory, receipts, customer records, and settings will be restored completely [G3].\n",
+      "status": "published",
+      "sort_order": 9,
+      "published_at": 1761500000000
+    },
+    {
+      "id": "doc-lan-sync-or-network-mode-en",
+      "translation_key": "doc-lan-sync-or-network-mode",
+      "locale": "en",
+      "category_id": "cat-multiple-tills",
+      "category_slug": "multiple-tills",
+      "slug": "lan-sync-or-network-mode",
+      "title": "Multiple tills: LAN Sync vs network mode",
+      "summary": "Running multiple checkout counters on a local network without cloud servers.",
+      "body_md": "# Multiple tills: LAN Sync vs network mode\n\nFor busy shops running two or more checkout counters, CB POS offers two distinct multi-till options [G4][H]. Both run entirely on your shop's own local network; neither sends your sales data to Ceylon Byte cloud servers [A8].\n\n## Option 1: LAN Sync (Peer-to-Peer)\n\nIn LAN Sync mode, one computer acts as the Main Till and secondary tills sync transactions over local Wi-Fi or Ethernet [H1].\n\n:::callout{type=danger}\n**Security Notice:** LAN Sync does not perform TLS certificate validation between machines [H6]. You must use LAN Sync strictly on a private, password-protected shop network that customers cannot connect to [H6].\n:::\n\n## Option 2: Shared PostgreSQL Network Mode\n\nFor large supermarkets or shops with more than 3 tills, you can configure CB POS to connect directly to a dedicated PostgreSQL database server running on your local premises [H2].\n\n:::callout{type=warn}\n**Important Constraints:**\n- CB POS local backup files do NOT include database data stored on an external PostgreSQL server [G4]. You must configure independent daily backups for PostgreSQL on your server machine [G4].\n- PostgreSQL network mode does not have automatic TLS configuration in the application UI [H6]. Keep your database strictly within your internal LAN.\n:::\n",
+      "status": "published",
+      "sort_order": 10,
       "published_at": 1761500000000
     }
   ],
   "blog": [
     {
-      "id": "post-welcome-en",
-      "translation_key": "post-welcome",
+      "id": "blog-free-en",
+      "translation_key": "blog-free",
       "locale": "en",
-      "slug": "introducing-cb-pos",
-      "title": "Introducing CB POS: Free Point-of-Sale for Sri Lanka",
-      "excerpt": "Why we built a free, offline-first point-of-sale system for retail shops across Sri Lanka.",
-      "body_md": "# Introducing CB POS\n\nWe built CB POS because retail merchants in Sri Lanka deserve reliable, free point-of-sale software that works without the internet.",
-      "tags": ["release", "community"],
+      "slug": "cbpos-is-free",
+      "title": "CB POS is free",
+      "excerpt": "Why Ceylon Byte makes Point of Sale software free for Sri Lankan small businesses.",
+      "body_md": "# CB POS is free\n\nCeylon Byte is dedicated to providing high-quality software for retail stores across Sri Lanka without subscription fees.",
+      "tags": "announcement,community",
       "status": "published",
-      "reading_minutes": 2,
+      "reading_minutes": 3,
       "published_at": 1761500000000
     }
   ],
   "releases": [
     {
-      "id": "release-1.3.0",
+      "id": "rel-1.3.0",
       "version": "1.3.0",
       "channel": "stable",
-      "release_date": "2026-09-27",
+      "title": "CB POS v1.3.0",
       "download_url": "https://github.com/ceybyte/cbpos-releases/releases/download/v1.3.0/CBPOSSetup-1.3.0.exe",
-      "changelog": "Initial stable public release with trilingual receipt printing, VAT/SSCL calculation, and offline SQLite storage.",
-      "min_version": "1.0.0",
+      "changelog": "## Added\n- Support for Sinhala and Tamil receipt printing on 58mm and 80mm printers.\n- EAN-13 weight scale barcode parsing.\n- Backward VAT and SSCL tax reports.",
+      "min_version": "Windows 10 or later",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "is_latest": true,
       "is_yanked": false,
-      "published_at": 1758931200000
+      "published_at": 1761500000000
     }
   ]
 }

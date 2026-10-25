@@ -1,3 +1,4 @@
+/// <reference types="bun-types" />
 // Seed data (05-SCHEMA §9).
 //   bun scripts/seed.ts                                   # local D1: everything below
 //   bun scripts/seed.ts --preview                         # cbpos-db-preview: same as local
@@ -77,36 +78,25 @@ CATEGORIES.forEach(([slug, title, icon], i) => {
   );
 });
 
-/* ---------- Starter articles: drafts until written from 00-CBPOS_FACTS.md and humanized ---------- */
-const ARTICLES = [
-  ["getting-started", "install", "Install CB POS", "[A2] [A3] [A4]"],
-  ["getting-started", "smartscreen", "Get past Windows SmartScreen", "[A5]"],
-  ["getting-started", "first-login", "First login and the default PIN", "[I1]"],
-  ["getting-started", "first-sale", "Make your first sale", "[B1]"],
-  ["cashiering", "keyboard-shortcuts", "Keyboard shortcuts", "[B1]"],
-  ["tax", "vat-registration", "Turn on VAT registration", "[C1]"],
-  ["tax", "vat-and-sscl", "How VAT and SSCL are calculated", "[C1] [C2]"],
-  ["hardware", "receipt-printer", "Connect a receipt printer", "[E1]"],
-  ["hardware", "scale-labels", "Scale-label barcodes", "[E3]"],
-  ["backup-restore", "backup-and-restore", "Back up and restore", "[G2] [G3]"],
-  ["multiple-tills", "lan-sync-or-network-mode", "Multiple tills: LAN Sync or network mode", "[G4] [H]"],
-] as const;
+/* ---------- Starter articles: 11 seed articles written from 00-CBPOS_FACTS.md (05 §9) ---------- */
+import fixtures from "../apps/web/.content/fixtures.json";
 
-ARTICLES.forEach(([category, slug, title, facts], i) => {
+fixtures.docs.forEach((doc, i) => {
   sql.push(
     insert(
       "docs_articles",
       {
-        id: `doc-${slug}-en`,
-        translation_key: `doc-${slug}`,
-        locale: "en",
-        category_id: `cat-${category}`,
-        slug,
-        title,
-        summary: "",
-        body_md: `Draft. Write this article from 00-CBPOS_FACTS.md ${facts}, cite those IDs, and run it through the humanizer before publishing.`,
-        status: "draft",
-        sort_order: i,
+        id: doc.id,
+        translation_key: doc.translation_key,
+        locale: doc.locale,
+        category_id: doc.category_id,
+        slug: doc.slug,
+        title: doc.title,
+        summary: doc.summary,
+        body_md: doc.body_md,
+        status: doc.status,
+        sort_order: doc.sort_order ?? i,
+        published_at: doc.published_at ?? now,
         created_at: now,
         updated_at: now,
       },
