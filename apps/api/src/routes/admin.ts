@@ -8,6 +8,7 @@ import {
   merchantLogs,
   merchants,
   releases,
+  users,
 } from "@cbpos/shared/db/schema";
 import { and, count, desc, eq, inArray, isNull, like, or } from "drizzle-orm";
 import { Hono } from "hono";
@@ -146,6 +147,70 @@ export const adminRoutes = new Hono<AppEnv>()
         telegram: row.telegram,
       },
     } as const);
+  })
+
+  // 4b. Link Merchant to User Account (Audited)
+  .post("/admin/merchants/:id/link-user", async (c) => {
+    const db = c.get("db");
+    const id = c.req.param("id");
+    const body = (await c.req.json().catch(() => ({}))) as { userId?: string; email?: string };
+
+    const merchant = await db
+      .select()
+      .from(merchants)
+      .where(and(or(eq(merchants.id, id), eq(merchants.publicId, id)), isNull(merchants.deletedAt)))
+      .get();
+    if (!merchant) throw new ApiError("NOT_FOUND");
+
+    let targetUser: typeof users.$inferSelect | undefined;
+    if (body.email) {
+      targetUser = await db.select().from(users).where(eq(users.email, body.email.trim())).get();
+    } else if (body.userId) {
+      targetUser = await db.select().from(users).where(eq(users.id, body.userId.trim())).get();
+    }
+
+    if (!targetUser) {
+      throw new ApiError("NOT_FOUND");
+    }
+
+    const now = new Date();
+    await db
+      .update(merchants)
+      .set({
+        ownerUserId: targetUser.id,
+        claimRedeemedAt: merchant.claimRedeemedAt ?? now,
+        updatedAt: now,
+      })
+      .where(eq(merchants.id, merchant.id));
+
+    const adminUser = c.get("session")?.user;
+    await auditInsert(db, {
+      actorUserId: adminUser?.id ?? null,
+      action: "merchant.link_owner",
+      entityType: "merchant",
+      entityId: merchant.id,
+      diff: {
+        previousOwner: merchant.ownerUserId,
+        newOwner: targetUser.id,
+        newOwnerEmail: targetUser.email,
+      },
+    });
+
+    await db.insert(merchantLogs).values({
+      id: `ml_${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`,
+      merchantId: merchant.id,
+      event: "listing_claimed",
+      meta: { claimedBy: targetUser.id, linkedByAdmin: adminUser?.id ?? null },
+      createdAt: now,
+    });
+
+    return c.json({
+      ok: true,
+      data: {
+        merchantId: merchant.id,
+        ownerUserId: targetUser.id,
+      },
+    });
   })
 
   // 5. Update Merchant Status / Supporter
