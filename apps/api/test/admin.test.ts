@@ -14,7 +14,9 @@ const call = (path: string, init: RequestInit & { cookie?: string } = {}) => {
   return exports.default.fetch(`${ORIGIN}/api${path}`, { ...init, headers });
 };
 
+let cachedAdminCookie: string | null = null;
 async function getAdminCookie(): Promise<string> {
+  if (cachedAdminCookie) return cachedAdminCookie;
   const email = "superadmin@example.com";
   await call("/auth/email-otp/send-verification-otp", {
     method: "POST",
@@ -36,7 +38,8 @@ async function getAdminCookie(): Promise<string> {
   if (!cookie) throw new Error("no session cookie");
 
   await env.DB.prepare("UPDATE users SET role = 'admin' WHERE email = ?").bind(email).run();
-  return cookie.split(";")[0] ?? "";
+  cachedAdminCookie = cookie.split(";")[0] ?? "";
+  return cachedAdminCookie;
 }
 
 describe("Admin API Endpoints (F-08 M1)", () => {
@@ -223,5 +226,82 @@ describe("Admin API Endpoints (F-08 M1)", () => {
     expect(yankRes.status).toBe(200);
     const yankJson = (await yankRes.json()) as { ok: boolean; data: { isYanked: boolean } };
     expect(yankJson.data.isYanked).toBe(true);
+  });
+
+  it("GET /api/admin/feedback returns full ticket details and PATCH updates status/response", async () => {
+    const cookie = await getAdminCookie();
+
+    const ticketId = "fb_admin_test_1";
+    await env.DB.prepare(
+      `INSERT INTO feedback_tickets (id, public_number, type, title, body_md, status, is_public, crash_log_key, contact_private, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    )
+      .bind(
+        ticketId,
+        999,
+        "listing_report",
+        "Spam merchant reported on map",
+        "This shop does not exist at this location.",
+        "open",
+        0, // not public
+        "crash-logs/test/log.txt",
+        "reporter@example.com",
+        Date.now(),
+        Date.now(),
+      )
+      .run();
+
+    // 1. Admin lists feedback (must see unlisted ticket, contactPrivate and crashLogKey)
+    const listRes = await call("/admin/feedback", { cookie });
+    expect(listRes.status).toBe(200);
+
+    const listJson = (await listRes.json()) as {
+      ok: boolean;
+      data: {
+        items: Array<{
+          id: string;
+          contactPrivate?: string;
+          crashLogKey?: string;
+          title: string;
+        }>;
+      };
+    };
+    expect(listJson.ok).toBe(true);
+    const found = listJson.data.items.find((t) => t.id === ticketId);
+    expect(found).toBeDefined();
+    expect(found?.contactPrivate).toBe("reporter@example.com");
+    expect(found?.crashLogKey).toBe("crash-logs/test/log.txt");
+
+    // 2. Admin patches status and adds response
+    const patchRes = await call(`/admin/feedback/${ticketId}`, {
+      method: "PATCH",
+      cookie,
+      body: JSON.stringify({
+        status: "triaged",
+        severity: "cosmetic",
+        adminResponseMd: "Investigating listing location.",
+      }),
+    });
+    expect(patchRes.status).toBe(200);
+    const patchJson = (await patchRes.json()) as {
+      ok: boolean;
+      data: {
+        status: string;
+        severity: string;
+        adminResponseMd: string;
+      };
+    };
+    expect(patchJson.data.status).toBe("triaged");
+    expect(patchJson.data.severity).toBe("cosmetic");
+    expect(patchJson.data.adminResponseMd).toBe("Investigating listing location.");
+
+    // 3. Verify audit log was recorded
+    const auditRow = await env.DB.prepare(
+      "SELECT action, entity_id FROM admin_audit_log WHERE entity_id = ? ORDER BY created_at DESC",
+    )
+      .bind(ticketId)
+      .first<{ action: string; entity_id: string }>();
+    expect(auditRow).toBeDefined();
+    expect(auditRow?.action).toBe("feedback.update");
   });
 });

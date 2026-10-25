@@ -220,3 +220,73 @@ export async function triggerRebuild(reason?: string): Promise<{ queued: boolean
     body: JSON.stringify({ reason: reason || "admin_manual" }),
   });
 }
+
+export interface AdminFeedbackTicket {
+  id: string;
+  publicNumber: number;
+  formattedNumber: string;
+  draftId?: string | null;
+  type: "bug" | "feature" | "question" | "listing_report";
+  title: string;
+  bodyMd: string;
+  appVersion?: string | null;
+  windowsVersion?: string | null;
+  severity?: "crash" | "blocks_billing" | "wrong_output" | "cosmetic" | null;
+  status:
+    | "open"
+    | "triaged"
+    | "planned"
+    | "in_progress"
+    | "shipped"
+    | "closed"
+    | "duplicate"
+    | "wont_fix";
+  isPublic: boolean;
+  voteCount: number;
+  crashLogKey?: string | null;
+  crashLogUrl?: string | null;
+  screenshotKey?: string | null;
+  screenshotPrivateUrl?: string | null;
+  screenshotPublicKey?: string | null;
+  contactPrivate?: string | null;
+  reporterUserId?: string | null;
+  reportedMerchantId?: string | null;
+  duplicateOfId?: string | null;
+  resolvedInReleaseId?: string | null;
+  releaseVersion?: string | null;
+  adminResponseMd?: string | null;
+  adminRespondedAt?: string | number | null;
+  createdAt: string | number;
+  updatedAt: string | number;
+}
+
+export async function fetchAdminFeedback(params?: {
+  status?: string;
+  type?: string;
+  search?: string;
+}): Promise<{ items: AdminFeedbackTicket[] }> {
+  const q = new URLSearchParams();
+  if (params?.status) q.set("status", params.status);
+  if (params?.type) q.set("type", params.type);
+  if (params?.search) q.set("search", params.search);
+  const query = q.toString();
+  return request<{ items: AdminFeedbackTicket[] }>(`/api/admin/feedback${query ? `?${query}` : ""}`);
+}
+
+export async function updateAdminFeedback(
+  id: string,
+  body: {
+    status?: string;
+    severity?: string | null;
+    adminResponseMd?: string | null;
+    duplicateOfId?: string | null;
+    resolvedInReleaseId?: string | null;
+    isPublic?: boolean;
+    approveScreenshot?: boolean;
+  },
+): Promise<AdminFeedbackTicket> {
+  return request<AdminFeedbackTicket>(`/api/admin/feedback/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}

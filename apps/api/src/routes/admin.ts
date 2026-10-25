@@ -16,6 +16,8 @@ import { ApiError } from "../lib/errors";
 import { bumpGeoVersion } from "../lib/geo-cache";
 import { getRebuildStatus, triggerRebuild } from "../lib/rebuild";
 import { syncReleases } from "../lib/releases-sync";
+import { FeedbackAdminUpdateSchema, formatTicketNumber } from "@cbpos/shared/schemas/feedback";
+import { presignGet } from "../lib/r2";
 import { requireRole } from "../middleware/session";
 import type { AppEnv } from "../types";
 
@@ -372,5 +374,165 @@ export const adminRoutes = new Hono<AppEnv>()
     return c.json({
       ok: true,
       data: status,
+    } as const);
+  })
+
+  // 15. Feedback Triage Queue (01-PRD §F-08, 07 §Phase 10)
+  .get("/admin/feedback", async (c) => {
+    const db = c.get("db");
+    const status = c.req.query("status");
+    const type = c.req.query("type");
+    const search = c.req.query("search");
+    const limit = Math.min(Number(c.req.query("limit") ?? 50), 100);
+    const offset = Number(c.req.query("offset") ?? 0);
+
+    const conditions = [];
+    if (status && status !== "all") {
+      conditions.push(eq(feedbackTickets.status, status as any));
+    }
+    if (type && type !== "all") {
+      conditions.push(eq(feedbackTickets.type, type as any));
+    }
+    if (search && search.trim().length > 0) {
+      conditions.push(like(feedbackTickets.title, `%${search.trim()}%`));
+    }
+
+    const rows = await db
+      .select({
+        id: feedbackTickets.id,
+        publicNumber: feedbackTickets.publicNumber,
+        draftId: feedbackTickets.draftId,
+        type: feedbackTickets.type,
+        title: feedbackTickets.title,
+        bodyMd: feedbackTickets.bodyMd,
+        appVersion: feedbackTickets.appVersion,
+        windowsVersion: feedbackTickets.windowsVersion,
+        severity: feedbackTickets.severity,
+        status: feedbackTickets.status,
+        isPublic: feedbackTickets.isPublic,
+        voteCount: feedbackTickets.voteCount,
+        crashLogKey: feedbackTickets.crashLogKey,
+        screenshotKey: feedbackTickets.screenshotKey,
+        contactPrivate: feedbackTickets.contactPrivate,
+        screenshotPublicKey: feedbackTickets.screenshotPublicKey,
+        reporterUserId: feedbackTickets.reporterUserId,
+        reportedMerchantId: feedbackTickets.reportedMerchantId,
+        duplicateOfId: feedbackTickets.duplicateOfId,
+        resolvedInReleaseId: feedbackTickets.resolvedInReleaseId,
+        releaseVersion: releases.version,
+        adminResponseMd: feedbackTickets.adminResponseMd,
+        adminRespondedAt: feedbackTickets.adminRespondedAt,
+        createdAt: feedbackTickets.createdAt,
+        updatedAt: feedbackTickets.updatedAt,
+      })
+      .from(feedbackTickets)
+      .leftJoin(releases, eq(feedbackTickets.resolvedInReleaseId, releases.id))
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(feedbackTickets.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    const items = await Promise.all(
+      rows.map(async (ticket) => {
+        let crashLogUrl: string | null = null;
+        let screenshotPrivateUrl: string | null = null;
+        if (ticket.crashLogKey) {
+          crashLogUrl = await presignGet(c.env, ticket.crashLogKey, 120);
+        }
+        if (ticket.screenshotKey) {
+          screenshotPrivateUrl = await presignGet(c.env, ticket.screenshotKey, 120);
+        }
+        return {
+          ...ticket,
+          formattedNumber: formatTicketNumber(ticket.publicNumber),
+          crashLogUrl,
+          screenshotPrivateUrl,
+        };
+      }),
+    );
+
+    return c.json({
+      ok: true,
+      data: { items },
+    } as const);
+  })
+
+  .patch("/admin/feedback/:id", async (c) => {
+    const db = c.get("db");
+    const id = c.req.param("id");
+    const ticket = await db.select().from(feedbackTickets).where(eq(feedbackTickets.id, id)).get();
+    if (!ticket) throw new ApiError("NOT_FOUND");
+
+    const raw = await c.req.json().catch(() => null);
+    const parsed = FeedbackAdminUpdateSchema.safeParse(raw);
+    if (!parsed.success) throw new ApiError("VALIDATION_FAILED");
+
+    const updates: Partial<typeof feedbackTickets.$inferInsert> = {
+      updatedAt: new Date(),
+    };
+
+    const d = parsed.data;
+    if (d.status !== undefined) updates.status = d.status;
+    if (d.severity !== undefined) updates.severity = d.severity;
+    if (d.adminResponseMd !== undefined) {
+      updates.adminResponseMd = d.adminResponseMd;
+      updates.adminRespondedAt = new Date();
+    }
+    if (d.duplicateOfId !== undefined) updates.duplicateOfId = d.duplicateOfId;
+    if (d.resolvedInReleaseId !== undefined) updates.resolvedInReleaseId = d.resolvedInReleaseId;
+    if (d.isPublic !== undefined) updates.isPublic = d.isPublic;
+
+    // Approve screenshot: copy object to public bucket
+    if (d.approveScreenshot && ticket.screenshotKey && !ticket.screenshotPublicKey) {
+      const ext = ticket.screenshotKey.split(".").pop() ?? "png";
+      const publicKey = `media/screenshots/${ticket.id}/${crypto.randomUUID()}.${ext}`;
+      if (c.env.UPLOADS && c.env.PUBLIC) {
+        const obj = await c.env.UPLOADS.get(ticket.screenshotKey);
+        if (obj) {
+          await c.env.PUBLIC.put(publicKey, obj.body, {
+            httpMetadata: obj.httpMetadata,
+          });
+          updates.screenshotPublicKey = publicKey;
+        }
+      } else {
+        updates.screenshotPublicKey = publicKey;
+      }
+    }
+
+    await db.update(feedbackTickets).set(updates).where(eq(feedbackTickets.id, id));
+
+    const user = c.get("session")?.user;
+    await auditInsert(db, {
+      actorUserId: user?.id ?? null,
+      action: "feedback.update",
+      entityType: "feedback",
+      entityId: id,
+      diff: d,
+    });
+
+    const updated = await db
+      .select({
+        id: feedbackTickets.id,
+        publicNumber: feedbackTickets.publicNumber,
+        status: feedbackTickets.status,
+        severity: feedbackTickets.severity,
+        isPublic: feedbackTickets.isPublic,
+        screenshotPublicKey: feedbackTickets.screenshotPublicKey,
+        adminResponseMd: feedbackTickets.adminResponseMd,
+        adminRespondedAt: feedbackTickets.adminRespondedAt,
+        duplicateOfId: feedbackTickets.duplicateOfId,
+        resolvedInReleaseId: feedbackTickets.resolvedInReleaseId,
+        updatedAt: feedbackTickets.updatedAt,
+      })
+      .from(feedbackTickets)
+      .where(eq(feedbackTickets.id, id))
+      .get();
+
+    return c.json({
+      ok: true,
+      data: {
+        ...updated,
+        formattedNumber: updated ? formatTicketNumber(updated.publicNumber) : null,
+      },
     } as const);
   });
