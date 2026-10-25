@@ -6,7 +6,10 @@ import { requestId, securityHeaders } from "./middleware/request";
 import { sessionMiddleware } from "./middleware/session";
 import { adminRoutes } from "./routes/admin";
 import { authRoutes } from "./routes/auth";
+import { releasesRoutes } from "./routes/releases";
 import { statsRoutes } from "./routes/stats";
+import { webhooksRoutes } from "./routes/webhooks";
+import { syncReleases } from "./lib/releases-sync";
 import type { AppEnv } from "./types";
 
 /**
@@ -31,7 +34,9 @@ const api = new Hono<AppEnv>()
   .get("/health", (c) => c.json({ ok: true, data: { status: "ok" } } as const))
   .route("/", authRoutes)
   .route("/", adminRoutes)
-  .route("/", statsRoutes);
+  .route("/", statsRoutes)
+  .route("/", releasesRoutes)
+  .route("/", webhooksRoutes);
 
 // Main worker app: handles root redirect, PostHog reverse proxy, ticket shell rewrite, and /api/* routes.
 const app = new Hono<AppEnv>()
@@ -92,7 +97,8 @@ const app = new Hono<AppEnv>()
 app.onError(onError);
 app.notFound(onNotFound);
 
-// Typed client for apps/web (hono/client).
-export type AppType = typeof app;
+export async function scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+  ctx.waitUntil(syncReleases(env, "cron"));
+}
 
 export default app;
