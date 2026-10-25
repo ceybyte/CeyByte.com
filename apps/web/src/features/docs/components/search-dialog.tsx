@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Search, FileText, CornerDownLeft, X, Loader2 } from "lucide-react";
-import { create, search } from "@orama/orama";
+import { search, type AnyOrama } from "@orama/orama";
 import { restore } from "@orama/plugin-data-persistence";
 import { useTranslations } from "next-intl";
 
@@ -23,8 +23,17 @@ export interface SearchResultItem {
   isFallback?: boolean;
 }
 
+interface RawSearchDoc {
+  id: string;
+  slug: string;
+  category: string;
+  title: string;
+  description: string;
+  locale: string;
+}
+
 // In-memory cache for restored Orama DBs
-const dbCache = new Map<string, any>();
+const dbCache = new Map<string, AnyOrama>();
 
 async function getOrLoadDb(loc: string) {
   if (dbCache.has(loc)) return dbCache.get(loc);
@@ -105,7 +114,7 @@ export function DocsSearchDialog({ open, onOpenChange, locale }: SearchDialogPro
         });
 
         for (const hit of res.hits) {
-          const doc = hit.document as any;
+          const doc = hit.document as unknown as RawSearchDoc;
           if (!seenSlugs.has(doc.slug)) {
             seenSlugs.add(doc.slug);
             items.push({
@@ -129,7 +138,7 @@ export function DocsSearchDialog({ open, onOpenChange, locale }: SearchDialogPro
         });
 
         for (const hit of enRes.hits) {
-          const doc = hit.document as any;
+          const doc = hit.document as unknown as RawSearchDoc;
           if (!seenSlugs.has(doc.slug)) {
             seenSlugs.add(doc.slug);
             items.push({

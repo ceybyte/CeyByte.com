@@ -13,7 +13,7 @@ export function FallbackBanner({ locale }: FallbackBannerProps) {
 
   let message = "";
   try {
-    message = t(locale as any);
+    message = t(locale as "si" | "ta");
   } catch {
     message =
       locale === "si"

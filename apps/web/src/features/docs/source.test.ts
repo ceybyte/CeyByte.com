@@ -47,6 +47,14 @@ describe("Docs Source", () => {
     expect(slugs).toContain("lan-sync-or-network-mode");
   });
 
+  test("getArticlesByCategory filters articles by category slug", () => {
+    const gettingStarted = getArticlesByCategory("getting-started", "en");
+    expect(gettingStarted.length).toBeGreaterThanOrEqual(3);
+    for (const a of gettingStarted) {
+      expect(a.categorySlug).toBe("getting-started");
+    }
+  });
+
   test("getArticle resolves an exact locale match", () => {
     const article = getArticle("getting-started", "install", "en");
     expect(article).toBeDefined();

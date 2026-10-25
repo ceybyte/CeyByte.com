@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import { Search, HelpCircle, RefreshCw, Terminal, ExternalLink } from "lucide-react";
+import { Search, HelpCircle, RefreshCw, ExternalLink } from "lucide-react";
 import { AdminShortcutsModal } from "./admin-shortcuts-modal";
 import { triggerRebuild } from "../api";
 import { toast } from "sonner";
@@ -40,8 +40,9 @@ export function AdminTopbar({ onSearch }: AdminTopbarProps) {
     try {
       await triggerRebuild("admin_topbar_manual");
       toast.success("Site rebuild triggered successfully");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to trigger rebuild");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to trigger rebuild";
+      toast.error(msg);
     } finally {
       setIsRebuilding(false);
     }

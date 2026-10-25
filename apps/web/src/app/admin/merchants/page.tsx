@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Search, Download, Filter, Star, Eye, Loader2, Store } from "lucide-react";
+import React, { useEffect, useState, useCallback } from "react";
+import { Search, Download, Star, Loader2, Store } from "lucide-react";
 import { AdminMerchant, fetchMerchants } from "@/features/admin/api";
 import { MerchantDrawer } from "@/features/admin/components/merchant-drawer";
-import { toast } from "sonner";
 
 export default function AdminMerchantsPage() {
   const [merchants, setMerchants] = useState<AdminMerchant[]>([]);
@@ -14,7 +13,7 @@ export default function AdminMerchantsPage() {
   const [status, setStatus] = useState("all");
   const [selectedMerchant, setSelectedMerchant] = useState<AdminMerchant | null>(null);
 
-  async function loadMerchants() {
+  const loadMerchants = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetchMerchants({ search, district, status });
@@ -25,11 +24,11 @@ export default function AdminMerchantsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [search, district, status]);
 
   useEffect(() => {
     loadMerchants();
-  }, [district, status]);
+  }, [loadMerchants]);
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault();

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { Copy, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface MarkdownRendererProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Eye, ShieldAlert, Check, Loader2, MapPin, Store, Phone } from "lucide-react";
+import { X, Eye, Loader2, MapPin, Store, Phone } from "lucide-react";
 import { AdminMerchant, revealMerchantContact, updateMerchant } from "../api";
 import { toast } from "sonner";
 
@@ -39,8 +39,9 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
         telegram: data.telegram,
       });
       toast.success("Contact revealed. Action logged to audit trail.");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to reveal contact");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to reveal contact";
+      toast.error(msg);
     } finally {
       setRevealing(false);
     }
@@ -57,8 +58,9 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
       });
       toast.success("Merchant updated successfully");
       onUpdate(updated);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to update merchant");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to update merchant";
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
@@ -176,7 +178,7 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
               <select
                 id="merchant-status-select"
                 value={status}
-                onChange={(e) => setStatus(e.target.value as any)}
+                onChange={(e) => setStatus(e.target.value as "listed" | "hidden" | "rejected")}
                 className="mt-1 w-full rounded border border-hairline bg-surface p-2 text-xs text-text-primary focus:border-azure focus:outline-none"
               >
                 <option value="listed">Listed (Active)</option>

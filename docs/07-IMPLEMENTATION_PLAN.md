@@ -261,19 +261,19 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 **Goal:** F-05 and the M1 parts of F-08 (Overview, Merchants, Docs, Releases, Audit).
 
 ### 8.1 Docs
-- [ ] `apps/web/src/features/docs/source.ts`: `.content` → Fumadocs page tree per locale with EN fallback nodes.
-- [ ] S04 hub and S05 article pages (`generateStaticParams` for every published article × locale), fallback banner, tax callout injection, version badge, helpful widget (`POST /api/docs/feedback`), prev/next.
-- [ ] `⌘K` / `/` search dialog over the static Orama index, locale-first ranking with `EN` labels.
-- [ ] Printable shortcuts page from the real keymap [B1].
+- [x] `apps/web/src/features/docs/source.ts`: `.content` → Fumadocs page tree per locale with EN fallback nodes.
+- [x] S04 hub and S05 article pages (`generateStaticParams` for every published article × locale), fallback banner, tax callout injection, version badge, helpful widget (`POST /api/docs/feedback`), prev/next.
+- [x] `⌘K` / `/` search dialog over the static Orama index, locale-first ranking with `EN` labels.
+- [x] Printable shortcuts page from the real keymap [B1].
 
 ### 8.2 Admin console (static shell + `/api/admin/*`)
-- [ ] Layout: session/role check before rendering, nav, global search, `?` shortcut sheet, `j/k` navigation.
-- [ ] Overview KPIs. Merchants (table, filters, detail drawer, reveal-and-audit, status/supporter actions, streamed CSV).
-- [ ] Docs: category tree, translation-group list (EN/SI/TA dots), Markdown editor with in-browser preview (same pipeline), media upload, publish → rebuild with live build status.
-- [ ] Releases: table, sync now, yank, notes editor. Audit log viewer.
+- [x] Layout: session/role check before rendering, nav, global search, `?` shortcut sheet, `j/k` navigation.
+- [x] Overview KPIs. Merchants (table, filters, detail drawer, reveal-and-audit, status/supporter actions, streamed CSV).
+- [x] Docs: category tree, translation-group list (EN/SI/TA dots), Markdown editor with in-browser preview (same pipeline), media upload, publish → rebuild with live build status.
+- [x] Releases: table, sync now, yank, notes editor. Audit log viewer.
 
 ### 8.3 Content
-- [ ] Write the 11 seed articles in English from `00-CBPOS_FACTS.md`, each citing its fact IDs (`05 §9`). Hand off to translators with the UI strings.
+- [x] Write the 11 seed articles in English from `00-CBPOS_FACTS.md`, each citing its fact IDs (`05 §9`). Hand off to translators with the UI strings.
 
 **Verify:** `03-docs.spec.ts`; publish → live and searchable within 5 minutes (AC-05.2); axe on articles; non-admin 404 (AC-08.1).
 

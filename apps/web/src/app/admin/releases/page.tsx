@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Tag, RefreshCw, Copy, Check, AlertTriangle, ShieldCheck, Loader2 } from "lucide-react";
+import { Tag, RefreshCw, Copy, Check, Loader2 } from "lucide-react";
 import { AdminRelease, fetchReleases, syncReleases, updateRelease } from "@/features/admin/api";
 import { toast } from "sonner";
 
@@ -52,8 +52,9 @@ export default function AdminReleasesPage() {
       await syncReleases();
       toast.success("GitHub releases synced successfully");
       loadReleases();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to sync releases");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to sync releases";
+      toast.error(msg);
     } finally {
       setSyncing(false);
     }
@@ -62,15 +63,16 @@ export default function AdminReleasesPage() {
   async function handleToggleYank(rel: AdminRelease) {
     const nextYank = !rel.isYanked;
     try {
-      const updated = await updateRelease(rel.id, { isYanked: nextYank });
+      await updateRelease(rel.id, { isYanked: nextYank });
       setReleases((prev) => prev.map((r) => (r.id === rel.id ? { ...r, isYanked: nextYank } : r)));
       if (nextYank) {
         toast.warning(`Release ${rel.version} yanked. Download gate will not distribute this version.`);
       } else {
         toast.success(`Release ${rel.version} unyanked.`);
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to update yank status");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to update yank status";
+      toast.error(msg);
     }
   }
 

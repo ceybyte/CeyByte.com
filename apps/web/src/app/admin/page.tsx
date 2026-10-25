@@ -9,8 +9,6 @@ import {
   HeartHandshake,
   MessageSquare,
   RefreshCw,
-  ArrowUpRight,
-  Shield,
   Layers,
 } from "lucide-react";
 import { fetchOverview, syncReleases, triggerRebuild, OverviewData } from "@/features/admin/api";
@@ -18,12 +16,10 @@ import { toast } from "sonner";
 
 export default function AdminOverviewPage() {
   const [data, setData] = useState<OverviewData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [rebuilding, setRebuilding] = useState(false);
 
   async function loadData() {
-    setLoading(true);
     try {
       const res = await fetchOverview();
       setData(res);
@@ -37,8 +33,6 @@ export default function AdminOverviewPage() {
         todayDownloads: 0,
         sparkline: [12, 18, 15, 24, 28, 22, 35, 30, 42, 48, 40, 52, 58, 64],
       });
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -52,8 +46,9 @@ export default function AdminOverviewPage() {
       await syncReleases();
       toast.success("GitHub releases synced");
       loadData();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to sync releases");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to sync releases";
+      toast.error(msg);
     } finally {
       setSyncing(false);
     }
@@ -64,8 +59,9 @@ export default function AdminOverviewPage() {
     try {
       await triggerRebuild("admin_overview");
       toast.success("Site rebuild triggered on GitHub Actions");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to trigger rebuild");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to trigger rebuild";
+      toast.error(msg);
     } finally {
       setRebuilding(false);
     }
@@ -213,9 +209,9 @@ export default function AdminOverviewPage() {
             fill="none"
           >
             {/* Background horizontal grid lines */}
-            <line x1="0" y1="20" x2={svgWidth} y2="20" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-            <line x1="0" y1="60" x2={svgWidth} y2="60" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-            <line x1="0" y1="100" x2={svgWidth} y2="100" stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+            <line x1="0" y1="20" x2={svgWidth} y2="20" className="stroke-hairline" strokeDasharray="3 3" />
+            <line x1="0" y1="60" x2={svgWidth} y2="60" className="stroke-hairline" strokeDasharray="3 3" />
+            <line x1="0" y1="100" x2={svgWidth} y2="100" className="stroke-hairline" strokeDasharray="3 3" />
 
             {/* Sparkline Polyline */}
             <polyline

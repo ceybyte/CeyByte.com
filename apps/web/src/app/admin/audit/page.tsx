@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ShieldCheck, ChevronRight, ChevronDown, User, Clock, Terminal, Loader2 } from "lucide-react";
+import { ChevronRight, ChevronDown, User, Clock, Loader2 } from "lucide-react";
 import { AdminAuditEntry, fetchAuditLog } from "@/features/admin/api";
 
 export default function AdminAuditPage() {

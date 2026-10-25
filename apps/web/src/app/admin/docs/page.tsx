@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { BookOpen, Folder, Edit3, RefreshCw, Send, Search } from "lucide-react";
+import { BookOpen, Folder, Edit3, RefreshCw } from "lucide-react";
 import { AdminDocArticle, AdminDocCategory, fetchDocsCategories, triggerRebuild } from "@/features/admin/api";
 import { DocsEditor } from "@/features/admin/components/docs-editor";
 import { toast } from "sonner";
@@ -53,8 +53,9 @@ export default function AdminDocsPage() {
     try {
       await triggerRebuild("admin_docs_reindex");
       toast.success("Search index rebuild triggered on GitHub Actions");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to trigger reindex");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to trigger reindex";
+      toast.error(msg);
     } finally {
       setRebuilding(false);
     }

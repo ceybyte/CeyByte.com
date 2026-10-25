@@ -77,9 +77,13 @@ export interface AdminAuditEntry {
   action: string;
   entityType?: string | null;
   entityId?: string | null;
-  diff?: Record<string, any> | null;
+  diff?: Record<string, unknown> | null;
   ipHash?: string | null;
   createdAt: string | number;
+}
+
+export class AdminApiError extends Error {
+  status?: number;
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -93,18 +97,18 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (res.status === 404 || res.status === 401 || res.status === 403) {
-    const error: any = new Error("Admin access unauthorized or not found");
+    const error = new AdminApiError("Admin access unauthorized or not found");
     error.status = res.status;
     throw error;
   }
 
   if (!res.ok) {
-    const errJson = await res.json().catch(() => ({}));
-    throw new Error((errJson as any)?.error?.message || `Request failed with ${res.status}`);
+    const errJson = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
+    throw new Error(errJson?.error?.message || `Request failed with ${res.status}`);
   }
 
-  const json = await res.json();
-  return (json as any).data;
+  const json = (await res.json()) as { data: T };
+  return json.data;
 }
 
 export async function fetchOverview(): Promise<OverviewData> {
@@ -190,8 +194,10 @@ export async function fetchReleases(): Promise<{ items: AdminRelease[] }> {
   return request<{ items: AdminRelease[] }>("/api/admin/releases");
 }
 
-export async function syncReleases(): Promise<any> {
-  return request("/api/admin/releases/sync", { method: "POST" });
+export async function syncReleases(): Promise<{ synced: boolean; releaseCount?: number }> {
+  return request<{ synced: boolean; releaseCount?: number }>("/api/admin/releases/sync", {
+    method: "POST",
+  });
 }
 
 export async function updateRelease(
@@ -208,8 +214,8 @@ export async function fetchAuditLog(): Promise<{ items: AdminAuditEntry[] }> {
   return request<{ items: AdminAuditEntry[] }>("/api/admin/audit");
 }
 
-export async function triggerRebuild(reason?: string): Promise<any> {
-  return request("/api/admin/rebuild", {
+export async function triggerRebuild(reason?: string): Promise<{ queued: boolean; reason?: string }> {
+  return request<{ queued: boolean; reason?: string }>("/api/admin/rebuild", {
     method: "POST",
     body: JSON.stringify({ reason: reason || "admin_manual" }),
   });

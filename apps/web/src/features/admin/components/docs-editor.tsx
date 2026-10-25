@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Save, Send, Loader2, SplitSquareVertical, Eye } from "lucide-react";
+import { X, Save, Send, Loader2, Eye } from "lucide-react";
 import { AdminDocArticle, updateDocArticle, publishDocArticle } from "../api";
 import { toast } from "sonner";
 
@@ -35,8 +35,9 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
       });
       toast.success("Draft saved successfully");
       onSaved(updated);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to save article");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to save article";
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
@@ -53,8 +54,9 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
       setStatus("published");
       toast.success("Article published and rebuild triggered!");
       onSaved({ ...article, title, summary, bodyMd, status: "published" });
-    } catch (err: any) {
-      toast.error(err.message || "Failed to publish article");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to publish article";
+      toast.error(msg);
     } finally {
       setPublishing(false);
     }

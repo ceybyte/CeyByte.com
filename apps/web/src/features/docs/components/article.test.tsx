@@ -9,7 +9,7 @@ import { TaxDisclaimerCallout } from "./tax-disclaimer-callout";
 import { ArticleFeedback } from "./article-feedback";
 import { ArticleToc } from "./article-toc";
 import { ArticleSidebar } from "./article-sidebar";
-import { getCategories, getArticles, getArticle } from "../source";
+import { getCategories, getArticles } from "../source";
 
 const enMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"));
 const siMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/si.json"), "utf-8"));
