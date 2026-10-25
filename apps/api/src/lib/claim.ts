@@ -2,10 +2,10 @@ import type { Db } from "./db";
 import { hmacSha256Hex, safeEqual, sha256Hex } from "./crypto";
 import { log } from "./log";
 
-export interface ClaimResult {
+export type ClaimResult = {
   claimed: boolean;
   merchantId?: string;
-}
+};
 
 /**
  * Validates an HMAC-signed claim token and claims the unredeemed merchant for userId.

@@ -1,9 +1,4 @@
-import type {
-  DashboardDonation,
-  DashboardTicket,
-  LatestRelease,
-  MerchantListing,
-} from "./types";
+import type { DashboardDonation, DashboardTicket, LatestRelease, MerchantListing } from "./types";
 
 const API_BASE = "";
 

@@ -190,9 +190,8 @@ export const adminRoutes = new Hono<AppEnv>()
       entityType: "merchant",
       entityId: merchant.id,
       diff: {
-        previousOwner: merchant.ownerUserId,
-        newOwner: targetUser.id,
-        newOwnerEmail: targetUser.email,
+        before: { ownerUserId: merchant.ownerUserId },
+        after: { ownerUserId: targetUser.id, email: targetUser.email },
       },
     });
 

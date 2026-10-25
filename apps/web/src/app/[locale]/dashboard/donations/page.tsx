@@ -1,6 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { DashboardShell } from "@/features/dashboard/components/DashboardShell";
 import { DonationsTab } from "@/features/dashboard/components/DonationsTab";
 
 export function generateStaticParams() {
@@ -17,20 +16,11 @@ export default async function DashboardDonationsPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "dash" });
 
   return (
-    <DashboardShell
+    <DonationsTab
       locale={locale}
       copy={{
-        emptyTitle: t("empty.title"),
-        emptyBody: t("empty.body"),
+        donationsTitle: t("donations.title"),
       }}
-      renderOverview={() => (
-        <DonationsTab
-          locale={locale}
-          copy={{
-            donationsTitle: t("donations.title"),
-          }}
-        />
-      )}
     />
   );
 }

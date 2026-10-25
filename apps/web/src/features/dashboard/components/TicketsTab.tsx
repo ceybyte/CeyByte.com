@@ -42,35 +42,33 @@ export function TicketsTab({ locale, copy }: TicketsTabProps) {
 
   return (
     <div className="max-w-4xl space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-foreground">
-            {copy.ticketsTitle}
-          </h2>
-          <p className="text-xs text-muted-foreground mt-1">
+          <h2 className="text-foreground text-xl font-bold tracking-tight">{copy.ticketsTitle}</h2>
+          <p className="text-muted-foreground mt-1 text-xs">
             Bug reports, questions, and feature suggestions submitted by you.
           </p>
         </div>
 
         <Link
           href={`/${locale}/feedback/new`}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border rounded text-xs font-medium transition shrink-0"
+          className="bg-secondary text-secondary-foreground hover:bg-secondary/80 border-border inline-flex shrink-0 items-center gap-2 rounded border px-4 py-2 text-xs font-medium transition"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="h-3.5 w-3.5" />
           <span>Report a problem</span>
         </Link>
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-muted-foreground flex items-center justify-center gap-2">
-          <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+        <div className="text-muted-foreground flex items-center justify-center gap-2 p-12 text-center">
+          <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />
           <span className="text-xs">Loading tickets...</span>
         </div>
       ) : tickets.length === 0 ? (
-        <div className="p-12 bg-card border border-border rounded-lg text-center">
-          <MessageSquare className="w-8 h-8 text-muted-foreground/60 mx-auto mb-3" />
-          <p className="text-sm font-medium text-foreground mb-1">No tickets yet</p>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto mb-5">
+        <div className="bg-card border-border rounded-lg border p-12 text-center">
+          <MessageSquare className="text-muted-foreground/60 mx-auto mb-3 h-8 w-8" />
+          <p className="text-foreground mb-1 text-sm font-medium">No tickets yet</p>
+          <p className="text-muted-foreground mx-auto mb-5 max-w-sm text-xs">
             If you encounter an issue with billing, receipt printing, or Windows setup, let us know here.
           </p>
           <Link
@@ -78,39 +76,40 @@ export function TicketsTab({ locale, copy }: TicketsTabProps) {
             className="inline-flex items-center gap-1.5 text-xs text-cyan-400 hover:underline"
           >
             <span>Open your first ticket</span>
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="h-3 w-3" />
           </Link>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-lg divide-y divide-border overflow-hidden">
+        <div className="bg-card border-border divide-border divide-y overflow-hidden rounded-lg border">
           {tickets.map((t) => {
             const formattedNum = `CB-${String(t.publicNumber).padStart(4, "0")}`;
             return (
-              <div key={t.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-secondary/30 transition">
+              <div
+                key={t.id}
+                className="hover:bg-secondary/30 flex flex-col justify-between gap-3 p-4 transition sm:flex-row sm:items-center"
+              >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-semibold text-cyan-400">
-                      {formattedNum}
-                    </span>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border">
+                    <span className="font-mono text-xs font-semibold text-cyan-400">{formattedNum}</span>
+                    <span className="text-muted-foreground bg-muted border-border rounded border px-1.5 py-0.5 font-mono text-[10px] tracking-wider uppercase">
                       {t.type}
                     </span>
-                    <span className={`text-[10px] uppercase font-mono tracking-wider px-1.5 py-0.5 rounded border ${getStatusBadge(t.status)}`}>
+                    <span
+                      className={`rounded border px-1.5 py-0.5 font-mono text-[10px] tracking-wider uppercase ${getStatusBadge(t.status)}`}
+                    >
                       {t.status.replace("_", " ")}
                     </span>
                   </div>
-                  <h3 className="text-sm font-medium text-foreground">
-                    {t.title}
-                  </h3>
+                  <h3 className="text-foreground text-sm font-medium">{t.title}</h3>
                   {t.adminResponseMd && (
-                    <p className="text-xs text-cyan-300/80 bg-cyan-950/20 border-l-2 border-cyan-400 pl-2.5 py-1 mt-1.5 line-clamp-2">
+                    <p className="mt-1.5 line-clamp-2 border-l-2 border-cyan-400 bg-cyan-950/20 py-1 pl-2.5 text-xs text-cyan-300/80">
                       {t.adminResponseMd}
                     </p>
                   )}
                 </div>
 
-                <div className="flex sm:flex-col items-center sm:items-end justify-between shrink-0 gap-1 text-xs text-muted-foreground">
-                  <span className="text-[11px] font-mono">
+                <div className="text-muted-foreground flex shrink-0 items-center justify-between gap-1 text-xs sm:flex-col sm:items-end">
+                  <span className="font-mono text-[11px]">
                     {new Date(t.createdAt).toLocaleDateString(locale === "en" ? "en-US" : locale)}
                   </span>
                   <Link
@@ -118,7 +117,7 @@ export function TicketsTab({ locale, copy }: TicketsTabProps) {
                     className="inline-flex items-center gap-1 text-cyan-400 hover:underline"
                   >
                     <span>View ticket</span>
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="h-3 w-3" />
                   </Link>
                 </div>
               </div>

@@ -86,10 +86,16 @@ export const downloadsRoutes = new Hono<AppEnv>()
 
     // Check for existing active merchant with the same phone (deduplication per FR-03.3)
     const existing = await c.env.DB.prepare(
-      "SELECT id, public_id, status, is_public_on_map FROM merchants WHERE phone = ? AND deleted_at IS NULL LIMIT 1",
+      "SELECT id, public_id, status, is_public_on_map, owner_user_id FROM merchants WHERE phone = ? AND deleted_at IS NULL LIMIT 1",
     )
       .bind(data.phone)
-      .first<{ id: string; public_id: string; status: string; is_public_on_map: number }>();
+      .first<{
+        id: string;
+        public_id: string;
+        status: string;
+        is_public_on_map: number;
+        owner_user_id: string | null;
+      }>();
 
     let merchantId: string;
     let publicId: string;
@@ -121,6 +127,7 @@ export const downloadsRoutes = new Hono<AppEnv>()
           terms_version = ?,
           terms_accepted_at = ?,
           preferred_locale = ?,
+          claim_token_hash = CASE WHEN owner_user_id IS NULL THEN ? ELSE claim_token_hash END,
           updated_at = ?
         WHERE id = ?`,
       )
@@ -139,6 +146,7 @@ export const downloadsRoutes = new Hono<AppEnv>()
           data.termsVersion,
           now,
           data.preferredLocale,
+          claimTokenHash,
           now,
           merchantId,
         )

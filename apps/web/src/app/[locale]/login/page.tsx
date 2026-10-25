@@ -32,10 +32,10 @@ export default async function LoginPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="bg-canvas min-h-[calc(100vh-var(--header-h))] px-4 py-12 sm:px-6 sm:py-20 lg:px-8 flex items-center justify-center relative">
+    <div className="bg-canvas relative flex min-h-[calc(100vh-var(--header-h))] items-center justify-center px-4 py-12 sm:px-6 sm:py-20 lg:px-8">
       <Suspense
         fallback={
-          <div className="w-full max-w-[420px] h-[400px] rounded-lg bg-card border border-border animate-pulse" />
+          <div className="bg-card border-border h-[400px] w-full max-w-[420px] animate-pulse rounded-lg border" />
         }
       >
         <AuthView locale={locale} />

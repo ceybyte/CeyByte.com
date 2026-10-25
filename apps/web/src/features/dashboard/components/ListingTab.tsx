@@ -19,11 +19,7 @@ interface ListingTabProps {
   };
 }
 
-export function ListingTab({
-  listing,
-  onListingUpdated,
-  copy,
-}: ListingTabProps) {
+export function ListingTab({ listing, onListingUpdated, copy }: ListingTabProps) {
   const [shopName, setShopName] = useState(listing.shopName);
   const [category, setCategory] = useState<BusinessCategory>(listing.category as BusinessCategory);
   const [district, setDistrict] = useState<District>(listing.district as District);
@@ -81,18 +77,19 @@ export function ListingTab({
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-foreground">
-          {copy.listingTitle}
-        </h2>
-        <p className="text-xs text-muted-foreground mt-1">
+        <h2 className="text-foreground text-xl font-bold tracking-tight">{copy.listingTitle}</h2>
+        <p className="text-muted-foreground mt-1 text-xs">
           Keep your storefront details accurate for shoppers finding you on the CB POS map.
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-5 bg-card border border-border rounded-lg p-6">
+      <form onSubmit={handleSave} className="bg-card border-border space-y-5 rounded-lg border p-6">
         {/* Shop Name */}
         <div>
-          <label htmlFor="shop-name-input" className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
+          <label
+            htmlFor="shop-name-input"
+            className="text-muted-foreground mb-1 block font-mono text-xs tracking-wider uppercase"
+          >
             Shop name
           </label>
           <input
@@ -101,21 +98,24 @@ export function ListingTab({
             value={shopName}
             onChange={(e) => setShopName(e.target.value)}
             required
-            className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-cyan-400"
+            className="bg-background border-border text-foreground w-full rounded border px-3 py-2 text-sm focus:border-cyan-400 focus:outline-none"
           />
         </div>
 
         {/* Business Category & District */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="category-select" className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
+            <label
+              htmlFor="category-select"
+              className="text-muted-foreground mb-1 block font-mono text-xs tracking-wider uppercase"
+            >
               Business category
             </label>
             <select
               id="category-select"
               value={category}
               onChange={(e) => setCategory(e.target.value as BusinessCategory)}
-              className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-cyan-400 capitalize"
+              className="bg-background border-border text-foreground w-full rounded border px-3 py-2 text-sm capitalize focus:border-cyan-400 focus:outline-none"
             >
               {BUSINESS_CATEGORIES.map((c) => (
                 <option key={c} value={c} className="capitalize">
@@ -126,14 +126,17 @@ export function ListingTab({
           </div>
 
           <div>
-            <label htmlFor="district-select" className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
+            <label
+              htmlFor="district-select"
+              className="text-muted-foreground mb-1 block font-mono text-xs tracking-wider uppercase"
+            >
               District
             </label>
             <select
               id="district-select"
               value={district}
               onChange={(e) => handleDistrictChange(e.target.value as District)}
-              className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-cyan-400 capitalize"
+              className="bg-background border-border text-foreground w-full rounded border px-3 py-2 text-sm capitalize focus:border-cyan-400 focus:outline-none"
             >
               {DISTRICTS.map((d) => (
                 <option key={d} value={d} className="capitalize">
@@ -146,7 +149,10 @@ export function ListingTab({
 
         {/* City / Town */}
         <div>
-          <label htmlFor="city-input" className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
+          <label
+            htmlFor="city-input"
+            className="text-muted-foreground mb-1 block font-mono text-xs tracking-wider uppercase"
+          >
             Town or city
           </label>
           <input
@@ -155,14 +161,17 @@ export function ListingTab({
             value={city}
             onChange={(e) => setCity(e.target.value)}
             required
-            className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-cyan-400"
+            className="bg-background border-border text-foreground w-full rounded border px-3 py-2 text-sm focus:border-cyan-400 focus:outline-none"
           />
         </div>
 
         {/* Contacts: WhatsApp & Telegram */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="whatsapp-input" className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
+            <label
+              htmlFor="whatsapp-input"
+              className="text-muted-foreground mb-1 block font-mono text-xs tracking-wider uppercase"
+            >
               WhatsApp number
             </label>
             <input
@@ -171,12 +180,15 @@ export function ListingTab({
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
               placeholder="077 123 4567"
-              className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-cyan-400 font-mono"
+              className="bg-background border-border text-foreground w-full rounded border px-3 py-2 font-mono text-sm focus:border-cyan-400 focus:outline-none"
             />
           </div>
 
           <div>
-            <label htmlFor="telegram-input" className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
+            <label
+              htmlFor="telegram-input"
+              className="text-muted-foreground mb-1 block font-mono text-xs tracking-wider uppercase"
+            >
               Telegram handle (optional)
             </label>
             <input
@@ -185,22 +197,22 @@ export function ListingTab({
               value={telegram}
               onChange={(e) => setTelegram(e.target.value)}
               placeholder="@shop_name"
-              className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-cyan-400 font-mono"
+              className="bg-background border-border text-foreground w-full rounded border px-3 py-2 font-mono text-sm focus:border-cyan-400 focus:outline-none"
             />
           </div>
         </div>
 
         {/* MiniMap Pin */}
         <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+          <div className="mb-1.5 flex items-center justify-between">
+            <label className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
               Map coordinates (drag pin to adjust)
             </label>
-            <span className="text-[11px] font-mono text-muted-foreground">
+            <span className="text-muted-foreground font-mono text-[11px]">
               {lat.toFixed(4)}, {lng.toFixed(4)}
             </span>
           </div>
-          <div className="h-60 rounded border border-border overflow-hidden">
+          <div className="border-border h-60 overflow-hidden rounded border">
             <MiniMap
               lat={lat}
               lng={lng}
@@ -219,15 +231,15 @@ export function ListingTab({
             type="checkbox"
             checked={isPublicOnMap}
             onChange={(e) => setIsPublicOnMap(e.target.checked)}
-            className="w-4 h-4 rounded border-border text-cyan-400 focus:ring-cyan-400 cursor-pointer"
+            className="border-border h-4 w-4 cursor-pointer rounded text-cyan-400 focus:ring-cyan-400"
           />
-          <label htmlFor="public-toggle" className="text-xs text-foreground cursor-pointer select-none">
+          <label htmlFor="public-toggle" className="text-foreground cursor-pointer text-xs select-none">
             {copy.listingPublic}
           </label>
         </div>
 
         {errorMsg && (
-          <p className="text-xs text-destructive bg-destructive/10 border border-destructive/20 p-2.5 rounded">
+          <p className="text-destructive bg-destructive/10 border-destructive/20 rounded border p-2.5 text-xs">
             {errorMsg}
           </p>
         )}
@@ -237,10 +249,10 @@ export function ListingTab({
           <button
             type="submit"
             disabled={loading}
-            className="py-2.5 px-5 bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border rounded text-sm font-medium transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            className="bg-secondary text-secondary-foreground hover:bg-secondary/80 border-border flex cursor-pointer items-center gap-2 rounded border px-5 py-2.5 text-sm font-medium transition disabled:opacity-50"
           >
-            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {savedSuccess && <Check className="w-4 h-4 text-cyan-400" />}
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+            {savedSuccess && <Check className="h-4 w-4 text-cyan-400" />}
             <span>{savedSuccess ? "Saved!" : copy.listingSave}</span>
           </button>
         </div>

@@ -53,27 +53,29 @@ export function DeleteAccountModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-      <div className="bg-card border border-destructive/40 rounded-lg max-w-md w-full p-6 text-left shadow-2xl">
-        <div className="flex items-center gap-3 text-destructive mb-3">
-          <div className="w-10 h-10 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-5 h-5" />
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+    >
+      <div className="bg-card border-destructive/40 w-full max-w-md rounded-lg border p-6 text-left shadow-2xl">
+        <div className="text-destructive mb-3 flex items-center gap-3">
+          <div className="bg-destructive/10 border-destructive/20 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border">
+            <AlertTriangle className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-foreground">{copy.title}</h3>
-            <span className="text-[11px] font-mono text-destructive">Irreversible action</span>
+            <h3 className="text-foreground text-base font-bold">{copy.title}</h3>
+            <span className="text-destructive font-mono text-[11px]">Irreversible action</span>
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-          {copy.body}
-        </p>
+        <p className="text-muted-foreground mb-4 text-xs leading-relaxed">{copy.body}</p>
 
         <form onSubmit={handleDelete} className="space-y-4">
           <div>
             <label
               htmlFor="confirm-shop-input"
-              className="block text-xs uppercase font-mono tracking-wider text-muted-foreground mb-1.5"
+              className="text-muted-foreground mb-1.5 block font-mono text-xs tracking-wider uppercase"
             >
               {copy.confirm} (type <strong className="text-foreground">{expectedShopName}</strong>)
             </label>
@@ -84,31 +86,31 @@ export function DeleteAccountModal({
               onChange={(e) => setTypedName(e.target.value)}
               placeholder={expectedShopName}
               required
-              className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-destructive font-mono"
+              className="bg-background border-border text-foreground focus:border-destructive w-full rounded border px-3 py-2 font-mono text-sm focus:outline-none"
             />
           </div>
 
           {errorMsg && (
-            <p className="text-xs text-destructive bg-destructive/10 border border-destructive/20 p-2 rounded">
+            <p className="text-destructive bg-destructive/10 border-destructive/20 rounded border p-2 text-xs">
               {errorMsg}
             </p>
           )}
 
-          <div className="flex justify-end gap-2.5 pt-2 border-t border-border/60">
+          <div className="border-border/60 flex justify-end gap-2.5 border-t pt-2">
             <button
               type="button"
               disabled={loading}
               onClick={onClose}
-              className="px-4 py-2 border border-border rounded text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+              className="border-border text-muted-foreground hover:text-foreground cursor-pointer rounded border px-4 py-2 text-xs"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !isMatch}
-              className="px-4 py-2 bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/40 rounded text-xs font-semibold flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              className="bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/40 flex cursor-pointer items-center gap-2 rounded border px-4 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               <span>{copy.cta}</span>
             </button>
           </div>

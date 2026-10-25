@@ -68,11 +68,22 @@ export function createAuth(
     g.process.env.BETTER_AUTH_API_KEY = env.BETTER_AUTH_API_KEY;
   }
 
+  const trustedOriginsFn = (request?: Request) => {
+    const origin = request?.headers.get("origin") ?? "";
+    return [
+      env.SITE_URL,
+      origin,
+      "http://localhost:3000",
+      "http://localhost:8787",
+      "http://127.0.0.1:8787",
+      "https://cbpos-preview.ceybyte.com",
+      "https://ceybyte.com",
+    ].filter(Boolean);
+  };
+
   return betterAuth({
     baseURL: env.SITE_URL,
     basePath: "/api/auth",
-    secret: env.BETTER_AUTH_SECRET,
-    trustedOrigins: [env.SITE_URL],
     ...withCloudflare(
       {
         autoDetectIpAddress: false,
@@ -80,6 +91,8 @@ export function createAuth(
         d1: { db, options: { usePlural: true, schema: { users, sessions, accounts, verifications } } },
       },
       {
+        secret: env.BETTER_AUTH_SECRET,
+        trustedOrigins: trustedOriginsFn,
         emailAndPassword: { enabled: false },
         socialProviders: google,
         rateLimit: { enabled: false },
@@ -99,8 +112,11 @@ export function createAuth(
                 data: { ...session, ipAddress: opts.ipHash ?? null, userAgent: null },
               }),
               after: async (session) => {
-                if (opts.cookieHeader && session.userId) {
-                  await claimListingFromCookie(env, db, session.userId, opts.cookieHeader).catch((err) => {
+                const userId =
+                  (session as unknown as { userId?: string; user_id?: string }).userId ??
+                  (session as unknown as { userId?: string; user_id?: string }).user_id;
+                if (opts.cookieHeader && userId) {
+                  await claimListingFromCookie(env, db, userId, opts.cookieHeader).catch((err) => {
                     log.warn("claim_listing_hook_failed", { error: err });
                   });
                 }

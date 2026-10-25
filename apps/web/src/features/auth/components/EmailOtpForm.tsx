@@ -7,7 +7,6 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface EmailOtpFormProps {
-  mode: "signin" | "signup";
   locale: string;
   redirectTo?: string;
   labels: {
@@ -22,7 +21,7 @@ interface EmailOtpFormProps {
   };
 }
 
-export function EmailOtpForm({ mode, locale, redirectTo, labels }: EmailOtpFormProps) {
+export function EmailOtpForm({ locale, redirectTo, labels }: EmailOtpFormProps) {
   const router = useRouter();
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
@@ -145,7 +144,10 @@ export function EmailOtpForm({ mode, locale, redirectTo, labels }: EmailOtpFormP
     return (
       <form onSubmit={handleSendOtp} className="space-y-4">
         <div>
-          <label htmlFor="email-input" className="block text-xs uppercase tracking-wider text-muted-foreground mb-1.5 font-mono">
+          <label
+            htmlFor="email-input"
+            className="text-muted-foreground mb-1.5 block font-mono text-xs tracking-wider uppercase"
+          >
             {labels.emailLabel}
           </label>
           <input
@@ -156,12 +158,12 @@ export function EmailOtpForm({ mode, locale, redirectTo, labels }: EmailOtpFormP
             placeholder="owner@example.com"
             required
             autoComplete="email"
-            className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition"
+            className="bg-background border-border text-foreground w-full rounded border px-3 py-2 text-sm transition focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none"
           />
         </div>
 
         {errorMsg && (
-          <p className="text-xs text-destructive bg-destructive/10 border border-destructive/20 p-2 rounded">
+          <p className="text-destructive bg-destructive/10 border-destructive/20 rounded border p-2 text-xs">
             {errorMsg}
           </p>
         )}
@@ -169,9 +171,9 @@ export function EmailOtpForm({ mode, locale, redirectTo, labels }: EmailOtpFormP
         <button
           type="submit"
           disabled={loading || !email.trim()}
-          className="w-full py-2.5 px-4 bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border rounded text-sm font-medium transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-secondary text-secondary-foreground hover:bg-secondary/80 border-border flex w-full cursor-pointer items-center justify-center gap-2 rounded border px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           {labels.sendOtp}
         </button>
       </form>
@@ -181,16 +183,17 @@ export function EmailOtpForm({ mode, locale, redirectTo, labels }: EmailOtpFormP
   return (
     <form onSubmit={handleVerifyOtp} className="space-y-4">
       <div>
-        <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+        <p className="text-muted-foreground mb-3 text-xs leading-relaxed">
           {labels.otpSent.replace("{email}", email)}
         </p>
-        <label className="block text-xs uppercase tracking-wider text-muted-foreground mb-2 font-mono">
+        <label className="text-muted-foreground mb-2 block font-mono text-xs tracking-wider uppercase">
           {labels.otpLabel}
         </label>
-        <div className="flex gap-2 justify-between">
+        <div className="flex justify-between gap-2">
           {otp.map((digit, i) => (
             <input
               key={i}
+              id={`otp-${i}`}
               ref={(el) => {
                 inputRefs.current[i] = el;
               }}
@@ -200,14 +203,14 @@ export function EmailOtpForm({ mode, locale, redirectTo, labels }: EmailOtpFormP
               value={digit}
               onChange={(e) => handleOtpChange(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(i, e)}
-              className="w-12 h-13 text-center text-lg font-mono font-bold bg-background border border-border rounded text-foreground focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition"
+              className="bg-background border-border text-foreground h-13 w-12 rounded border text-center font-mono text-lg font-bold transition focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none"
             />
           ))}
         </div>
       </div>
 
       {errorMsg && (
-        <p className="text-xs text-destructive bg-destructive/10 border border-destructive/20 p-2 rounded">
+        <p className="text-destructive bg-destructive/10 border-destructive/20 rounded border p-2 text-xs">
           {errorMsg}
         </p>
       )}
@@ -215,20 +218,20 @@ export function EmailOtpForm({ mode, locale, redirectTo, labels }: EmailOtpFormP
       <button
         type="submit"
         disabled={loading || otp.join("").length < 6}
-        className="w-full py-2.5 px-4 bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border rounded text-sm font-medium transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-secondary text-secondary-foreground hover:bg-secondary/80 border-border flex w-full cursor-pointer items-center justify-center gap-2 rounded border px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+        {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         {labels.submit}
       </button>
 
-      <div className="flex justify-between items-center text-xs text-muted-foreground pt-1">
+      <div className="text-muted-foreground flex items-center justify-between pt-1 text-xs">
         <button
           type="button"
           onClick={() => {
             setStep("email");
             setErrorMsg(null);
           }}
-          className="hover:underline cursor-pointer"
+          className="cursor-pointer hover:underline"
         >
           Edit email
         </button>
@@ -236,7 +239,7 @@ export function EmailOtpForm({ mode, locale, redirectTo, labels }: EmailOtpFormP
           type="button"
           disabled={resendCooldown > 0 || loading}
           onClick={() => handleSendOtp()}
-          className="hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="cursor-pointer hover:underline disabled:cursor-not-allowed disabled:opacity-50"
         >
           {resendCooldown > 0 ? `Resend code (${resendCooldown}s)` : labels.resend}
         </button>

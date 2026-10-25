@@ -17,7 +17,7 @@ import {
 } from "@cbpos/shared/db/schema";
 import { normalizePhone } from "@cbpos/shared/phone";
 import { and, desc, eq, isNull, or } from "drizzle-orm";
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { setCookie } from "hono/cookie";
 import { z } from "zod";
 import { hmacSha256Hex, safeEqual, sha256Hex } from "../lib/crypto";
@@ -69,13 +69,19 @@ const ClaimFallbackSchema = z.object({
   claimToken: z.string().trim().optional(),
 });
 
+function getSession(c: Context<AppEnv>) {
+  const session = c.get("session");
+  if (!session) throw new ApiError("UNAUTHENTICATED");
+  return session;
+}
+
 // /api/me/* (01-PRD §F-09, 02-TRD §5.1, 04-APP_FLOW §Flow 6)
 export const meRoutes = new Hono<AppEnv>()
   .use("/me/*", requireSession)
 
   // 1. GET /api/me/listing
   .get("/me/listing", async (c) => {
-    const session = c.get("session")!;
+    const session = getSession(c);
     const db = c.get("db");
 
     const listing = await db.query.merchants.findFirst({
@@ -95,7 +101,7 @@ export const meRoutes = new Hono<AppEnv>()
 
   // 2. PATCH /api/me/listing
   .patch("/me/listing", async (c) => {
-    const session = c.get("session")!;
+    const session = getSession(c);
     const db = c.get("db");
 
     const merchant = await db.query.merchants.findFirst({
@@ -119,15 +125,12 @@ export const meRoutes = new Hono<AppEnv>()
     const data = parse.data;
     const now = Date.now();
 
-    // Rule: if previously hidden by admin, status remains 'hidden' (01-PRD §FR-09.5)
-    let newStatus = merchant.status;
+    // Rule: merchant controls isPublicOnMap visibility; status is managed by admin moderation (01-PRD §FR-09.5)
+    const newStatus = merchant.status;
     let newIsPublic = merchant.isPublicOnMap;
 
     if (data.isPublicOnMap !== undefined) {
       newIsPublic = data.isPublicOnMap;
-      if (merchant.status !== "hidden") {
-        newStatus = newIsPublic ? "listed" : "hidden";
-      }
     }
 
     const normalizedWhatsapp =
@@ -184,7 +187,7 @@ export const meRoutes = new Hono<AppEnv>()
 
   // 3. POST /api/me/claim (Hybrid claim fallback for multi-device / phone verification)
   .post("/me/claim", rateLimit("RL_FORMS", { perHour: 10 }), async (c) => {
-    const session = c.get("session")!;
+    const session = getSession(c);
     const db = c.get("db");
 
     // Check if user already owns a listing
@@ -291,7 +294,7 @@ export const meRoutes = new Hono<AppEnv>()
 
   // 4. GET /api/me/tickets
   .get("/me/tickets", async (c) => {
-    const session = c.get("session")!;
+    const session = getSession(c);
     const db = c.get("db");
 
     const merchant = await db.query.merchants.findFirst({
@@ -325,7 +328,7 @@ export const meRoutes = new Hono<AppEnv>()
 
   // 5. GET /api/me/donations
   .get("/me/donations", async (c) => {
-    const session = c.get("session")!;
+    const session = getSession(c);
     const db = c.get("db");
 
     const merchant = await db.query.merchants.findFirst({
@@ -357,7 +360,7 @@ export const meRoutes = new Hono<AppEnv>()
 
   // 6. PATCH /api/me/settings/language
   .patch("/me/settings/language", async (c) => {
-    const session = c.get("session")!;
+    const session = getSession(c);
     const body = (await c.req.json().catch(() => ({}))) as { locale?: string };
     const locale = body?.locale;
 
@@ -383,7 +386,7 @@ export const meRoutes = new Hono<AppEnv>()
 
   // 7. DELETE /api/me/account
   .delete("/me/account", async (c) => {
-    const session = c.get("session")!;
+    const session = getSession(c);
     const db = c.get("db");
 
     const merchant = await db.query.merchants.findFirst({

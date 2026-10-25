@@ -35,8 +35,11 @@ async function createMerchantUserSession(emailPrefix: string) {
   const cookie = res.headers.getSetCookie().find((c) => c.includes("better-auth.session_token"));
   if (!cookie) throw new Error("No session cookie returned");
 
-  const user = await env.DB.prepare("SELECT id FROM users WHERE email = ?").bind(email).first<{ id: string }>();
-  return { userId: user!.id, cookie: cookie.split(";")[0] ?? "" };
+  const user = await env.DB.prepare("SELECT id FROM users WHERE email = ?")
+    .bind(email)
+    .first<{ id: string }>();
+  if (!user) throw new Error("User was not created");
+  return { userId: user.id, cookie: cookie.split(";")[0] ?? "" };
 }
 
 describe("Owner-Scoped /api/me Endpoints (F-09 / AC-09.2)", () => {
@@ -140,7 +143,10 @@ describe("Owner-Scoped /api/me Endpoints (F-09 / AC-09.2)", () => {
     });
 
     expect(patchRes.status).toBe(200);
-    const body = (await patchRes.json()) as { ok: boolean; data: { listing: { shopName: string; isPublicOnMap: boolean } } };
+    const body = (await patchRes.json()) as {
+      ok: boolean;
+      data: { listing: { shopName: string; isPublicOnMap: boolean } };
+    };
     expect(body.ok).toBe(true);
     expect(body.data.listing.shopName).toBe("Updated Shop Name");
     expect(body.data.listing.isPublicOnMap).toBe(false);

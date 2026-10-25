@@ -46,51 +46,48 @@ export function EmptyDashboard({ locale, onClaimSuccess, copy }: EmptyDashboardP
   };
 
   return (
-    <div className="max-w-xl mx-auto py-16 px-4 text-center">
-      <div className="w-14 h-14 rounded-full bg-muted/60 border border-border mx-auto flex items-center justify-center mb-5 text-muted-foreground">
-        <Store className="w-7 h-7 text-cyan-400" />
+    <div className="mx-auto max-w-xl px-4 py-16 text-center">
+      <div className="bg-muted/60 border-border text-muted-foreground mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border">
+        <Store className="h-7 w-7 text-cyan-400" />
       </div>
 
-      <h2 className="text-xl font-bold tracking-tight text-foreground mb-2">
-        {copy.emptyTitle}
-      </h2>
-      <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-        {copy.emptyBody}
-      </p>
+      <h2 className="text-foreground mb-2 text-xl font-bold tracking-tight">{copy.emptyTitle}</h2>
+      <p className="text-muted-foreground mb-8 text-sm leading-relaxed">{copy.emptyBody}</p>
 
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
         <Link
           href={`/${locale}/download`}
-          className="w-full sm:w-auto px-5 py-2.5 bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border rounded text-sm font-medium transition flex items-center justify-center gap-2"
+          className="bg-secondary text-secondary-foreground hover:bg-secondary/80 border-border flex w-full items-center justify-center gap-2 rounded border px-5 py-2.5 text-sm font-medium transition sm:w-auto"
         >
-          <Download className="w-4 h-4" />
+          <Download className="h-4 w-4" />
           <span>Download CB POS</span>
         </Link>
 
         <button
           type="button"
           onClick={() => setShowClaimModal(true)}
-          className="w-full sm:w-auto px-5 py-2.5 bg-muted/60 hover:bg-muted text-foreground border border-border rounded text-sm font-medium transition flex items-center justify-center gap-2 cursor-pointer"
+          className="bg-muted/60 hover:bg-muted text-foreground border-border flex w-full cursor-pointer items-center justify-center gap-2 rounded border px-5 py-2.5 text-sm font-medium transition sm:w-auto"
         >
-          <Phone className="w-4 h-4 text-muted-foreground" />
+          <Phone className="text-muted-foreground h-4 w-4" />
           <span>Claim with phone number</span>
         </button>
       </div>
 
       {/* Claim Modal */}
       {showClaimModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-card border border-border rounded-lg max-w-md w-full p-6 text-left shadow-2xl">
-            <h3 className="text-base font-bold text-foreground mb-1">
-              Claim your shop listing
-            </h3>
-            <p className="text-xs text-muted-foreground mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <div className="bg-card border-border w-full max-w-md rounded-lg border p-6 text-left shadow-2xl">
+            <h3 className="text-foreground mb-1 text-base font-bold">Claim your shop listing</h3>
+            <p className="text-muted-foreground mb-4 text-xs">
               Enter the phone number you used when downloading CB POS to link your shop to this account.
             </p>
 
             <form onSubmit={handleClaimSubmit} className="space-y-4">
               <div>
-                <label htmlFor="claim-phone-input" className="block text-xs uppercase font-mono tracking-wider text-muted-foreground mb-1">
+                <label
+                  htmlFor="claim-phone-input"
+                  className="text-muted-foreground mb-1 block font-mono text-xs tracking-wider uppercase"
+                >
                   Registered phone number
                 </label>
                 <input
@@ -100,12 +97,12 @@ export function EmptyDashboard({ locale, onClaimSuccess, copy }: EmptyDashboardP
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="077 123 4567"
                   required
-                  className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground focus:outline-none focus:border-cyan-400"
+                  className="bg-background border-border text-foreground w-full rounded border px-3 py-2 text-sm focus:border-cyan-400 focus:outline-none"
                 />
               </div>
 
               {errorMsg && (
-                <p className="text-xs text-destructive bg-destructive/10 border border-destructive/20 p-2 rounded">
+                <p className="text-destructive bg-destructive/10 border-destructive/20 rounded border p-2 text-xs">
                   {errorMsg}
                 </p>
               )}
@@ -114,16 +111,16 @@ export function EmptyDashboard({ locale, onClaimSuccess, copy }: EmptyDashboardP
                 <button
                   type="button"
                   onClick={() => setShowClaimModal(false)}
-                  className="px-4 py-2 border border-border rounded text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                  className="border-border text-muted-foreground hover:text-foreground cursor-pointer rounded border px-4 py-2 text-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading || !phone.trim()}
-                  className="px-4 py-2 bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border rounded text-xs font-medium flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="bg-secondary text-secondary-foreground hover:bg-secondary/80 border-border flex cursor-pointer items-center gap-2 rounded border px-4 py-2 text-xs font-medium disabled:opacity-50"
                 >
-                  {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   <span>Claim listing</span>
                 </button>
               </div>

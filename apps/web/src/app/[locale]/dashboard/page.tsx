@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { DashboardShell } from "@/features/dashboard/components/DashboardShell";
-import { OverviewTab } from "@/features/dashboard/components/OverviewTab";
+import { OverviewView } from "@/features/dashboard/components/OverviewView";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -17,30 +16,18 @@ export default async function DashboardPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "dash" });
 
   return (
-    <DashboardShell
+    <OverviewView
       locale={locale}
       copy={{
-        emptyTitle: t("empty.title"),
-        emptyBody: t("empty.body"),
+        overviewTitle: t("overview.title"),
+        statusListed: t("status.listed"),
+        statusPrivate: t("status.private"),
+        statusHidden: t("status.hidden"),
+        statusHiddenBody: t("status.hiddenBody"),
+        supporter: t("supporter"),
+        updateAvailable: t("update.available"),
+        updateCta: t("update.cta"),
       }}
-      renderOverview={({ listing, latestRelease, onListingUpdated }) => (
-        <OverviewTab
-          locale={locale}
-          listing={listing}
-          latestRelease={latestRelease}
-          onListingUpdated={onListingUpdated}
-          copy={{
-            overviewTitle: t("overview.title"),
-            statusListed: t("status.listed"),
-            statusPrivate: t("status.private"),
-            statusHidden: t("status.hidden"),
-            statusHiddenBody: t("status.hiddenBody"),
-            supporter: t("supporter"),
-            updateAvailable: t("update.available"),
-            updateCta: t("update.cta"),
-          }}
-        />
-      )}
     />
   );
 }

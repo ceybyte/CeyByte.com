@@ -30,29 +30,17 @@ const mockCopy = {
 
 describe("S12 Sign in / Sign up (F-09)", () => {
   test("renders sign in card with Google OAuth and email OTP inputs", () => {
-    const html = renderToString(
-      <AuthCard
-        locale="en"
-        hasClaimContext={false}
-        copy={mockCopy}
-      />,
-    );
+    const html = renderToString(<AuthCard locale="en" hasClaimContext={false} copy={mockCopy} />);
 
     expect(html).toContain("Sign in");
     expect(html).toContain("Continue with Google");
     expect(html).toContain("Email me a sign-in code");
     expect(html).toContain("New here? Create an account");
-    expect(html).not.toContain("#39FF14"); // No green button rule on S12!
+    expect(html.includes("39FF14")).toBe(false); // No neon green button rule on S12!
   });
 
   test("renders claim context banner when hasClaimContext is true", () => {
-    const html = renderToString(
-      <AuthCard
-        locale="en"
-        hasClaimContext={true}
-        copy={mockCopy}
-      />,
-    );
+    const html = renderToString(<AuthCard locale="en" hasClaimContext={true} copy={mockCopy} />);
 
     expect(html).toContain("Create your account");
     expect(html).toContain("Create an account to look after your shop&#x27;s listing on the CB POS map.");
@@ -61,7 +49,6 @@ describe("S12 Sign in / Sign up (F-09)", () => {
   test("renders EmailOtpForm initial email state", () => {
     const html = renderToString(
       <EmailOtpForm
-        mode="signin"
         locale="en"
         labels={{
           emailLabel: mockCopy.emailLabel,

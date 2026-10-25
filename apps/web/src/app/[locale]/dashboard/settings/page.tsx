@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { DashboardShell } from "@/features/dashboard/components/DashboardShell";
-import { SettingsTab } from "@/features/dashboard/components/SettingsTab";
+import { SettingsView } from "@/features/dashboard/components/SettingsView";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -17,25 +16,15 @@ export default async function DashboardSettingsPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "dash" });
 
   return (
-    <DashboardShell
+    <SettingsView
       locale={locale}
       copy={{
-        emptyTitle: t("empty.title"),
-        emptyBody: t("empty.body"),
+        language: t("settings.language"),
+        deleteTitle: t("settings.delete.title"),
+        deleteBody: t("settings.delete.body"),
+        deleteConfirm: t("settings.delete.confirm"),
+        deleteCta: t("settings.delete.cta"),
       }}
-      renderOverview={({ listing }) => (
-        <SettingsTab
-          locale={locale}
-          listing={listing}
-          copy={{
-            language: t("settings.language"),
-            deleteTitle: t("settings.delete.title"),
-            deleteBody: t("settings.delete.body"),
-            deleteConfirm: t("settings.delete.confirm"),
-            deleteCta: t("settings.delete.cta"),
-          }}
-        />
-      )}
     />
   );
 }

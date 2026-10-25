@@ -53,7 +53,8 @@ describe("S13 Merchant Dashboard Overview (F-09)", () => {
         onClaimSuccess={() => {}}
         copy={{
           emptyTitle: "There's no shop linked to this account yet",
-          emptyBody: "Download CB POS from this browser to add your shop, or contact us if you've already registered it.",
+          emptyBody:
+            "Download CB POS from this browser to add your shop, or contact us if you've already registered it.",
         }}
       />,
     );

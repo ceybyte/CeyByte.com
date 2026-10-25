@@ -3,6 +3,7 @@ import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 import { claimListingFromCookie } from "../src/lib/claim";
 import { hmacSha256Hex, sha256Hex } from "../src/lib/crypto";
+import type { Db } from "../src/lib/db";
 
 const ORIGIN = "http://localhost:3000";
 const IP = "203.0.113.12";
@@ -21,7 +22,7 @@ describe("Merchant Claim Flow & Security (F-09 / AC-09.1)", () => {
     const fakeToken = "11112222333344445555666677778888";
     const invalidCookie = `cb_claim=${fakeToken}.invalid_signature`;
 
-    const result = await claimListingFromCookie(env, {} as any, "user_1", invalidCookie);
+    const result = await claimListingFromCookie(env, null as unknown as Db, "user_1", invalidCookie);
     expect(result.claimed).toBe(false);
   });
 
@@ -68,7 +69,7 @@ describe("Merchant Claim Flow & Security (F-09 / AC-09.1)", () => {
       .bind(userId, `kamal_${Date.now()}@example.com`, now, now)
       .run();
 
-    const claimRes = await claimListingFromCookie(env, {} as any, userId, cookie);
+    const claimRes = await claimListingFromCookie(env, null as unknown as Db, userId, cookie);
     expect(claimRes.claimed).toBe(true);
     expect(claimRes.merchantId).toBe(merchantId);
 
@@ -91,7 +92,7 @@ describe("Merchant Claim Flow & Security (F-09 / AC-09.1)", () => {
     expect(log?.event).toBe("listing_claimed");
 
     // Second redemption attempt with the same cookie must fail (single-use)
-    const secondRes = await claimListingFromCookie(env, {} as any, "user_other", cookie);
+    const secondRes = await claimListingFromCookie(env, null as unknown as Db, "user_other", cookie);
     expect(secondRes.claimed).toBe(false);
   });
 
@@ -136,12 +137,11 @@ describe("Merchant Claim Flow & Security (F-09 / AC-09.1)", () => {
 
       // Check cookie structure: token.signature
       const cookieValue = claimCookie?.split(";")[0]?.split("=")[1];
-      expect(cookieValue).toBeDefined();
-      const [token, sig] = cookieValue!.split(".");
+      const [token, sig] = (cookieValue ?? "").split(".");
       expect(token).toHaveLength(64);
       expect(sig).toBeDefined();
 
-      const expectedSig = await hmacSha256Hex(env.CLAIM_TOKEN_SECRET, token!);
+      const expectedSig = token ? await hmacSha256Hex(env.CLAIM_TOKEN_SECRET, token) : "";
       expect(sig).toBe(expectedSig);
     } finally {
       globalThis.fetch = originalFetch;

@@ -12,9 +12,7 @@ mock.module("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-const enMessages = JSON.parse(
-  readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"),
-);
+const enMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"));
 
 mock.module("./api", () => ({
   fetchMyTickets: async () => [
