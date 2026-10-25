@@ -191,9 +191,163 @@
       "secondary": "Read the setup guide"
     }
   },
+  "gate": {
+    "step": "Step {n} of 2",
+    "s1": {
+      "title": "Tell us a little about your shop",
+      "lead": "It takes about half a minute. We use these details to help if something goes wrong. Your shop only appears on the public map if you choose that on the next step.",
+      "cta": "Continue"
+    },
+    "fullName": {
+      "label": "Your full name"
+    },
+    "shopName": {
+      "label": "Shop name",
+      "placeholder": "For example, Perera Stores"
+    },
+    "category": {
+      "label": "What kind of shop is it?",
+      "options": "Grocery · Mini-mart / supermarket · Pharmacy · Hardware · Bookshop & stationery · Textile & fashion · Mobile & electronics · Bakery & sweets · Cosmetics · Agro & fertilizer · Wholesale · Café / takeaway · Other"
+    },
+    "phone": {
+      "label": "Phone number",
+      "help": "A mobile or landline number. We never show it publicly."
+    },
+    "whatsapp": {
+      "label": "WhatsApp number (optional)",
+      "same": "Same as my phone number"
+    },
+    "s2": {
+      "title": "Where is your shop?",
+      "back": "Back",
+      "cta": "Download CB POS",
+      "submitting": "Starting your download…"
+    },
+    "district": {
+      "label": "District"
+    },
+    "city": {
+      "label": "Town or city",
+      "useTyped": "Use \"{typed}\""
+    },
+    "detect": {
+      "cta": "Use my current location",
+      "denied": "Your browser didn't share your location, and that's fine. Choose your district and drag the pin to your shop instead.",
+      "approx": "We could only find your location roughly. Drag the pin to your shop's entrance."
+    },
+    "pin": {
+      "help": "Drag the pin to your shop's entrance."
+    },
+    "public": {
+      "label": "Show my shop on the public CB POS map",
+      "help": "People will see your shop's name, its type and its town. Your name and phone numbers always stay private, and you can ask us to remove the listing at any time."
+    },
+    "terms": {
+      "label": "I understand that CB POS is free software provided as is, that my tax calculations and IRD filings are my own responsibility, and that I need to keep my own backups.",
+      "links": "Terms · Tax disclaimer · Data safety",
+      "termsLink": "Terms",
+      "taxLink": "Tax disclaimer",
+      "dataSafetyLink": "Data safety"
+    },
+    "done": {
+      "title": "Your download has started.",
+      "file": "{fileName} · {sizeMb} MB",
+      "hashLabel": "SHA-256",
+      "copied": "Copied!",
+      "copyHash": "Copy SHA-256 hash",
+      "verify": "How to check this file",
+      "smartscreen": {
+        "title": "If Windows says \"Windows protected your PC\"",
+        "body": "That warning is normal for new programs that aren't code-signed yet. Click **More info**, then **Run anyway**."
+      },
+      "steps": {
+        "title": "What to do next",
+        "1": "Open the file you just downloaded. Windows asks for your permission, then the installer starts.",
+        "2": "Fill in the setup screens: your shop's details, your printer and an admin PIN. If they don't appear, sign in with the PIN 1234 and change it straight away under Users.",
+        "3": "Plug in your printer and scanner, then press F3 to find an item and F5 to take payment."
+      },
+      "whatsapp": "Join the CB POS WhatsApp community",
+      "claim": {
+        "title": "Keep your listing in your hands",
+        "body": "Create a free account so you can change your shop's details, or remove them, whenever you like.",
+        "cta": "Create an account"
+      },
+      "retry": "Download didn't start? Try again",
+      "mobile": "On your phone? Send this link to the computer in your shop.",
+      "mobileShare": "Share the link"
+    },
+    "leave": {
+      "confirm": "Leave now? We'll keep what you typed on this device until you close the browser."
+    }
+  },
+  "releases": {
+    "title": "Releases",
+    "lead": "Every version of CB POS, with the SHA-256 for each installer so you can check your download is genuine.",
+    "latest": "Latest version",
+    "published": "Released {date}",
+    "download": {
+      "exe": "Download the installer (.EXE)"
+    },
+    "verify": {
+      "title": "Check that your download is genuine",
+      "body": "Open PowerShell in your Downloads folder and run this command. The result should match the SHA-256 above exactly. If it doesn't, delete the file and download it again.",
+      "file": "Your file is called CBPOSSetup-{version}.exe.",
+      "ps": "Get-FileHash .\\{fileName} -Algorithm SHA256",
+      "cmd": "certutil -hashfile {fileName} SHA256"
+    },
+    "yanked": "We withdrew this version. Please don't install it.",
+    "changelog": "What changed",
+    "asIs": "CB POS comes as is, without a warranty. Back up your data before you update.",
+    "unavailable": "We can't show release details right now. Please try again in a few minutes.",
+    "newerAvailable": "A newer version ({version}) is available. Refresh to see it.",
+    "windowsReq": "Windows 10 or later"
+  },
+  "categories": {
+    "grocery": "Grocery",
+    "minimart": "Mini-mart / supermarket",
+    "pharmacy": "Pharmacy",
+    "hardware": "Hardware",
+    "bookshop": "Bookshop & stationery",
+    "textile": "Textile & fashion",
+    "electronics": "Mobile & electronics",
+    "bakery": "Bakery & sweets",
+    "cosmetics": "Cosmetics",
+    "agro": "Agro & fertilizer",
+    "wholesale": "Wholesale",
+    "restaurant": "Café / takeaway",
+    "other": "Other"
+  },
+  "districts": {
+    "ampara": "Ampara",
+    "anuradhapura": "Anuradhapura",
+    "badulla": "Badulla",
+    "batticaloa": "Batticaloa",
+    "colombo": "Colombo",
+    "galle": "Galle",
+    "gampaha": "Gampaha",
+    "hambantota": "Hambantota",
+    "jaffna": "Jaffna",
+    "kalutara": "Kalutara",
+    "kandy": "Kandy",
+    "kegalle": "Kegalle",
+    "kilinochchi": "Kilinochchi",
+    "kurunegala": "Kurunegala",
+    "mannar": "Mannar",
+    "matale": "Matale",
+    "matara": "Matara",
+    "monaragala": "Monaragala",
+    "mullaitivu": "Mullaitivu",
+    "nuwara-eliya": "Nuwara Eliya",
+    "polonnaruwa": "Polonnaruwa",
+    "puttalam": "Puttalam",
+    "ratnapura": "Ratnapura",
+    "trincomalee": "Trincomalee",
+    "vavuniya": "Vavuniya"
+  },
   "errors": {
     "INVALID_PHONE": "That doesn\u2019t look like a Sri Lankan number. Try something like 77\u00a0123\u00a04567.",
     "required": "Please fill this in to continue.",
+    "too_long": "Please keep this shorter.",
     "LOCATION_OUTSIDE_SRI_LANKA": "That point is outside Sri Lanka. Drag the pin to where your shop is.",
     "RATE_LIMITED": "Too many attempts. Try again in {seconds}s.",
     "TURNSTILE_FAILED": "The security check failed. Please try again.",
