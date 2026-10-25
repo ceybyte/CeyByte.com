@@ -37,12 +37,8 @@ export function VerifyExpander({ version }: { version: string }) {
             <Terminal className="text-azure-text size-4" />
           </div>
           <div>
-            <h3 className="text-text text-sm font-semibold sm:text-base">
-              {t("verify.title")}
-            </h3>
-            <p className="text-text-muted mt-0.5 text-xs">
-              {t("verify.file", { version })}
-            </p>
+            <h3 className="text-text text-sm font-semibold sm:text-base">{t("verify.title")}</h3>
+            <p className="text-text-muted mt-0.5 text-xs">{t("verify.file", { version })}</p>
           </div>
         </div>
         <div className="text-text-muted">
@@ -52,9 +48,7 @@ export function VerifyExpander({ version }: { version: string }) {
 
       {open && (
         <div className="border-hairline-grid space-y-4 border-t p-4 sm:p-5">
-          <p className="text-text-muted text-xs leading-relaxed sm:text-sm">
-            {t("verify.body")}
-          </p>
+          <p className="text-text-muted text-xs leading-relaxed sm:text-sm">{t("verify.body")}</p>
 
           {/* PowerShell Command */}
           <div className="space-y-1.5">
@@ -69,7 +63,7 @@ export function VerifyExpander({ version }: { version: string }) {
                 <span>{copiedPs ? "Copied" : "Copy command"}</span>
               </button>
             </div>
-            <pre className="border-hairline bg-canvas text-text select-all overflow-x-auto rounded-md border p-3 font-mono text-xs">
+            <pre className="border-hairline bg-canvas text-text overflow-x-auto rounded-md border p-3 font-mono text-xs select-all">
               {psCmd}
             </pre>
           </div>
@@ -87,7 +81,7 @@ export function VerifyExpander({ version }: { version: string }) {
                 <span>{copiedCmd ? "Copied" : "Copy command"}</span>
               </button>
             </div>
-            <pre className="border-hairline bg-canvas text-text select-all overflow-x-auto rounded-md border p-3 font-mono text-xs">
+            <pre className="border-hairline bg-canvas text-text overflow-x-auto rounded-md border p-3 font-mono text-xs select-all">
               {cmdCmd}
             </pre>
           </div>

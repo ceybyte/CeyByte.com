@@ -34,7 +34,7 @@ export default async function DownloadPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="bg-canvas min-h-[calc(100vh-var(--header-h))] py-12 px-4 sm:py-16 sm:px-6 lg:px-8">
+    <div className="bg-canvas min-h-[calc(100vh-var(--header-h))] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
       <div className="mx-auto max-w-2xl">
         <Suspense fallback={<DownloadForm locale={locale} />}>
           <DownloadView locale={locale} />

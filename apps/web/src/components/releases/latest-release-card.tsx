@@ -36,30 +36,26 @@ export function LatestReleaseCard({ release, locale }: { release: ReleaseCardDat
   return (
     <div className="border-hairline bg-surface relative overflow-hidden rounded-lg border p-6 shadow-2xl sm:p-8">
       {/* Glow border highlight */}
-      <div className="pointer-events-none absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent via-azure/50 to-transparent" />
+      <div className="via-azure/50 pointer-events-none absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent to-transparent" />
 
       <div className="flex flex-col gap-6">
         {/* Top Badges & Meta */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <span className="bg-primary/10 text-primary border-primary/30 rounded border px-2.5 py-0.5 font-mono text-xs font-bold uppercase tracking-wider">
+            <span className="bg-primary/10 text-primary border-primary/30 rounded border px-2.5 py-0.5 font-mono text-xs font-bold tracking-wider uppercase">
               {t("latest")}
             </span>
             <span className="text-text font-mono text-xl font-bold tracking-tight sm:text-2xl">
               v{release.version}
             </span>
-            <span className="text-text-muted hidden font-mono text-xs sm:inline">
-              ({fileName})
-            </span>
+            <span className="text-text-muted hidden font-mono text-xs sm:inline">({fileName})</span>
           </div>
 
           <div className="flex items-center gap-3 text-xs">
-            <span className="text-text-muted">
-              {t("published", { date: release.release_date })}
-            </span>
+            <span className="text-text-muted">{t("published", { date: release.release_date })}</span>
             <span className="text-hairline">·</span>
             <span className="border-hairline bg-surface-elevated text-text-muted flex items-center gap-1.5 rounded border px-2 py-0.5">
-              <Monitor className="size-3 text-azure-text" />
+              <Monitor className="text-azure-text size-3" />
               {t("windowsReq")}
             </span>
           </div>
@@ -114,9 +110,7 @@ export function LatestReleaseCard({ release, locale }: { release: ReleaseCardDat
               )}
             </button>
           </div>
-          <p className="text-text select-all font-mono text-xs break-all leading-relaxed">
-            {release.sha256}
-          </p>
+          <p className="text-text font-mono text-xs leading-relaxed break-all select-all">{release.sha256}</p>
         </div>
       </div>
     </div>

@@ -51,9 +51,7 @@ export function ChangelogTimeline({
         <div className="border-azure/40 bg-azure/10 flex items-center justify-between rounded-lg border p-4 text-xs sm:text-sm">
           <div className="flex items-center gap-2">
             <RefreshCw className="text-azure-text size-4 animate-spin" />
-            <span className="text-text font-medium">
-              {t("newerAvailable", { version: newerVersion })}
-            </span>
+            <span className="text-text font-medium">{t("newerAvailable", { version: newerVersion })}</span>
           </div>
           <button
             type="button"
@@ -67,27 +65,25 @@ export function ChangelogTimeline({
 
       {/* Timeline Header */}
       <div>
-        <h2 className="text-display text-text text-xl font-bold sm:text-2xl">
-          {t("changelog")}
-        </h2>
+        <h2 className="text-display text-text text-xl font-bold sm:text-2xl">{t("changelog")}</h2>
       </div>
 
       {/* Vertical Hairline Timeline */}
-      <div className="relative border-l border-hairline ml-3 sm:ml-4 pl-6 sm:pl-8 space-y-8">
+      <div className="border-hairline relative ml-3 space-y-8 border-l pl-6 sm:ml-4 sm:pl-8">
         {releases.map((rel) => {
           const isLatest = Boolean(rel.is_latest);
           const isYanked = Boolean(rel.is_yanked);
 
           return (
-            <div key={rel.id || rel.version} className="relative group">
+            <div key={rel.id || rel.version} className="group relative">
               {/* Timeline Node Dot */}
               <div
-                className={`absolute -left-[31px] sm:-left-[39px] top-1.5 size-3.5 rounded-full border-2 bg-canvas transition-colors ${
+                className={`bg-canvas absolute top-1.5 -left-[31px] size-3.5 rounded-full border-2 transition-colors sm:-left-[39px] ${
                   isYanked
                     ? "border-error bg-error/20"
                     : isLatest
-                    ? "border-azure bg-azure"
-                    : "border-hairline bg-surface-elevated"
+                      ? "border-azure bg-azure"
+                      : "border-hairline bg-surface-elevated"
                 }`}
               />
 
@@ -95,27 +91,25 @@ export function ChangelogTimeline({
               <div className="flex flex-wrap items-center gap-2.5">
                 <span
                   className={`font-mono text-base font-bold sm:text-lg ${
-                    isYanked ? "line-through text-text-muted" : "text-text"
+                    isYanked ? "text-text-muted line-through" : "text-text"
                   }`}
                 >
                   v{rel.version}
                 </span>
 
                 {isLatest && !isYanked && (
-                  <span className="bg-azure/10 text-azure-text border-azure/30 rounded border px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider">
+                  <span className="bg-azure/10 text-azure-text border-azure/30 rounded border px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase">
                     {t("latest")}
                   </span>
                 )}
 
                 {isYanked && (
-                  <span className="bg-error/10 text-error border-error/30 rounded border px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider">
+                  <span className="bg-error/10 text-error border-error/30 rounded border px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase">
                     Withdrawn
                   </span>
                 )}
 
-                <span className="text-text-muted text-xs">
-                  {rel.release_date}
-                </span>
+                <span className="text-text-muted text-xs">{rel.release_date}</span>
               </div>
 
               {/* Yanked Warning Banner */}
@@ -128,8 +122,8 @@ export function ChangelogTimeline({
 
               {/* Changelog Notes */}
               {rel.changelog && (
-                <div className="border-hairline bg-surface mt-3 rounded-lg border p-4 text-xs sm:text-sm text-text-muted leading-relaxed">
-                  <div className="prose prose-invert max-w-none text-text-muted text-xs sm:text-sm whitespace-pre-line">
+                <div className="border-hairline bg-surface text-text-muted mt-3 rounded-lg border p-4 text-xs leading-relaxed sm:text-sm">
+                  <div className="prose prose-invert text-text-muted max-w-none text-xs whitespace-pre-line sm:text-sm">
                     {rel.changelog}
                   </div>
                 </div>

@@ -17,8 +17,7 @@ export async function syncReleases(
 ): Promise<SyncResult> {
   const db = makeDb(env.DB);
   const manifestUrl =
-    env.RELEASE_MANIFEST_URL ||
-    "https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json";
+    env.RELEASE_MANIFEST_URL || "https://raw.githubusercontent.com/ceybyte/cbpos-releases/main/latest.json";
 
   // Check stored ETag for 304 early return (02-TRD §7.2)
   const storedEtag = await env.CACHE_KV.get("release:etag");

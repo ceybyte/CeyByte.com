@@ -15,13 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/lib/use-media-query";
@@ -31,16 +25,8 @@ import { WhatNextView } from "./what-next-view";
 import { TurnstileWidget } from "./turnstile-widget";
 
 export function DownloadGateModal() {
-  const {
-    isOpen,
-    step,
-    setStep,
-    closeGate,
-    step1Draft,
-    setStep1Draft,
-    downloadResult,
-    setDownloadResult,
-  } = useGate();
+  const { isOpen, step, setStep, closeGate, step1Draft, setStep1Draft, downloadResult, setDownloadResult } =
+    useGate();
 
   const locale = useLocale();
   const t = useTranslations("gate");
@@ -164,7 +150,10 @@ export function DownloadGateModal() {
           const path = issue.path[0] as string;
           if (path && !fieldErrors[path]) {
             fieldErrors[path] = issue.message.startsWith("errors.")
-              ? tErrors(issue.message.replace("errors.", "") as "required" | "INVALID_PHONE" | "LOCATION_OUTSIDE_SRI_LANKA")
+              ? tErrors(
+                  issue.message.replace("errors.", "") as
+                    "required" | "INVALID_PHONE" | "LOCATION_OUTSIDE_SRI_LANKA",
+                )
               : issue.message;
           }
         }
@@ -241,7 +230,7 @@ export function DownloadGateModal() {
         {step !== "done" && (
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <span className="text-text-muted font-mono text-xs font-semibold uppercase tracking-wider">
+              <span className="text-text-muted font-mono text-xs font-semibold tracking-wider uppercase">
                 {t("step", { n: step })}
               </span>
               <button
@@ -276,12 +265,8 @@ export function DownloadGateModal() {
         {step === 1 && (
           <form onSubmit={handleStep1Submit} className="flex flex-col gap-4">
             <div>
-              <h2 className="text-display text-text text-xl font-bold sm:text-2xl">
-                {t("s1.title")}
-              </h2>
-              <p className="text-text-muted mt-1 text-xs leading-relaxed sm:text-sm">
-                {t("s1.lead")}
-              </p>
+              <h2 className="text-display text-text text-xl font-bold sm:text-2xl">{t("s1.title")}</h2>
+              <p className="text-text-muted mt-1 text-xs leading-relaxed sm:text-sm">{t("s1.lead")}</p>
             </div>
 
             {/* Full Name */}
@@ -322,10 +307,7 @@ export function DownloadGateModal() {
               <Label htmlFor="gate-category" className="text-xs font-medium">
                 {t("category.label")}
               </Label>
-              <Select
-                value={category}
-                onValueChange={(val) => setCategory(val as BusinessCategory)}
-              >
+              <Select value={category} onValueChange={(val) => setCategory(val as BusinessCategory)}>
                 <SelectTrigger id="gate-category" aria-invalid={!!errors.category}>
                   <SelectValue placeholder={t("category.label")} />
                 </SelectTrigger>
@@ -376,7 +358,7 @@ export function DownloadGateModal() {
                     type="checkbox"
                     checked={sameAsPhone}
                     onChange={(e) => setSameAsPhone(e.target.checked)}
-                    className="size-3.5 accent-primary rounded"
+                    className="accent-primary size-3.5 rounded"
                   />
                   <span>{t("whatsapp.same")}</span>
                 </label>
@@ -416,9 +398,7 @@ export function DownloadGateModal() {
         {step === 2 && (
           <form onSubmit={handleStep2Submit} className="flex flex-col gap-4">
             <div>
-              <h2 className="text-display text-text text-xl font-bold sm:text-2xl">
-                {t("s2.title")}
-              </h2>
+              <h2 className="text-display text-text text-xl font-bold sm:text-2xl">{t("s2.title")}</h2>
             </div>
 
             {/* District & City Dropdowns */}
@@ -427,10 +407,7 @@ export function DownloadGateModal() {
                 <Label htmlFor="gate-district" className="text-xs font-medium">
                   {t("district.label")}
                 </Label>
-                <Select
-                  value={district}
-                  onValueChange={(val) => handleDistrictChange(val as District)}
-                >
+                <Select value={district} onValueChange={(val) => handleDistrictChange(val as District)}>
                   <SelectTrigger id="gate-district">
                     <SelectValue placeholder={t("district.label")} />
                   </SelectTrigger>
@@ -475,7 +452,7 @@ export function DownloadGateModal() {
 
             {/* Public Map Opt-in Checkbox (Defaults to False) */}
             <div className="border-hairline bg-surface-elevated rounded-md border p-3">
-              <label className="flex items-start gap-2.5 cursor-pointer">
+              <label className="flex cursor-pointer items-start gap-2.5">
                 <Checkbox
                   id="gate-public"
                   checked={isPublicOnMap}
@@ -483,17 +460,15 @@ export function DownloadGateModal() {
                   className="mt-0.5"
                 />
                 <div className="text-xs">
-                  <span className="text-text font-semibold block">{t("public.label")}</span>
-                  <span className="text-text-muted mt-0.5 block leading-relaxed">
-                    {t("public.help")}
-                  </span>
+                  <span className="text-text block font-semibold">{t("public.label")}</span>
+                  <span className="text-text-muted mt-0.5 block leading-relaxed">{t("public.help")}</span>
                 </div>
               </label>
             </div>
 
             {/* Terms & As-is Statement Checkbox (Required) */}
             <div className="border-hairline bg-surface-elevated rounded-md border p-3">
-              <label className="flex items-start gap-2.5 cursor-pointer">
+              <label className="flex cursor-pointer items-start gap-2.5">
                 <Checkbox
                   id="gate-terms"
                   checked={termsAccepted}
@@ -502,7 +477,7 @@ export function DownloadGateModal() {
                   aria-invalid={!!errors.termsAccepted}
                 />
                 <div className="text-xs">
-                  <span className="text-text leading-relaxed block">{t("terms.label")}</span>
+                  <span className="text-text block leading-relaxed">{t("terms.label")}</span>
                   <div className="text-azure-text mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
                     <a
                       href={`/${locale}/docs/terms`}
@@ -533,9 +508,7 @@ export function DownloadGateModal() {
                   </div>
                 </div>
               </label>
-              {errors.termsAccepted && (
-                <p className="text-error mt-2 text-xs">{errors.termsAccepted}</p>
-              )}
+              {errors.termsAccepted && <p className="text-error mt-2 text-xs">{errors.termsAccepted}</p>}
             </div>
 
             {/* Bot Defense Turnstile Widget */}
@@ -554,13 +527,7 @@ export function DownloadGateModal() {
                 <span>{t("s2.back")}</span>
               </Button>
 
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                loading={isSubmitting}
-                className="flex-1"
-              >
+              <Button type="submit" variant="primary" size="lg" loading={isSubmitting} className="flex-1">
                 <Download className="size-4" />
                 <span>{isSubmitting ? t("s2.submitting") : t("s2.cta")}</span>
               </Button>
@@ -581,7 +548,7 @@ export function DownloadGateModal() {
     return (
       <Dialog open={isOpen} onOpenChange={(open) => !open && closeGate()}>
         <DialogContent
-          className="bg-surface border-hairline max-w-[560px] p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+          className="bg-surface border-hairline max-h-[90vh] max-w-[560px] overflow-y-auto p-6 shadow-2xl"
           showCloseButton={false}
           data-lenis-prevent
         >

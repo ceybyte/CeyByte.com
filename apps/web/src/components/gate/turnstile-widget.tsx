@@ -80,7 +80,8 @@ export function TurnstileWidget({ onToken, action = "gate" }: TurnstileWidgetPro
           renderWidget();
         };
         const script = document.createElement("script");
-        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit";
+        script.src =
+          "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit";
         script.async = true;
         script.defer = true;
         document.head.appendChild(script);
@@ -109,7 +110,7 @@ export function TurnstileWidget({ onToken, action = "gate" }: TurnstileWidgetPro
   }, [action, onToken]);
 
   return (
-    <div className="flex justify-center my-2">
+    <div className="my-2 flex justify-center">
       <div ref={containerRef} className="min-h-[65px]" />
     </div>
   );

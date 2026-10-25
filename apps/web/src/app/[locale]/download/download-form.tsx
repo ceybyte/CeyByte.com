@@ -3,11 +3,7 @@
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Download, ArrowRight } from "lucide-react";
-import {
-  BUSINESS_CATEGORIES,
-  DISTRICTS,
-  type District,
-} from "@cbpos/shared/enums";
+import { BUSINESS_CATEGORIES, DISTRICTS, type District } from "@cbpos/shared/enums";
 import { DISTRICT_CENTROIDS } from "@/components/gate/mini-map";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,12 +40,10 @@ export function DownloadForm({ locale }: DownloadFormProps) {
       <input type="hidden" name="turnstileToken" value="1x00000000000000000000AA" />
 
       <div>
-        <span className="text-primary font-mono text-xs font-semibold uppercase tracking-wider">
+        <span className="text-primary font-mono text-xs font-semibold tracking-wider uppercase">
           {t("step", { n: 1 })}
         </span>
-        <h2 className="text-display text-text mt-1 text-2xl font-bold sm:text-3xl">
-          {t("s1.title")}
-        </h2>
+        <h2 className="text-display text-text mt-1 text-2xl font-bold sm:text-3xl">{t("s1.title")}</h2>
         <p className="text-text-muted mt-2 text-sm leading-relaxed">{t("s1.lead")}</p>
       </div>
 
@@ -73,12 +67,7 @@ export function DownloadForm({ locale }: DownloadFormProps) {
           <Label htmlFor="nojs-shopName" className="text-xs font-medium">
             {t("shopName.label")}
           </Label>
-          <Input
-            id="nojs-shopName"
-            name="shopName"
-            required
-            placeholder={t("shopName.placeholder")}
-          />
+          <Input id="nojs-shopName" name="shopName" required placeholder={t("shopName.placeholder")} />
         </div>
 
         {/* Category */}
@@ -142,7 +131,7 @@ export function DownloadForm({ locale }: DownloadFormProps) {
                   setSameAsPhone(e.target.checked);
                   if (e.target.checked) setWhatsapp(phone);
                 }}
-                className="size-3.5 accent-primary rounded"
+                className="accent-primary size-3.5 rounded"
               />
               <span>{t("whatsapp.same")}</span>
             </label>
@@ -166,9 +155,7 @@ export function DownloadForm({ locale }: DownloadFormProps) {
         </div>
 
         <div className="border-hairline-grid border-t pt-4">
-          <h3 className="text-display text-text text-lg font-bold sm:text-xl">
-            {t("s2.title")}
-          </h3>
+          <h3 className="text-display text-text text-lg font-bold sm:text-xl">{t("s2.title")}</h3>
         </div>
 
         {/* District & City */}
@@ -197,46 +184,38 @@ export function DownloadForm({ locale }: DownloadFormProps) {
             <Label htmlFor="nojs-city" className="text-xs font-medium">
               {t("city.label")}
             </Label>
-            <Input
-              id="nojs-city"
-              name="city"
-              required
-              defaultValue="Colombo 01"
-              placeholder="e.g. Pettah"
-            />
+            <Input id="nojs-city" name="city" required defaultValue="Colombo 01" placeholder="e.g. Pettah" />
           </div>
         </div>
 
         {/* Public Map Opt-in */}
         <div className="border-hairline bg-surface-elevated rounded-md border p-3.5">
-          <label className="flex items-start gap-2.5 cursor-pointer">
+          <label className="flex cursor-pointer items-start gap-2.5">
             <input
               type="checkbox"
               name="isPublicOnMap"
               value="true"
-              className="size-4 accent-primary rounded mt-0.5"
+              className="accent-primary mt-0.5 size-4 rounded"
             />
             <div className="text-xs">
-              <span className="text-text font-semibold block">{t("public.label")}</span>
-              <span className="text-text-muted mt-1 block leading-relaxed">
-                {t("public.help")}
-              </span>
+              <span className="text-text block font-semibold">{t("public.label")}</span>
+              <span className="text-text-muted mt-1 block leading-relaxed">{t("public.help")}</span>
             </div>
           </label>
         </div>
 
         {/* Terms Acceptance */}
         <div className="border-hairline bg-surface-elevated rounded-md border p-3.5">
-          <label className="flex items-start gap-2.5 cursor-pointer">
+          <label className="flex cursor-pointer items-start gap-2.5">
             <input
               type="checkbox"
               name="termsAccepted"
               value="true"
               required
-              className="size-4 accent-primary rounded mt-0.5"
+              className="accent-primary mt-0.5 size-4 rounded"
             />
             <div className="text-xs">
-              <span className="text-text leading-relaxed block">{t("terms.label")}</span>
+              <span className="text-text block leading-relaxed">{t("terms.label")}</span>
             </div>
           </label>
         </div>

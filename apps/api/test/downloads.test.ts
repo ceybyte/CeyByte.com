@@ -180,7 +180,10 @@ describe("Download Gate API (POST /api/downloads)", () => {
     });
 
     expect(res.status).toBe(422);
-    const json = (await res.json()) as { ok: boolean; error: { code: string; fields?: Record<string, string> } };
+    const json = (await res.json()) as {
+      ok: boolean;
+      error: { code: string; fields?: Record<string, string> };
+    };
     expect(json.ok).toBe(false);
     expect(json.error.code).toBe("VALIDATION_FAILED");
     expect(json.error.fields?.lat).toBeDefined();

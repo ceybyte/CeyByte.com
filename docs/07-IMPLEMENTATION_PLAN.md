@@ -214,20 +214,20 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 **Goal:** real installer delivery and merchant capture (F-03, F-06).
 
 ### 6.1 Releases
-- [ ] `syncReleases()` job (ETag, `Manifest` zod, GitHub release lookup for size/date, `download_url` cross-check, batch upsert, KV `release:latest`, rebuild dispatch) — called from `scheduled()` and the webhook.
-- [ ] `POST /api/webhooks/github` (HMAC, event filter) and the webhook on `ceybyte/cbpos-releases`.
-- [ ] `GET /api/releases/latest`, `GET /api/download/latest` (KV → D1 → fallback, log in `waitUntil`, 302).
-- [ ] S06 page from `.content/releases.json` (hash block, verify expander with `CBPOSSetup-{version}.exe`, changelog, yanked styling) + "newer version available" banner from the runtime check. Hairline `Branches` header.
-- [ ] First production sync imports `v1.3.0`; admins paste notes from `CHANGELOG.md` (UR-09 pending).
+- [x] `syncReleases()` job (ETag, `Manifest` zod, GitHub release lookup for size/date, `download_url` cross-check, batch upsert, KV `release:latest`, rebuild dispatch) — called from `scheduled()` and the webhook.
+- [x] `POST /api/webhooks/github` (HMAC, event filter) and the webhook on `ceybyte/cbpos-releases`.
+- [x] `GET /api/releases/latest`, `GET /api/download/latest` (KV → D1 → fallback, log in `waitUntil`, 302).
+- [x] S06 page from `.content/releases.json` (hash block, verify expander with `CBPOSSetup-{version}.exe`, changelog, yanked styling) + "newer version available" banner from the runtime check. Hairline `Branches` header.
+- [x] First production sync imports `v1.3.0`; admins paste notes from `CHANGELOG.md` (UR-09 pending).
 
 ### 6.2 Download gate
-- [ ] `packages/shared/src/schemas/download-gate.ts`.
-- [ ] `POST /api/downloads` (Turnstile → RL → zod → phone dedupe → batch insert merchant + log → claim token → `cb_gate` + `cb_gate_done` cookies → `bumpGeoVersion` if public).
-- [ ] `DownloadModal`: Dialog/Vaul, `?download=1`, Lenis pause, sessionStorage, direction-aware steps, lazy Turnstile.
-- [ ] Step 2: district/city selects, Detect My Location (bounds, nearest city, accuracy notice), lazy MiniMap with draggable pin, opt-in + terms (links to EULA, tax disclaimer, data safety).
-- [ ] What Next: layout morph, Rive check, hash block, SmartScreen box [A5], admin-permission note [A4], default PIN note [I1], WhatsApp link, claim card, retry, mobile share.
-- [ ] No-JS `/{locale}/download/` page posting to the same API.
-- [ ] **Design gates** on the modal (both containers) and What Next.
+- [x] `packages/shared/src/schemas/download-gate.ts`.
+- [x] `POST /api/downloads` (Turnstile → RL → zod → phone dedupe → batch insert merchant + log → claim token → `cb_gate` + `cb_gate_done` cookies → `bumpGeoVersion` if public).
+- [x] `DownloadModal`: Dialog/Vaul, `?download=1`, Lenis pause, sessionStorage, direction-aware steps, lazy Turnstile.
+- [x] Step 2: district/city selects, Detect My Location (bounds, nearest city, accuracy notice), lazy MiniMap with draggable pin, opt-in + terms (links to EULA, tax disclaimer, data safety).
+- [x] What Next: layout morph, Rive check, hash block, SmartScreen box [A5], admin-permission note [A4], default PIN note [I1], WhatsApp link, claim card, retry, mobile share.
+- [x] No-JS `/{locale}/download/` page posting to the same API.
+- [x] **Design gates** on the modal (both containers) and What Next.
 
 **Verify:** `01-visitor-download.spec.ts` × 3 locales (302 to the GitHub asset, opt-in default false, keyboard-only run). Publish a test release in a staging releases repo → download endpoint switches within 1 minute, pages within 5.
 

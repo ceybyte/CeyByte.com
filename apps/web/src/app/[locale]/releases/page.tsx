@@ -72,14 +72,15 @@ export default async function ReleasesPage({ params }: Props) {
 
   const t = await getTranslations({ locale, namespace: "releases" });
   const releases = loadReleases();
-  const latestRelease = releases.find((r) => r.is_latest && !r.is_yanked) ?? releases[0] ?? {
-    id: "release-1.3.0",
-    version: "1.3.0",
-    release_date: "2026-09-27",
-    sha256: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-    download_url: "https://github.com/ceybyte/cbpos-releases/releases/download/v1.3.0/CBPOSSetup-1.3.0.exe",
-    is_latest: true,
-  };
+  const latestRelease = releases.find((r) => r.is_latest && !r.is_yanked) ??
+    releases[0] ?? {
+      id: "release-1.3.0",
+      version: "1.3.0",
+      release_date: "2026-09-27",
+      sha256: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      download_url: "https://github.com/ceybyte/cbpos-releases/releases/download/v1.3.0/CBPOSSetup-1.3.0.exe",
+      is_latest: true,
+    };
 
   const latestCardData: ReleaseCardData = {
     version: latestRelease.version,
@@ -92,27 +93,23 @@ export default async function ReleasesPage({ params }: Props) {
   };
 
   return (
-    <div className="bg-canvas min-h-[calc(100vh-var(--header-h))] py-12 px-4 sm:py-16 sm:px-6 lg:px-8">
+    <div className="bg-canvas min-h-[calc(100vh-var(--header-h))] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-10">
         {/* Header with Hairline Branches Figure */}
         <div className="border-hairline bg-surface relative overflow-hidden rounded-lg border p-6 sm:p-8">
-          <div className="pointer-events-none absolute -top-8 -right-8 w-72 sm:w-96 opacity-20">
+          <div className="pointer-events-none absolute -top-8 -right-8 w-72 opacity-20 sm:w-96">
             <Figure name="branches" intensity={0.4} />
           </div>
 
           <div className="relative z-10 max-w-xl">
-            <span className="text-primary font-mono text-xs font-semibold uppercase tracking-wider">
+            <span className="text-primary font-mono text-xs font-semibold tracking-wider uppercase">
               CB POS VERSIONS
             </span>
             <h1 className="text-display text-text mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
               {t("title")}
             </h1>
-            <p className="text-text-muted mt-3 text-sm leading-relaxed sm:text-base">
-              {t("lead")}
-            </p>
-            <p className="text-text-muted/70 mt-4 text-xs italic">
-              {t("asIs")}
-            </p>
+            <p className="text-text-muted mt-3 text-sm leading-relaxed sm:text-base">{t("lead")}</p>
+            <p className="text-text-muted/70 mt-4 text-xs italic">{t("asIs")}</p>
           </div>
         </div>
 
@@ -123,10 +120,7 @@ export default async function ReleasesPage({ params }: Props) {
         <VerifyExpander version={latestRelease.version} />
 
         {/* Full Version Changelog Timeline */}
-        <ChangelogTimeline
-          releases={releases}
-          staticLatestVersion={latestRelease.version}
-        />
+        <ChangelogTimeline releases={releases} staticLatestVersion={latestRelease.version} />
       </div>
     </div>
   );

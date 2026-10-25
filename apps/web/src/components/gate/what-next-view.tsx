@@ -33,8 +33,7 @@ export function WhatNextView({ data }: WhatNextViewProps) {
   const release = data?.release;
   const fileName = release?.exe_name ?? "CBPOSSetup-latest.exe";
   const sizeMb = release?.exe_size ? Math.round(release.exe_size / (1024 * 1024)) : 50;
-  const sha256 =
-    release?.exe_sha256 ?? "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+  const sha256 = release?.exe_sha256 ?? "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
   const downloadUrl = data?.downloadUrl ?? "/api/download/latest";
 
   const handleCopyHash = useCallback(async () => {
@@ -80,9 +79,7 @@ export function WhatNextView({ data }: WhatNextViewProps) {
         </div>
         <div>
           <h3 className="text-text text-lg font-bold sm:text-xl">{t("done.title")}</h3>
-          <p className="text-text-muted font-mono text-xs">
-            {t("done.file", { fileName, sizeMb })}
-          </p>
+          <p className="text-text-muted font-mono text-xs">{t("done.file", { fileName, sizeMb })}</p>
         </div>
       </div>
 
@@ -90,7 +87,7 @@ export function WhatNextView({ data }: WhatNextViewProps) {
       <div className="border-hairline bg-surface-elevated rounded-md border p-3">
         <div className="mb-1.5 flex items-center justify-between text-xs">
           <span className="text-text-muted flex items-center gap-1.5 font-medium">
-            <ShieldCheck className="size-3.5 text-azure-text" />
+            <ShieldCheck className="text-azure-text size-3.5" />
             {t("done.hashLabel")}
           </span>
           <button
@@ -112,9 +109,7 @@ export function WhatNextView({ data }: WhatNextViewProps) {
             )}
           </button>
         </div>
-        <p className="text-text select-all font-mono text-xs break-all leading-relaxed">
-          {sha256}
-        </p>
+        <p className="text-text font-mono text-xs leading-relaxed break-all select-all">{sha256}</p>
 
         {/* Collapsible File Verification Commands */}
         <div className="border-hairline-grid mt-2 border-t pt-2">
@@ -152,36 +147,32 @@ export function WhatNextView({ data }: WhatNextViewProps) {
       {/* Windows SmartScreen Warning Card [A5] */}
       <div className="border-warning/40 bg-surface-elevated rounded-md border p-3">
         <div className="flex items-start gap-2.5">
-          <AlertTriangle className="text-warning size-5 shrink-0 mt-0.5" />
+          <AlertTriangle className="text-warning mt-0.5 size-5 shrink-0" />
           <div className="text-xs">
             <h4 className="text-text font-semibold">{t("done.smartscreen.title")}</h4>
-            <p className="text-text-muted mt-1 leading-relaxed">
-              {t("done.smartscreen.body")}
-            </p>
+            <p className="text-text-muted mt-1 leading-relaxed">{t("done.smartscreen.body")}</p>
           </div>
         </div>
       </div>
 
       {/* Numbered Next Steps [A4], [I1], [B1] */}
       <div className="space-y-2">
-        <h4 className="text-text text-xs font-semibold uppercase tracking-wider">
-          {t("done.steps.title")}
-        </h4>
+        <h4 className="text-text text-xs font-semibold tracking-wider uppercase">{t("done.steps.title")}</h4>
         <div className="space-y-2">
           <div className="border-hairline bg-surface-elevated flex items-start gap-3 rounded-md border p-2.5 text-xs">
-            <span className="bg-surface text-azure-text border-hairline flex size-5 shrink-0 items-center justify-center rounded-full border font-mono font-bold text-[10px]">
+            <span className="bg-surface text-azure-text border-hairline flex size-5 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] font-bold">
               1
             </span>
             <span className="text-text-muted leading-relaxed">{t("done.steps.1")}</span>
           </div>
           <div className="border-hairline bg-surface-elevated flex items-start gap-3 rounded-md border p-2.5 text-xs">
-            <span className="bg-surface text-azure-text border-hairline flex size-5 shrink-0 items-center justify-center rounded-full border font-mono font-bold text-[10px]">
+            <span className="bg-surface text-azure-text border-hairline flex size-5 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] font-bold">
               2
             </span>
             <span className="text-text-muted leading-relaxed">{t("done.steps.2")}</span>
           </div>
           <div className="border-hairline bg-surface-elevated flex items-start gap-3 rounded-md border p-2.5 text-xs">
-            <span className="bg-surface text-azure-text border-hairline flex size-5 shrink-0 items-center justify-center rounded-full border font-mono font-bold text-[10px]">
+            <span className="bg-surface text-azure-text border-hairline flex size-5 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] font-bold">
               3
             </span>
             <span className="text-text-muted leading-relaxed">{t("done.steps.3")}</span>
@@ -210,15 +201,8 @@ export function WhatNextView({ data }: WhatNextViewProps) {
             <h5 className="text-text font-semibold">{t("done.claim.title")}</h5>
             <p className="text-text-muted mt-0.5">{t("done.claim.body")}</p>
           </div>
-          <Button
-            asChild
-            variant="secondary"
-            size="sm"
-            className="w-full shrink-0 sm:w-auto"
-          >
-            <a href={`/auth/claim?token=${encodeURIComponent(data.claimToken)}`}>
-              {t("done.claim.cta")}
-            </a>
+          <Button asChild variant="secondary" size="sm" className="w-full shrink-0 sm:w-auto">
+            <a href={`/auth/claim?token=${encodeURIComponent(data.claimToken)}`}>{t("done.claim.cta")}</a>
           </Button>
         </div>
       )}

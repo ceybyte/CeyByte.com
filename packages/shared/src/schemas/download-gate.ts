@@ -1,25 +1,11 @@
 import { z } from "zod";
-import {
-  BUSINESS_CATEGORIES,
-  DISTRICTS,
-  LOCALES,
-  LOCATION_SOURCES,
-  SRI_LANKA_BOUNDS,
-} from "../enums";
+import { BUSINESS_CATEGORIES, DISTRICTS, LOCALES, LOCATION_SOURCES, SRI_LANKA_BOUNDS } from "../enums";
 import { normalizePhone } from "../phone";
 
 // Step 1: Your shop details (docs/01-PRD.md §F-03, docs/06-SCREEN_BLUEPRINTS_AND_COPY.md §S02)
 export const Step1ShopSchema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(2, { message: "errors.required" })
-    .max(80, { message: "errors.too_long" }),
-  shopName: z
-    .string()
-    .trim()
-    .min(2, { message: "errors.required" })
-    .max(100, { message: "errors.too_long" }),
+  fullName: z.string().trim().min(2, { message: "errors.required" }).max(80, { message: "errors.too_long" }),
+  shopName: z.string().trim().min(2, { message: "errors.required" }).max(100, { message: "errors.too_long" }),
   category: z.enum(BUSINESS_CATEGORIES, {
     message: "errors.required",
   }),
@@ -56,11 +42,7 @@ export const Step2LocationSchema = z.object({
   district: z.enum(DISTRICTS, {
     message: "errors.required",
   }),
-  city: z
-    .string()
-    .trim()
-    .min(1, { message: "errors.required" })
-    .max(100, { message: "errors.too_long" }),
+  city: z.string().trim().min(1, { message: "errors.required" }).max(100, { message: "errors.too_long" }),
   lat: z
     .number()
     .min(SRI_LANKA_BOUNDS.minLat, { message: "errors.LOCATION_OUTSIDE_SRI_LANKA" })

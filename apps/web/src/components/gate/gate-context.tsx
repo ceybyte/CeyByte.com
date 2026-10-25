@@ -1,13 +1,6 @@
 "use client";
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Step1ShopData } from "@cbpos/shared/schemas/download-gate";
 
@@ -90,21 +83,18 @@ export function GateProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const openGate = useCallback(
-    (targetStep?: GateStep) => {
-      // If user has returning visitor cookie cb_gate_done=1, jump straight to What Next unless explicitly requested
-      const hasDoneCookie = readCookie("cb_gate_done") === "1";
-      if (targetStep) {
-        setStep(targetStep);
-      } else if (hasDoneCookie) {
-        setStep("done");
-      } else {
-        setStep(1);
-      }
-      setIsOpen(true);
-    },
-    [],
-  );
+  const openGate = useCallback((targetStep?: GateStep) => {
+    // If user has returning visitor cookie cb_gate_done=1, jump straight to What Next unless explicitly requested
+    const hasDoneCookie = readCookie("cb_gate_done") === "1";
+    if (targetStep) {
+      setStep(targetStep);
+    } else if (hasDoneCookie) {
+      setStep("done");
+    } else {
+      setStep(1);
+    }
+    setIsOpen(true);
+  }, []);
 
   const closeGate = useCallback(() => {
     setIsOpen(false);

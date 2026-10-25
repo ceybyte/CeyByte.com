@@ -51,12 +51,20 @@ export const downloadsRoutes = new Hono<AppEnv>()
     const normalizedInput: Record<string, unknown> = { ...(rawBody as Record<string, unknown>) };
     if (typeof normalizedInput.lat === "string") normalizedInput.lat = Number(normalizedInput.lat);
     if (typeof normalizedInput.lng === "string") normalizedInput.lng = Number(normalizedInput.lng);
-    if (normalizedInput.isPublicOnMap === "true" || normalizedInput.isPublicOnMap === "1" || normalizedInput.isPublicOnMap === true) {
+    if (
+      normalizedInput.isPublicOnMap === "true" ||
+      normalizedInput.isPublicOnMap === "1" ||
+      normalizedInput.isPublicOnMap === true
+    ) {
       normalizedInput.isPublicOnMap = true;
     } else {
       normalizedInput.isPublicOnMap = false;
     }
-    if (normalizedInput.termsAccepted === "true" || normalizedInput.termsAccepted === "1" || normalizedInput.termsAccepted === true) {
+    if (
+      normalizedInput.termsAccepted === "true" ||
+      normalizedInput.termsAccepted === "1" ||
+      normalizedInput.termsAccepted === true
+    ) {
       normalizedInput.termsAccepted = true;
     }
 
@@ -241,10 +249,7 @@ export const downloadsRoutes = new Hono<AppEnv>()
     const downloadUrl = `/api/download/latest?ref=${publicId}`;
 
     // No-JS form support: redirect with 303 if client is standard HTML form post
-    if (
-      contentType.includes("form") &&
-      !c.req.header("accept")?.includes("application/json")
-    ) {
+    if (contentType.includes("form") && !c.req.header("accept")?.includes("application/json")) {
       return c.redirect(`/${data.preferredLocale}/download?done=1&ref=${publicId}`, 303);
     }
 

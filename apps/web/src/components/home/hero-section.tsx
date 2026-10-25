@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useLocale, useTranslations } from "next-intl";
 import { Check, Download, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";

@@ -38,7 +38,8 @@ describe("Releases API Endpoints", () => {
     await env.CACHE_KV.delete("release:latest");
 
     const now = Date.now();
-    await env.DB.prepare(`
+    await env.DB.prepare(
+      `
       INSERT INTO releases (
         id, version, channel, title, notes_md, min_os, release_date, published_at,
         exe_name, exe_url, exe_size, exe_sha256, is_latest, is_yanked, source, created_at, updated_at
@@ -49,7 +50,10 @@ describe("Releases API Endpoints", () => {
         52428800, '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
         1, 0, 'github_sync', ?, ?
       )
-    `).bind(now, now, now).run();
+    `,
+    )
+      .bind(now, now, now)
+      .run();
 
     const res = await call("/api/releases/latest", { "cache-control": "no-cache" });
     expect(res.status).toBe(200);

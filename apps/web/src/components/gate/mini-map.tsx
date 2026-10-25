@@ -148,14 +148,14 @@ export function MiniMap({ lat, lng, onChange, error }: MiniMapProps) {
       {/* Geolocation feedback note */}
       {detectStatus === "denied" && (
         <div className="border-warning/30 bg-surface-elevated flex items-start gap-2 rounded-sm border p-2 text-xs">
-          <AlertCircle className="text-warning size-4 shrink-0 mt-0.5" />
+          <AlertCircle className="text-warning mt-0.5 size-4 shrink-0" />
           <span className="text-text-muted">{t("detect.denied")}</span>
         </div>
       )}
 
       {detectStatus === "approx" && (
         <div className="border-warning/30 bg-surface-elevated flex items-start gap-2 rounded-sm border p-2 text-xs">
-          <AlertCircle className="text-warning size-4 shrink-0 mt-0.5" />
+          <AlertCircle className="text-warning mt-0.5 size-4 shrink-0" />
           <span className="text-text-muted">{t("detect.approx")}</span>
         </div>
       )}
@@ -166,7 +166,7 @@ export function MiniMap({ lat, lng, onChange, error }: MiniMapProps) {
         onPointerDown={handlePointerDown}
         role="application"
         aria-label="Sri Lanka location map. Click or drag to place your shop's pin."
-        className="border-hairline bg-canvas relative h-[200px] w-full cursor-crosshair overflow-hidden rounded-md border select-none touch-none"
+        className="border-hairline bg-canvas relative h-[200px] w-full cursor-crosshair touch-none overflow-hidden rounded-md border select-none"
       >
         {/* Subtle coordinate grid lines */}
         <div className="pointer-events-none absolute inset-0 opacity-15">
