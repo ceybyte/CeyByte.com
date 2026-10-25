@@ -18,6 +18,7 @@ export const authRoutes = new Hono<AppEnv>()
     const auth = createAuth(c.env, c.get("db"), {
       ipHash: await ipHash(c.env, clientIp(headers)),
       locale: localeFromCookie(headers.get("cookie")),
+      cookieHeader: headers.get("cookie"),
     });
     return auth.handler(c.req.raw);
   });

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { setCookie } from "hono/cookie";
 import { DownloadGateSchema } from "@cbpos/shared/schemas/download-gate";
-import { sha256Hex, toHex } from "../lib/crypto";
+import { hmacSha256Hex, sha256Hex, toHex } from "../lib/crypto";
 import { ApiError } from "../lib/errors";
 import { bumpGeoVersion } from "../lib/geo-cache";
 import { clientIp, ipHash } from "../lib/iphash";
@@ -240,6 +240,14 @@ export const downloadsRoutes = new Hono<AppEnv>()
       secure: isHttps,
       sameSite: "Lax",
       maxAge: 180 * 86400,
+      path: "/",
+    });
+    const claimSig = await hmacSha256Hex(c.env.CLAIM_TOKEN_SECRET, claimToken);
+    setCookie(c, "cb_claim", `${claimToken}.${claimSig}`, {
+      httpOnly: true,
+      secure: isHttps,
+      sameSite: "Lax",
+      maxAge: 30 * 86400,
       path: "/",
     });
 

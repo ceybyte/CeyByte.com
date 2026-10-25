@@ -7,6 +7,7 @@ import en from "../../../../messages/en.json";
 import si from "../../../../messages/si.json";
 import ta from "../../../../messages/ta.json";
 import type { Db } from "./db";
+import { claimListingFromCookie } from "./claim";
 import { ApiError } from "./errors";
 import { log } from "./log";
 
@@ -50,7 +51,11 @@ export function localeFromCookie(cookieHeader: string | null): Locale {
   return LOCALES.find((l) => l === value) ?? "en";
 }
 
-export function createAuth(env: Env, db: Db, opts: { ipHash?: string | null; locale?: Locale } = {}) {
+export function createAuth(
+  env: Env,
+  db: Db,
+  opts: { ipHash?: string | null; locale?: Locale; cookieHeader?: string | null } = {},
+) {
   const google =
     env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
       ? { google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } }
@@ -93,6 +98,13 @@ export function createAuth(env: Env, db: Db, opts: { ipHash?: string | null; loc
               before: async (session) => ({
                 data: { ...session, ipAddress: opts.ipHash ?? null, userAgent: null },
               }),
+              after: async (session) => {
+                if (opts.cookieHeader && session.userId) {
+                  await claimListingFromCookie(env, db, session.userId, opts.cookieHeader).catch((err) => {
+                    log.warn("claim_listing_hook_failed", { error: err });
+                  });
+                }
+              },
             },
           },
         },
