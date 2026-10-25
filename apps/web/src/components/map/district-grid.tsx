@@ -43,11 +43,11 @@ export function DistrictGrid({
               title={label}
               aria-label={label}
               aria-pressed={isSelected}
-              className={`flex h-9 items-center justify-center rounded-sm border text-center font-mono text-xs transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure ${
+              className={`focus-visible:ring-azure flex h-9 items-center justify-center rounded-sm border text-center font-mono text-xs transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none ${
                 isSelected
-                  ? "border-azure bg-azure/20 font-bold text-azure-text ring-1 ring-azure"
+                  ? "border-azure bg-azure/20 text-azure-text ring-azure font-bold ring-1"
                   : isCovered
-                    ? "border-azure/35 bg-azure/5 font-medium text-azure-text hover:border-azure hover:bg-azure/15"
+                    ? "border-azure/35 bg-azure/5 text-azure-text hover:border-azure hover:bg-azure/15 font-medium"
                     : "border-hairline bg-surface/30 text-text-muted/40 hover:border-hairline hover:text-text-muted"
               }`}
             >

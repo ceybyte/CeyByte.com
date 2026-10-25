@@ -46,6 +46,4 @@ export const SRI_LANKA_DISTRICTS: DistrictInfo[] = [
   { id: "galle", code: "GAL", lat: 6.0535, lng: 80.221 },
 ];
 
-export const DISTRICT_MAP = new Map<string, DistrictInfo>(
-  SRI_LANKA_DISTRICTS.map((d) => [d.id, d]),
-);
+export const DISTRICT_MAP = new Map<string, DistrictInfo>(SRI_LANKA_DISTRICTS.map((d) => [d.id, d]));

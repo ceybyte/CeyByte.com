@@ -125,15 +125,7 @@ export function MerchantMap({
           "circle-color": ["case", ["get", "has_supporter"], "#2A2A2D", "#222225"],
           "circle-stroke-color": ["case", ["get", "has_supporter"], "#FFD700", "#0393DD"],
           "circle-stroke-width": ["case", ["get", "has_supporter"], 2, 1],
-          "circle-radius": [
-            "step",
-            ["get", "point_count"],
-            18,
-            10,
-            24,
-            100,
-            32,
-          ],
+          "circle-radius": ["step", ["get", "point_count"], 18, 10, 24, 100, 32],
         },
       });
 
@@ -160,12 +152,7 @@ export function MerchantMap({
         source: "merchants",
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": [
-            "case",
-            ["==", ["get", "isSupporter"], true],
-            "#FFD700",
-            "#0393DD",
-          ],
+          "circle-color": ["case", ["==", ["get", "isSupporter"], true], "#FFD700", "#0393DD"],
           "circle-radius": 18,
           "circle-blur": 0.6,
           "circle-opacity": 0.25,
@@ -179,18 +166,8 @@ export function MerchantMap({
         source: "merchants",
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": [
-            "case",
-            ["==", ["get", "isSupporter"], true],
-            "#FFD700",
-            "#0393DD",
-          ],
-          "circle-radius": [
-            "case",
-            ["==", ["get", "isSupporter"], true],
-            6,
-            5,
-          ],
+          "circle-color": ["case", ["==", ["get", "isSupporter"], true], "#FFD700", "#0393DD"],
+          "circle-radius": ["case", ["==", ["get", "isSupporter"], true], 6, 5],
           "circle-stroke-color": "#18181B",
           "circle-stroke-width": 2,
         },
@@ -205,7 +182,8 @@ export function MerchantMap({
         if (clusterId && source && typeof source.getClusterExpansionZoom === "function") {
           try {
             const zoom = await source.getClusterExpansionZoom(clusterId);
-            const coords = (clusterFeatures[0]?.geometry as unknown as { coordinates: [number, number] })?.coordinates;
+            const coords = (clusterFeatures[0]?.geometry as unknown as { coordinates: [number, number] })
+              ?.coordinates;
             if (coords) {
               if (prefersReducedMotion()) {
                 map.jumpTo({ center: coords, zoom });
@@ -225,7 +203,9 @@ export function MerchantMap({
         const feat = pointFeatures[0];
         if (!feat || !feat.properties) return;
 
-        const coords = (feat.geometry as unknown as { coordinates: [number, number] }).coordinates.slice() as [number, number];
+        const coords = (
+          feat.geometry as unknown as { coordinates: [number, number] }
+        ).coordinates.slice() as [number, number];
         const p = feat.properties;
 
         let localizedCat = p.category;
@@ -439,13 +419,9 @@ export function MerchantMap({
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-canvas">
+    <div className="bg-canvas relative h-full w-full overflow-hidden">
       <div ref={containerRef} className="h-full w-full" aria-label="Interactive map of Sri Lanka" />
-      <MapControls
-        onZoomIn={handleZoomIn}
-        onZoomOut={handleZoomOut}
-        onResetBounds={handleResetBounds}
-      />
+      <MapControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} onResetBounds={handleResetBounds} />
     </div>
   );
 }

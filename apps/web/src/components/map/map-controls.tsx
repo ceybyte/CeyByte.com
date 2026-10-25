@@ -11,12 +11,12 @@ interface MapControlsProps {
 
 export function MapControls({ onZoomIn, onZoomOut, onResetBounds }: MapControlsProps) {
   return (
-    <div className="absolute bottom-6 right-4 z-10 flex flex-col gap-1.5 shadow-md">
+    <div className="absolute right-4 bottom-6 z-10 flex flex-col gap-1.5 shadow-md">
       <button
         type="button"
         onClick={onZoomIn}
         aria-label="Zoom in"
-        className="flex h-8 w-8 items-center justify-center rounded-sm border border-hairline bg-surface text-text hover:bg-surface-elevated hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+        className="border-hairline bg-surface text-text hover:bg-surface-elevated focus-visible:ring-azure flex h-8 w-8 items-center justify-center rounded-sm border transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-none"
       >
         <Plus className="h-4 w-4" />
       </button>
@@ -25,7 +25,7 @@ export function MapControls({ onZoomIn, onZoomOut, onResetBounds }: MapControlsP
         type="button"
         onClick={onZoomOut}
         aria-label="Zoom out"
-        className="flex h-8 w-8 items-center justify-center rounded-sm border border-hairline bg-surface text-text hover:bg-surface-elevated hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+        className="border-hairline bg-surface text-text hover:bg-surface-elevated focus-visible:ring-azure flex h-8 w-8 items-center justify-center rounded-sm border transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-none"
       >
         <Minus className="h-4 w-4" />
       </button>
@@ -35,7 +35,7 @@ export function MapControls({ onZoomIn, onZoomOut, onResetBounds }: MapControlsP
         onClick={onResetBounds}
         aria-label="Reset view to Sri Lanka"
         title="Reset view to Sri Lanka"
-        className="flex h-8 w-8 items-center justify-center rounded-sm border border-hairline bg-surface text-text hover:bg-surface-elevated hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azure"
+        className="border-hairline bg-surface text-text hover:bg-surface-elevated focus-visible:ring-azure flex h-8 w-8 items-center justify-center rounded-sm border transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-none"
       >
         <Maximize2 className="h-3.5 w-3.5" />
       </button>
