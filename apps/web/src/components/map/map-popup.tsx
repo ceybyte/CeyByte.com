@@ -13,7 +13,7 @@ export interface PopupData {
 }
 
 export interface PopupLabels {
-  since: string;
+  since: string | ((monthYear: string) => string);
   supporter: string;
   directions: string;
   report: string;
@@ -36,7 +36,12 @@ export function formatPopupHtml(data: PopupData, labels: PopupLabels): string {
        </div>`
     : "";
 
-  const sinceText = labels.since.replace("{monthYear}", data.since);
+  const sinceText =
+    typeof labels.since === "function"
+      ? labels.since(data.since)
+      : typeof labels.since === "string"
+        ? labels.since.replace("{monthYear}", data.since)
+        : data.since;
 
   return `
     <div style="background-color:#18181B;border:1px solid #2E2E32;border-radius:6px;padding:14px;width:240px;color:#FAFAFA;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 10px 25px -5px rgba(0,0,0,0.5);">

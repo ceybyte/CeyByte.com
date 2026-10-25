@@ -70,12 +70,10 @@ export function MerchantList({
         const [lng, lat] = f.geometry.coordinates;
         const isSelected = selectedShopId === p.id;
 
-        let localizedCat = p.category;
-        try {
-          localizedCat = tCategories(p.category as never);
-        } catch {
-          localizedCat = p.category;
-        }
+        const localizedCat =
+          typeof tCategories.has === "function" && tCategories.has(p.category)
+            ? tCategories(p.category)
+            : p.category;
 
         const sinceText = t("popup.since", { monthYear: p.since });
 

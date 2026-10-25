@@ -1,0 +1,1432 @@
+{
+  "type": "FeatureCollection",
+  "version": 1,
+  "generatedAt": "2026-10-25T08:01:52.160Z",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.8482,
+          7.2143
+        ]
+      },
+      "properties": {
+        "id": "m_001",
+        "shopName": "Akkaraipattu Minimart",
+        "category": "minimart",
+        "district": "Ampara",
+        "city": "Akkaraipattu",
+        "isSupporter": false,
+        "since": "2024-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.679,
+          7.2978
+        ]
+      },
+      "properties": {
+        "id": "m_002",
+        "shopName": "Ampara Hardware",
+        "category": "hardware",
+        "district": "Ampara",
+        "city": "Ampara",
+        "isSupporter": false,
+        "since": "2025-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.0409,
+          7.6715
+        ]
+      },
+      "properties": {
+        "id": "m_003",
+        "shopName": "Dehiattakandiya Textile",
+        "category": "textile",
+        "district": "Ampara",
+        "city": "Dehiattakandiya",
+        "isSupporter": true,
+        "since": "2023-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4106,
+          8.335
+        ]
+      },
+      "properties": {
+        "id": "m_004",
+        "shopName": "Anuradhapura Bookshop",
+        "category": "bookshop",
+        "district": "Anuradhapura",
+        "city": "Anuradhapura",
+        "isSupporter": false,
+        "since": "2024-05"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4449,
+          8.0443
+        ]
+      },
+      "properties": {
+        "id": "m_005",
+        "shopName": "Bulnewa Electronics",
+        "category": "electronics",
+        "district": "Anuradhapura",
+        "city": "Bulnewa",
+        "isSupporter": false,
+        "since": "2025-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4114,
+          8.1461
+        ]
+      },
+      "properties": {
+        "id": "m_006",
+        "shopName": "Eppawala Cosmetics",
+        "category": "cosmetics",
+        "district": "Anuradhapura",
+        "city": "Eppawala",
+        "isSupporter": true,
+        "since": "2023-07"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.057,
+          6.99
+        ]
+      },
+      "properties": {
+        "id": "m_007",
+        "shopName": "Badulla Bakery",
+        "category": "bakery",
+        "district": "Badulla",
+        "city": "Badulla",
+        "isSupporter": false,
+        "since": "2024-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.0953,
+          6.8601
+        ]
+      },
+      "properties": {
+        "id": "m_008",
+        "shopName": "Ballaketuwa Agro",
+        "category": "agro",
+        "district": "Badulla",
+        "city": "Ballaketuwa",
+        "isSupporter": false,
+        "since": "2025-09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.9888,
+          6.8305
+        ]
+      },
+      "properties": {
+        "id": "m_009",
+        "shopName": "Bandarawela Restaurant",
+        "category": "restaurant",
+        "district": "Badulla",
+        "city": "Bandarawela",
+        "isSupporter": true,
+        "since": "2023-10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.6942,
+          7.7356
+        ]
+      },
+      "properties": {
+        "id": "m_010",
+        "shopName": "Batticaloa Wholesale",
+        "category": "wholesale",
+        "district": "Batticaloa",
+        "city": "Batticaloa",
+        "isSupporter": false,
+        "since": "2024-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.5913,
+          7.7854
+        ]
+      },
+      "properties": {
+        "id": "m_011",
+        "shopName": "Chenkaladi Grocery",
+        "category": "grocery",
+        "district": "Batticaloa",
+        "city": "Chenkaladi",
+        "isSupporter": false,
+        "since": "2025-12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.6048,
+          7.7757
+        ]
+      },
+      "properties": {
+        "id": "m_012",
+        "shopName": "Eravur Pharmacy",
+        "category": "pharmacy",
+        "district": "Batticaloa",
+        "city": "Eravur",
+        "isSupporter": true,
+        "since": "2023-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.8625,
+          6.9382
+        ]
+      },
+      "properties": {
+        "id": "m_013",
+        "shopName": "Aluthkade Minimart",
+        "category": "minimart",
+        "district": "Colombo",
+        "city": "Aluthkade",
+        "isSupporter": false,
+        "since": "2024-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.8657,
+          6.9617
+        ]
+      },
+      "properties": {
+        "id": "m_014",
+        "shopName": "Aluthmawatha Hardware",
+        "category": "hardware",
+        "district": "Colombo",
+        "city": "Aluthmawatha",
+        "isSupporter": false,
+        "since": "2025-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.9257,
+          6.936
+        ]
+      },
+      "properties": {
+        "id": "m_015",
+        "shopName": "Angoda Textile",
+        "category": "textile",
+        "district": "Colombo",
+        "city": "Angoda",
+        "isSupporter": true,
+        "since": "2023-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.3623,
+          5.9735
+        ]
+      },
+      "properties": {
+        "id": "m_016",
+        "shopName": "Ahangama Bookshop",
+        "category": "bookshop",
+        "district": "Galle",
+        "city": "Ahangama",
+        "isSupporter": false,
+        "since": "2024-05"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.0351,
+          6.3138
+        ]
+      },
+      "properties": {
+        "id": "m_017",
+        "shopName": "Ahungalla Electronics",
+        "category": "electronics",
+        "district": "Galle",
+        "city": "Ahungalla",
+        "isSupporter": false,
+        "since": "2025-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.0541,
+          6.2389
+        ]
+      },
+      "properties": {
+        "id": "m_018",
+        "shopName": "Ambalangoda Cosmetics",
+        "category": "cosmetics",
+        "district": "Galle",
+        "city": "Ambalangoda",
+        "isSupporter": true,
+        "since": "2023-07"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.883,
+          7.1657
+        ]
+      },
+      "properties": {
+        "id": "m_019",
+        "shopName": "Awariwatte Bakery",
+        "category": "bakery",
+        "district": "Gampaha",
+        "city": "Awariwatte",
+        "isSupporter": false,
+        "since": "2024-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.0428,
+          6.97
+        ]
+      },
+      "properties": {
+        "id": "m_020",
+        "shopName": "Dekatana Agro",
+        "category": "agro",
+        "district": "Gampaha",
+        "city": "Dekatana",
+        "isSupporter": false,
+        "since": "2025-09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.0133,
+          6.9871
+        ]
+      },
+      "properties": {
+        "id": "m_021",
+        "shopName": "Delgoda Restaurant",
+        "category": "restaurant",
+        "district": "Gampaha",
+        "city": "Delgoda",
+        "isSupporter": true,
+        "since": "2023-10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.0239,
+          6.1225
+        ]
+      },
+      "properties": {
+        "id": "m_022",
+        "shopName": "Ambalantota Wholesale",
+        "category": "wholesale",
+        "district": "Hambantota",
+        "city": "Ambalantota",
+        "isSupporter": false,
+        "since": "2024-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.8977,
+          6.1669
+        ]
+      },
+      "properties": {
+        "id": "m_023",
+        "shopName": "Angunukolapelessa Grocery",
+        "category": "grocery",
+        "district": "Hambantota",
+        "city": "Angunukolapelessa",
+        "isSupporter": false,
+        "since": "2025-12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.7348,
+          6.0493
+        ]
+      },
+      "properties": {
+        "id": "m_024",
+        "shopName": "Beliatte Pharmacy",
+        "category": "pharmacy",
+        "district": "Hambantota",
+        "city": "Beliatte",
+        "isSupporter": true,
+        "since": "2023-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.1154,
+          9.7789
+        ]
+      },
+      "properties": {
+        "id": "m_025",
+        "shopName": "Achchuvely Minimart",
+        "category": "minimart",
+        "district": "Jaffna",
+        "city": "Achchuvely",
+        "isSupporter": false,
+        "since": "2024-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.0477,
+          9.6591
+        ]
+      },
+      "properties": {
+        "id": "m_026",
+        "shopName": "Ariyalai Hardware",
+        "category": "hardware",
+        "district": "Jaffna",
+        "city": "Ariyalai",
+        "isSupporter": false,
+        "since": "2025-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.9703,
+          9.7487
+        ]
+      },
+      "properties": {
+        "id": "m_027",
+        "shopName": "Chankanai Textile",
+        "category": "textile",
+        "district": "Jaffna",
+        "city": "Chankanai",
+        "isSupporter": true,
+        "since": "2023-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.1574,
+          6.5423
+        ]
+      },
+      "properties": {
+        "id": "m_028",
+        "shopName": "Agalawatta Bookshop",
+        "category": "bookshop",
+        "district": "Kalutara",
+        "city": "Agalawatta",
+        "isSupporter": false,
+        "since": "2024-05"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.9989,
+          6.4326
+        ]
+      },
+      "properties": {
+        "id": "m_029",
+        "shopName": "Aluthgama Electronics",
+        "category": "electronics",
+        "district": "Kalutara",
+        "city": "Aluthgama",
+        "isSupporter": false,
+        "since": "2025-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.2306,
+          6.5173
+        ]
+      },
+      "properties": {
+        "id": "m_030",
+        "shopName": "Baduraliya Cosmetics",
+        "category": "cosmetics",
+        "district": "Kalutara",
+        "city": "Baduraliya",
+        "isSupporter": true,
+        "since": "2023-07"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.6006,
+          7.3603
+        ]
+      },
+      "properties": {
+        "id": "m_031",
+        "shopName": "Akurana Bakery",
+        "category": "bakery",
+        "district": "Kandy",
+        "city": "Akurana",
+        "isSupporter": false,
+        "since": "2024-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.6096,
+          7.4102
+        ]
+      },
+      "properties": {
+        "id": "m_032",
+        "shopName": "Alawatugoda Agro",
+        "category": "agro",
+        "district": "Kandy",
+        "city": "Alawatugoda",
+        "isSupporter": false,
+        "since": "2025-09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.571,
+          7.4393
+        ]
+      },
+      "properties": {
+        "id": "m_033",
+        "shopName": "Ankumbura Restaurant",
+        "category": "restaurant",
+        "district": "Kandy",
+        "city": "Ankumbura",
+        "isSupporter": true,
+        "since": "2023-10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.2105,
+          7.2424
+        ]
+      },
+      "properties": {
+        "id": "m_034",
+        "shopName": "Ambepussa Wholesale",
+        "category": "wholesale",
+        "district": "Kegalle",
+        "city": "Ambepussa",
+        "isSupporter": false,
+        "since": "2024-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4647,
+          7.149
+        ]
+      },
+      "properties": {
+        "id": "m_035",
+        "shopName": "Aranayaka Grocery",
+        "category": "grocery",
+        "district": "Kegalle",
+        "city": "Aranayaka",
+        "isSupporter": false,
+        "since": "2025-12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4572,
+          7.1776
+        ]
+      },
+      "properties": {
+        "id": "m_036",
+        "shopName": "Aranayake Pharmacy",
+        "category": "pharmacy",
+        "district": "Kegalle",
+        "city": "Aranayake",
+        "isSupporter": true,
+        "since": "2023-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.3112,
+          9.3127
+        ]
+      },
+      "properties": {
+        "id": "m_037",
+        "shopName": "Akkarayan Minimart",
+        "category": "minimart",
+        "district": "Kilinochchi",
+        "city": "Akkarayan",
+        "isSupporter": false,
+        "since": "2024-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4055,
+          9.5249
+        ]
+      },
+      "properties": {
+        "id": "m_038",
+        "shopName": "Elephant Pass Hardware",
+        "category": "hardware",
+        "district": "Kilinochchi",
+        "city": "Elephant Pass",
+        "isSupporter": false,
+        "since": "2025-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4087,
+          9.384
+        ]
+      },
+      "properties": {
+        "id": "m_039",
+        "shopName": "Kilinochchi Textile",
+        "category": "textile",
+        "district": "Kilinochchi",
+        "city": "Kilinochchi",
+        "isSupporter": true,
+        "since": "2023-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.2392,
+          7.294
+        ]
+      },
+      "properties": {
+        "id": "m_040",
+        "shopName": "Alawwa Bookshop",
+        "category": "bookshop",
+        "district": "Kurunegala",
+        "city": "Alawwa",
+        "isSupporter": false,
+        "since": "2024-05"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.2393,
+          7.9197
+        ]
+      },
+      "properties": {
+        "id": "m_041",
+        "shopName": "Ambanpola Electronics",
+        "category": "electronics",
+        "district": "Kurunegala",
+        "city": "Ambanpola",
+        "isSupporter": false,
+        "since": "2025-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.2494,
+          7.5724
+        ]
+      },
+      "properties": {
+        "id": "m_042",
+        "shopName": "Bamunakotuwa Cosmetics",
+        "category": "cosmetics",
+        "district": "Kurunegala",
+        "city": "Bamunakotuwa",
+        "isSupporter": true,
+        "since": "2023-07"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.9044,
+          8.9813
+        ]
+      },
+      "properties": {
+        "id": "m_043",
+        "shopName": "Mannar Bakery",
+        "category": "bakery",
+        "district": "Mannar",
+        "city": "Mannar",
+        "isSupporter": false,
+        "since": "2024-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.8209,
+          9.0848
+        ]
+      },
+      "properties": {
+        "id": "m_044",
+        "shopName": "Pesalai Agro",
+        "category": "agro",
+        "district": "Mannar",
+        "city": "Pesalai",
+        "isSupporter": false,
+        "since": "2025-09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.7307,
+          9.1055
+        ]
+      },
+      "properties": {
+        "id": "m_045",
+        "shopName": "Talaimannar Restaurant",
+        "category": "restaurant",
+        "district": "Mannar",
+        "city": "Talaimannar",
+        "isSupporter": true,
+        "since": "2023-10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.6234,
+          7.4979
+        ]
+      },
+      "properties": {
+        "id": "m_046",
+        "shopName": "Aluwihare Wholesale",
+        "category": "wholesale",
+        "district": "Matale",
+        "city": "Aluwihare",
+        "isSupporter": false,
+        "since": "2024-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.6511,
+          7.8742
+        ]
+      },
+      "properties": {
+        "id": "m_047",
+        "shopName": "Dambulla Grocery",
+        "category": "grocery",
+        "district": "Matale",
+        "city": "Dambulla",
+        "isSupporter": false,
+        "since": "2025-12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.5711,
+          7.7597
+        ]
+      },
+      "properties": {
+        "id": "m_048",
+        "shopName": "Galewela Pharmacy",
+        "category": "pharmacy",
+        "district": "Matale",
+        "city": "Galewela",
+        "isSupporter": true,
+        "since": "2023-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4765,
+          6.1012
+        ]
+      },
+      "properties": {
+        "id": "m_049",
+        "shopName": "Akuressa Minimart",
+        "category": "minimart",
+        "district": "Matara",
+        "city": "Akuressa",
+        "isSupporter": false,
+        "since": "2024-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.6038,
+          6.1534
+        ]
+      },
+      "properties": {
+        "id": "m_050",
+        "shopName": "Deiyandara Hardware",
+        "category": "hardware",
+        "district": "Matara",
+        "city": "Deiyandara",
+        "isSupporter": false,
+        "since": "2025-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.5606,
+          6.3426
+        ]
+      },
+      "properties": {
+        "id": "m_051",
+        "shopName": "Deniyaya Textile",
+        "category": "textile",
+        "district": "Matara",
+        "city": "Deniyaya",
+        "isSupporter": true,
+        "since": "2023-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.236,
+          6.8952
+        ]
+      },
+      "properties": {
+        "id": "m_052",
+        "shopName": "Badalkumbura Bookshop",
+        "category": "bookshop",
+        "district": "Monaragala",
+        "city": "Badalkumbura",
+        "isSupporter": false,
+        "since": "2024-05"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.2254,
+          7.1601
+        ]
+      },
+      "properties": {
+        "id": "m_053",
+        "shopName": "Bibile Electronics",
+        "category": "electronics",
+        "district": "Monaragala",
+        "city": "Bibile",
+        "isSupporter": false,
+        "since": "2025-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.2465,
+          6.762
+        ]
+      },
+      "properties": {
+        "id": "m_054",
+        "shopName": "Buttala Cosmetics",
+        "category": "cosmetics",
+        "district": "Monaragala",
+        "city": "Buttala",
+        "isSupporter": true,
+        "since": "2023-07"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.2923,
+          9.1467
+        ]
+      },
+      "properties": {
+        "id": "m_055",
+        "shopName": "Mallavi Bakery",
+        "category": "bakery",
+        "district": "Mullaitivu",
+        "city": "Mallavi",
+        "isSupporter": false,
+        "since": "2024-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.446,
+          9.1284
+        ]
+      },
+      "properties": {
+        "id": "m_056",
+        "shopName": "Mankulam Agro",
+        "category": "agro",
+        "district": "Mullaitivu",
+        "city": "Mankulam",
+        "isSupporter": false,
+        "since": "2025-09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.8145,
+          9.2699
+        ]
+      },
+      "properties": {
+        "id": "m_057",
+        "shopName": "Mullaitivu Restaurant",
+        "category": "restaurant",
+        "district": "Mullaitivu",
+        "city": "Mullaitivu",
+        "isSupporter": true,
+        "since": "2023-10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.7806,
+          7.2135
+        ]
+      },
+      "properties": {
+        "id": "m_058",
+        "shopName": "Adhikarigama Wholesale",
+        "category": "wholesale",
+        "district": "Nuwara Eliya",
+        "city": "Adhikarigama",
+        "isSupporter": false,
+        "since": "2024-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.7055,
+          6.8641
+        ]
+      },
+      "properties": {
+        "id": "m_059",
+        "shopName": "Agarapathana Grocery",
+        "category": "grocery",
+        "district": "Nuwara Eliya",
+        "city": "Agarapathana",
+        "isSupporter": false,
+        "since": "2025-12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.6781,
+          6.7962
+        ]
+      },
+      "properties": {
+        "id": "m_060",
+        "shopName": "Bogawantalawa Pharmacy",
+        "category": "pharmacy",
+        "district": "Nuwara Eliya",
+        "city": "Bogawantalawa",
+        "isSupporter": true,
+        "since": "2023-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.1847,
+          7.7826
+        ]
+      },
+      "properties": {
+        "id": "m_061",
+        "shopName": "Aralaganwila Minimart",
+        "category": "minimart",
+        "district": "Polonnaruwa",
+        "city": "Aralaganwila",
+        "isSupporter": false,
+        "since": "2024-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.817,
+          7.7772
+        ]
+      },
+      "properties": {
+        "id": "m_062",
+        "shopName": "Bakamuna Hardware",
+        "category": "hardware",
+        "district": "Polonnaruwa",
+        "city": "Bakamuna",
+        "isSupporter": false,
+        "since": "2025-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.868,
+          7.9342
+        ]
+      },
+      "properties": {
+        "id": "m_063",
+        "shopName": "Diyabeduma Textile",
+        "category": "textile",
+        "district": "Polonnaruwa",
+        "city": "Diyabeduma",
+        "isSupporter": true,
+        "since": "2023-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.0109,
+          7.8776
+        ]
+      },
+      "properties": {
+        "id": "m_064",
+        "shopName": "Anamaduwa Bookshop",
+        "category": "bookshop",
+        "district": "Puttalam",
+        "city": "Anamaduwa",
+        "isSupporter": false,
+        "since": "2024-05"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.9501,
+          7.7757
+        ]
+      },
+      "properties": {
+        "id": "m_065",
+        "shopName": "Andigama Electronics",
+        "category": "electronics",
+        "district": "Puttalam",
+        "city": "Andigama",
+        "isSupporter": false,
+        "since": "2025-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.8228,
+          7.6288
+        ]
+      },
+      "properties": {
+        "id": "m_066",
+        "shopName": "Bangadeniya Cosmetics",
+        "category": "cosmetics",
+        "district": "Puttalam",
+        "city": "Bangadeniya",
+        "isSupporter": true,
+        "since": "2023-07"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.3117,
+          6.6386
+        ]
+      },
+      "properties": {
+        "id": "m_067",
+        "shopName": "Ayagama Bakery",
+        "category": "bakery",
+        "district": "Ratnapura",
+        "city": "Ayagama",
+        "isSupporter": false,
+        "since": "2024-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.6986,
+          6.6501
+        ]
+      },
+      "properties": {
+        "id": "m_068",
+        "shopName": "Balangoda Agro",
+        "category": "agro",
+        "district": "Ratnapura",
+        "city": "Balangoda",
+        "isSupporter": false,
+        "since": "2025-09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.2625,
+          6.8531
+        ]
+      },
+      "properties": {
+        "id": "m_069",
+        "shopName": "Eheliyagoda Restaurant",
+        "category": "restaurant",
+        "district": "Ratnapura",
+        "city": "Eheliyagoda",
+        "isSupporter": true,
+        "since": "2023-10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.9562,
+          8.6746
+        ]
+      },
+      "properties": {
+        "id": "m_070",
+        "shopName": "Gomarankadawala Wholesale",
+        "category": "wholesale",
+        "district": "Trincomalee",
+        "city": "Gomarankadawala",
+        "isSupporter": false,
+        "since": "2024-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.0028,
+          8.367
+        ]
+      },
+      "properties": {
+        "id": "m_071",
+        "shopName": "Kantale Grocery",
+        "category": "grocery",
+        "district": "Trincomalee",
+        "city": "Kantale",
+        "isSupporter": false,
+        "since": "2025-12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.3006,
+          8.3257
+        ]
+      },
+      "properties": {
+        "id": "m_072",
+        "shopName": "Serunuwara Pharmacy",
+        "category": "pharmacy",
+        "district": "Trincomalee",
+        "city": "Serunuwara",
+        "isSupporter": true,
+        "since": "2023-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.5194,
+          8.7153
+        ]
+      },
+      "properties": {
+        "id": "m_073",
+        "shopName": "Ellaparmaruthankulam Housing Scheme Minimart",
+        "category": "minimart",
+        "district": "Vavuniya",
+        "city": "Ellaparmaruthankulam Housing Scheme",
+        "isSupporter": false,
+        "since": "2024-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.4829,
+          8.7084
+        ]
+      },
+      "properties": {
+        "id": "m_074",
+        "shopName": "Irataiperiyakulama Hardware",
+        "category": "hardware",
+        "district": "Vavuniya",
+        "city": "Irataiperiyakulama",
+        "isSupporter": false,
+        "since": "2025-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.513,
+          8.6913
+        ]
+      },
+      "properties": {
+        "id": "m_075",
+        "shopName": "Kalveerankulam Textile",
+        "category": "textile",
+        "district": "Vavuniya",
+        "city": "Kalveerankulam",
+        "isSupporter": true,
+        "since": "2023-04"
+      }
+    }
+  ]
+}

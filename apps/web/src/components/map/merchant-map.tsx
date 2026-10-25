@@ -78,7 +78,7 @@ export function MerchantMap({
   // Labels for localized popup HTML
   const getPopupLabels = useCallback(() => {
     return {
-      since: t("popup.since"),
+      since: (monthYear: string) => t("popup.since", { monthYear }),
       supporter: t("popup.supporter"),
       directions: t("popup.directions"),
       report: t("popup.report"),
@@ -151,7 +151,7 @@ export function MerchantMap({
         filter: ["has", "point_count"],
         layout: {
           "text-field": "{point_count_abbreviated}",
-          "text-font": ["Noto Sans Regular", "Inter Regular"],
+          "text-font": ["Noto Sans Regular"],
           "text-size": 12,
         },
         paint: {
@@ -222,12 +222,10 @@ export function MerchantMap({
         ).coordinates.slice() as [number, number];
         const p = feat.properties;
 
-        let localizedCat = p.category;
-        try {
-          localizedCat = tCategories(p.category as never);
-        } catch {
-          localizedCat = p.category;
-        }
+        const localizedCat =
+          typeof tCategories.has === "function" && tCategories.has(p.category)
+            ? tCategories(p.category)
+            : p.category;
 
         const popupData = {
           id: p.id,
@@ -316,6 +314,7 @@ export function MerchantMap({
     const onReady = () => {
       if (layersSetup) return;
       try {
+        if (!map.getStyle()) return;
         setupLayers(map);
         layersSetup = true;
       } catch (err) {
@@ -325,13 +324,19 @@ export function MerchantMap({
 
     map.on("load", onReady);
     map.on("styledata", () => {
-      if (map.isStyleLoaded()) {
+      if (map.getStyle()) {
         onReady();
       }
     });
     map.on("error", (e) => {
-      console.warn("[MapLibre] Map or source error:", e.error?.message || e);
-      if (map.isStyleLoaded()) {
+      const err = e.error as { status?: number; message?: string } | undefined;
+      const sourceId = (e as unknown as { sourceId?: string }).sourceId;
+      console.warn("[MapLibre] Source or network warning:", {
+        message: err?.message || e.error?.toString() || "Unknown map error",
+        status: err?.status,
+        sourceId,
+      });
+      if (map.getStyle()) {
         onReady();
       }
     });
@@ -385,12 +390,10 @@ export function MerchantMap({
     const coords = feat.geometry.coordinates;
     const p = feat.properties;
 
-    let localizedCat = p.category;
-    try {
-      localizedCat = tCategories(p.category as never);
-    } catch {
-      localizedCat = p.category;
-    }
+    const localizedCat =
+      typeof tCategories.has === "function" && tCategories.has(p.category)
+        ? tCategories(p.category)
+        : p.category;
 
     const popupData = {
       id: p.id,

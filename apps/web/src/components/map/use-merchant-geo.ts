@@ -41,6 +41,18 @@ export function useMerchantGeo(filters: MapFilterState): UseMerchantGeoResult {
       memoryCache = collection;
       setData(collection);
     } catch {
+      // Graceful fallback to static seed dataset if API worker is offline or in static export
+      try {
+        const fallbackRes = await fetch("/data/merchants-geo.json");
+        if (fallbackRes.ok) {
+          const fallbackData = (await fallbackRes.json()) as GeoFeatureCollection;
+          memoryCache = fallbackData;
+          setData(fallbackData);
+          return;
+        }
+      } catch {
+        // Fallback also failed
+      }
       setIsError(true);
     } finally {
       setIsLoading(false);
