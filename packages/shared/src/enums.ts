@@ -60,9 +60,13 @@ export const BUSINESS_CATEGORIES = [
   "restaurant", // Café / takeaway (retail counter)
   "other",
 ] as const;
+export type BusinessCategory = (typeof BUSINESS_CATEGORIES)[number];
 
 export const MERCHANT_STATUSES = ["listed", "hidden", "rejected"] as const;
+export type MerchantStatus = (typeof MERCHANT_STATUSES)[number];
+
 export const LOCATION_SOURCES = ["gps", "pin", "city_centroid"] as const;
+export type LocationSource = (typeof LOCATION_SOURCES)[number];
 
 export const MERCHANT_LOG_EVENTS = [
   "download_gate_submitted",

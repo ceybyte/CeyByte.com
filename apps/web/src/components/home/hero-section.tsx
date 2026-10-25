@@ -1,12 +1,14 @@
 "use client";
 
-import Link from "next/link";
+
 import { useLocale, useTranslations } from "next-intl";
 import { Check, Download, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Crosshair } from "@/components/brand/crosshair";
 import { Figure } from "@/components/brand/figure";
 import { Reveal } from "@/components/motion/reveal";
+
+import { useGate } from "@/components/gate/gate-context";
 
 export type HeroSectionProps = {
   version?: string;
@@ -16,6 +18,7 @@ export type HeroSectionProps = {
 export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps) {
   const t = useTranslations("home.hero");
   const locale = useLocale();
+  const { openGate } = useGate();
 
   return (
     <section className="border-hairline bg-surface/50 relative overflow-hidden border-b py-16 sm:py-24 md:py-28">
@@ -51,12 +54,19 @@ export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps
                   asChild
                   variant="primary"
                   size="xl"
+                  id="hero-cta"
                   className="shadow-lg transition-all duration-300 hover:brightness-105"
                 >
-                  <Link href={`/${locale}/download`}>
+                  <a
+                    href={`/${locale}/download`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openGate();
+                    }}
+                  >
                     <Download className="mr-1 size-5" />
                     <span>{t("cta")}</span>
-                  </Link>
+                  </a>
                 </Button>
 
                 <Button asChild variant="ghost" size="lg">

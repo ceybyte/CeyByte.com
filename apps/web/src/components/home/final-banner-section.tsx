@@ -6,10 +6,12 @@ import { ArrowRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Crosshair } from "@/components/brand/crosshair";
 import { Reveal } from "@/components/motion/reveal";
+import { useGate } from "@/components/gate/gate-context";
 
 export function FinalBannerSection() {
   const t = useTranslations("home.final");
   const locale = useLocale();
+  const { openGate } = useGate();
 
   return (
     <section className="border-hairline bg-surface relative overflow-hidden border-b py-20 sm:py-28">
@@ -45,10 +47,16 @@ export function FinalBannerSection() {
               size="xl"
               className="w-full shadow-lg transition-all duration-300 hover:brightness-105 sm:w-auto"
             >
-              <Link href={`/${locale}/download`}>
+              <a
+                href={`/${locale}/download`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  openGate();
+                }}
+              >
                 <Download className="mr-1 size-5" />
                 <span>{t("cta")}</span>
-              </Link>
+              </a>
             </Button>
 
             <Button asChild variant="ghost" size="lg">

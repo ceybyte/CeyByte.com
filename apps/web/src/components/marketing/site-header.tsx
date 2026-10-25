@@ -1,18 +1,23 @@
+"use client";
+
 // SiteHeader — sticky 64px bar per 03-DESIGN §8.11 and 06 §3.1.
 // Desktop: Logo | nav links | LanguageSwitcher · ThemeToggle · Download CTA.
 // Mobile: Logo | language switcher | hamburger → Drawer nav.
 // The Download CTA hides while the hero CTA is in view (IntersectionObserver on #hero-cta, Phase 5).
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Download } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/brand/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
+import { useGate } from "@/components/gate/gate-context";
 import { LanguageSwitcher } from "./language-switcher";
 import { MobileNav } from "./mobile-nav";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
+  const locale = useLocale();
+  const { openGate } = useGate();
 
   const navLinks = [
     { href: "/" as const, label: t("product") },
@@ -63,10 +68,16 @@ export function SiteHeader() {
             className="hidden md:inline-flex"
             asChild
           >
-            <Link href="/?download=1">
+            <a
+              href={`/${locale}/download`}
+              onClick={(e) => {
+                e.preventDefault();
+                openGate();
+              }}
+            >
               <Download strokeWidth={1.5} className="size-4" />
               {t("download")}
-            </Link>
+            </a>
           </Button>
 
           {/* Mobile hamburger */}

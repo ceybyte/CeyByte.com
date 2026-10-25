@@ -17,6 +17,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { OfflineBanner } from "@/components/providers/offline-banner";
 import "../globals.css";
+import { GateProvider } from "@/components/gate/gate-context";
+import { DownloadGateModal } from "@/components/gate/download-gate-modal";
 import { buildMetadata } from "@/lib/metadata";
 
 type Props = {
@@ -71,28 +73,31 @@ export default async function LocaleLayout({ children, params }: Props) {
           <NextIntlClientProvider messages={messages}>
             <MotionProvider>
               <AnalyticsProvider>
-                {/* Skip link (CLAUDE.md §1.10 — keyboard-first) */}
-                <a
-                  href="#main-content"
-                  className="focus:bg-primary focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-[--radius-sm] focus:px-4 focus:py-2 focus:text-sm focus:font-bold"
-                >
-                  Skip to content
-                </a>
+                <GateProvider>
+                  {/* Skip link (CLAUDE.md §1.10 — keyboard-first) */}
+                  <a
+                    href="#main-content"
+                    className="focus:bg-primary focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-[--radius-sm] focus:px-4 focus:py-2 focus:text-sm focus:font-bold"
+                  >
+                    Skip to content
+                  </a>
 
-                {/* Offline indicator (lazy — runs in the browser only) */}
-                <OfflineBanner />
+                  {/* Offline indicator (lazy — runs in the browser only) */}
+                  <OfflineBanner />
 
-                <SiteHeader />
+                  <SiteHeader />
 
-                <main id="main-content" className="flex-1">
-                  {children}
-                </main>
+                  <main id="main-content" className="flex-1">
+                    {children}
+                  </main>
 
-                <SiteFooter />
+                  <SiteFooter />
 
-                <ConsentBar />
-                <Toaster position="bottom-right" />
-                <SmoothScroll />
+                  <DownloadGateModal />
+                  <ConsentBar />
+                  <Toaster position="bottom-right" />
+                  <SmoothScroll />
+                </GateProvider>
               </AnalyticsProvider>
             </MotionProvider>
           </NextIntlClientProvider>

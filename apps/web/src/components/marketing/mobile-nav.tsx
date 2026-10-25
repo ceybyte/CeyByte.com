@@ -4,17 +4,20 @@
 // Includes language switcher and Download CTA for mobile viewports.
 import { useState } from "react";
 import { Menu, X, Download } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerPortal, DrawerTrigger } from "@/components/ui/drawer";
 import { Link } from "@/i18n/routing";
+import { useGate } from "@/components/gate/gate-context";
 import { LanguageSwitcher } from "./language-switcher";
 
 type NavLink = { readonly href: string; readonly label: string };
 
 export function MobileNav({ navLinks }: { navLinks: readonly NavLink[] }) {
   const t = useTranslations("nav");
+  const locale = useLocale();
+  const { openGate } = useGate();
   const [open, setOpen] = useState(false);
 
   return (
@@ -55,10 +58,17 @@ export function MobileNav({ navLinks }: { navLinks: readonly NavLink[] }) {
           <div className="border-hairline-grid flex flex-col gap-3 border-t p-4">
             <LanguageSwitcher />
             <Button variant="primary" size="md" className="w-full" asChild>
-              <Link href="/?download=1" onClick={() => setOpen(false)}>
+              <a
+                href={`/${locale}/download`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setOpen(false);
+                  openGate();
+                }}
+              >
                 <Download strokeWidth={1.5} className="size-4" />
                 {t("download")}
-              </Link>
+              </a>
             </Button>
           </div>
         </DrawerContent>
