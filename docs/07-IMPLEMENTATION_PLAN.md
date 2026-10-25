@@ -239,16 +239,18 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Goal:** S03, the privacy-safe live map (F-04).
 
-- [ ] `scripts/tiles.ts` (Bun): `pmtiles extract <protomaps daily build> sri-lanka.pmtiles --bbox=79.5,5.8,82.0,10.0 --maxzoom=15` → upload to `cbpos-public/tiles/`. Quarterly reminder in the ops calendar.
-- [ ] Style builder: `@protomaps/basemaps` `dark`/`light` flavours recoloured to tokens, `lang: "en"` labels, glyphs and sprites self-hosted on `cbpos-public`.
-- [ ] `GET /api/merchants/geo` (layered read, ETag/304, headers, `RL_READ`); `geo:dirty` debounce in cron.
-- [ ] Static map shell: panel, filters, `DistrictGrid`, results list, skeletons, no-WebGL list mode.
-- [ ] `MerchantMap` client: `pmtiles` protocol, `maxBounds`, zoom 6.5–16, no rotation, clustered source with the supporters `clusterProperties`, azure/gold layers and halos.
-- [ ] Interactions: cluster expansion, popup/sheet (localized names in HTML), filters → `setData`, search, district fly-to, URL state, keyboard list nav, reduced-motion `jumpTo`.
-- [ ] "Add my shop" branch; "Report this listing" (WhatsApp until P10).
-- [ ] **Design gates** on the map page.
+- [x] `scripts/tiles.ts` (Bun): `pmtiles extract <protomaps daily build> sri-lanka.pmtiles --bbox=79.5,5.8,82.0,10.0 --maxzoom=15` → upload to `cbpos-public/tiles/`. Quarterly reminder in the ops calendar.
+- [x] Style builder: `@protomaps/basemaps` `dark`/`light` flavours recoloured to tokens, `lang: "en"` labels, glyphs and sprites self-hosted on `cbpos-public`.
+- [x] `GET /api/merchants/geo` (layered read, ETag/304, headers, `RL_READ`); `geo:dirty` debounce in cron.
+- [x] Static map shell: panel, filters, `DistrictGrid`, results list, skeletons, no-WebGL list mode.
+- [x] `MerchantMap` client: `pmtiles` protocol, `maxBounds`, zoom 6.5–16, no rotation, clustered source with the supporters `clusterProperties`, azure/gold layers and halos.
+- [x] Interactions: cluster expansion, popup/sheet (localized names in HTML), filters → `setData`, search, district fly-to, URL state, keyboard list nav, reduced-motion `jumpTo`.
+- [x] "Add my shop" branch; "Report this listing" (WhatsApp until P10).
+- [x] **Design gates** on the map page.
 
 **Verify:** `02-map-explorer.spec.ts` (whitelist assertion, hidden merchant gone within 60 s); Worker CPU for a geo cache hit < 2 ms in `wrangler tail`; tile requests never hit the Worker.
+
+> **Status (2026-10-25):** done — Live privacy-safe merchant map (F-04, S03) implemented across `en`, `si`, and `ta` with 100% message catalog parity (260 keys × 3 locales); Protomaps vector tiles extraction CLI script (`scripts/tiles.ts`) with bounding box and zoom controls; `@protomaps/basemaps` dark & light flavours recoloured to CB POS design tokens; high-performance `GET /api/merchants/geo` endpoint with `RL_READ` rate-limiting, Cache API, KV snapshot, and ETag 304 caching; strict PDPA privacy enforcement ensuring zero private contact leaks (`phone`, `whatsapp`, `telegram`, `fullName`, `ownerUserId`, `claimTokenHash`, `ipHash`); MapLibre GL client with dynamic supercluster grouping, supporter badges & gold rings, custom square zoom controls, reduced-motion `jumpTo` support, 25-district coverage grid (`DistrictGrid`), responsive 360px desktop panel, mobile Vaul bottom drawer, No-WebGL fallback mode, and SSG static HTML pre-rendering.
 
 **Exit:** AC-04.1–AC-04.4 pass.
 

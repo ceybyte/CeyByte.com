@@ -47,3 +47,13 @@ export const SRI_LANKA_DISTRICTS: DistrictInfo[] = [
 ];
 
 export const DISTRICT_MAP = new Map<string, DistrictInfo>(SRI_LANKA_DISTRICTS.map((d) => [d.id, d]));
+
+export const DISTRICT_CODES: Record<string, string> = Object.fromEntries(
+  SRI_LANKA_DISTRICTS.map((d) => [d.id, d.code]),
+);
+
+export const DISTRICT_GRID_ORDER: string[] = SRI_LANKA_DISTRICTS.map((d) => d.id);
+
+export const DISTRICT_CENTROIDS: Record<string, { lat: number; lng: number }> = Object.fromEntries(
+  SRI_LANKA_DISTRICTS.map((d) => [d.id, { lat: d.lat, lng: d.lng }]),
+);
