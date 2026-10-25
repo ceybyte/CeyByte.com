@@ -21,7 +21,8 @@ describe("Banned Claims Scanner (CLAUDE.md §8.1)", () => {
   });
 
   it("passes clean factual copy citing CBPOS facts", () => {
-    const text = "CB\u00A0POS stores sales in a local SQLite file. [G1] Backups require a master password. [G2]";
+    const text =
+      "CB\u00A0POS stores sales in a local SQLite file. [G1] Backups require a master password. [G2]";
     const violations = scanTextForBannedClaims(text);
     expect(violations.length).toBe(0);
   });

@@ -22,7 +22,7 @@ export function LegalNav({ locale, activeSlug }: LegalNavProps) {
   return (
     <nav
       aria-label="Legal Center Navigation"
-      className="flex flex-row md:flex-col gap-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0"
+      className="flex flex-row gap-1 overflow-x-auto pb-2 md:flex-col md:overflow-visible md:pb-0"
     >
       {LEGAL_SLUGS.map((slug) => {
         const isActive = activeSlug === slug;
@@ -30,10 +30,10 @@ export function LegalNav({ locale, activeSlug }: LegalNavProps) {
           <Link
             key={slug}
             href={`/${locale}/legal/${slug}`}
-            className={`whitespace-nowrap px-3 py-2 text-sm rounded-sm transition-colors border-l-2 ${
+            className={`rounded-sm border-l-2 px-3 py-2 text-sm whitespace-nowrap transition-colors ${
               isActive
                 ? "border-azure text-azure bg-surface-card font-medium"
-                : "border-transparent text-text-muted hover:text-text hover:bg-surface-hover"
+                : "text-text-muted hover:text-text hover:bg-surface-hover border-transparent"
             }`}
           >
             {NAV_ITEMS[slug]}

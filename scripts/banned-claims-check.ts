@@ -152,11 +152,7 @@ export function scanTextForBannedClaims(text: string, file?: string, key?: strin
   return violations;
 }
 
-function scanObject(
-  obj: unknown,
-  file: string,
-  prefix = "",
-): ClaimViolation[] {
+function scanObject(obj: unknown, file: string, prefix = ""): ClaimViolation[] {
   let violations: ClaimViolation[] = [];
 
   if (typeof obj === "string") {
@@ -207,8 +203,7 @@ export function runBannedClaimsCheck(): ClaimViolation[] {
 }
 
 const isDirectRun = Boolean(
-  (import.meta as unknown as { main?: boolean }).main ||
-  process.argv[1]?.endsWith("banned-claims-check.ts")
+  (import.meta as unknown as { main?: boolean }).main || process.argv[1]?.endsWith("banned-claims-check.ts"),
 );
 
 if (isDirectRun) {

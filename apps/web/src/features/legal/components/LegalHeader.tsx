@@ -6,11 +6,9 @@ interface LegalHeaderProps {
 
 export function LegalHeader({ title, updatedDate, version }: LegalHeaderProps) {
   return (
-    <header className="mb-6 pb-4 border-b border-hairline">
-      <h1 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-2">
-        {title}
-      </h1>
-      <p className="font-mono text-xs text-text-muted">
+    <header className="border-hairline mb-6 border-b pb-4">
+      <h1 className="text-text mb-2 text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>
+      <p className="text-text-muted font-mono text-xs">
         Last updated {updatedDate} · Version {version}
       </p>
     </header>

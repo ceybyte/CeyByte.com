@@ -5,7 +5,14 @@ import type { LegalSlug } from "./types";
 describe("Legal Content Provider", () => {
   it("provides all 6 required legal document slugs", () => {
     const slugs = getAllLegalSlugs();
-    const expectedSlugs: LegalSlug[] = ["terms", "eula", "privacy", "tax-disclaimer", "data-safety", "cookies"];
+    const expectedSlugs: LegalSlug[] = [
+      "terms",
+      "eula",
+      "privacy",
+      "tax-disclaimer",
+      "data-safety",
+      "cookies",
+    ];
     expect(slugs).toEqual(expectedSlugs);
   });
 

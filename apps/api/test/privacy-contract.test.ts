@@ -24,7 +24,7 @@ describe("Privacy Projection Contract Test (CLAUDE.md §8.4 & AC-04.1)", () => {
 
     await env.DB.prepare(
       `INSERT OR REPLACE INTO users (id, name, email, email_verified, role, created_at, updated_at)
-       VALUES (?, 'Secret Owner', 'secret@owner.com', 1, 'merchant', ?, ?)`
+       VALUES (?, 'Secret Owner', 'secret@owner.com', 1, 'merchant', ?, ?)`,
     )
       .bind(userId, now, now)
       .run();
@@ -38,7 +38,7 @@ describe("Privacy Projection Contract Test (CLAUDE.md §8.4 & AC-04.1)", () => {
         ?, ?, ?, 'Secret Owner', '0779998888', '0779998888', 'Contract Verified Shop',
         'supermarket', 'colombo', 'Pettah', 6.9344, 79.8541, 'pin', '2026-10-01', ?,
         'listed', 1, 0, ?, ?
-      )`
+      )`,
     )
       .bind(merchantId, publicId, userId, now, now, now)
       .run();
