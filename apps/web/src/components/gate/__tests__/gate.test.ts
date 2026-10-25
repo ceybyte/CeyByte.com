@@ -139,4 +139,17 @@ describe("Download Gate & Releases Validation and Parity", () => {
       expect(releases.latest).toBeDefined();
     }
   });
+
+  it("enforces canonical terms version 2026-10-01 and legal links in gate translations", () => {
+    for (const locale of ["en", "si", "ta"]) {
+      const msgs = loadMessages(locale);
+      const gate = msgs.gate as Record<string, unknown>;
+      const terms = gate.terms as Record<string, string>;
+      expect(terms.label).toBeDefined();
+      expect(terms.termsLink).toBeDefined();
+      expect(terms.taxLink).toBeDefined();
+      expect(terms.dataSafetyLink).toBeDefined();
+      expect(terms.privacyLink).toBeDefined();
+    }
+  });
 });

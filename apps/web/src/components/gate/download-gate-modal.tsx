@@ -480,7 +480,7 @@ export function DownloadGateModal() {
                   <span className="text-text block leading-relaxed">{t("terms.label")}</span>
                   <div className="text-azure-text mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
                     <a
-                      href={`/${locale}/docs/terms`}
+                      href={`/${locale}/legal/terms`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:underline"
@@ -489,7 +489,7 @@ export function DownloadGateModal() {
                     </a>
                     <span>·</span>
                     <a
-                      href={`/${locale}/docs/tax-disclaimer`}
+                      href={`/${locale}/legal/tax-disclaimer`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:underline"
@@ -498,12 +498,21 @@ export function DownloadGateModal() {
                     </a>
                     <span>·</span>
                     <a
-                      href={`/${locale}/docs/data-safety`}
+                      href={`/${locale}/legal/data-safety`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:underline"
                     >
                       {t("terms.dataSafetyLink")}
+                    </a>
+                    <span>·</span>
+                    <a
+                      href={`/${locale}/legal/privacy`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      {t("terms.privacyLink")}
                     </a>
                   </div>
                 </div>
