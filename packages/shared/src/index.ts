@@ -4,6 +4,7 @@ export * from "./markdown";
 export * from "./money";
 export * from "./phone";
 export * from "./schemas/download-gate";
+export * from "./schemas/feedback";
 export * from "./schemas/manifest";
 export * from "./sri-lanka";
 export * from "./tax";

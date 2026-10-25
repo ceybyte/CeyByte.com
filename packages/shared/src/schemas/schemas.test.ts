@@ -1,6 +1,14 @@
 import { describe, expect, it } from "bun:test";
 import { DownloadGateSchema, Step1ShopSchema, Step2LocationSchema } from "./download-gate";
 import { Manifest } from "./manifest";
+import {
+  FeedbackSubmitSchema,
+  FeedbackQuerySchema,
+  FeedbackVoteSchema,
+  FeedbackAdminUpdateSchema,
+  formatTicketNumber,
+  parseTicketNumber,
+} from "./feedback";
 
 describe("Shared Schemas", () => {
   describe("Manifest Schema", () => {
@@ -117,6 +125,98 @@ describe("Shared Schemas", () => {
         expect(parsed.data.phone).toBe("+94771234567");
         expect(parsed.data.isPublicOnMap).toBe(false);
       }
+    });
+  });
+
+  describe("Feedback Tracker Schemas & Utilities", () => {
+    it("formats and parses ticket numbers", () => {
+      expect(formatTicketNumber(1)).toBe("CB-0001");
+      expect(formatTicketNumber(142)).toBe("CB-0142");
+      expect(formatTicketNumber(10050)).toBe("CB-10050");
+
+      expect(parseTicketNumber("CB-0001")).toBe(1);
+      expect(parseTicketNumber("CB-0142")).toBe(142);
+      expect(parseTicketNumber("cb-0142")).toBe(142);
+      expect(parseTicketNumber("142")).toBe(142);
+      expect(parseTicketNumber("invalid")).toBeNull();
+      expect(parseTicketNumber("CB-xyz")).toBeNull();
+    });
+
+    it("validates FeedbackSubmitSchema", () => {
+      const valid = {
+        type: "bug",
+        title: "Printer cuts off thermal receipt",
+        bodyMd: "When printing long receipts, the last line is truncated unexpectedly.",
+        appVersion: "1.4.2",
+        windowsVersion: "Windows 11",
+        severity: "wrong_output",
+        contactPrivate: "test@example.com",
+        turnstileToken: "token-abc",
+      };
+
+      const parsed = FeedbackSubmitSchema.safeParse(valid);
+      expect(parsed.success).toBe(true);
+
+      // Title too short (< 8 chars)
+      expect(
+        FeedbackSubmitSchema.safeParse({
+          ...valid,
+          title: "Short",
+        }).success,
+      ).toBe(false);
+
+      // Body too short (< 20 chars)
+      expect(
+        FeedbackSubmitSchema.safeParse({
+          ...valid,
+          bodyMd: "Too short",
+        }).success,
+      ).toBe(false);
+
+      // Invalid severity
+      expect(
+        FeedbackSubmitSchema.safeParse({
+          ...valid,
+          severity: "not-a-severity",
+        }).success,
+      ).toBe(false);
+    });
+
+    it("validates FeedbackQuerySchema with defaults", () => {
+      const parsed = FeedbackQuerySchema.safeParse({});
+      expect(parsed.success).toBe(true);
+      if (parsed.success) {
+        expect(parsed.data.sort).toBe("votes");
+        expect(parsed.data.page).toBe(1);
+        expect(parsed.data.pageSize).toBe(20);
+      }
+
+      const custom = FeedbackQuerySchema.safeParse({
+        type: "bug",
+        status: "open",
+        sort: "newest",
+        page: "2",
+        pageSize: "15",
+      });
+      expect(custom.success).toBe(true);
+      if (custom.success) {
+        expect(custom.data.type).toBe("bug");
+        expect(custom.data.status).toBe("open");
+        expect(custom.data.sort).toBe("newest");
+        expect(custom.data.page).toBe(2);
+        expect(custom.data.pageSize).toBe(15);
+      }
+    });
+
+    it("validates FeedbackAdminUpdateSchema", () => {
+      const valid = {
+        status: "planned",
+        severity: "blocks_billing",
+        adminResponseMd: "We have prioritized this for v1.5.0.",
+        resolvedInReleaseId: "rel-123",
+        approveScreenshot: true,
+      };
+      expect(FeedbackAdminUpdateSchema.safeParse(valid).success).toBe(true);
     });
   });
 });
