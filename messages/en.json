@@ -24,7 +24,10 @@
     "openMenu": "Open navigation menu",
     "closeMenu": "Close navigation menu",
     "langSwitcher": "Choose language",
-    "theme": "Toggle theme"
+    "theme": "Toggle theme",
+    "signIn": "Sign in",
+    "dashboard": "Dashboard",
+    "signOut": "Sign out"
   },
   "footer": {
     "mission": "Free point-of-sale software for Sri Lankan shops, made in Sri Lanka by Ceylon Byte.",
@@ -44,6 +47,7 @@
       "donate": "Donate",
       "whatsapp": "WhatsApp community",
       "blog": "Blog",
+      "merchantPortal": "Merchant portal",
       "terms": "Terms",
       "privacy": "Privacy",
       "taxDisclaimer": "Tax disclaimer",
