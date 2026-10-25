@@ -394,5 +394,104 @@
     "RATE_LIMITED": "Too many attempts. Try again in {seconds}s.",
     "TURNSTILE_FAILED": "The security check failed. Please try again.",
     "INTERNAL": "Something went wrong on our end. Try again or contact support with request ID {requestId}."
+  },
+  "docs": {
+    "hub": {
+      "title": "CB POS help",
+      "lead": "Guides for setup, billing, tax settings, printers and backups, in English, Sinhala and Tamil."
+    },
+    "search": {
+      "trigger": "Search the help pages",
+      "hint": "⌘K",
+      "placeholder": "Search documentation...",
+      "noResults": "No guides found for \"{query}\"",
+      "fallbackBadge": "EN"
+    },
+    "startHere": {
+      "title": "Start here",
+      "install": "Install CB POS",
+      "smartscreen": "Get past Windows SmartScreen",
+      "login": "First login and default PIN",
+      "printer": "Connect a receipt printer"
+    },
+    "help": {
+      "title": "Can't find what you need?",
+      "body": "Ask in the WhatsApp community, or send us your question and we'll point you to the answer.",
+      "whatsapp": "Join WhatsApp community",
+      "ticket": "Open a question ticket"
+    },
+    "article": {
+      "appliesTo": "For version {version} and later",
+      "updated": "Updated {date}",
+      "onThisPage": "On this page",
+      "helpful": "Did this page help?",
+      "yes": "Yes",
+      "no": "No",
+      "reason": "What was missing? (optional)",
+      "send": "Send feedback",
+      "thanks": "Thank you. This tells us what to fix.",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "fallback": {
+      "banner": {
+        "si": "This page isn't in Sinhala yet, so you're reading the English version.",
+        "ta": "This page isn't in Tamil yet, so you're reading the English version."
+      }
+    },
+    "tax": {
+      "callout": "CB POS works out tax from the rates you set. The IRD hasn't certified it, so please check your settings with a qualified accountant. Read the tax disclaimer."
+    },
+    "copy": "Copy",
+    "copied": "Copied",
+    "categoryTaxDisclaimer": "Disclaimer",
+    "shortcuts": {
+      "printTitle": "Cashiering Keyboard Shortcuts",
+      "printSubtitle": "Official quick reference card for CB POS cashiers",
+      "printButton": "Print cheat sheet"
+    }
+  },
+  "admin": {
+    "title": "CB POS Admin",
+    "searchHint": "/",
+    "shortcuts": "Shortcuts",
+    "shortcutsTitle": "Keyboard shortcuts",
+    "modules": {
+      "overview": "Overview",
+      "merchants": "Merchants",
+      "donations": "Donations",
+      "feedback": "Feedback",
+      "docs": "Docs",
+      "blog": "Blog",
+      "releases": "Releases",
+      "users": "Users",
+      "audit": "Audit"
+    },
+    "donations": {
+      "approve": "Approve (a)",
+      "reject": "Reject (r)",
+      "rejectReasons": "Amount doesn't match · Slip unreadable · Duplicate · Not found in statement · Other"
+    },
+    "merchants": {
+      "reveal": "Reveal contact (logged)",
+      "exportCsv": "Export CSV"
+    },
+    "docs": {
+      "publish": "Publish",
+      "reindex": "Rebuild search index",
+      "preview": "Preview"
+    },
+    "releases": {
+      "forceSync": "Sync now",
+      "yank": "Yank release",
+      "unyank": "Restore release"
+    },
+    "kpi": {
+      "gateToday": "Today's Downloads",
+      "pendingSlips": "Pending Slips",
+      "openTickets": "Open Tickets",
+      "districtsCovered": "Districts Covered",
+      "activeMerchants": "Active Merchants"
+    }
   }
 }
