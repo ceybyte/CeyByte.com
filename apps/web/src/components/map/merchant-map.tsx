@@ -3,6 +3,7 @@
 
 import React, { useEffect, useRef, useCallback } from "react";
 import * as maplibregl from "maplibre-gl";
+import { setWorkerUrl } from "maplibre-gl";
 import * as pmtiles from "pmtiles";
 import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
@@ -24,6 +25,19 @@ const SRI_LANKA_MAX_BOUNDS: LngLatBoundsLike = [
 
 const SRI_LANKA_CENTER: [number, number] = [80.7, 7.87];
 const DEFAULT_ZOOM = 7.3;
+
+// Configure MapLibre Web Worker to use local root JS bundle (avoids [locale]/map/ relative MIME mismatch)
+let workerConfigured = false;
+function configureMapLibreWorker() {
+  if (typeof window !== "undefined" && !workerConfigured) {
+    try {
+      setWorkerUrl("/maplibre-gl-worker.js");
+      workerConfigured = true;
+    } catch {
+      // ignore
+    }
+  }
+}
 
 // Register PMTiles protocol globally once
 let protocolRegistered = false;
@@ -273,6 +287,7 @@ export function MerchantMap({
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
+    configureMapLibreWorker();
     ensurePmtilesProtocol();
 
     const theme = (resolvedTheme === "light" ? "light" : "dark") as "dark" | "light";
@@ -297,8 +312,28 @@ export function MerchantMap({
 
     mapRef.current = map;
 
-    map.on("load", () => {
-      setupLayers(map);
+    let layersSetup = false;
+    const onReady = () => {
+      if (layersSetup) return;
+      try {
+        setupLayers(map);
+        layersSetup = true;
+      } catch (err) {
+        console.warn("[MapLibre] Failed to setup layers:", err);
+      }
+    };
+
+    map.on("load", onReady);
+    map.on("styledata", () => {
+      if (map.isStyleLoaded()) {
+        onReady();
+      }
+    });
+    map.on("error", (e) => {
+      console.warn("[MapLibre] Map or source error:", e.error?.message || e);
+      if (map.isStyleLoaded()) {
+        onReady();
+      }
     });
 
     return () => {

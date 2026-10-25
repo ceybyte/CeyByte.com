@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://cdn.ceybyte.com https://lh3.googleusercontent.com; font-src 'self'; connect-src 'self' https://cdn.ceybyte.com https://*.r2.cloudflarestorage.com; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; child-src blob:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://cdn.ceybyte.com https://lh3.googleusercontent.com https://protomaps.github.io; font-src 'self' https://protomaps.github.io; connect-src 'self' https://cdn.ceybyte.com https://*.r2.cloudflarestorage.com https://protomaps.github.io https://build.protomaps.com; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; child-src blob:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

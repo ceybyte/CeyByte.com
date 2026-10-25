@@ -97,7 +97,7 @@ export const CBPOS_LIGHT_FLAVOR: Flavor = {
 };
 
 export const DEFAULT_PMTILES_URL =
-  process.env.NEXT_PUBLIC_TILES_URL || "https://cdn.ceybyte.com/tiles/sri-lanka.pmtiles";
+  process.env.NEXT_PUBLIC_TILES_URL || "https://build.protomaps.com/20261024.pmtiles";
 
 /**
  * Builds a MapLibre StyleSpecification tailored with our tokens and English Latin-script labels.
