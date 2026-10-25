@@ -1,0 +1,216 @@
+export interface OverviewData {
+  merchants: number;
+  pendingSlips: number;
+  openTickets: number;
+  districtsCovered: number;
+  todayDownloads: number;
+  sparkline: number[];
+}
+
+export interface AdminMerchant {
+  id: string;
+  publicId: string;
+  fullName: string;
+  shopName: string;
+  category: string;
+  district: string;
+  city: string;
+  lat: number;
+  lng: number;
+  phone: string | null;
+  whatsapp?: string | null;
+  telegram?: string | null;
+  status: "listed" | "hidden" | "rejected";
+  isPublicOnMap: boolean;
+  isSupporter: boolean;
+  supporterSince?: string | null;
+  createdAt: string | number;
+  updatedAt: string | number;
+}
+
+export interface AdminDocCategory {
+  id: string;
+  slug: string;
+  nameEn: string;
+  nameSi?: string;
+  nameTa?: string;
+  sortOrder: number;
+}
+
+export interface AdminDocArticle {
+  id: string;
+  categorySlug: string;
+  slug: string;
+  locale: string;
+  title: string;
+  summary?: string;
+  bodyMd: string;
+  status: "draft" | "published";
+  sortOrder: number;
+  publishedAt?: string | number | null;
+  createdAt: string | number;
+  updatedAt: string | number;
+}
+
+export interface AdminRelease {
+  id: string;
+  version: string;
+  channel: "stable" | "beta";
+  title: string;
+  notesMd: string;
+  minOs: string;
+  releaseDate: string;
+  publishedAt: string | number;
+  exeName: string;
+  exeUrl: string;
+  exeSize: number;
+  exeSha256: string;
+  isLatest: boolean;
+  isYanked: boolean;
+  source: string;
+  syncedAt?: string | number | null;
+}
+
+export interface AdminAuditEntry {
+  id: string;
+  actorUserId?: string | null;
+  action: string;
+  entityType?: string | null;
+  entityId?: string | null;
+  diff?: Record<string, any> | null;
+  ipHash?: string | null;
+  createdAt: string | number;
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(path, {
+    ...init,
+    headers: {
+      "content-type": "application/json",
+      ...init?.headers,
+    },
+    credentials: "same-origin",
+  });
+
+  if (res.status === 404 || res.status === 401 || res.status === 403) {
+    const error: any = new Error("Admin access unauthorized or not found");
+    error.status = res.status;
+    throw error;
+  }
+
+  if (!res.ok) {
+    const errJson = await res.json().catch(() => ({}));
+    throw new Error((errJson as any)?.error?.message || `Request failed with ${res.status}`);
+  }
+
+  const json = await res.json();
+  return (json as any).data;
+}
+
+export async function fetchOverview(): Promise<OverviewData> {
+  return request<OverviewData>("/api/admin/overview");
+}
+
+export async function fetchMerchants(params?: {
+  search?: string;
+  district?: string;
+  status?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<{ items: AdminMerchant[] }> {
+  const query = new URLSearchParams();
+  if (params?.search) query.set("search", params.search);
+  if (params?.district && params.district !== "all") query.set("district", params.district);
+  if (params?.status && params.status !== "all") query.set("status", params.status);
+  if (params?.limit) query.set("limit", String(params.limit));
+  if (params?.offset) query.set("offset", String(params.offset));
+
+  const qs = query.toString();
+  return request<{ items: AdminMerchant[] }>(`/api/admin/merchants${qs ? `?${qs}` : ""}`);
+}
+
+export async function fetchMerchant(id: string): Promise<AdminMerchant> {
+  return request<AdminMerchant>(`/api/admin/merchants/${id}`);
+}
+
+export async function revealMerchantContact(id: string): Promise<{
+  id: string;
+  fullName: string;
+  phone: string;
+  whatsapp?: string | null;
+  telegram?: string | null;
+}> {
+  return request(`/api/admin/merchants/${id}/reveal`, { method: "POST" });
+}
+
+export async function updateMerchant(
+  id: string,
+  body: {
+    status?: "listed" | "hidden" | "rejected";
+    isPublicOnMap?: boolean;
+    isSupporter?: boolean;
+  },
+): Promise<AdminMerchant> {
+  return request<AdminMerchant>(`/api/admin/merchants/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function fetchDocsCategories(): Promise<{ items: AdminDocCategory[] }> {
+  return request<{ items: AdminDocCategory[] }>("/api/admin/docs/categories");
+}
+
+export async function fetchDocArticle(id: string): Promise<AdminDocArticle> {
+  return request<AdminDocArticle>(`/api/admin/docs/articles/${id}`);
+}
+
+export async function updateDocArticle(
+  id: string,
+  body: {
+    title?: string;
+    summary?: string;
+    bodyMd?: string;
+    status?: "draft" | "published";
+  },
+): Promise<AdminDocArticle> {
+  return request<AdminDocArticle>(`/api/admin/docs/articles/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function publishDocArticle(id: string): Promise<{ published: boolean }> {
+  return request<{ published: boolean }>(`/api/admin/docs/articles/${id}/publish`, {
+    method: "POST",
+  });
+}
+
+export async function fetchReleases(): Promise<{ items: AdminRelease[] }> {
+  return request<{ items: AdminRelease[] }>("/api/admin/releases");
+}
+
+export async function syncReleases(): Promise<any> {
+  return request("/api/admin/releases/sync", { method: "POST" });
+}
+
+export async function updateRelease(
+  id: string,
+  body: { isYanked?: boolean; notesMd?: string },
+): Promise<AdminRelease> {
+  return request<AdminRelease>(`/api/admin/releases/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function fetchAuditLog(): Promise<{ items: AdminAuditEntry[] }> {
+  return request<{ items: AdminAuditEntry[] }>("/api/admin/audit");
+}
+
+export async function triggerRebuild(reason?: string): Promise<any> {
+  return request("/api/admin/rebuild", {
+    method: "POST",
+    body: JSON.stringify({ reason: reason || "admin_manual" }),
+  });
+}
