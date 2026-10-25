@@ -56,6 +56,13 @@ export function createAuth(env: Env, db: Db, opts: { ipHash?: string | null; loc
       ? { google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } }
       : undefined;
 
+  if (env.BETTER_AUTH_API_KEY && typeof globalThis !== "undefined") {
+    const g = globalThis as unknown as { process?: { env?: Record<string, string | undefined> } };
+    if (!g.process) g.process = { env: {} };
+    if (!g.process.env) g.process.env = {};
+    g.process.env.BETTER_AUTH_API_KEY = env.BETTER_AUTH_API_KEY;
+  }
+
   return betterAuth({
     baseURL: env.SITE_URL,
     basePath: "/api/auth",

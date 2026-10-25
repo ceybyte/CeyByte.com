@@ -25,6 +25,7 @@ interface __BaseEnv_Env {
 	ENVIRONMENT: string;
 	SITE_URL: string;
 	BETTER_AUTH_SECRET: string;
+	BETTER_AUTH_API_KEY?: string;
 	GOOGLE_CLIENT_ID: string;
 	GOOGLE_CLIENT_SECRET: string;
 	RESEND_API_KEY: string;
