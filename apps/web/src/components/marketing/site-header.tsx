@@ -9,7 +9,7 @@ import { Download } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/brand/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { useGate } from "@/components/gate/gate-context";
 import { LanguageSwitcher } from "./language-switcher";
 import { MobileNav } from "./mobile-nav";
@@ -18,6 +18,7 @@ export function SiteHeader() {
   const t = useTranslations("nav");
   const locale = useLocale();
   const { openGate } = useGate();
+  const pathname = usePathname();
 
   const navLinks = [
     { href: "/" as const, label: t("product") },
@@ -43,15 +44,20 @@ export function SiteHeader() {
           aria-label={t("ariaLabel")}
           className="hidden md:flex md:flex-1 md:items-center md:gap-6 md:pl-4"
         >
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-muted hover:text-text focus-visible:text-text text-sm transition-colors duration-[--dur-hover]"
-            >
-              {label}
-            </Link>
-          ))}
+          {navLinks.map(({ href, label }) => {
+            const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`text-sm transition-colors duration-[--dur-hover] ${
+                  isActive ? "text-text font-medium" : "text-muted hover:text-text focus-visible:text-text"
+                }`}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right cluster */}
