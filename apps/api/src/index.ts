@@ -7,10 +7,13 @@ import { sessionMiddleware } from "./middleware/session";
 import { adminRoutes } from "./routes/admin";
 import { authRoutes } from "./routes/auth";
 import { downloadsRoutes } from "./routes/downloads";
+import { merchantsRoutes } from "./routes/merchants";
 import { releasesRoutes } from "./routes/releases";
 import { statsRoutes } from "./routes/stats";
 import { webhooksRoutes } from "./routes/webhooks";
 import { syncReleases } from "./lib/releases-sync";
+import { rebuildIfDirty } from "./lib/geo-cache";
+import { makeDb } from "./lib/db";
 import type { AppEnv } from "./types";
 
 /**
@@ -38,6 +41,7 @@ const api = new Hono<AppEnv>()
   .route("/", statsRoutes)
   .route("/", releasesRoutes)
   .route("/", downloadsRoutes)
+  .route("/", merchantsRoutes)
   .route("/", webhooksRoutes);
 
 // Main worker app: handles root redirect, PostHog reverse proxy, ticket shell rewrite, and /api/* routes.
@@ -100,7 +104,8 @@ app.onError(onError);
 app.notFound(onNotFound);
 
 export async function scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-  ctx.waitUntil(syncReleases(env, "cron"));
+  const db = makeDb(env.DB);
+  ctx.waitUntil(Promise.all([syncReleases(env, "cron"), rebuildIfDirty(env.CACHE_KV, db)]));
 }
 
 export default app;

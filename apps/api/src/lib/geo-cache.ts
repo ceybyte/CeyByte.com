@@ -23,7 +23,7 @@ export type GeoCollection = {
   features: ReturnType<typeof toGeoFeature>[];
 };
 
-async function readVersion(kv: KVNamespace): Promise<VersionState> {
+export async function readVersion(kv: KVNamespace): Promise<VersionState> {
   return (await kv.get<VersionState>(VERSION_KEY, "json")) ?? { n: 0, day: utcDay(), bumps: 0 };
 }
 
