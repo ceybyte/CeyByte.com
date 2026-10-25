@@ -12,13 +12,13 @@
  * Note: Scheduled for quarterly updates in ops calendar.
  */
 
-export interface TileExtractOptions {
+export type TileExtractOptions = {
   sourceUrl: string;
   outputPath: string;
   bbox: [number, number, number, number]; // [minLng, minLat, maxLng, maxLat]
   maxzoom: number;
   dryRun: boolean;
-}
+};
 
 export const SRI_LANKA_BBOX: [number, number, number, number] = [79.5, 5.8, 82.0, 10.0];
 export const DEFAULT_MAXZOOM = 15;
@@ -37,16 +37,30 @@ export function parseTilesArgs(args: string[]): TileExtractOptions {
     const arg = args[i];
     if (arg === "--dry-run") {
       options.dryRun = true;
-    } else if (arg === "--source" && args[i + 1]) {
-      options.sourceUrl = args[++i]!;
-    } else if (arg === "--output" && args[i + 1]) {
-      options.outputPath = args[++i]!;
-    } else if (arg === "--maxzoom" && args[i + 1]) {
-      options.maxzoom = parseInt(args[++i]!, 10);
-    } else if (arg === "--bbox" && args[i + 1]) {
-      const parts = args[++i]!.split(",").map(Number);
-      if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
-        options.bbox = [parts[0]!, parts[1]!, parts[2]!, parts[3]!];
+    } else if (arg === "--source") {
+      const val = args[++i];
+      if (val) options.sourceUrl = val;
+    } else if (arg === "--output") {
+      const val = args[++i];
+      if (val) options.outputPath = val;
+    } else if (arg === "--maxzoom") {
+      const val = args[++i];
+      if (val) options.maxzoom = parseInt(val, 10);
+    } else if (arg === "--bbox") {
+      const val = args[++i];
+      if (val) {
+        const parts = val.split(",").map(Number);
+        const [p0, p1, p2, p3] = parts;
+        if (
+          parts.length === 4 &&
+          p0 !== undefined &&
+          p1 !== undefined &&
+          p2 !== undefined &&
+          p3 !== undefined &&
+          parts.every((n) => !isNaN(n))
+        ) {
+          options.bbox = [p0, p1, p2, p3];
+        }
       }
     }
   }

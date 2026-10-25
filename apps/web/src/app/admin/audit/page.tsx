@@ -66,17 +66,17 @@ export default function AdminAuditPage() {
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-text-primary">Audit Log</h1>
-        <p className="text-xs text-text-muted">
+        <h1 className="text-text-primary text-xl font-bold tracking-tight">Audit Log</h1>
+        <p className="text-text-muted text-xs">
           Immutable ledger of sensitive actions, privacy reveals, and CMS content updates
         </p>
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-lg border border-hairline bg-surface">
+      <div className="border-hairline bg-surface overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="border-b border-hairline bg-surface-elevated text-text-muted">
+            <thead className="border-hairline bg-surface-elevated text-text-muted border-b">
               <tr>
                 <th className="w-8 px-3 py-3"></th>
                 <th className="px-4 py-3 font-medium">Timestamp</th>
@@ -86,19 +86,19 @@ export default function AdminAuditPage() {
                 <th className="px-4 py-3 font-medium">Entity ID</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-hairline">
+            <tbody className="divide-hairline divide-y">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-text-muted">
+                  <td colSpan={6} className="text-text-muted px-4 py-8 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-azure" />
+                      <Loader2 className="text-azure h-4 w-4 animate-spin" />
                       <span>Loading audit records...</span>
                     </div>
                   </td>
                 </tr>
               ) : logs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-text-muted">
+                  <td colSpan={6} className="text-text-muted px-4 py-8 text-center">
                     No audit records logged yet.
                   </td>
                 </tr>
@@ -114,24 +114,24 @@ export default function AdminAuditPage() {
                     <React.Fragment key={log.id}>
                       <tr
                         onClick={() => toggleExpand(log.id)}
-                        className="h-11 cursor-pointer transition-colors hover:bg-surface-elevated/50"
+                        className="hover:bg-surface-elevated/50 h-11 cursor-pointer transition-colors"
                       >
-                        <td className="px-3 py-2 text-text-muted">
+                        <td className="text-text-muted px-3 py-2">
                           {isExpanded ? (
                             <ChevronDown className="h-3.5 w-3.5" />
                           ) : (
                             <ChevronRight className="h-3.5 w-3.5" />
                           )}
                         </td>
-                        <td className="px-4 py-2 font-mono text-text-muted">
+                        <td className="text-text-muted px-4 py-2 font-mono">
                           <div className="flex items-center gap-1.5">
-                            <Clock className="h-3 w-3 text-text-muted" />
+                            <Clock className="text-text-muted h-3 w-3" />
                             <span>{dateStr}</span>
                           </div>
                         </td>
-                        <td className="px-4 py-2 font-mono text-text-primary">
+                        <td className="text-text-primary px-4 py-2 font-mono">
                           <div className="flex items-center gap-1.5">
-                            <User className="h-3 w-3 text-text-muted" />
+                            <User className="text-text-muted h-3 w-3" />
                             <span>{log.actorUserId ? log.actorUserId.slice(0, 12) : "system"}</span>
                           </div>
                         </td>
@@ -144,22 +144,22 @@ export default function AdminAuditPage() {
                             {log.action}
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-text-muted capitalize">
-                          {log.entityType ?? "—"}
-                        </td>
-                        <td className="px-4 py-2 font-mono text-text-muted">
-                          {log.entityId ?? "—"}
-                        </td>
+                        <td className="text-text-muted px-4 py-2 capitalize">{log.entityType ?? "—"}</td>
+                        <td className="text-text-muted px-4 py-2 font-mono">{log.entityId ?? "—"}</td>
                       </tr>
 
                       {/* Expandable Diff Viewer */}
                       {isExpanded && (
                         <tr className="bg-canvas">
                           <td colSpan={6} className="px-6 py-4">
-                            <div className="rounded border border-hairline bg-surface p-3 font-mono text-[11px]">
-                              <div className="mb-2 text-text-muted uppercase">Audit Payload Diff:</div>
-                              <pre className="overflow-x-auto text-azure">
-                                {JSON.stringify(log.diff ?? { note: "No additional metadata recorded" }, null, 2)}
+                            <div className="border-hairline bg-surface rounded border p-3 font-mono text-[11px]">
+                              <div className="text-text-muted mb-2 uppercase">Audit Payload Diff:</div>
+                              <pre className="text-azure overflow-x-auto">
+                                {JSON.stringify(
+                                  log.diff ?? { note: "No additional metadata recorded" },
+                                  null,
+                                  2,
+                                )}
                               </pre>
                             </div>
                           </td>

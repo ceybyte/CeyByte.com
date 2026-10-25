@@ -20,9 +20,7 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
   const [revealing, setRevealing] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const [status, setStatus] = useState<"listed" | "hidden" | "rejected">(
-    merchant?.status ?? "listed",
-  );
+  const [status, setStatus] = useState<"listed" | "hidden" | "rejected">(merchant?.status ?? "listed");
   const [isSupporter, setIsSupporter] = useState(merchant?.isSupporter ?? false);
   const [isPublicOnMap, setIsPublicOnMap] = useState(merchant?.isPublicOnMap ?? false);
 
@@ -67,7 +65,7 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
   }
 
   const phoneDisplay = revealedContacts?.phone ?? merchant.phone ?? "—";
-  const whatsappDisplay = revealedContacts ? revealedContacts.whatsapp ?? "—" : merchant.whatsapp ?? "—";
+  const whatsappDisplay = revealedContacts ? (revealedContacts.whatsapp ?? "—") : (merchant.whatsapp ?? "—");
 
   return (
     <div
@@ -78,22 +76,22 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
       onClick={onClose}
     >
       <div
-        className="flex h-full w-full max-w-md flex-col border-l border-hairline bg-surface p-6 shadow-2xl"
+        className="border-hairline bg-surface flex h-full w-full max-w-md flex-col border-l p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-hairline pb-4">
+        <div className="border-hairline flex items-start justify-between border-b pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <Store className="h-4 w-4 text-azure" />
-              <h2 className="text-base font-bold text-text-primary">{merchant.shopName}</h2>
+              <Store className="text-azure h-4 w-4" />
+              <h2 className="text-text-primary text-base font-bold">{merchant.shopName}</h2>
             </div>
-            <p className="mt-1 font-mono text-xs text-text-muted">ID: {merchant.id}</p>
+            <p className="text-text-muted mt-1 font-mono text-xs">ID: {merchant.id}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded p-1 text-text-muted transition-colors hover:text-text-primary"
+            className="text-text-muted hover:text-text-primary rounded p-1 transition-colors"
             aria-label="Close"
           >
             <X className="h-4 w-4" />
@@ -103,31 +101,31 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
         {/* Content */}
         <div className="flex-1 space-y-5 overflow-y-auto py-4">
           {/* Location info */}
-          <div className="rounded-md border border-hairline bg-canvas p-3">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-text-primary">
-              <MapPin className="h-3.5 w-3.5 text-azure" />
+          <div className="border-hairline bg-canvas rounded-md border p-3">
+            <div className="text-text-primary flex items-center gap-1.5 text-xs font-semibold">
+              <MapPin className="text-azure h-3.5 w-3.5" />
               <span>Location</span>
             </div>
             <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
               <div>
                 <span className="text-text-muted">District:</span>
-                <span className="ml-1 font-medium capitalize text-text-primary">{merchant.district}</span>
+                <span className="text-text-primary ml-1 font-medium capitalize">{merchant.district}</span>
               </div>
               <div>
                 <span className="text-text-muted">City:</span>
-                <span className="ml-1 font-medium text-text-primary">{merchant.city}</span>
+                <span className="text-text-primary ml-1 font-medium">{merchant.city}</span>
               </div>
-              <div className="col-span-2 text-[11px] font-mono text-text-muted">
+              <div className="text-text-muted col-span-2 font-mono text-[11px]">
                 Coordinates: {merchant.lat.toFixed(4)}, {merchant.lng.toFixed(4)}
               </div>
             </div>
           </div>
 
           {/* Contact (Audited reveal) */}
-          <div className="rounded-md border border-hairline bg-canvas p-3">
+          <div className="border-hairline bg-canvas rounded-md border p-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-text-primary">
-                <Phone className="h-3.5 w-3.5 text-azure" />
+              <div className="text-text-primary flex items-center gap-1.5 text-xs font-semibold">
+                <Phone className="text-azure h-3.5 w-3.5" />
                 <span>Contact Details</span>
               </div>
               {!revealedContacts && (
@@ -135,7 +133,7 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
                   type="button"
                   onClick={handleReveal}
                   disabled={revealing}
-                  className="inline-flex items-center gap-1 rounded border border-hairline bg-surface-elevated px-2 py-1 text-[11px] font-medium text-azure hover:bg-surface"
+                  className="border-hairline bg-surface-elevated text-azure hover:bg-surface inline-flex items-center gap-1 rounded border px-2 py-1 text-[11px] font-medium"
                 >
                   {revealing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Eye className="h-3 w-3" />}
                   <span>Reveal contact (logged)</span>
@@ -146,40 +144,40 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
             <div className="mt-3 space-y-2 text-xs">
               <div>
                 <span className="text-text-muted">Owner Name:</span>
-                <span className="ml-2 font-medium text-text-primary">{merchant.fullName}</span>
+                <span className="text-text-primary ml-2 font-medium">{merchant.fullName}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-text-muted">Phone:</span>
-                  <span className="ml-2 font-mono text-text-primary">{phoneDisplay}</span>
+                  <span className="text-text-primary ml-2 font-mono">{phoneDisplay}</span>
                 </div>
                 {revealedContacts && (
-                  <span className="rounded bg-azure/10 px-1.5 py-0.5 text-[10px] text-azure">Revealed</span>
+                  <span className="bg-azure/10 text-azure rounded px-1.5 py-0.5 text-[10px]">Revealed</span>
                 )}
               </div>
               {merchant.whatsapp && (
                 <div>
                   <span className="text-text-muted">WhatsApp:</span>
-                  <span className="ml-2 font-mono text-text-primary">{whatsappDisplay}</span>
+                  <span className="text-text-primary ml-2 font-mono">{whatsappDisplay}</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Controls */}
-          <div className="space-y-4 rounded-md border border-hairline bg-canvas p-3">
-            <h3 className="text-xs font-semibold text-text-primary">Status & Listing</h3>
+          <div className="border-hairline bg-canvas space-y-4 rounded-md border p-3">
+            <h3 className="text-text-primary text-xs font-semibold">Status & Listing</h3>
 
             {/* Status select */}
             <div>
-              <label htmlFor="merchant-status-select" className="block text-xs text-text-muted">
+              <label htmlFor="merchant-status-select" className="text-text-muted block text-xs">
                 Status
               </label>
               <select
                 id="merchant-status-select"
                 value={status}
                 onChange={(e) => setStatus(e.target.value as "listed" | "hidden" | "rejected")}
-                className="mt-1 w-full rounded border border-hairline bg-surface p-2 text-xs text-text-primary focus:border-azure focus:outline-none"
+                className="border-hairline bg-surface text-text-primary focus:border-azure mt-1 w-full rounded border p-2 text-xs focus:outline-none"
               >
                 <option value="listed">Listed (Active)</option>
                 <option value="hidden">Hidden</option>
@@ -188,41 +186,41 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
             </div>
 
             {/* Supporter toggle */}
-            <div className="flex items-center justify-between border-t border-hairline pt-3">
+            <div className="border-hairline flex items-center justify-between border-t pt-3">
               <div>
-                <span className="block text-xs font-medium text-text-primary">Supporter Badge</span>
-                <span className="text-[11px] text-text-muted">Marks shop as verified backer</span>
+                <span className="text-text-primary block text-xs font-medium">Supporter Badge</span>
+                <span className="text-text-muted text-[11px]">Marks shop as verified backer</span>
               </div>
               <input
                 type="checkbox"
                 checked={isSupporter}
                 onChange={(e) => setIsSupporter(e.target.checked)}
-                className="h-4 w-4 rounded accent-azure"
+                className="accent-azure h-4 w-4 rounded"
               />
             </div>
 
             {/* Public on map toggle */}
-            <div className="flex items-center justify-between border-t border-hairline pt-3">
+            <div className="border-hairline flex items-center justify-between border-t pt-3">
               <div>
-                <span className="block text-xs font-medium text-text-primary">Public on Map</span>
-                <span className="text-[11px] text-text-muted">Shows pin on /map directory</span>
+                <span className="text-text-primary block text-xs font-medium">Public on Map</span>
+                <span className="text-text-muted text-[11px]">Shows pin on /map directory</span>
               </div>
               <input
                 type="checkbox"
                 checked={isPublicOnMap}
                 onChange={(e) => setIsPublicOnMap(e.target.checked)}
-                className="h-4 w-4 rounded accent-azure"
+                className="accent-azure h-4 w-4 rounded"
               />
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 border-t border-hairline pt-4">
+        <div className="border-hairline flex items-center justify-end gap-2 border-t pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="rounded border border-hairline bg-surface-elevated px-3 py-1.5 text-xs font-medium text-text-muted hover:text-text-primary"
+            className="border-hairline bg-surface-elevated text-text-muted hover:text-text-primary rounded border px-3 py-1.5 text-xs font-medium"
           >
             Cancel
           </button>
@@ -230,7 +228,7 @@ export function MerchantDrawer({ merchant, onClose, onUpdate }: MerchantDrawerPr
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-1.5 rounded border border-azure/40 bg-azure/10 px-3 py-1.5 text-xs font-medium text-azure hover:bg-azure/20"
+            className="border-azure/40 bg-azure/10 text-azure hover:bg-azure/20 inline-flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs font-medium"
           >
             {saving && <Loader2 className="h-3 w-3 animate-spin" />}
             <span>Save changes</span>

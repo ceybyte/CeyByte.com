@@ -15,9 +15,7 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
   const [title, setTitle] = useState(article?.title ?? "");
   const [summary, setSummary] = useState(article?.summary ?? "");
   const [bodyMd, setBodyMd] = useState(article?.bodyMd ?? "");
-  const [status, setStatus] = useState<"draft" | "published">(
-    article?.status ?? "draft",
-  );
+  const [status, setStatus] = useState<"draft" | "published">(article?.status ?? "draft");
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
 
@@ -69,14 +67,14 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
       aria-label="Docs editor"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs"
     >
-      <div className="flex h-[90vh] w-full max-w-6xl flex-col rounded-lg border border-hairline bg-surface shadow-2xl">
+      <div className="border-hairline bg-surface flex h-[90vh] w-full max-w-6xl flex-col rounded-lg border shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
+        <div className="border-hairline flex items-center justify-between border-b px-6 py-4">
           <div className="flex items-center gap-3">
-            <h2 className="text-base font-bold text-text-primary">
-              Editing: <span className="font-mono text-azure">{article.slug}</span>
+            <h2 className="text-text-primary text-base font-bold">
+              Editing: <span className="text-azure font-mono">{article.slug}</span>
             </h2>
-            <span className="rounded bg-surface-elevated px-2 py-0.5 font-mono text-[11px] text-text-muted uppercase">
+            <span className="bg-surface-elevated text-text-muted rounded px-2 py-0.5 font-mono text-[11px] uppercase">
               {article.locale}
             </span>
             <span
@@ -93,7 +91,7 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-surface-elevated px-3 py-1.5 text-xs font-medium text-text-primary hover:border-azure/40"
+              className="border-hairline bg-surface-elevated text-text-primary hover:border-azure/40 inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium"
             >
               {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
               <span>Save Draft</span>
@@ -103,7 +101,7 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
               type="button"
               onClick={handlePublish}
               disabled={publishing}
-              className="inline-flex items-center gap-1.5 rounded-md border border-azure/40 bg-azure/10 px-3 py-1.5 text-xs font-semibold text-azure hover:bg-azure/20"
+              className="border-azure/40 bg-azure/10 text-azure hover:bg-azure/20 inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold"
             >
               {publishing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
               <span>Publish & Rebuild</span>
@@ -112,7 +110,7 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded p-1 text-text-muted hover:text-text-primary"
+              className="text-text-muted hover:text-text-primary rounded p-1"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
@@ -121,9 +119,9 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
         </div>
 
         {/* Metadata Inputs */}
-        <div className="grid grid-cols-1 gap-4 border-b border-hairline bg-canvas/40 px-6 py-3 sm:grid-cols-2">
+        <div className="border-hairline bg-canvas/40 grid grid-cols-1 gap-4 border-b px-6 py-3 sm:grid-cols-2">
           <div>
-            <label htmlFor="doc-title-input" className="block text-[11px] font-medium text-text-muted">
+            <label htmlFor="doc-title-input" className="text-text-muted block text-[11px] font-medium">
               Title
             </label>
             <input
@@ -131,11 +129,11 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 h-8 w-full rounded border border-hairline bg-canvas px-2.5 text-xs text-text-primary focus:border-azure focus:outline-none"
+              className="border-hairline bg-canvas text-text-primary focus:border-azure mt-1 h-8 w-full rounded border px-2.5 text-xs focus:outline-none"
             />
           </div>
           <div>
-            <label htmlFor="doc-summary-input" className="block text-[11px] font-medium text-text-muted">
+            <label htmlFor="doc-summary-input" className="text-text-muted block text-[11px] font-medium">
               Summary
             </label>
             <input
@@ -143,35 +141,35 @@ export function DocsEditor({ article, onClose, onSaved }: DocsEditorProps) {
               type="text"
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
-              className="mt-1 h-8 w-full rounded border border-hairline bg-canvas px-2.5 text-xs text-text-primary focus:border-azure focus:outline-none"
+              className="border-hairline bg-canvas text-text-primary focus:border-azure mt-1 h-8 w-full rounded border px-2.5 text-xs focus:outline-none"
             />
           </div>
         </div>
 
         {/* Split Editor Pane */}
-        <div className="grid flex-1 grid-cols-1 divide-y divide-hairline overflow-hidden sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+        <div className="divide-hairline grid flex-1 grid-cols-1 divide-y overflow-hidden sm:grid-cols-2 sm:divide-x sm:divide-y-0">
           {/* Left: Raw Markdown Editor */}
-          <div className="flex flex-col bg-canvas p-4">
-            <span className="mb-2 text-[11px] font-mono text-text-muted">Markdown Source</span>
+          <div className="bg-canvas flex flex-col p-4">
+            <span className="text-text-muted mb-2 font-mono text-[11px]">Markdown Source</span>
             <textarea
               value={bodyMd}
               onChange={(e) => setBodyMd(e.target.value)}
               placeholder="Write article in GitHub flavored markdown..."
-              className="flex-1 resize-none rounded border border-hairline bg-surface p-3 font-mono text-xs text-text-primary focus:border-azure focus:outline-none"
+              className="border-hairline bg-surface text-text-primary focus:border-azure flex-1 resize-none rounded border p-3 font-mono text-xs focus:outline-none"
             />
           </div>
 
           {/* Right: Live Preview */}
-          <div className="flex flex-col overflow-y-auto bg-surface p-4">
-            <span className="mb-2 flex items-center gap-1.5 text-[11px] font-mono text-text-muted">
+          <div className="bg-surface flex flex-col overflow-y-auto p-4">
+            <span className="text-text-muted mb-2 flex items-center gap-1.5 font-mono text-[11px]">
               <Eye className="h-3 w-3" />
               <span>Preview</span>
             </span>
-            <div className="prose prose-invert max-w-none rounded border border-hairline bg-canvas p-4 text-xs">
-              <h1 className="text-base font-bold text-text-primary">{title || "Untitled Article"}</h1>
-              {summary && <p className="italic text-text-muted">{summary}</p>}
-              <hr className="my-3 border-hairline" />
-              <div className="whitespace-pre-wrap font-sans text-text-primary">
+            <div className="prose prose-invert border-hairline bg-canvas max-w-none rounded border p-4 text-xs">
+              <h1 className="text-text-primary text-base font-bold">{title || "Untitled Article"}</h1>
+              {summary && <p className="text-text-muted italic">{summary}</p>}
+              <hr className="border-hairline my-3" />
+              <div className="text-text-primary font-sans whitespace-pre-wrap">
                 {bodyMd || "No content entered yet."}
               </div>
             </div>

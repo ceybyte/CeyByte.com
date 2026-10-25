@@ -55,18 +55,18 @@ export function AdminTopbar({ onSearch }: AdminTopbarProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-hairline bg-surface/90 px-4 backdrop-blur-md">
+      <header className="border-hairline bg-surface/90 sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b px-4 backdrop-blur-md">
         {/* Left: Brand + Env */}
         <div className="flex items-center gap-3">
           <Link href="/admin" className="flex items-center gap-2">
-            <span className="font-mono text-sm font-bold tracking-tight text-text-primary">
+            <span className="text-text-primary font-mono text-sm font-bold tracking-tight">
               CB<span className="text-azure">.</span>POS
             </span>
-            <span className="rounded bg-surface-elevated px-1.5 py-0.5 text-[10px] font-semibold text-text-muted">
+            <span className="bg-surface-elevated text-text-muted rounded px-1.5 py-0.5 text-[10px] font-semibold">
               ADMIN
             </span>
           </Link>
-          <span className="hidden rounded border border-hairline bg-canvas px-2 py-0.5 font-mono text-[10px] text-text-muted sm:inline-block">
+          <span className="border-hairline bg-canvas text-text-muted hidden rounded border px-2 py-0.5 font-mono text-[10px] sm:inline-block">
             PRODUCTION
           </span>
         </div>
@@ -74,16 +74,16 @@ export function AdminTopbar({ onSearch }: AdminTopbarProps) {
         {/* Center: Search */}
         <div className="flex max-w-md flex-1 items-center px-4">
           <div className="relative w-full">
-            <Search className="absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
+            <Search className="text-text-muted absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
             <input
               ref={searchInputRef}
               type="search"
               value={searchVal}
               onChange={handleSearchChange}
               placeholder="Search merchants, articles, releases..."
-              className="h-8 w-full rounded-md border border-hairline bg-canvas pr-8 pl-9 text-xs text-text-primary placeholder:text-text-muted focus:border-azure focus:outline-none focus:ring-1 focus:ring-azure"
+              className="border-hairline bg-canvas text-text-primary placeholder:text-text-muted focus:border-azure focus:ring-azure h-8 w-full rounded-md border pr-8 pl-9 text-xs focus:ring-1 focus:outline-none"
             />
-            <kbd className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-hairline bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text-muted">
+            <kbd className="border-hairline bg-surface text-text-muted absolute top-1/2 right-2.5 -translate-y-1/2 rounded border px-1.5 py-0.5 font-mono text-[10px]">
               /
             </kbd>
           </div>
@@ -96,9 +96,9 @@ export function AdminTopbar({ onSearch }: AdminTopbarProps) {
             onClick={handleRebuild}
             disabled={isRebuilding}
             title="Trigger static rebuild on GitHub Actions"
-            className="hidden items-center gap-1.5 rounded-md border border-hairline bg-surface-elevated px-2.5 py-1.5 text-xs font-medium text-text-muted hover:border-azure/40 hover:text-text-primary sm:inline-flex"
+            className="border-hairline bg-surface-elevated text-text-muted hover:border-azure/40 hover:text-text-primary hidden items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium sm:inline-flex"
           >
-            <RefreshCw className={`h-3 w-3 ${isRebuilding ? "animate-spin text-azure" : ""}`} />
+            <RefreshCw className={`h-3 w-3 ${isRebuilding ? "text-azure animate-spin" : ""}`} />
             <span>Rebuild</span>
           </button>
 
@@ -106,7 +106,7 @@ export function AdminTopbar({ onSearch }: AdminTopbarProps) {
             type="button"
             onClick={() => setShortcutsOpen(true)}
             aria-label="Keyboard shortcuts"
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-hairline bg-surface-elevated text-text-muted hover:text-text-primary"
+            className="border-hairline bg-surface-elevated text-text-muted hover:text-text-primary flex h-8 w-8 items-center justify-center rounded-md border"
           >
             <HelpCircle className="h-4 w-4" />
           </button>
@@ -116,7 +116,7 @@ export function AdminTopbar({ onSearch }: AdminTopbarProps) {
             target="_blank"
             rel="noopener noreferrer"
             title="Open public website"
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-hairline bg-surface-elevated text-text-muted hover:text-text-primary"
+            className="border-hairline bg-surface-elevated text-text-muted hover:text-text-primary flex h-8 w-8 items-center justify-center rounded-md border"
           >
             <ExternalLink className="h-3.5 w-3.5" />
           </Link>

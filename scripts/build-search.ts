@@ -34,7 +34,7 @@ export function createUnicodeTokenizer(language: string) {
   };
 }
 
-export interface SearchDoc {
+export type SearchDoc = {
   id: string;
   slug: string;
   locale: string;
@@ -43,7 +43,26 @@ export interface SearchDoc {
   category: string;
   content: string;
   type: "doc" | "blog";
-}
+};
+
+type RawDocItem = {
+  id: string;
+  slug: string;
+  locale: string;
+  title: string;
+  summary?: string;
+  category_slug?: string;
+  body_md: string;
+};
+
+type RawBlogItem = {
+  id: string;
+  slug: string;
+  locale: string;
+  title: string;
+  excerpt?: string;
+  body_md: string;
+};
 
 export async function buildSearchIndices(options?: { contentDir?: string; outputDir?: string }) {
   const contentDir = options?.contentDir ?? resolve(__dirname, "../apps/web/.content");
@@ -57,8 +76,8 @@ export async function buildSearchIndices(options?: { contentDir?: string; output
   const docsPath = join(contentDir, "docs.json");
   const blogPath = join(contentDir, "blog.json");
 
-  let rawDocs: any[] = [];
-  let rawBlog: any[] = [];
+  let rawDocs: RawDocItem[] = [];
+  let rawBlog: RawBlogItem[] = [];
 
   if (existsSync(docsPath)) {
     rawDocs = JSON.parse(readFileSync(docsPath, "utf-8"));
@@ -131,7 +150,11 @@ export async function buildSearchIndices(options?: { contentDir?: string; output
     // Persist as JSON string
     const jsonOutput = await persist(db, "json");
     const targetFile = join(outputDir, `${locale}.json`);
-    writeFileSync(targetFile, jsonOutput, "utf-8");
+    writeFileSync(
+      targetFile,
+      typeof jsonOutput === "string" ? jsonOutput : Buffer.from(jsonOutput as ArrayBuffer),
+      "utf-8",
+    );
 
     const stat = statSync(targetFile);
     manifest.indices[locale] = {

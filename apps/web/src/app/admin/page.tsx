@@ -2,15 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Store,
-  MapPin,
-  Download,
-  HeartHandshake,
-  MessageSquare,
-  RefreshCw,
-  Layers,
-} from "lucide-react";
+import { Store, MapPin, Download, HeartHandshake, MessageSquare, RefreshCw, Layers } from "lucide-react";
 import { fetchOverview, syncReleases, triggerRebuild, OverviewData } from "@/features/admin/api";
 import { toast } from "sonner";
 
@@ -81,26 +73,28 @@ export default function AdminOverviewPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary">Console Overview</h1>
-          <p className="text-xs text-text-muted">Real-time telemetry and operational metrics across Sri Lanka</p>
+          <h1 className="text-text-primary text-xl font-bold tracking-tight">Console Overview</h1>
+          <p className="text-text-muted text-xs">
+            Real-time telemetry and operational metrics across Sri Lanka
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={handleSyncReleases}
             disabled={syncing}
-            className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-surface-elevated px-3 py-1.5 text-xs font-medium text-text-muted hover:border-azure/40 hover:text-text-primary"
+            className="border-hairline bg-surface-elevated text-text-muted hover:border-azure/40 hover:text-text-primary inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium"
           >
-            <RefreshCw className={`h-3 w-3 ${syncing ? "animate-spin text-azure" : ""}`} />
+            <RefreshCw className={`h-3 w-3 ${syncing ? "text-azure animate-spin" : ""}`} />
             <span>Sync Releases</span>
           </button>
           <button
             type="button"
             onClick={handleTriggerRebuild}
             disabled={rebuilding}
-            className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-surface-elevated px-3 py-1.5 text-xs font-medium text-text-muted hover:border-azure/40 hover:text-text-primary"
+            className="border-hairline bg-surface-elevated text-text-muted hover:border-azure/40 hover:text-text-primary inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium"
           >
-            <Layers className={`h-3 w-3 ${rebuilding ? "animate-spin text-azure" : ""}`} />
+            <Layers className={`h-3 w-3 ${rebuilding ? "text-azure animate-spin" : ""}`} />
             <span>Trigger Rebuild</span>
           </button>
         </div>
@@ -111,103 +105,93 @@ export default function AdminOverviewPage() {
         {/* Merchants */}
         <Link
           href="/admin/merchants"
-          className="group rounded-lg border border-hairline bg-surface p-4 transition-colors hover:border-azure/50"
+          className="group border-hairline bg-surface hover:border-azure/50 rounded-lg border p-4 transition-colors"
         >
-          <div className="flex items-center justify-between text-text-muted">
+          <div className="text-text-muted flex items-center justify-between">
             <span className="text-xs font-medium">Merchants</span>
-            <Store className="h-4 w-4 text-text-muted group-hover:text-azure" />
+            <Store className="text-text-muted group-hover:text-azure h-4 w-4" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-mono text-2xl font-bold text-text-primary">
-              {data?.merchants ?? "—"}
-            </span>
-            <span className="text-[11px] text-text-muted">Total registered</span>
+            <span className="text-text-primary font-mono text-2xl font-bold">{data?.merchants ?? "—"}</span>
+            <span className="text-text-muted text-[11px]">Total registered</span>
           </div>
         </Link>
 
         {/* Districts Covered */}
-        <div className="rounded-lg border border-hairline bg-surface p-4">
-          <div className="flex items-center justify-between text-text-muted">
+        <div className="border-hairline bg-surface rounded-lg border p-4">
+          <div className="text-text-muted flex items-center justify-between">
             <span className="text-xs font-medium">Districts Covered</span>
-            <MapPin className="h-4 w-4 text-azure" />
+            <MapPin className="text-azure h-4 w-4" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-mono text-2xl font-bold text-text-primary">
+            <span className="text-text-primary font-mono text-2xl font-bold">
               {data ? `${data.districtsCovered}/25` : "—"}
             </span>
-            <span className="text-[11px] text-text-muted">Target 25/25</span>
+            <span className="text-text-muted text-[11px]">Target 25/25</span>
           </div>
         </div>
 
         {/* Today Downloads */}
-        <div className="rounded-lg border border-hairline bg-surface p-4">
-          <div className="flex items-center justify-between text-text-muted">
+        <div className="border-hairline bg-surface rounded-lg border p-4">
+          <div className="text-text-muted flex items-center justify-between">
             <span className="text-xs font-medium">Today Downloads</span>
-            <Download className="h-4 w-4 text-text-muted" />
+            <Download className="text-text-muted h-4 w-4" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-mono text-2xl font-bold text-text-primary">
+            <span className="text-text-primary font-mono text-2xl font-bold">
               {data?.todayDownloads ?? "—"}
             </span>
-            <span className="text-[11px] text-text-muted">Installer started</span>
+            <span className="text-text-muted text-[11px]">Installer started</span>
           </div>
         </div>
 
         {/* Pending Slips */}
         <Link
           href="/admin/donations"
-          className="group rounded-lg border border-hairline bg-surface p-4 transition-colors hover:border-amber-500/50"
+          className="group border-hairline bg-surface rounded-lg border p-4 transition-colors hover:border-amber-500/50"
         >
-          <div className="flex items-center justify-between text-text-muted">
+          <div className="text-text-muted flex items-center justify-between">
             <span className="text-xs font-medium">Pending Slips</span>
             <HeartHandshake className="h-4 w-4 text-amber-400" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-mono text-2xl font-bold text-amber-400">
-              {data?.pendingSlips ?? "—"}
-            </span>
-            <span className="text-[11px] text-text-muted">Requires review</span>
+            <span className="font-mono text-2xl font-bold text-amber-400">{data?.pendingSlips ?? "—"}</span>
+            <span className="text-text-muted text-[11px]">Requires review</span>
           </div>
         </Link>
 
         {/* Open Tickets */}
         <Link
           href="/admin/feedback"
-          className="group rounded-lg border border-hairline bg-surface p-4 transition-colors hover:border-azure/50"
+          className="group border-hairline bg-surface hover:border-azure/50 rounded-lg border p-4 transition-colors"
         >
-          <div className="flex items-center justify-between text-text-muted">
+          <div className="text-text-muted flex items-center justify-between">
             <span className="text-xs font-medium">Open Tickets</span>
-            <MessageSquare className="h-4 w-4 text-text-muted group-hover:text-azure" />
+            <MessageSquare className="text-text-muted group-hover:text-azure h-4 w-4" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-mono text-2xl font-bold text-text-primary">
-              {data?.openTickets ?? "—"}
-            </span>
-            <span className="text-[11px] text-text-muted">Open / triaged</span>
+            <span className="text-text-primary font-mono text-2xl font-bold">{data?.openTickets ?? "—"}</span>
+            <span className="text-text-muted text-[11px]">Open / triaged</span>
           </div>
         </Link>
       </div>
 
       {/* Sparkline Card */}
-      <div className="rounded-lg border border-hairline bg-surface p-5">
-        <div className="flex items-center justify-between border-b border-hairline pb-3">
+      <div className="border-hairline bg-surface rounded-lg border p-5">
+        <div className="border-hairline flex items-center justify-between border-b pb-3">
           <div>
-            <h2 className="text-xs font-semibold text-text-primary uppercase tracking-wider">
+            <h2 className="text-text-primary text-xs font-semibold tracking-wider uppercase">
               Installer Downloads (14-Day Trajectory)
             </h2>
-            <p className="text-[11px] text-text-muted">Daily counts recorded by download gate verification</p>
+            <p className="text-text-muted text-[11px]">Daily counts recorded by download gate verification</p>
           </div>
-          <span className="font-mono text-xs text-text-muted">
+          <span className="text-text-muted font-mono text-xs">
             Latest: {sparklinePoints[sparklinePoints.length - 1]} / day
           </span>
         </div>
 
         <div className="mt-4 overflow-hidden">
-          <svg
-            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-            className="h-28 w-full stroke-azure"
-            fill="none"
-          >
+          <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="stroke-azure h-28 w-full" fill="none">
             {/* Background horizontal grid lines */}
             <line x1="0" y1="20" x2={svgWidth} y2="20" className="stroke-hairline" strokeDasharray="3 3" />
             <line x1="0" y1="60" x2={svgWidth} y2="60" className="stroke-hairline" strokeDasharray="3 3" />
@@ -226,15 +210,7 @@ export default function AdminOverviewPage() {
             {sparklinePoints.map((val, i) => {
               const cx = i * stepX;
               const cy = svgHeight - (val / maxVal) * (svgHeight - 20) - 10;
-              return (
-                <circle
-                  key={i}
-                  cx={cx}
-                  cy={cy}
-                  r="3"
-                  className="fill-azure"
-                />
-              );
+              return <circle key={i} cx={cx} cy={cy} r="3" className="fill-azure" />;
             })}
           </svg>
         </div>

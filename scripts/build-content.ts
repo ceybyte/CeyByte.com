@@ -25,15 +25,12 @@ const flags = { local: ["--local"], preview: ["--remote", "--env", "preview"], p
   target
 ];
 
-interface D1Result<T> {
-  results?: T[];
-  success?: boolean;
-}
-
-interface RawD1Output<T> {
-  results?: T[];
-  [key: string]: unknown;
-}
+type FallbackData = {
+  categories?: unknown[];
+  docs?: Array<Record<string, unknown> & { locale?: string }>;
+  blog?: Array<Record<string, unknown> & { locale?: string }>;
+  releases?: unknown[];
+};
 
 async function queryD1<T>(query: string): Promise<T[] | null> {
   try {
@@ -62,10 +59,10 @@ async function queryD1<T>(query: string): Promise<T[] | null> {
 async function run() {
   console.log(`[build-content] Extracting content for target: ${target}`);
 
-  let fallbackData: any = null;
+  let fallbackData: FallbackData | null = null;
   if (existsSync(FIXTURES_FILE)) {
     try {
-      fallbackData = JSON.parse(readFileSync(FIXTURES_FILE, "utf-8"));
+      fallbackData = JSON.parse(readFileSync(FIXTURES_FILE, "utf-8")) as FallbackData;
     } catch {
       // ignore fixture read failure
     }
@@ -82,13 +79,14 @@ async function run() {
   const statusFilter =
     target === "production" ? "WHERE status = 'published'" : "WHERE status IN ('published', 'draft')";
   const docsQuery = `SELECT a.id, a.translation_key, a.locale, a.category_id, c.slug as category_slug, a.slug, a.title, a.summary, a.body_md, a.status, a.sort_order, a.published_at FROM docs_articles a LEFT JOIN docs_categories c ON a.category_id = c.id ${statusFilter} ORDER BY a.sort_order ASC;`;
-  const rawDocs = await queryD1(docsQuery);
-  let docs: any[] = rawDocs && rawDocs.length > 0 ? [...rawDocs] : (fallbackData?.docs ?? []);
+  const rawDocs = await queryD1<Record<string, unknown> & { locale?: string }>(docsQuery);
+  const docs: Array<Record<string, unknown> & { locale?: string }> =
+    rawDocs && rawDocs.length > 0 ? [...rawDocs] : (fallbackData?.docs ?? []);
   if (fallbackData?.docs) {
-    const presentLocales = new Set(docs.map((d: any) => d.locale));
+    const presentLocales = new Set(docs.map((d) => d.locale));
     for (const loc of ["en", "si", "ta"]) {
       if (!presentLocales.has(loc)) {
-        const missing = fallbackData.docs.filter((d: any) => d.locale === loc);
+        const missing = fallbackData.docs.filter((d) => d.locale === loc);
         docs.push(...missing);
       }
     }
@@ -98,13 +96,14 @@ async function run() {
   const blogStatusFilter =
     target === "production" ? "WHERE status = 'published'" : "WHERE status IN ('published', 'draft')";
   const blogQuery = `SELECT id, translation_key, locale, slug, title, excerpt, body_md, tags, status, reading_minutes, published_at FROM blog_posts ${blogStatusFilter} ORDER BY published_at DESC;`;
-  const rawBlog = await queryD1(blogQuery);
-  let blog: any[] = rawBlog && rawBlog.length > 0 ? [...rawBlog] : (fallbackData?.blog ?? []);
+  const rawBlog = await queryD1<Record<string, unknown> & { locale?: string }>(blogQuery);
+  const blog: Array<Record<string, unknown> & { locale?: string }> =
+    rawBlog && rawBlog.length > 0 ? [...rawBlog] : (fallbackData?.blog ?? []);
   if (fallbackData?.blog) {
-    const presentLocales = new Set(blog.map((b: any) => b.locale));
+    const presentLocales = new Set(blog.map((b) => b.locale));
     for (const loc of ["en", "si", "ta"]) {
       if (!presentLocales.has(loc)) {
-        const missing = fallbackData.blog.filter((b: any) => b.locale === loc);
+        const missing = fallbackData.blog.filter((b) => b.locale === loc);
         blog.push(...missing);
       }
     }

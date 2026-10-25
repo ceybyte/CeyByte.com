@@ -1,16 +1,16 @@
 /// <reference types="bun-types" />
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { resolve, join, dirname } from "node:path";
+import { resolve, join } from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 
-export interface OgCardOptions {
+export type OgCardOptions = {
   title: string;
   category?: string;
   summary?: string;
   locale?: string;
   type?: "doc" | "blog" | "page";
-}
+};
 
 let cachedFonts: {
   inter: Buffer;
@@ -306,7 +306,7 @@ export async function renderOgCard(options: OgCardOptions): Promise<Buffer> {
     },
   };
 
-  const svg = await satori(element as any, {
+  const svg = await satori(element as unknown as Parameters<typeof satori>[0], {
     width: 1200,
     height: 630,
     fonts: [

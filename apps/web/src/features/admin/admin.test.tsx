@@ -103,9 +103,7 @@ describe("Admin Console UI (S14, F-08 M1)", () => {
       updatedAt: 1,
     };
 
-    const html = renderToString(
-      <DocsEditor article={mockArticle} onClose={() => {}} onSaved={() => {}} />,
-    );
+    const html = renderToString(<DocsEditor article={mockArticle} onClose={() => {}} onSaved={() => {}} />);
 
     expect(html).toContain("Installation &amp; System Requirements");
     expect(html).toContain("Markdown Source");

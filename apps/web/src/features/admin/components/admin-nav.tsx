@@ -47,13 +47,10 @@ export function AdminNav({ counts }: AdminNavProps) {
   ];
 
   return (
-    <aside className="flex w-56 flex-col border-r border-hairline bg-surface/60">
+    <aside className="border-hairline bg-surface/60 flex w-56 flex-col border-r">
       <nav className="flex-1 space-y-1 p-3">
         {NAV_ITEMS.map((item) => {
-          const isActive =
-            item.href === "/admin"
-              ? pathname === "/admin"
-              : pathname.startsWith(item.href);
+          const isActive = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
           const Icon = item.icon;
 
           return (
@@ -62,7 +59,7 @@ export function AdminNav({ counts }: AdminNavProps) {
               href={item.href}
               className={`flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-colors ${
                 isActive
-                  ? "border-l-2 border-azure bg-surface-elevated text-text-primary pl-2.5 font-semibold"
+                  ? "border-azure bg-surface-elevated text-text-primary border-l-2 pl-2.5 font-semibold"
                   : "text-text-muted hover:bg-surface-elevated/50 hover:text-text-primary"
               }`}
             >
@@ -71,7 +68,7 @@ export function AdminNav({ counts }: AdminNavProps) {
                 <span>{item.label}</span>
               </div>
               {item.badge !== undefined && (
-                <span className="rounded bg-canvas px-1.5 py-0.5 font-mono text-[10px] text-text-muted">
+                <span className="bg-canvas text-text-muted rounded px-1.5 py-0.5 font-mono text-[10px]">
                   {item.badge}
                 </span>
               )}
@@ -81,9 +78,9 @@ export function AdminNav({ counts }: AdminNavProps) {
       </nav>
 
       {/* Footer Info */}
-      <div className="border-t border-hairline p-3 text-[11px] font-mono text-text-muted">
+      <div className="border-hairline text-text-muted border-t p-3 font-mono text-[11px]">
         <div>Cloudflare D1 + KV</div>
-        <div className="text-[10px] text-text-muted/70">Edge Engine 2026</div>
+        <div className="text-text-muted/70 text-[10px]">Edge Engine 2026</div>
       </div>
     </aside>
   );

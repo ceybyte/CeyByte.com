@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={fontVariables} suppressHydrationWarning>
-      <body className="min-h-screen bg-canvas">
+      <body className="bg-canvas min-h-screen">
         <ThemeProvider>
           <AdminShell>{children}</AdminShell>
         </ThemeProvider>

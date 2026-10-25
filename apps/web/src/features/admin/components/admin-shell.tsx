@@ -49,9 +49,9 @@ export function AdminShell({ children }: AdminShellProps) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-canvas text-text-muted">
+      <div className="bg-canvas text-text-muted flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-6 w-6 animate-spin text-azure" />
+          <Loader2 className="text-azure h-6 w-6 animate-spin" />
           <span className="font-mono text-xs">Authenticating admin session...</span>
         </div>
       </div>
@@ -59,7 +59,7 @@ export function AdminShell({ children }: AdminShellProps) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-canvas text-text-primary antialiased">
+    <div className="bg-canvas text-text-primary flex min-h-screen flex-col antialiased">
       <AdminTopbar />
       <div className="flex flex-1">
         <AdminNav

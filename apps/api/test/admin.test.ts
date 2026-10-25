@@ -53,7 +53,7 @@ describe("Admin API Endpoints (F-08 M1)", () => {
     const res = await call("/admin/overview", { cookie });
     expect(res.status).toBe(200);
 
-    const json = (await res.json()) as { ok: boolean; data: any };
+    const json = (await res.json()) as { ok: boolean; data: Record<string, unknown> };
     expect(json.ok).toBe(true);
     expect(json.data.merchants).toBeDefined();
     expect(json.data.pendingSlips).toBeDefined();
@@ -95,12 +95,15 @@ describe("Admin API Endpoints (F-08 M1)", () => {
     // 1. Fetch list - phone must be masked
     const listRes = await call("/admin/merchants", { cookie });
     expect(listRes.status).toBe(200);
-    const listJson = (await listRes.json()) as { ok: boolean; data: { items: any[] } };
+    const listJson = (await listRes.json()) as {
+      ok: boolean;
+      data: { items: Array<{ id: string; phone: string | null }> };
+    };
     expect(listJson.ok).toBe(true);
 
     const found = listJson.data.items.find((m) => m.id === merchantId);
     expect(found).toBeDefined();
-    expect(found.phone).toContain("****");
+    expect(found?.phone).toContain("****");
 
     // 2. Reveal contact
     const revealRes = await call(`/admin/merchants/${merchantId}/reveal`, {
@@ -114,7 +117,10 @@ describe("Admin API Endpoints (F-08 M1)", () => {
     // 3. Verify audit record exists
     const auditRes = await call("/admin/audit", { cookie });
     expect(auditRes.status).toBe(200);
-    const auditJson = (await auditRes.json()) as { ok: boolean; data: { items: any[] } };
+    const auditJson = (await auditRes.json()) as {
+      ok: boolean;
+      data: { items: Array<{ action: string; entityId?: string | null }> };
+    };
     const revealAudit = auditJson.data.items.find(
       (a) => a.action === "merchant.reveal" && a.entityId === merchantId,
     );
@@ -160,7 +166,10 @@ describe("Admin API Endpoints (F-08 M1)", () => {
     });
 
     expect(patchRes.status).toBe(200);
-    const updated = (await patchRes.json()) as { ok: boolean; data: any };
+    const updated = (await patchRes.json()) as {
+      ok: boolean;
+      data: { status: string; isSupporter: boolean };
+    };
     expect(updated.data.status).toBe("hidden");
     expect(updated.data.isSupporter).toBe(true);
   });

@@ -31,40 +31,40 @@ export function AdminShortcutsModal({ open, onClose }: AdminShortcutsModalProps)
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-lg border border-hairline bg-surface p-5 shadow-2xl"
+        className="border-hairline bg-surface w-full max-w-md rounded-lg border p-5 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-hairline pb-3">
+        <div className="border-hairline flex items-center justify-between border-b pb-3">
           <div className="flex items-center gap-2">
-            <Command className="h-4 w-4 text-azure" />
-            <h2 className="text-sm font-semibold text-text-primary">Keyboard Shortcuts</h2>
+            <Command className="text-azure h-4 w-4" />
+            <h2 className="text-text-primary text-sm font-semibold">Keyboard Shortcuts</h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded p-1 text-text-muted transition-colors hover:text-text-primary"
+            className="text-text-muted hover:text-text-primary rounded p-1 transition-colors"
             aria-label="Close"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="mt-4 divide-y divide-hairline">
+        <div className="divide-hairline mt-4 divide-y">
           {SHORTCUTS.map((s) => (
             <div key={s.key} className="flex items-center justify-between py-2 text-xs">
               <span className="text-text-muted">{s.desc}</span>
-              <kbd className="rounded border border-hairline bg-canvas px-2 py-0.5 font-mono text-[11px] text-text-primary shadow-xs">
+              <kbd className="border-hairline bg-canvas text-text-primary rounded border px-2 py-0.5 font-mono text-[11px] shadow-xs">
                 {s.key}
               </kbd>
             </div>
           ))}
         </div>
 
-        <div className="mt-4 border-t border-hairline pt-3 text-right">
+        <div className="border-hairline mt-4 border-t pt-3 text-right">
           <button
             type="button"
             onClick={onClose}
-            className="rounded border border-hairline bg-surface-elevated px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface"
+            className="border-hairline bg-surface-elevated text-text-primary hover:bg-surface rounded border px-3 py-1.5 text-xs font-medium"
           >
             Close
           </button>

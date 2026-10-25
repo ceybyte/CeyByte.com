@@ -1,3 +1,4 @@
+import type { District, MerchantStatus } from "@cbpos/shared";
 import {
   adminAuditLog,
   docsArticles,
@@ -36,11 +37,7 @@ export const adminRoutes = new Hono<AppEnv>()
         .select({ district: merchants.district })
         .from(merchants)
         .where(
-          and(
-            eq(merchants.status, "listed"),
-            eq(merchants.isPublicOnMap, true),
-            isNull(merchants.deletedAt),
-          ),
+          and(eq(merchants.status, "listed"), eq(merchants.isPublicOnMap, true), isNull(merchants.deletedAt)),
         ),
       db
         .select({ n: count() })
@@ -73,10 +70,11 @@ export const adminRoutes = new Hono<AppEnv>()
     const offset = Number(c.req.query("offset") ?? 0);
 
     const conditions = [isNull(merchants.deletedAt)];
-    if (status) conditions.push(eq(merchants.status, status as any));
-    if (district) conditions.push(eq(merchants.district, district as any));
+    if (status) conditions.push(eq(merchants.status, status as MerchantStatus));
+    if (district) conditions.push(eq(merchants.district, district as District));
     if (search) {
-      conditions.push(or(like(merchants.shopName, `%${search}%`), like(merchants.city, `%${search}%`))!);
+      const searchCond = or(like(merchants.shopName, `%${search}%`), like(merchants.city, `%${search}%`));
+      if (searchCond) conditions.push(searchCond);
     }
 
     const rows = await db
@@ -161,7 +159,7 @@ export const adminRoutes = new Hono<AppEnv>()
       isSupporter?: boolean;
     }>();
 
-    const updates: Record<string, any> = { updatedAt: new Date() };
+    const updates: Partial<typeof merchants.$inferInsert> = { updatedAt: new Date() };
     if (body.status !== undefined) updates.status = body.status;
     if (body.isPublicOnMap !== undefined) updates.isPublicOnMap = body.isPublicOnMap;
     if (body.isSupporter !== undefined) {
@@ -253,7 +251,7 @@ export const adminRoutes = new Hono<AppEnv>()
       status?: "draft" | "published";
     }>();
 
-    const updates: Record<string, any> = { updatedAt: new Date() };
+    const updates: Partial<typeof docsArticles.$inferInsert> = { updatedAt: new Date() };
     if (body.title !== undefined) updates.title = body.title;
     if (body.summary !== undefined) updates.summary = body.summary;
     if (body.bodyMd !== undefined) updates.bodyMd = body.bodyMd;
@@ -323,7 +321,7 @@ export const adminRoutes = new Hono<AppEnv>()
     const db = c.get("db");
     const id = c.req.param("id");
     const body = await c.req.json<{ isYanked?: boolean; notesMd?: string }>();
-    const updates: Record<string, any> = { updatedAt: new Date() };
+    const updates: Partial<typeof releases.$inferInsert> = { updatedAt: new Date() };
     if (body.isYanked !== undefined) updates.isYanked = body.isYanked;
     if (body.notesMd !== undefined) updates.notesMd = body.notesMd;
 
@@ -345,11 +343,7 @@ export const adminRoutes = new Hono<AppEnv>()
   // 14. Audit Log
   .get("/admin/audit", async (c) => {
     const db = c.get("db");
-    const logs = await db
-      .select()
-      .from(adminAuditLog)
-      .orderBy(desc(adminAuditLog.createdAt))
-      .limit(50);
+    const logs = await db.select().from(adminAuditLog).orderBy(desc(adminAuditLog.createdAt)).limit(50);
 
     return c.json({
       ok: true,

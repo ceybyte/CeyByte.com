@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { existsSync, readFileSync, unlinkSync } from "node:fs";
-import { resolve, join } from "node:path";
+import { resolve } from "node:path";
 import { snapshotRelease } from "./snapshot-release";
 
 describe("Worker Release Snapshot", () => {

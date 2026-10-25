@@ -45,8 +45,8 @@ export default function AdminMerchantsPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary">Merchants Directory</h1>
-          <p className="text-xs text-text-muted">
+          <h1 className="text-text-primary text-xl font-bold tracking-tight">Merchants Directory</h1>
+          <p className="text-text-muted text-xs">
             Directory records, verification statuses, and map visibility
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function AdminMerchantsPage() {
           <a
             href="/api/admin/merchants.csv"
             download="merchants.csv"
-            className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-surface-elevated px-3 py-1.5 text-xs font-medium text-text-muted hover:border-azure/40 hover:text-text-primary"
+            className="border-hairline bg-surface-elevated text-text-muted hover:border-azure/40 hover:text-text-primary inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium"
           >
             <Download className="h-3.5 w-3.5" />
             <span>Export CSV</span>
@@ -63,16 +63,16 @@ export default function AdminMerchantsPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface p-3">
+      <div className="border-hairline bg-surface flex flex-wrap items-center gap-3 rounded-lg border p-3">
         {/* Search */}
         <form onSubmit={handleSearchSubmit} className="relative min-w-[240px] flex-1">
-          <Search className="absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
+          <Search className="text-text-muted absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by shop or city..."
-            className="h-8 w-full rounded-md border border-hairline bg-canvas pr-3 pl-9 text-xs text-text-primary placeholder:text-text-muted focus:border-azure focus:outline-none"
+            className="border-hairline bg-canvas text-text-primary placeholder:text-text-muted focus:border-azure h-8 w-full rounded-md border pr-3 pl-9 text-xs focus:outline-none"
           />
         </form>
 
@@ -80,7 +80,7 @@ export default function AdminMerchantsPage() {
         <select
           value={district}
           onChange={(e) => setDistrict(e.target.value)}
-          className="h-8 rounded-md border border-hairline bg-canvas px-2.5 text-xs text-text-primary focus:border-azure focus:outline-none"
+          className="border-hairline bg-canvas text-text-primary focus:border-azure h-8 rounded-md border px-2.5 text-xs focus:outline-none"
         >
           <option value="all">All Districts</option>
           <option value="colombo">Colombo</option>
@@ -95,7 +95,7 @@ export default function AdminMerchantsPage() {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="h-8 rounded-md border border-hairline bg-canvas px-2.5 text-xs text-text-primary focus:border-azure focus:outline-none"
+          className="border-hairline bg-canvas text-text-primary focus:border-azure h-8 rounded-md border px-2.5 text-xs focus:outline-none"
         >
           <option value="all">All Statuses</option>
           <option value="listed">Listed</option>
@@ -105,10 +105,10 @@ export default function AdminMerchantsPage() {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-lg border border-hairline bg-surface">
+      <div className="border-hairline bg-surface overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="border-b border-hairline bg-surface-elevated text-text-muted">
+            <thead className="border-hairline bg-surface-elevated text-text-muted border-b">
               <tr>
                 <th className="px-4 py-3 font-medium">Shop Name</th>
                 <th className="px-4 py-3 font-medium">Category</th>
@@ -116,22 +116,22 @@ export default function AdminMerchantsPage() {
                 <th className="px-4 py-3 font-medium">Contact</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Supporter</th>
-                <th className="px-4 py-3 font-medium text-right">Actions</th>
+                <th className="px-4 py-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-hairline">
+            <tbody className="divide-hairline divide-y">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-text-muted">
+                  <td colSpan={7} className="text-text-muted px-4 py-8 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-azure" />
+                      <Loader2 className="text-azure h-4 w-4 animate-spin" />
                       <span>Loading merchants...</span>
                     </div>
                   </td>
                 </tr>
               ) : merchants.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-text-muted">
+                  <td colSpan={7} className="text-text-muted px-4 py-8 text-center">
                     No merchants match the current criteria.
                   </td>
                 </tr>
@@ -140,29 +140,27 @@ export default function AdminMerchantsPage() {
                   <tr
                     key={m.id}
                     onClick={() => setSelectedMerchant(m)}
-                    className="h-11 cursor-pointer transition-colors hover:bg-surface-elevated/60"
+                    className="hover:bg-surface-elevated/60 h-11 cursor-pointer transition-colors"
                   >
-                    <td className="px-4 py-2 font-medium text-text-primary">
+                    <td className="text-text-primary px-4 py-2 font-medium">
                       <div className="flex items-center gap-2">
-                        <Store className="h-3.5 w-3.5 text-text-muted" />
+                        <Store className="text-text-muted h-3.5 w-3.5" />
                         <span>{m.shopName}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-2 text-text-muted capitalize">{m.category}</td>
-                    <td className="px-4 py-2 text-text-muted">
+                    <td className="text-text-muted px-4 py-2 capitalize">{m.category}</td>
+                    <td className="text-text-muted px-4 py-2">
                       <span className="capitalize">{m.district}</span> · {m.city}
                     </td>
-                    <td className="px-4 py-2 font-mono text-text-muted">
-                      {m.phone ?? "—"}
-                    </td>
+                    <td className="text-text-muted px-4 py-2 font-mono">{m.phone ?? "—"}</td>
                     <td className="px-4 py-2">
                       <span
                         className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
                           m.status === "listed"
                             ? "bg-azure/10 text-azure"
                             : m.status === "hidden"
-                            ? "bg-surface-elevated text-text-muted"
-                            : "bg-rose-500/10 text-rose-400"
+                              ? "bg-surface-elevated text-text-muted"
+                              : "bg-rose-500/10 text-rose-400"
                         }`}
                       >
                         {m.status}
@@ -175,7 +173,7 @@ export default function AdminMerchantsPage() {
                           <span>Supporter</span>
                         </span>
                       ) : (
-                        <span className="text-[11px] text-text-muted">—</span>
+                        <span className="text-text-muted text-[11px]">—</span>
                       )}
                     </td>
                     <td className="px-4 py-2 text-right">
@@ -185,7 +183,7 @@ export default function AdminMerchantsPage() {
                           e.stopPropagation();
                           setSelectedMerchant(m);
                         }}
-                        className="rounded border border-hairline bg-surface-elevated px-2 py-1 text-[11px] font-medium text-text-muted hover:text-text-primary"
+                        className="border-hairline bg-surface-elevated text-text-muted hover:text-text-primary rounded border px-2 py-1 text-[11px] font-medium"
                       >
                         Details
                       </button>

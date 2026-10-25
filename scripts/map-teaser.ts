@@ -3,16 +3,16 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 
-interface DistrictItem {
+type DistrictItem = {
   id: string;
   name: { en: string; si: string; ta: string };
   centroid: [number, number]; // [lat, lng]
   bbox: [number, number, number, number];
-}
+};
 
-interface DistrictsData {
+type DistrictsData = {
   districts: DistrictItem[];
-}
+};
 
 export function generateMapTeaserSvg(districts: DistrictItem[], width = 600, height = 450): string {
   // Projection bounds for Sri Lanka

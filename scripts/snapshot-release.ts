@@ -2,7 +2,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 
-export interface ReleaseInfo {
+export type ReleaseInfo = {
   id: string;
   version: string;
   channel: string;
@@ -13,7 +13,7 @@ export interface ReleaseInfo {
   sha256: string;
   is_latest: boolean;
   published_at: number;
-}
+};
 
 const DEFAULT_FALLBACK: ReleaseInfo = {
   id: "release-1.3.0",
@@ -41,7 +41,9 @@ export async function snapshotRelease(options?: {
 
   if (existsSync(releasesPath)) {
     try {
-      const releases: any[] = JSON.parse(readFileSync(releasesPath, "utf-8"));
+      const releases: Array<Partial<ReleaseInfo> & { is_yanked?: boolean }> = JSON.parse(
+        readFileSync(releasesPath, "utf-8"),
+      );
       const latest =
         releases.find((r) => r.is_latest && !r.is_yanked) ||
         releases.find((r) => !r.is_yanked) ||
