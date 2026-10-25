@@ -13,10 +13,10 @@ describe("Docs Source", () => {
   test("getCategories returns the 10 docs categories in sort order", () => {
     const cats = getCategories("en");
     expect(cats.length).toBe(10);
-    expect(cats[0].slug).toBe("getting-started");
-    expect(cats[1].slug).toBe("cashiering");
-    expect(cats[3].slug).toBe("tax");
-    expect(cats[cats.length - 1].slug).toBe("release-notes");
+    expect(cats[0]!.slug).toBe("getting-started");
+    expect(cats[1]!.slug).toBe("cashiering");
+    expect(cats[3]!.slug).toBe("tax");
+    expect(cats[cats.length - 1]!.slug).toBe("release-notes");
   });
 
   test("getCategoryBySlug resolves category by slug with localized title", () => {

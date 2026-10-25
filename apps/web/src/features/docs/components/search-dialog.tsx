@@ -33,19 +33,7 @@ async function getOrLoadDb(loc: string) {
     const res = await fetch(`/search/${loc}.json`);
     if (!res.ok) return null;
     const jsonStr = await res.text();
-    const db = await create({
-      schema: {
-        id: "string",
-        slug: "string",
-        locale: "string",
-        title: "string",
-        description: "string",
-        category: "string",
-        content: "string",
-        type: "string",
-      },
-    });
-    await restore(db, "json", jsonStr);
+    const db = await restore("json", jsonStr);
     dbCache.set(loc, db);
     return db;
   } catch (err) {

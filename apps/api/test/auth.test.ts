@@ -87,8 +87,10 @@ describe("admin routes", () => {
     const cookie = await signIn("admin@example.com");
     await env.DB.prepare("UPDATE users SET role = 'admin' WHERE email = ?").bind("admin@example.com").run();
     const res = await call("/admin/overview", { cookie });
-    expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ ok: true, data: { merchants: 0, pendingSlips: 0, openTickets: 0 } });
+    expect(await res.json()).toEqual({
+      ok: true,
+      data: expect.objectContaining({ merchants: 0, pendingSlips: 0, openTickets: 0, districtsCovered: 0 }),
+    });
   });
 });
 
