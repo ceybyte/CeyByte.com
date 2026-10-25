@@ -3,13 +3,14 @@
 // Mobile navigation drawer — hamburger button → Vaul bottom drawer with nav links.
 // Includes language switcher and Download CTA for mobile viewports.
 import { useState } from "react";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X, Download, LayoutDashboard, LogOut } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerPortal, DrawerTrigger } from "@/components/ui/drawer";
 import { Link } from "@/i18n/routing";
 import { useGate } from "@/components/gate/gate-context";
+import { authClient } from "@/lib/auth-client";
 import { LanguageSwitcher } from "./language-switcher";
 
 type NavLink = { readonly href: string; readonly label: string };
@@ -19,6 +20,7 @@ export function MobileNav({ navLinks }: { navLinks: readonly NavLink[] }) {
   const locale = useLocale();
   const { openGate } = useGate();
   const [open, setOpen] = useState(false);
+  const { data: session, isPending: sessionPending } = authClient.useSession();
 
   return (
     <Drawer open={open} onOpenChange={setOpen} direction="right">
@@ -52,6 +54,42 @@ export function MobileNav({ navLinks }: { navLinks: readonly NavLink[] }) {
                 </Link>
               </DrawerClose>
             ))}
+
+            {/* Merchant session link */}
+            {!sessionPending &&
+              (session ? (
+                <>
+                  <DrawerClose asChild>
+                    <Link
+                      href="/dashboard"
+                      className="text-muted hover:bg-surface-elevated hover:text-text flex items-center gap-2 rounded-[--radius-sm] px-3 py-2.5 text-sm transition-colors duration-[--dur-hover]"
+                    >
+                      <LayoutDashboard className="size-4" />
+                      <span>{t("dashboard")}</span>
+                    </Link>
+                  </DrawerClose>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await authClient.signOut();
+                      setOpen(false);
+                    }}
+                    className="text-muted hover:bg-surface-elevated hover:text-text flex w-full cursor-pointer items-center gap-2 rounded-[--radius-sm] px-3 py-2.5 text-left text-sm transition-colors duration-[--dur-hover]"
+                  >
+                    <LogOut className="size-4" />
+                    <span>{t("signOut")}</span>
+                  </button>
+                </>
+              ) : (
+                <DrawerClose asChild>
+                  <Link
+                    href="/login"
+                    className="text-muted hover:bg-surface-elevated hover:text-text rounded-[--radius-sm] px-3 py-2.5 text-sm transition-colors duration-[--dur-hover]"
+                  >
+                    {t("signIn")}
+                  </Link>
+                </DrawerClose>
+              ))}
           </nav>
 
           {/* Bottom: language + download */}

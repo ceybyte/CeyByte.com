@@ -71,6 +71,9 @@ export function SiteFooter() {
             <FooterLink href="/blog">
               <span>{fl("blog")}</span>
             </FooterLink>
+            <FooterLink href="/dashboard">
+              <span>{fl("merchantPortal")}</span>
+            </FooterLink>
             <a
               href="https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM"
               target="_blank"
