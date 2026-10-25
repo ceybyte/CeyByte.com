@@ -5,12 +5,13 @@
 // Mobile: Logo | language switcher | hamburger → Drawer nav.
 // The Download CTA hides while the hero CTA is in view (IntersectionObserver on #hero-cta, Phase 5).
 import { useLocale, useTranslations } from "next-intl";
-import { Download } from "lucide-react";
+import { Download, LayoutDashboard } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/brand/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Link, usePathname } from "@/i18n/routing";
 import { useGate } from "@/components/gate/gate-context";
+import { authClient } from "@/lib/auth-client";
 import { LanguageSwitcher } from "./language-switcher";
 import { MobileNav } from "./mobile-nav";
 
@@ -19,6 +20,7 @@ export function SiteHeader() {
   const locale = useLocale();
   const { openGate } = useGate();
   const pathname = usePathname();
+  const { data: session, isPending: sessionPending } = authClient.useSession();
 
   const navLinks = [
     { href: "/" as const, label: t("product") },
@@ -65,6 +67,33 @@ export function SiteHeader() {
           <LanguageSwitcher className="hidden sm:flex" />
 
           <ThemeToggle toLight="Switch to light theme" toDark="Switch to dark theme" />
+
+          {/* Merchant Auth / Dashboard CTA */}
+          {!sessionPending &&
+            (session ? (
+              <Button
+                variant="secondary"
+                size="sm"
+                asChild
+                className="hidden md:inline-flex items-center gap-1.5"
+              >
+                <Link href="/dashboard">
+                  <LayoutDashboard className="size-3.5" />
+                  <span>{t("dashboard")}</span>
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="hidden md:inline-flex"
+              >
+                <Link href="/login">
+                  <span>{t("signIn")}</span>
+                </Link>
+              </Button>
+            ))}
 
           {/* Download CTA — hidden on mobile (nav drawer has it), hidden when hero CTA visible (Phase 5 IntersectionObserver) */}
           <Button
