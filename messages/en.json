@@ -629,5 +629,75 @@
     "timeline": {
       "title": "Progress Timeline"
     }
+  },
+  "auth": {
+    "title": {
+      "signin": "Sign in",
+      "signup": "Create your account"
+    },
+    "claim": {
+      "context": "Create an account to look after your shop's listing on the CB POS map."
+    },
+    "google": "Continue with Google",
+    "or": "or",
+    "email": {
+      "label": "Email"
+    },
+    "otp": {
+      "sent": "We sent a 6-digit code to {email}. It can take a minute to arrive.",
+      "label": "6-digit code",
+      "send": "Email me a sign-in code",
+      "resend": "Send a new code"
+    },
+    "submit": "Continue",
+    "switch": {
+      "toSignup": "New here? Create an account",
+      "toSignin": "Have an account? Sign in"
+    },
+    "error": {
+      "invalid": "That code is wrong or has expired. Send a new one.",
+      "banned": "This account is turned off. Please contact us if you think that's a mistake."
+    }
+  },
+  "dash": {
+    "overview": {
+      "title": "Your shop"
+    },
+    "status": {
+      "listed": "Shown on the map",
+      "private": "Not shown on the map",
+      "hidden": "We're reviewing it",
+      "hiddenBody": "We're taking a quick look at your listing. You can keep editing it while we do."
+    },
+    "supporter": "Gold Supporter since {monthYear}",
+    "update": {
+      "available": "Version {version} of CB POS is ready.",
+      "cta": "See what's new"
+    },
+    "listing": {
+      "title": "My listing",
+      "public": "Show my shop on the public map",
+      "save": "Save changes",
+      "saved": "Saved. The map shows your changes within a minute."
+    },
+    "empty": {
+      "title": "There's no shop linked to this account yet",
+      "body": "Download CB POS from this browser to add your shop, or contact us if you've already registered it."
+    },
+    "tickets": {
+      "title": "My tickets"
+    },
+    "donations": {
+      "title": "My donations"
+    },
+    "settings": {
+      "language": "Language",
+      "delete": {
+        "title": "Delete my listing and account",
+        "body": "Your shop disappears from the map straight away, and we erase your personal details within 30 days. This can't be undone.",
+        "confirm": "Type your shop name to confirm",
+        "cta": "Delete permanently"
+      }
+    }
   }
 }
