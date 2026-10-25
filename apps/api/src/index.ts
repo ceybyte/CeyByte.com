@@ -6,6 +6,7 @@ import { requestId, securityHeaders } from "./middleware/request";
 import { sessionMiddleware } from "./middleware/session";
 import { adminRoutes } from "./routes/admin";
 import { authRoutes } from "./routes/auth";
+import { downloadsRoutes } from "./routes/downloads";
 import { releasesRoutes } from "./routes/releases";
 import { statsRoutes } from "./routes/stats";
 import { webhooksRoutes } from "./routes/webhooks";
@@ -36,6 +37,7 @@ const api = new Hono<AppEnv>()
   .route("/", adminRoutes)
   .route("/", statsRoutes)
   .route("/", releasesRoutes)
+  .route("/", downloadsRoutes)
   .route("/", webhooksRoutes);
 
 // Main worker app: handles root redirect, PostHog reverse proxy, ticket shell rewrite, and /api/* routes.
