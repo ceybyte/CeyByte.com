@@ -2,63 +2,63 @@
   "email": {
     "otp": {
       "subject": "ඔබගේ CB\u00a0POS ලොගින් කේතය: {otp}",
-      "body": "[[TRANSLATE]]"
+      "body": "ceybyte.com වෙත ප්‍රවේශ වීමට ඔබගේ කේතය මෙන්න:\n\n{otp}\n\nඑය මිනිත්තු 10ක් වලංගු වේ. ඔබ මෙය ඉල්ලා නොසිටියේ නම්, මෙම පණිවිඩය නොසලකා හරින්න. කේතය නොමැතිව කිසිවෙකුට ප්‍රවේශ විය නොහැක.\n\nCeylon Byte"
     }
   },
   "site": {
-    "skip": "[[TRANSLATE]]",
-    "offline": "[[TRANSLATE]]",
-    "loading": "[[TRANSLATE]]",
-    "error": "[[TRANSLATE]]",
-    "reload": "[[TRANSLATE]]",
-    "goHome": "[[TRANSLATE]]"
+    "skip": "ප්‍රධාන අන්තර්ගතයට යන්න",
+    "offline": "ඔබ අන්තර්ජාලයට සම්බන්ධ වී නැත. CB\u00a0POS අන්තර්ජාලය නොමැතිව ක්‍රියා කරයි — නමුත් මෙම වෙබ් අඩවියට අන්තර්ජාලය අවශ්‍ය වේ.",
+    "loading": "පූරණය වෙමින් පවතී…",
+    "error": "දෝෂයක් සිදු විය.",
+    "reload": "නැවත පූරණය කරන්න",
+    "goHome": "මුල් පිටුවට යන්න"
   },
   "nav": {
-    "ariaLabel": "[[TRANSLATE]]",
-    "product": "[[TRANSLATE]]",
-    "map": "[[TRANSLATE]]",
-    "docs": "[[TRANSLATE]]",
-    "releases": "[[TRANSLATE]]",
-    "donate": "[[TRANSLATE]]",
-    "download": "[[TRANSLATE]]",
-    "openMenu": "[[TRANSLATE]]",
-    "closeMenu": "[[TRANSLATE]]",
-    "langSwitcher": "[[TRANSLATE]]",
-    "theme": "[[TRANSLATE]]"
+    "ariaLabel": "ප්‍රධාන මෙනුව",
+    "product": "නිෂ්පාදනය",
+    "map": "සිතියම",
+    "docs": "මාර්ගෝපදේශ",
+    "releases": "නිකුතු",
+    "donate": "උපකාර කරන්න",
+    "download": "CB\u00a0POS බාගන්න",
+    "openMenu": "මෙනුව විවෘත කරන්න",
+    "closeMenu": "මෙනුව වසන්න",
+    "langSwitcher": "භාෂාව තෝරන්න",
+    "theme": "තේමාව මාරු කරන්න"
   },
   "footer": {
-    "mission": "[[TRANSLATE]]",
+    "mission": "ශ්‍රී ලාංකික වෙළඳසැල් සඳහා නොමිලේ ලබා දෙන point-of-sale මෘදුකාංගය, Ceylon Byte විසින් ශ්‍රී ලංකාවේදී නිර්මාණය කරන ලදී.",
     "latest": "Latest: v{version} \u00b7 {channel}",
     "col": {
-      "product": "[[TRANSLATE]]",
-      "community": "[[TRANSLATE]]",
-      "legal": "[[TRANSLATE]]"
+      "product": "නිෂ්පාදනය",
+      "community": "ප්‍රජාව",
+      "legal": "නීතිමය"
     },
     "links": {
-      "download": "[[TRANSLATE]]",
-      "releases": "[[TRANSLATE]]",
-      "docs": "[[TRANSLATE]]",
-      "shortcuts": "[[TRANSLATE]]",
-      "map": "[[TRANSLATE]]",
-      "feedback": "[[TRANSLATE]]",
-      "donate": "[[TRANSLATE]]",
-      "whatsapp": "[[TRANSLATE]]",
-      "blog": "[[TRANSLATE]]",
-      "terms": "[[TRANSLATE]]",
-      "privacy": "[[TRANSLATE]]",
-      "taxDisclaimer": "[[TRANSLATE]]",
-      "dataSafety": "[[TRANSLATE]]",
-      "cookies": "[[TRANSLATE]]"
+      "download": "බාගැනීම්",
+      "releases": "නිකුතු",
+      "docs": "මාර්ගෝපදේශ",
+      "shortcuts": "යතුරුපුවරු කෙටිමං",
+      "map": "වෙළඳ සිතියම",
+      "feedback": "ප්‍රතිචාර",
+      "donate": "උපකාර කරන්න",
+      "whatsapp": "WhatsApp ප්‍රජාව",
+      "blog": "බ්ලොග්",
+      "terms": "කොන්දේසි",
+      "privacy": "පෞද්ගලිකත්වය",
+      "taxDisclaimer": "බදු වගකීම් ප්‍රකාශය",
+      "dataSafety": "දත්ත ආරක්ෂාව",
+      "cookies": "කුකී ප්‍රතිපත්තිය"
     },
-    "legalLine": "[[TRANSLATE]]",
+    "legalLine": "CB\u00a0POS ලබා දෙන්නේ කිසිදු වගකීමක් රහිතව පවතින ආකාරයෙන්මය. එහි බදු ගණනය කිරීම් IRD විසින් සහතික කර නැති අතර, ඔබේ දත්තවල උපස්ථ පිටපත් තබා ගැනීම ඔබේ වගකීමකි.",
     "copyright": "\u00a9 {year} Ceylon Byte.",
     "build": "build {sha}"
   },
   "consent": {
-    "body": "[[TRANSLATE]]",
-    "accept": "[[TRANSLATE]]",
-    "decline": "[[TRANSLATE]]",
-    "learnMore": "[[TRANSLATE]]"
+    "body": "මිනිසුන් CB\u00a0POS භාවිතා කරන ආකාරය තේරුම් ගැනීමට මෙම වෙබ් අඩවිය PostHog භාවිතා කරයි. කිසිදු පුද්ගලික තොරතුරක් ඔබගේ බ්‍රවුසරයෙන් පිටතට නොයයි.",
+    "accept": "පිළිගන්න",
+    "decline": "ප්‍රතික්ෂේප කරන්න",
+    "learnMore": "කුකී ප්‍රතිපත්තිය"
   },
   "home": {
     "hero": {
