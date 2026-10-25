@@ -25,9 +25,7 @@ export interface PopupLabels {
  */
 export function formatPopupHtml(data: PopupData, labels: PopupLabels): string {
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${data.lat},${data.lng}`;
-  const reportUrl = `https://wa.me/94770000000?text=${encodeURIComponent(
-    `Report listing: ${data.shopName} (${data.id}) in ${data.city}`,
-  )}`;
+  const reportUrl = `/feedback/new?type=listing_report&merchantId=${encodeURIComponent(data.id)}`;
 
   const supporterBadge = data.isSupporter
     ? `<div style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:9999px;background-color:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.3);color:#FFD700;font-size:11px;font-weight:600;margin-top:6px;">
