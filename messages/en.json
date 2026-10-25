@@ -344,6 +344,48 @@
     "trincomalee": "Trincomalee",
     "vavuniya": "Vavuniya"
   },
+  "map": {
+    "meta": {
+      "title": "Shops using CB POS across Sri Lanka",
+      "description": "Find local groceries, minimarts, pharmacies and retail shops using CB POS across all 25 districts of Sri Lanka."
+    },
+    "title": "Shops using CB POS across Sri Lanka",
+    "subtitle": "{shops} shops in {covered} of 25 districts. We never show phone numbers.",
+    "search": {
+      "placeholder": "Search for a shop or town"
+    },
+    "filter": {
+      "district": "All districts",
+      "category": "All business types",
+      "supporters": "Gold Supporters only"
+    },
+    "coverage": {
+      "title": "Districts with CB POS shops",
+      "legend": "{covered}/25 districts covered"
+    },
+    "results": {
+      "inView": "{count} shops in view",
+      "noMatch": "No shops match your filters.",
+      "clearFilters": "Clear filters"
+    },
+    "popup": {
+      "since": "Using CB POS since {monthYear}",
+      "supporter": "Gold Supporter",
+      "directions": "Get directions",
+      "report": "Report this listing"
+    },
+    "addShop": "Add my shop",
+    "empty": "No shops are on the map yet. Yours could be the first.",
+    "error": "We couldn't load the shop list just now.",
+    "retry": "Try again",
+    "noWebgl": "This device can't show the interactive map, so here's the list instead.",
+    "attribution": "© OpenStreetMap contributors · Protomaps",
+    "allDistricts": "All districts",
+    "allCategories": "All business types",
+    "skipToList": "Skip to shop list",
+    "viewList": "List view",
+    "viewMap": "Map view"
+  },
   "errors": {
     "INVALID_PHONE": "That doesn\u2019t look like a Sri Lankan number. Try something like 77\u00a0123\u00a04567.",
     "required": "Please fill this in to continue.",
