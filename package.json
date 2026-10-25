@@ -22,6 +22,7 @@
     "typecheck": "bun run --filter '*' typecheck",
     "test": "bun run --filter '*' test",
     "i18n:check": "bun scripts/i18n-check.ts",
+    "check:claims": "bun run scripts/banned-claims-check.ts",
     "e2e": "playwright test"
   },
   "devDependencies": {
