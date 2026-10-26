@@ -105,6 +105,33 @@ fixtures.docs.forEach((doc, i) => {
   );
 });
 
+/* ---------- Blog starter articles ---------- */
+if (fixtures.blog) {
+  fixtures.blog.forEach((post) => {
+    sql.push(
+      insert(
+        "blog_posts",
+        {
+          id: post.id,
+          translation_key: post.translation_key,
+          locale: post.locale,
+          slug: post.slug,
+          title: post.title,
+          excerpt: post.excerpt,
+          body_md: post.body_md,
+          tags: JSON.stringify(post.tags),
+          status: post.status,
+          reading_minutes: post.reading_minutes,
+          published_at: post.published_at ?? now,
+          created_at: now,
+          updated_at: now,
+        },
+        "ON CONFLICT (slug, locale) DO NOTHING",
+      ),
+    );
+  });
+}
+
 if (synthetic) {
   /* ---------- Release fixture ---------- */
   sql.push(
