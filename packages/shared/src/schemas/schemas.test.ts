@@ -9,6 +9,11 @@ import {
   formatTicketNumber,
   parseTicketNumber,
 } from "./feedback";
+import {
+  DonationCreateSchema,
+  DonationSubmitSchema,
+  DonationPaymentOptionsSchema,
+} from "./donations";
 
 describe("Shared Schemas", () => {
   describe("Manifest Schema", () => {
@@ -223,6 +228,57 @@ describe("Shared Schemas", () => {
         approveScreenshot: true,
       };
       expect(FeedbackAdminUpdateSchema.safeParse(valid).success).toBe(true);
+    });
+  });
+
+  describe("Donation Schemas", () => {
+    it("validates DonationCreateSchema", () => {
+      const valid = {
+        amountCents: 10000,
+        displayName: "Saman Kumara",
+        isAnonymous: false,
+        publicMessage: "Keep up the great work!",
+        showAmountPublicly: true,
+        contactPrivate: "saman@example.com",
+        linkMerchantPhone: "077 123 4567",
+        turnstileToken: "tok_123",
+      };
+      const res = DonationCreateSchema.safeParse(valid);
+      expect(res.success).toBe(true);
+      if (res.success) {
+        expect(res.data.linkMerchantPhone).toBe("+94771234567");
+      }
+
+      // Rejects below Rs. 100 (10000 cents)
+      expect(DonationCreateSchema.safeParse({ ...valid, amountCents: 9999 }).success).toBe(false);
+
+      // Rejects missing turnstile token
+      expect(DonationCreateSchema.safeParse({ ...valid, turnstileToken: "" }).success).toBe(false);
+
+      // Rejects message > 140 chars
+      expect(DonationCreateSchema.safeParse({ ...valid, publicMessage: "a".repeat(141) }).success).toBe(false);
+    });
+
+    it("validates DonationSubmitSchema", () => {
+      expect(DonationSubmitSchema.safeParse({ slipKey: "donations/slip-1.png", txnReference: "TXN12345" }).success).toBe(true);
+      expect(DonationSubmitSchema.safeParse({ slipKey: "" }).success).toBe(false);
+    });
+
+    it("validates DonationPaymentOptionsSchema", () => {
+      const validOptions = [
+        {
+          id: "bank-1",
+          accountName: "CeyByte Foundation",
+          accountNumber: "100012345678",
+          bankName: "Commercial Bank",
+          branchName: "Kollupitiya",
+          qrImageKey: "qr/combank.png",
+          isEnabled: true,
+          notes: "Primary account",
+        },
+      ];
+      expect(DonationPaymentOptionsSchema.safeParse(validOptions).success).toBe(true);
+      expect(DonationPaymentOptionsSchema.safeParse([{ id: "bank-1" }]).success).toBe(false);
     });
   });
 });

@@ -3,6 +3,7 @@ export * from "./errors";
 export * from "./markdown";
 export * from "./money";
 export * from "./phone";
+export * from "./schemas/donations";
 export * from "./schemas/download-gate";
 export * from "./schemas/feedback";
 export * from "./schemas/manifest";

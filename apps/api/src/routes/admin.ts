@@ -18,6 +18,8 @@ import { bumpGeoVersion } from "../lib/geo-cache";
 import { getRebuildStatus, triggerRebuild } from "../lib/rebuild";
 import { syncReleases } from "../lib/releases-sync";
 import { FeedbackAdminUpdateSchema, formatTicketNumber } from "@cbpos/shared/schemas/feedback";
+import { DonationPaymentOptionsSchema } from "@cbpos/shared";
+import { getDonationPaymentOptions } from "../lib/donation-settings";
 import { presignGet } from "../lib/r2";
 import { requireRole } from "../middleware/session";
 import type { AppEnv } from "../types";
@@ -599,4 +601,31 @@ export const adminRoutes = new Hono<AppEnv>()
         formattedNumber: updated ? formatTicketNumber(updated.publicNumber) : null,
       },
     } as const);
+  })
+
+  // 12. Donation Payment Settings
+  .get("/admin/donations/settings", async (c) => {
+    const options = await getDonationPaymentOptions(c.env.CACHE_KV, c.env);
+    return c.json({ ok: true, data: options });
+  })
+  .put("/admin/donations/settings", async (c) => {
+    const body = await c.req.json().catch(() => null);
+    const parsed = DonationPaymentOptionsSchema.safeParse(body);
+    if (!parsed.success) {
+      return c.json({ ok: false, error: "INVALID_BODY", details: parsed.error.issues }, 400);
+    }
+
+    const previous = await c.env.CACHE_KV.get("settings:donation_payment_options", "json");
+    await c.env.CACHE_KV.put("settings:donation_payment_options", JSON.stringify(parsed.data));
+
+    const db = c.get("db");
+    const user = c.get("session")?.user;
+    await auditInsert(db, {
+      actorUserId: user?.id ?? null,
+      action: "update_payment_settings",
+      entityType: "donation",
+      diff: { before: previous, after: parsed.data },
+    });
+
+    return c.json({ ok: true, data: parsed.data });
   });
