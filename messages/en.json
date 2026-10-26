@@ -307,6 +307,28 @@
     "newerAvailable": "A newer version ({version}) is available. Refresh to see it.",
     "windowsReq": "Windows 10 or later"
   },
+  "blog": {
+    "title": "Blog",
+    "lead": "Release notes in plain language, tax changes explained, and stories from shops using CB POS.",
+    "tags": {
+      "all": "All",
+      "releases": "Releases",
+      "tax": "Tax",
+      "stories": "Shop stories",
+      "hardware": "Hardware"
+    },
+    "readingTime": "{minutes} min read",
+    "featured": "Featured",
+    "alsoInEnglish": "Also in English",
+    "alsoInEnglishLead": "This article is currently only available in English.",
+    "related": "Related posts",
+    "rss": "RSS Feed",
+    "empty": "No articles found in this category.",
+    "backToBlog": "Back to blog",
+    "share": "Share",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied to clipboard"
+  },
   "categories": {
     "grocery": "Grocery",
     "minimart": "Mini-mart / supermarket",
@@ -521,6 +543,33 @@
       "publish": "Publish",
       "reindex": "Rebuild search index",
       "preview": "Preview"
+    },
+    "blog": {
+      "title": "Blog Articles",
+      "newPost": "New Article",
+      "editPost": "Edit Article",
+      "all": "All Posts",
+      "drafts": "Drafts",
+      "scheduled": "Scheduled",
+      "published": "Published",
+      "empty": "No blog articles found.",
+      "save": "Save Draft",
+      "publish": "Publish",
+      "publishing": "Publishing...",
+      "saving": "Saving...",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this article?",
+      "editor": "Article Editor",
+      "preview": "Live Preview",
+      "postTitle": "Article Title",
+      "slug": "URL Slug",
+      "locale": "Language",
+      "translationKey": "Translation Group Key",
+      "excerpt": "Summary Excerpt",
+      "tags": "Tags (comma separated)",
+      "coverImage": "Cover Image",
+      "uploadCover": "Upload Cover (PNG/WebP/JPG)",
+      "markdownBody": "Markdown Content"
     },
     "releases": {
       "forceSync": "Sync now",
