@@ -2,6 +2,7 @@ export type TocItem = {
   id: string;
   text: string;
   level: 2 | 3;
+  depth: 2 | 3;
 };
 
 export type SupportedLocale = "en" | "si" | "ta";
@@ -20,6 +21,11 @@ export type ProcessMarkdownOptions = {
    * Shiki syntax highlighter theme name.
    */
   theme?: string;
+  /**
+   * Whether to run Shiki code syntax highlighter (disable in WASM-restricted environments like Workers).
+   * Defaults to true.
+   */
+  highlight?: boolean;
 };
 
 export type ProcessMarkdownResult = {

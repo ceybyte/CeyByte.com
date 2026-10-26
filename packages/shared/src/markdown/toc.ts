@@ -18,7 +18,7 @@ export function rehypeExtractToc(options: RehypeTocOptions = {}) {
         const level = node.tagName === "h2" ? 2 : 3;
 
         if (id && text) {
-          toc.push({ id, text, level });
+          toc.push({ id, text, level, depth: level });
         }
       }
     });

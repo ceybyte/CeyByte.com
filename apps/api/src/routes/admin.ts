@@ -23,11 +23,13 @@ import { getDonationPaymentOptions } from "../lib/donation-settings";
 import { recomputeSupporter } from "../lib/supporter";
 import { presignGet } from "../lib/r2";
 import { requireRole } from "../middleware/session";
+import { adminBlogRoutes } from "./admin-blog";
 import type { AppEnv } from "../types";
 
 // /api/admin/* (02-TRD §5.2). requireRole runs first, so anyone who isn't an admin gets a plain 404 (AC-08.1).
 export const adminRoutes = new Hono<AppEnv>()
   .use("/admin/*", requireRole("admin"))
+  .route("/", adminBlogRoutes)
 
   // 1. Overview KPIs
   .get("/admin/overview", async (c) => {

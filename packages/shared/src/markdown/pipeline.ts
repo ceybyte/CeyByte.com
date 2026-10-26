@@ -28,7 +28,7 @@ export async function processMarkdown(
   markdown: string,
   options: ProcessMarkdownOptions = {},
 ): Promise<ProcessMarkdownResult> {
-  const { autoTaxDisclaimer = false, locale = "en" } = options;
+  const { autoTaxDisclaimer = false, locale = "en", highlight = true } = options;
 
   let toc: TocItem[] = [];
 
@@ -58,8 +58,10 @@ export async function processMarkdown(
         value: " #",
       },
     })
-    .use(rehypeSanitize, markdownSanitizeSchema)
-    .use(rehypeShiki, {
+    .use(rehypeSanitize, markdownSanitizeSchema);
+
+  if (highlight) {
+    processor.use(rehypeShiki, {
       themes: {
         light: "github-light",
         dark: "github-dark",
@@ -67,8 +69,10 @@ export async function processMarkdown(
       defaultColor: false,
       fallbackLanguage: "txt",
       addLanguageClass: true,
-    })
-    .use(rehypeStringify);
+    });
+  }
+
+  processor.use(rehypeStringify);
 
   const file = await processor.process(markdown);
   const html = String(file);

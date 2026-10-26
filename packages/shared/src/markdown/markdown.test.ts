@@ -79,9 +79,9 @@ Some network text.
 `;
     const result = await processMarkdown(md);
     expect(result.toc).toEqual([
-      { id: "hardware-requirements", text: "Hardware Requirements", level: 2 },
-      { id: "thermal-printers", text: "Thermal Printers", level: 3 },
-      { id: "network-setup", text: "Network Setup", level: 2 },
+      { id: "hardware-requirements", text: "Hardware Requirements", level: 2, depth: 2 },
+      { id: "thermal-printers", text: "Thermal Printers", level: 3, depth: 3 },
+      { id: "network-setup", text: "Network Setup", level: 2, depth: 2 },
     ]);
     expect(result.html).toContain('id="hardware-requirements"');
     expect(result.html).toContain('class="heading-anchor"');

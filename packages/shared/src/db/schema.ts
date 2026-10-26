@@ -287,7 +287,7 @@ export const docsCategories = sqliteTable(
   ],
 );
 
-export type TocItem = { depth: 2 | 3; id: string; text: string };
+export type TocItem = { depth: 2 | 3; id: string; text: string; level?: 2 | 3 };
 
 export const docsArticles = sqliteTable(
   "docs_articles",
