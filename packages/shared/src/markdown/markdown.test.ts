@@ -139,4 +139,27 @@ Here is a [link](https://ceybyte.com) and an image ![logo](/logo.png).
     const readingTime = calculateReadingTime(plain);
     expect(readingTime).toBe(1);
   });
+
+  it("renders video directive with mandatory captions", async () => {
+    const md = '::video{src="/media/test.mp4" alt="Demo" captions="/media/test.vtt"}';
+    const result = await processMarkdown(md);
+    expect(result.html).toContain("<video");
+    expect(result.html).toContain('src="/media/test.mp4"');
+    expect(result.html).toContain('<track kind="captions" src="/media/test.vtt"');
+  });
+
+  it("renders kbd text directive", async () => {
+    const md = "Press :kbd[F3] to search";
+    const result = await processMarkdown(md);
+    expect(result.html).toContain('<kbd class="kbd-key">F3</kbd>');
+  });
+
+  it("renders screenshot directive with alt text and figure", async () => {
+    const md = '::screenshot{src="/media/screen.png" alt="POS UI" caption="Receipt settings"}';
+    const result = await processMarkdown(md);
+    expect(result.html).toContain("<figure");
+    expect(result.html).toContain('src="/media/screen.png"');
+    expect(result.html).toContain('alt="POS UI"');
+    expect(result.html).toContain("Receipt settings");
+  });
 });

@@ -73,13 +73,18 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
       const name = (node.name || "").toLowerCase();
       const attributes = node.attributes || {};
 
-      if (CALLOUT_NAMES.has(name)) {
-        const title = attributes.title || CALLOUT_TITLES[name] || name;
+      if (CALLOUT_NAMES.has(name) || name === "callout") {
+        let typeName = name;
+        if (name === "callout") {
+          const t = (attributes.type || "note").toLowerCase();
+          typeName = t === "warn" ? "warning" : t === "danger" ? "caution" : t;
+        }
+        const title = attributes.title || CALLOUT_TITLES[typeName] || (typeName.charAt(0).toUpperCase() + typeName.slice(1));
 
         node.data = node.data || {};
         node.data.hName = "aside";
         node.data.hProperties = {
-          className: ["callout", `callout-${name}`],
+          className: ["callout", `callout-${typeName}`],
           role: "note",
         };
 
@@ -113,6 +118,88 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
         };
 
         node.children = [headerNode as unknown as RootContent, bodyNode as unknown as RootContent];
+      } else if (name === "video") {
+        node.data = node.data || {};
+        node.data.hName = "video";
+        node.data.hProperties = {
+          controls: true,
+          preload: "metadata",
+          playsinline: true,
+          src: attributes.src || "",
+          className: ["video-player", "w-full", "rounded-lg"],
+          ...(attributes.alt ? { ariaLabel: attributes.alt } : {}),
+        };
+
+        const children: unknown[] = [];
+        const captionsSrc = attributes.captions || attributes.caption || attributes.vtt;
+        if (captionsSrc) {
+          children.push({
+            type: "paragraph",
+            data: {
+              hName: "track",
+              hProperties: {
+                kind: "captions",
+                src: captionsSrc,
+                srclang: locale || "en",
+                label: "Captions",
+                default: true,
+              },
+            },
+            children: [],
+          });
+        }
+        node.children = children as RootContent[];
+      } else if (name === "kbd") {
+        node.data = node.data || {};
+        node.data.hName = "kbd";
+        node.data.hProperties = {
+          className: ["kbd-key"],
+        };
+      } else if (name === "screenshot") {
+        node.data = node.data || {};
+        node.data.hName = "figure";
+        node.data.hProperties = {
+          className: ["screenshot-figure", "my-6"],
+        };
+
+        const children: unknown[] = [
+          {
+            type: "image",
+            url: attributes.src || "",
+            alt: attributes.alt || "",
+            data: {
+              hName: "img",
+              hProperties: {
+                src: attributes.src || "",
+                alt: attributes.alt || "",
+                loading: "lazy",
+                className: ["screenshot-img", "rounded-lg", "border", "border-zinc-800", "w-full"],
+              },
+            },
+            children: [],
+          },
+        ];
+
+        const captionText = attributes.caption || attributes.title;
+        if (captionText) {
+          children.push({
+            type: "paragraph",
+            data: {
+              hName: "figcaption",
+              hProperties: {
+                className: ["screenshot-caption", "text-xs", "text-zinc-400", "text-center", "mt-2"],
+              },
+            },
+            children: [
+              {
+                type: "text",
+                value: captionText,
+              },
+            ],
+          });
+        }
+
+        node.children = children as RootContent[];
       } else if (name === "step") {
         const title = attributes.title || "";
         node.data = node.data || {};
