@@ -10,7 +10,7 @@ import {
   releases,
   users,
 } from "@cbpos/shared/db/schema";
-import { and, count, desc, eq, inArray, isNull, like, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNull, like, or } from "drizzle-orm";
 import { Hono } from "hono";
 import { auditInsert } from "../lib/audit";
 import { ApiError } from "../lib/errors";
@@ -20,6 +20,7 @@ import { syncReleases } from "../lib/releases-sync";
 import { FeedbackAdminUpdateSchema, formatTicketNumber } from "@cbpos/shared/schemas/feedback";
 import { DonationPaymentOptionsSchema } from "@cbpos/shared";
 import { getDonationPaymentOptions } from "../lib/donation-settings";
+import { recomputeSupporter } from "../lib/supporter";
 import { presignGet } from "../lib/r2";
 import { requireRole } from "../middleware/session";
 import type { AppEnv } from "../types";
@@ -628,4 +629,221 @@ export const adminRoutes = new Hono<AppEnv>()
     });
 
     return c.json({ ok: true, data: parsed.data });
+  })
+
+  // 13. Admin Donations Queue
+  .get("/admin/donations", async (c) => {
+    const db = c.get("db");
+    const statusParam = c.req.query("status") ?? "pending_review";
+    const page = Math.max(1, Number(c.req.query("page") ?? 1));
+    const pageSize = Math.max(1, Math.min(100, Number(c.req.query("pageSize") ?? 20)));
+
+    const whereClause =
+      statusParam && statusParam !== "all"
+        ? eq(donations.status, statusParam as any)
+        : undefined;
+
+    const orderClause =
+      statusParam === "pending_review" ? asc(donations.createdAt) : desc(donations.createdAt);
+
+    const [items, totalResult] = await Promise.all([
+      db
+        .select({
+          id: donations.id,
+          referenceCode: donations.referenceCode,
+          method: donations.method,
+          amountCents: donations.amountCents,
+          currency: donations.currency,
+          displayName: donations.displayName,
+          isAnonymous: donations.isAnonymous,
+          publicMessage: donations.publicMessage,
+          messageApproved: donations.messageApproved,
+          showAmountPublicly: donations.showAmountPublicly,
+          contactPrivate: donations.contactPrivate,
+          slipKey: donations.slipKey,
+          slipMime: donations.slipMime,
+          slipSize: donations.slipSize,
+          txnReference: donations.txnReference,
+          merchantId: donations.merchantId,
+          shopName: merchants.shopName,
+          status: donations.status,
+          reviewedBy: donations.reviewedBy,
+          reviewedAt: donations.reviewedAt,
+          rejectionReason: donations.rejectionReason,
+          createdAt: donations.createdAt,
+          updatedAt: donations.updatedAt,
+        })
+        .from(donations)
+        .leftJoin(merchants, eq(donations.merchantId, merchants.id))
+        .where(whereClause)
+        .orderBy(orderClause)
+        .limit(pageSize)
+        .offset((page - 1) * pageSize),
+      db
+        .select({ n: count() })
+        .from(donations)
+        .where(whereClause),
+    ]);
+
+    return c.json({
+      ok: true,
+      data: {
+        items,
+        total: totalResult[0]?.n ?? 0,
+        page,
+        pageSize,
+      },
+    });
+  })
+
+  // 14. Admin Presigned Slip Preview
+  .get("/admin/donations/:id/slip-url", async (c) => {
+    const id = c.req.param("id");
+    const db = c.get("db");
+
+    const donation = await db
+      .select({
+        slipKey: donations.slipKey,
+        slipMime: donations.slipMime,
+        slipSize: donations.slipSize,
+      })
+      .from(donations)
+      .where(eq(donations.id, id))
+      .get();
+
+    if (!donation || !donation.slipKey) {
+      throw new ApiError("NOT_FOUND");
+    }
+
+    const url = await presignGet(c.env, donation.slipKey, 120);
+    return c.json({
+      ok: true,
+      data: {
+        url,
+        mime: donation.slipMime,
+        size: donation.slipSize,
+      },
+    });
+  })
+
+  // 15. Approve Donation & Activate Gold Supporter
+  .post("/admin/donations/:id/approve", async (c) => {
+    const id = c.req.param("id");
+    const body = (await c.req.json().catch(() => ({}))) as { messageApproved?: boolean };
+    const db = c.get("db");
+    const user = c.get("session")?.user;
+
+    const donation = await db
+      .select()
+      .from(donations)
+      .where(eq(donations.id, id))
+      .get();
+
+    if (!donation) {
+      throw new ApiError("NOT_FOUND");
+    }
+
+    const messageApproved = Boolean(body.messageApproved);
+    const now = new Date();
+
+    await db
+      .update(donations)
+      .set({
+        status: "approved",
+        messageApproved,
+        reviewedBy: user?.id ?? null,
+        reviewedAt: now,
+        updatedAt: now,
+      })
+      .where(eq(donations.id, id));
+
+    if (donation.merchantId) {
+      await recomputeSupporter(db, donation.merchantId);
+      await bumpGeoVersion(c.env.CACHE_KV, db);
+    }
+
+    await c.env.CACHE_KV.delete("donations:summary");
+
+    await auditInsert(db, {
+      actorUserId: user?.id ?? null,
+      action: "approve",
+      entityType: "donation",
+      entityId: id,
+      diff: {
+        before: { status: donation.status },
+        after: { status: "approved", messageApproved },
+      },
+    });
+
+    return c.json({
+      ok: true,
+      data: {
+        id,
+        status: "approved",
+      },
+    });
+  })
+
+  // 16. Reject Donation
+  .post("/admin/donations/:id/reject", async (c) => {
+    const id = c.req.param("id");
+    const body = (await c.req.json().catch(() => null)) as { reason?: string } | null;
+    const reason = typeof body?.reason === "string" ? body.reason.trim() : "";
+    if (!reason) {
+      return c.json({ ok: false, error: "REASON_REQUIRED" }, 400);
+    }
+
+    const db = c.get("db");
+    const user = c.get("session")?.user;
+
+    const donation = await db
+      .select()
+      .from(donations)
+      .where(eq(donations.id, id))
+      .get();
+
+    if (!donation) {
+      throw new ApiError("NOT_FOUND");
+    }
+
+    const now = new Date();
+
+    await db
+      .update(donations)
+      .set({
+        status: "rejected",
+        rejectionReason: reason,
+        reviewedBy: user?.id ?? null,
+        reviewedAt: now,
+        updatedAt: now,
+      })
+      .where(eq(donations.id, id));
+
+    if (donation.merchantId) {
+      const stillSupporter = await recomputeSupporter(db, donation.merchantId);
+      if (!stillSupporter) {
+        await bumpGeoVersion(c.env.CACHE_KV, db);
+      }
+    }
+
+    await c.env.CACHE_KV.delete("donations:summary");
+
+    await auditInsert(db, {
+      actorUserId: user?.id ?? null,
+      action: "reject",
+      entityType: "donation",
+      entityId: id,
+      diff: {
+        before: { status: donation.status },
+        after: { status: "rejected", reason },
+      },
+    });
+
+    return c.json({
+      ok: true,
+      data: {
+        id,
+        status: "rejected",
+      },
+    });
   });
