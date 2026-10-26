@@ -28,11 +28,7 @@ export async function generateMetadata({
   });
 }
 
-export default async function BlogIndexPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function BlogIndexPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "blog" });
@@ -49,20 +45,18 @@ export default async function BlogIndexPage({
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-16 space-y-12">
+    <div className="bg-background min-h-screen pb-20">
+      <main className="mx-auto max-w-6xl space-y-12 px-4 py-12 md:py-16">
         {/* Header Strip */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-800 pb-8">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider">
+        <div className="flex flex-col justify-between gap-6 border-b border-zinc-800 pb-8 md:flex-row md:items-end">
+          <div className="max-w-2xl space-y-3">
+            <div className="inline-flex items-center gap-2 font-mono text-xs tracking-wider text-cyan-400 uppercase">
               <span>CB POS EDITORIAL</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground">
+            <h1 className="text-foreground text-3xl font-extrabold tracking-tight md:text-5xl">
               {t("title")}
             </h1>
-            <p className="text-zinc-400 text-base md:text-lg leading-relaxed">
-              {t("lead")}
-            </p>
+            <p className="text-base leading-relaxed text-zinc-400 md:text-lg">{t("lead")}</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -70,7 +64,7 @@ export default async function BlogIndexPage({
               href={`/${locale}/blog/rss.xml`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3.5 py-2 text-xs font-mono text-zinc-300 hover:border-cyan-500/50 hover:text-cyan-300 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3.5 py-2 font-mono text-xs text-zinc-300 transition-colors hover:border-cyan-500/50 hover:text-cyan-300"
             >
               <Rss className="h-4 w-4 text-cyan-400" />
               <span>{t("rss")}</span>

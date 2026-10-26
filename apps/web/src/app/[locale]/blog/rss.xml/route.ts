@@ -14,10 +14,7 @@ function escapeXml(unsafe: string): string {
     .replace(/'/g, "&apos;");
 }
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ locale: string }> },
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const posts = getBlogPosts(locale);
 
@@ -42,13 +39,9 @@ export async function GET(
   const itemsXml = posts
     .map((post) => {
       const postUrl = `${siteUrl}/${locale}/blog/${post.slug}`;
-      const pubDate = post.publishedAt
-        ? new Date(post.publishedAt).toUTCString()
-        : new Date().toUTCString();
+      const pubDate = post.publishedAt ? new Date(post.publishedAt).toUTCString() : new Date().toUTCString();
 
-      const categoriesXml = post.tags
-        .map((tag) => `<category>${escapeXml(tag)}</category>`)
-        .join("\n      ");
+      const categoriesXml = post.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join("\n      ");
 
       return `    <item>
       <title>${escapeXml(post.title)}</title>

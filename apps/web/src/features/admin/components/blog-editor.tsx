@@ -136,21 +136,17 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
   return (
     <div className="space-y-6">
       {/* Top Controls */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-zinc-800 pb-4">
+      <div className="flex flex-col gap-4 border-b border-zinc-800 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <Link
             href="/admin/blog"
-            className="rounded p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-foreground transition-colors"
+            className="hover:text-foreground rounded p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800"
           >
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <div>
-            <h1 className="text-lg font-bold text-foreground">
-              {post?.id ? "Edit Article" : "New Article"}
-            </h1>
-            <p className="text-xs text-zinc-400">
-              Live split-pane markdown authoring with AST preview
-            </p>
+            <h1 className="text-foreground text-lg font-bold">{post?.id ? "Edit Article" : "New Article"}</h1>
+            <p className="text-xs text-zinc-400">Live split-pane markdown authoring with AST preview</p>
           </div>
         </div>
 
@@ -159,7 +155,7 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
             type="button"
             onClick={handleSaveClick}
             disabled={isSaving}
-            className="inline-flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-3.5 py-1.5 text-xs font-semibold text-zinc-200 hover:bg-zinc-700 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-3.5 py-1.5 text-xs font-semibold text-zinc-200 transition-colors hover:bg-zinc-700"
           >
             <Save className="h-3.5 w-3.5 text-zinc-400" />
             <span>{isSaving ? "Saving..." : "Save Draft"}</span>
@@ -170,7 +166,7 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
               type="button"
               onClick={handlePublishClick}
               disabled={isPublishing}
-              className="inline-flex items-center gap-1.5 rounded-md border border-cyan-500/60 bg-cyan-950/70 px-3.5 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-900/60 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-md border border-cyan-500/60 bg-cyan-950/70 px-3.5 py-1.5 text-xs font-semibold text-cyan-300 transition-colors hover:bg-cyan-900/60"
             >
               <Send className="h-3.5 w-3.5" />
               <span>{isPublishing ? "Publishing..." : "Publish"}</span>
@@ -183,9 +179,9 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Left Pane: Meta Inputs & Markdown */}
         <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-mono text-zinc-400 mb-1">Title</label>
+              <label className="mb-1 block font-mono text-xs text-zinc-400">Title</label>
               <input
                 type="text"
                 value={title}
@@ -195,24 +191,24 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-zinc-400 mb-1">Slug</label>
+              <label className="mb-1 block font-mono text-xs text-zinc-400">Slug</label>
               <input
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="url-slug"
-                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 font-mono focus:border-cyan-500 focus:outline-none"
+                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-100 placeholder-zinc-500 focus:border-cyan-500 focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label className="block text-xs font-mono text-zinc-400 mb-1">Language</label>
+              <label className="mb-1 block font-mono text-xs text-zinc-400">Language</label>
               <select
                 value={locale}
                 onChange={(e) => setLocale(e.target.value as "en" | "si" | "ta")}
-                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-zinc-100 focus:border-cyan-500 focus:outline-none font-mono"
+                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-100 focus:border-cyan-500 focus:outline-none"
               >
                 <option value="en">English (en)</option>
                 <option value="si">Sinhala (si)</option>
@@ -220,21 +216,21 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-mono text-zinc-400 mb-1">Translation Key</label>
+              <label className="mb-1 block font-mono text-xs text-zinc-400">Translation Key</label>
               <input
                 type="text"
                 value={translationKey}
                 onChange={(e) => setTranslationKey(e.target.value)}
                 placeholder="shared-group-key"
-                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 font-mono focus:border-cyan-500 focus:outline-none"
+                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-100 placeholder-zinc-500 focus:border-cyan-500 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-zinc-400 mb-1">Status</label>
+              <label className="mb-1 block font-mono text-xs text-zinc-400">Status</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as "draft" | "scheduled" | "published")}
-                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-zinc-100 focus:border-cyan-500 focus:outline-none font-mono"
+                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-100 focus:border-cyan-500 focus:outline-none"
               >
                 <option value="draft">Draft</option>
                 <option value="scheduled">Scheduled</option>
@@ -244,7 +240,7 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-mono text-zinc-400 mb-1">Excerpt</label>
+            <label className="mb-1 block font-mono text-xs text-zinc-400">Excerpt</label>
             <textarea
               rows={2}
               value={excerpt}
@@ -254,21 +250,21 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-mono text-zinc-400 mb-1">Tags (comma-separated)</label>
+              <label className="mb-1 block font-mono text-xs text-zinc-400">Tags (comma-separated)</label>
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="releases, tax, stories"
-                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 font-mono focus:border-cyan-500 focus:outline-none"
+                className="w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-100 placeholder-zinc-500 focus:border-cyan-500 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-zinc-400 mb-1">Cover Image</label>
+              <label className="mb-1 block font-mono text-xs text-zinc-400">Cover Image</label>
               <div className="flex items-center gap-2">
-                <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs font-mono text-zinc-300 hover:bg-zinc-700 transition-colors">
+                <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 font-mono text-xs text-zinc-300 transition-colors hover:bg-zinc-700">
                   <Upload className="h-3.5 w-3.5" />
                   <span>{isUploading ? "Uploading..." : "Upload Cover"}</span>
                   <input
@@ -279,42 +275,57 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
                   />
                 </label>
                 {coverImageKey && (
-                  <span className="text-[11px] font-mono text-cyan-400 truncate max-w-[140px]">
-                    {coverImageKey}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="max-w-[120px] truncate font-mono text-[11px] text-cyan-400">
+                      {coverImageKey}
+                    </span>
+                    <input
+                      type="text"
+                      value={coverAlt}
+                      onChange={(e) => setCoverAlt(e.target.value)}
+                      placeholder="Cover alt..."
+                      className="rounded border border-zinc-800 bg-zinc-900 px-2 py-1 text-xs text-zinc-200 placeholder-zinc-500"
+                    />
+                  </div>
                 )}
               </div>
             </div>
           </div>
 
           {/* Markdown Helper Toolbar */}
-          <div className="flex items-center gap-1.5 flex-wrap pt-2">
-            <span className="text-[11px] font-mono text-zinc-500 mr-1">Directives:</span>
+          <div className="flex flex-wrap items-center gap-1.5 pt-2">
+            <span className="mr-1 font-mono text-[11px] text-zinc-500">Directives:</span>
             <button
               type="button"
-              onClick={() => insertDirective(':kbd[F3]')}
-              className="rounded bg-zinc-800 px-2 py-0.5 text-[11px] font-mono text-cyan-300 hover:bg-zinc-700"
+              onClick={() => insertDirective(":kbd[F3]")}
+              className="rounded bg-zinc-800 px-2 py-0.5 font-mono text-[11px] text-cyan-300 hover:bg-zinc-700"
             >
               :kbd[key]
             </button>
             <button
               type="button"
-              onClick={() => insertDirective('::video{src="/media/video.mp4" alt="Guide" captions="/media/video.vtt"}')}
-              className="rounded bg-zinc-800 px-2 py-0.5 text-[11px] font-mono text-cyan-300 hover:bg-zinc-700"
+              onClick={() =>
+                insertDirective('::video{src="/media/video.mp4" alt="Guide" captions="/media/video.vtt"}')
+              }
+              className="rounded bg-zinc-800 px-2 py-0.5 font-mono text-[11px] text-cyan-300 hover:bg-zinc-700"
             >
               ::video
             </button>
             <button
               type="button"
-              onClick={() => insertDirective('::screenshot{src="/media/screen.png" alt="POS UI" caption="Receipt Settings"}')}
-              className="rounded bg-zinc-800 px-2 py-0.5 text-[11px] font-mono text-cyan-300 hover:bg-zinc-700"
+              onClick={() =>
+                insertDirective(
+                  '::screenshot{src="/media/screen.png" alt="POS UI" caption="Receipt Settings"}',
+                )
+              }
+              className="rounded bg-zinc-800 px-2 py-0.5 font-mono text-[11px] text-cyan-300 hover:bg-zinc-700"
             >
               ::screenshot
             </button>
             <button
               type="button"
-              onClick={() => insertDirective(':::tip\nHelpful advice for shopkeepers.\n:::')}
-              className="rounded bg-zinc-800 px-2 py-0.5 text-[11px] font-mono text-cyan-300 hover:bg-zinc-700"
+              onClick={() => insertDirective(":::tip\nHelpful advice for shopkeepers.\n:::")}
+              className="rounded bg-zinc-800 px-2 py-0.5 font-mono text-[11px] text-cyan-300 hover:bg-zinc-700"
             >
               :::tip
             </button>
@@ -333,24 +344,24 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
         </div>
 
         {/* Right Pane: Live Preview */}
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 backdrop-blur-sm overflow-y-auto max-h-[800px]">
-          <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
-            <span className="text-xs font-mono uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+        <div className="max-h-[800px] overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 backdrop-blur-sm">
+          <div className="mb-4 flex items-center justify-between border-b border-zinc-800 pb-3">
+            <span className="flex items-center gap-1.5 font-mono text-xs tracking-wider text-cyan-400 uppercase">
               <Sparkles className="h-3.5 w-3.5" />
               Live Preview
             </span>
-            <span className="text-[11px] font-mono text-zinc-500 uppercase">{locale}</span>
+            <span className="font-mono text-[11px] text-zinc-500 uppercase">{locale}</span>
           </div>
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              <h1 className="text-foreground text-2xl font-bold tracking-tight">
                 {title || "Untitled Article"}
               </h1>
-              {excerpt && <p className="text-sm text-zinc-400 leading-relaxed">{excerpt}</p>}
+              {excerpt && <p className="text-sm leading-relaxed text-zinc-400">{excerpt}</p>}
             </div>
 
-            <div className="border-t border-zinc-800/80 pt-4 text-xs font-mono text-zinc-300 whitespace-pre-wrap leading-relaxed">
+            <div className="border-t border-zinc-800/80 pt-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-zinc-300">
               {bodyMd || "Type markdown in the left pane to see live text..."}
             </div>
           </div>

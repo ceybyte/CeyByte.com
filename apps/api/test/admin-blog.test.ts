@@ -92,7 +92,10 @@ describe("Admin Blog Management API (/api/admin/blog)", () => {
       }),
     });
     expect(createRes.status).toBe(201);
-    const createJson = (await createRes.json()) as { ok: boolean; data: { id: string; readingMinutes: number; slug: string } };
+    const createJson = (await createRes.json()) as {
+      ok: boolean;
+      data: { id: string; readingMinutes: number; slug: string };
+    };
     expect(createJson.ok).toBe(true);
     expect(createJson.data.id).toBeTruthy();
     expect(createJson.data.readingMinutes).toBeGreaterThanOrEqual(1);
@@ -118,7 +121,10 @@ describe("Admin Blog Management API (/api/admin/blog)", () => {
     // 3. Get single post by ID
     const getRes = await call(`/admin/blog/posts/${postId}`, { cookie });
     expect(getRes.status).toBe(200);
-    const getJson = (await getRes.json()) as { ok: boolean; data: { title: string; tags: string[]; bodyHast: unknown } };
+    const getJson = (await getRes.json()) as {
+      ok: boolean;
+      data: { title: string; tags: string[]; bodyHast: unknown };
+    };
     expect(getJson.data.title).toBe("Test Launch Announcement");
     expect(getJson.data.tags).toEqual(["releases", "hardware"]);
 
@@ -141,14 +147,20 @@ describe("Admin Blog Management API (/api/admin/blog)", () => {
       cookie,
     });
     expect(publishRes.status).toBe(200);
-    const publishJson = (await publishRes.json()) as { ok: boolean; data: { status: string; publishedAt: string } };
+    const publishJson = (await publishRes.json()) as {
+      ok: boolean;
+      data: { status: string; publishedAt: string };
+    };
     expect(publishJson.data.status).toBe("published");
     expect(publishJson.data.publishedAt).toBeTruthy();
 
     // 6. List posts with filters
     const listRes = await call("/admin/blog/posts?status=published&locale=en", { cookie });
     expect(listRes.status).toBe(200);
-    const listJson = (await listRes.json()) as { ok: boolean; data: { items: Array<{ id: string; title: string }>; total: number } };
+    const listJson = (await listRes.json()) as {
+      ok: boolean;
+      data: { items: Array<{ id: string; title: string }>; total: number };
+    };
     expect(listJson.data.items.length).toBe(1);
     expect(listJson.data.items[0]?.title).toBe("Updated Launch Title");
 
@@ -175,7 +187,10 @@ describe("Admin Blog Management API (/api/admin/blog)", () => {
       }),
     });
     expect(validImgRes.status).toBe(200);
-    const validImgJson = (await validImgRes.json()) as { ok: boolean; data: { uploadUrl: string; key: string } };
+    const validImgJson = (await validImgRes.json()) as {
+      ok: boolean;
+      data: { uploadUrl: string; key: string };
+    };
     expect(validImgJson.data.uploadUrl).toBeTruthy();
     expect(validImgJson.data.key).toContain("media/blog/b1/");
 

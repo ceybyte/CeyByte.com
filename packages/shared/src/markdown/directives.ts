@@ -79,7 +79,10 @@ export function remarkDirectivesPlugin(options: DirectivePluginOptions = {}) {
           const t = (attributes.type || "note").toLowerCase();
           typeName = t === "warn" ? "warning" : t === "danger" ? "caution" : t;
         }
-        const title = attributes.title || CALLOUT_TITLES[typeName] || (typeName.charAt(0).toUpperCase() + typeName.slice(1));
+        const title =
+          attributes.title ||
+          CALLOUT_TITLES[typeName] ||
+          typeName.charAt(0).toUpperCase() + typeName.slice(1);
 
         node.data = node.data || {};
         node.data.hName = "aside";

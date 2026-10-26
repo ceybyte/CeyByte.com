@@ -57,11 +57,14 @@ export default async function BlogPostPage({
   }
 
   const dateFormatted = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString(locale === "en" ? "en-US" : locale === "si" ? "si-LK" : "ta-LK", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
+    ? new Date(post.publishedAt).toLocaleDateString(
+        locale === "en" ? "en-US" : locale === "si" ? "si-LK" : "ta-LK",
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        },
+      )
     : "";
 
   const related = getRelatedPosts(post.slug, post.tags, locale, 2);
@@ -93,19 +96,16 @@ export default async function BlogPostPage({
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="bg-background min-h-screen pb-24">
       {/* JSON-LD Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="max-w-4xl mx-auto px-4 py-12 md:py-16">
+      <article className="mx-auto max-w-4xl px-4 py-12 md:py-16">
         {/* Back Navigation */}
         <div className="mb-8">
           <Link
             href={`/${locale}/blog`}
-            className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-cyan-400 transition-colors group"
+            className="group inline-flex items-center gap-2 font-mono text-xs text-zinc-400 transition-colors hover:text-cyan-400"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             <span>{t("backToBlog")}</span>
@@ -113,24 +113,19 @@ export default async function BlogPostPage({
         </div>
 
         {/* Fallback Banner for untranslated articles */}
-        {post.isFallback && (
-          <AlsoInEnglishBanner
-            title={t("alsoInEnglish")}
-            lead={t("alsoInEnglishLead")}
-          />
-        )}
+        {post.isFallback && <AlsoInEnglishBanner title={t("alsoInEnglish")} lead={t("alsoInEnglishLead")} />}
 
         {/* Article Header */}
-        <header className="space-y-6 pb-10 border-b border-zinc-800">
+        <header className="space-y-6 border-b border-zinc-800 pb-10">
           {/* Metadata Strip */}
-          <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-zinc-400">
+          <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-zinc-400">
             {post.tags.length > 0 && (
-              <div className="flex items-center gap-1.5 flex-wrap">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <Tag className="h-3.5 w-3.5 text-cyan-400" />
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded bg-cyan-950/60 border border-cyan-800/40 px-2 py-0.5 text-cyan-300 font-semibold uppercase text-[11px]"
+                    className="rounded border border-cyan-800/40 bg-cyan-950/60 px-2 py-0.5 text-[11px] font-semibold text-cyan-300 uppercase"
                   >
                     {tag}
                   </span>
@@ -145,27 +140,25 @@ export default async function BlogPostPage({
               </div>
             )}
 
-            <div className="flex items-center gap-1.5 text-cyan-400 font-semibold">
+            <div className="flex items-center gap-1.5 font-semibold text-cyan-400">
               <Clock className="h-3.5 w-3.5" />
               <span>{t("readingTime", { minutes: post.readingMinutes })}</span>
             </div>
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15]">
+          <h1 className="text-foreground text-3xl leading-[1.15] font-extrabold tracking-tight md:text-5xl">
             {post.title}
           </h1>
 
           {/* Excerpt */}
-          <p className="text-lg md:text-xl text-zinc-300 leading-relaxed font-normal">
-            {post.excerpt}
-          </p>
+          <p className="text-lg leading-relaxed font-normal text-zinc-300 md:text-xl">{post.excerpt}</p>
         </header>
 
         {/* Article Body */}
         <div className="py-12">
           <div
-            className="prose prose-invert prose-zinc max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-cyan-400 hover:prose-a:text-cyan-300 prose-img:rounded-lg prose-pre:border prose-pre:border-zinc-800 prose-table:border prose-table:border-zinc-800"
+            className="prose prose-invert prose-zinc prose-headings:font-bold prose-headings:tracking-tight prose-a:text-cyan-400 hover:prose-a:text-cyan-300 prose-img:rounded-lg prose-pre:border prose-pre:border-zinc-800 prose-table:border prose-table:border-zinc-800 max-w-none"
             dangerouslySetInnerHTML={{ __html: post.html }}
           />
         </div>

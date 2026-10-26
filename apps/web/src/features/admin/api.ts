@@ -429,19 +429,14 @@ export async function createAdminBlogPost(
   );
 }
 
-export async function updateAdminBlogPost(
-  id: string,
-  post: Partial<AdminBlogPost>,
-): Promise<AdminBlogPost> {
+export async function updateAdminBlogPost(id: string, post: Partial<AdminBlogPost>): Promise<AdminBlogPost> {
   return request<AdminBlogPost>(`/api/admin/blog/posts/${encodeURIComponent(id)}`, {
     method: "PUT",
     body: JSON.stringify(post),
   });
 }
 
-export async function publishAdminBlogPost(
-  id: string,
-): Promise<{ status: string; publishedAt: string }> {
+export async function publishAdminBlogPost(id: string): Promise<{ status: string; publishedAt: string }> {
   return request<{ status: string; publishedAt: string }>(
     `/api/admin/blog/posts/${encodeURIComponent(id)}/publish`,
     {
@@ -462,11 +457,8 @@ export async function presignAdminBlogMedia(file: {
   size: number;
   postId?: string;
 }): Promise<{ uploadUrl: string; key: string; expiresAt: number }> {
-  return request<{ uploadUrl: string; key: string; expiresAt: number }>(
-    "/api/admin/media/presign",
-    {
-      method: "POST",
-      body: JSON.stringify(file),
-    },
-  );
+  return request<{ uploadUrl: string; key: string; expiresAt: number }>("/api/admin/media/presign", {
+    method: "POST",
+    body: JSON.stringify(file),
+  });
 }

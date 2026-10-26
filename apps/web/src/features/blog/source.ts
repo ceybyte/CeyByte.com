@@ -50,7 +50,10 @@ function normalizePost(raw: RawBlogPost, isFallback = false): BlogPost {
       const parsed = JSON.parse(raw.tags);
       tags = Array.isArray(parsed) ? parsed : [raw.tags];
     } catch {
-      tags = raw.tags.split(",").map((t) => t.trim()).filter(Boolean);
+      tags = raw.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
     }
   }
 

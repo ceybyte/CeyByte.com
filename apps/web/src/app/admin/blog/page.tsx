@@ -35,10 +35,8 @@ export default function AdminBlogPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-foreground">Blog Articles</h1>
-        <p className="text-xs text-text-muted">
-          Manage announcements, tax guides, and merchant case studies
-        </p>
+        <h1 className="text-foreground text-xl font-bold tracking-tight">Blog Articles</h1>
+        <p className="text-text-muted text-xs">Manage announcements, tax guides, and merchant case studies</p>
       </div>
       <BlogList initialPosts={posts} />
     </div>

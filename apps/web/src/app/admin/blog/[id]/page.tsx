@@ -1,85 +1,28 @@
-"use client";
+import fs from "node:fs";
+import path from "node:path";
+import { AdminBlogEditClient } from "./edit-client";
 
-import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { BlogEditor } from "@/features/admin/components/blog-editor";
-import {
-  fetchAdminBlogPost,
-  createAdminBlogPost,
-  updateAdminBlogPost,
-  publishAdminBlogPost,
-  type AdminBlogPost,
-} from "@/features/admin/api";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
-
-export default function AdminBlogEditPage() {
-  const params = useParams();
-  const router = useRouter();
-  const id = params?.id as string;
-  const isNew = id === "new";
-
-  const [post, setPost] = useState<AdminBlogPost | null>(null);
-  const [loading, setLoading] = useState(!isNew);
-
-  useEffect(() => {
-    if (isNew) return;
-    let mounted = true;
-
-    async function load() {
-      try {
-        const item = await fetchAdminBlogPost(id);
-        if (mounted) setPost(item);
-      } catch (err: unknown) {
-        toast.error("Failed to load blog post details");
-      } finally {
-        if (mounted) setLoading(false);
+export function generateStaticParams(): Array<{ id: string }> {
+  const params: Array<{ id: string }> = [{ id: "new" }];
+  try {
+    const blogFile = path.resolve(process.cwd(), ".content/blog.json");
+    if (fs.existsSync(blogFile)) {
+      const items = JSON.parse(fs.readFileSync(blogFile, "utf-8"));
+      if (Array.isArray(items)) {
+        for (const item of items) {
+          if (item?.id) {
+            params.push({ id: String(item.id) });
+          }
+        }
       }
     }
-
-    load();
-    return () => {
-      mounted = false;
-    };
-  }, [id, isNew]);
-
-  const handleSave = async (data: Partial<AdminBlogPost>) => {
-    if (isNew) {
-      const res = await createAdminBlogPost(data);
-      toast.success("Article created");
-      router.push(`/admin/blog/${res.id}`);
-    } else {
-      const updated = await updateAdminBlogPost(id, data);
-      setPost(updated);
-      toast.success("Article updated");
-    }
-  };
-
-  const handlePublish = async () => {
-    if (isNew) {
-      toast.error("Please save the article first before publishing");
-      return;
-    }
-    const res = await publishAdminBlogPost(id);
-    if (post) {
-      setPost({ ...post, status: "published", publishedAt: res.publishedAt });
-    }
-    toast.success("Article published!");
-  };
-
-  if (loading) {
-    return (
-      <div className="flex min-h-[300px] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-cyan-400" />
-      </div>
-    );
+  } catch {
+    params.push({ id: "edit" });
   }
+  return params;
+}
 
-  return (
-    <BlogEditor
-      post={post ?? undefined}
-      onSave={handleSave}
-      onPublish={!isNew ? handlePublish : undefined}
-    />
-  );
+export default async function AdminBlogEditPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <AdminBlogEditClient id={id} />;
 }

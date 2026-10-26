@@ -73,10 +73,7 @@ export async function cleanupDonations(
  * Cron task to activate scheduled blog posts that have reached their publishedAt time.
  * If any posts transition to published, triggers site rebuild.
  */
-export async function checkScheduledPosts(
-  env: Env,
-  db: Db,
-): Promise<{ publishedCount: number }> {
+export async function checkScheduledPosts(env: Env, db: Db): Promise<{ publishedCount: number }> {
   const now = new Date();
   const duePosts = await db
     .select({ id: blogPosts.id, title: blogPosts.title, slug: blogPosts.slug, locale: blogPosts.locale })

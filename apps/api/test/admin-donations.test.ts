@@ -117,9 +117,9 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
     expect(jsonPending.ok).toBe(true);
     expect(jsonPending.data.items).toHaveLength(2);
     // Oldest first
-    expect(jsonPending.data.items[0].id).toBe("d-older");
-    expect(jsonPending.data.items[0].shopName).toBe("Shop Alpha");
-    expect(jsonPending.data.items[1].id).toBe("d-newer");
+    expect(jsonPending.data.items[0]?.id).toBe("d-older");
+    expect(jsonPending.data.items[0]?.shopName).toBe("Shop Alpha");
+    expect(jsonPending.data.items[1]?.id).toBe("d-newer");
 
     // Query approved
     const resAppr = await call("/admin/donations?status=approved", { cookie });
@@ -128,7 +128,7 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
       data: { items: Array<{ id: string }> };
     };
     expect(jsonAppr.data.items).toHaveLength(1);
-    expect(jsonAppr.data.items[0].id).toBe("d-appr");
+    expect(jsonAppr.data.items[0]?.id).toBe("d-appr");
   });
 
   it("GET /api/admin/donations/:id/slip-url returns presigned preview URL", async () => {

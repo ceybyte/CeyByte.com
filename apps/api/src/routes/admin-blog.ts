@@ -128,7 +128,21 @@ export const adminBlogRoutes = new Hono<AppEnv>()
 
     const db = c.get("db");
     const user = c.get("session")?.user;
-    const { title, slug, locale, translationKey, excerpt, bodyMd, tags, status, publishedAt, coverImageKey, coverAlt, seoTitle, seoDescription } = parsed.data;
+    const {
+      title,
+      slug,
+      locale,
+      translationKey,
+      excerpt,
+      bodyMd,
+      tags,
+      status,
+      publishedAt,
+      coverImageKey,
+      coverAlt,
+      seoTitle,
+      seoDescription,
+    } = parsed.data;
 
     // Check slug uniqueness per locale
     const existing = await db

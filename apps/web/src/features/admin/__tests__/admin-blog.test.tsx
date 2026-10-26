@@ -43,13 +43,7 @@ describe("Admin Blog Authoring Portal", () => {
   });
 
   test("renders split-pane blog editor with markdown textarea and preview", () => {
-    const html = renderToString(
-      <BlogEditor
-        post={mockPosts[0]}
-        onSave={() => {}}
-        onPublish={() => {}}
-      />,
-    );
+    const html = renderToString(<BlogEditor post={mockPosts[0]} onSave={() => {}} onPublish={() => {}} />);
     expect(html).toContain("Why CB POS is Free Forever");
     expect(html).toContain("why-cb-pos-is-free-forever");
     expect(html).toContain("Free Forever");

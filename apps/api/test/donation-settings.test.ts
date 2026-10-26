@@ -106,7 +106,7 @@ describe("Admin Donation Payment Settings API", () => {
     const putJson = (await putRes.json()) as { ok: boolean; data: DonationPaymentOptions };
     expect(putJson.ok).toBe(true);
     expect(putJson.data).toHaveLength(2);
-    expect(putJson.data[0].accountNumber).toBe("8001234567");
+    expect(putJson.data[0]?.accountNumber).toBe("8001234567");
 
     // Verify KV persistence
     const kvValue = await env.CACHE_KV.get("settings:donation_payment_options", "json");

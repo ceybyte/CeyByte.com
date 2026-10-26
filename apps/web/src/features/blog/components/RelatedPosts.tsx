@@ -9,13 +9,18 @@ export interface RelatedPostsProps {
   readingTimeFormat?: (minutes: number) => string;
 }
 
-export function RelatedPosts({ posts, locale, title = "Related posts", readingTimeFormat }: RelatedPostsProps) {
+export function RelatedPosts({
+  posts,
+  locale,
+  title = "Related posts",
+  readingTimeFormat,
+}: RelatedPostsProps) {
   if (!posts || posts.length === 0) return null;
 
   return (
-    <section className="mt-16 pt-10 border-t border-zinc-800 space-y-6">
-      <h3 className="text-xl font-bold tracking-tight text-foreground">{title}</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section className="mt-16 space-y-6 border-t border-zinc-800 pt-10">
+      <h3 className="text-foreground text-xl font-bold tracking-tight">{title}</h3>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {posts.map((post) => (
           <PostCard
             key={post.id}

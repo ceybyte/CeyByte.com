@@ -36,8 +36,8 @@ export function ShareButtons({
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
 
   return (
-    <div className="flex flex-wrap items-center gap-3 pt-6 border-t border-zinc-800 text-xs font-mono">
-      <span className="inline-flex items-center gap-1.5 text-zinc-500 uppercase tracking-wider">
+    <div className="flex flex-wrap items-center gap-3 border-t border-zinc-800 pt-6 font-mono text-xs">
+      <span className="inline-flex items-center gap-1.5 tracking-wider text-zinc-500 uppercase">
         <Share2 className="h-3.5 w-3.5" />
         {shareLabel}:
       </span>
@@ -45,9 +45,13 @@ export function ShareButtons({
       <button
         type="button"
         onClick={handleCopy}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-zinc-300 hover:border-cyan-500/50 hover:text-cyan-300 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-zinc-300 transition-colors hover:border-cyan-500/50 hover:text-cyan-300"
       >
-        {copied ? <Check className="h-3.5 w-3.5 text-cyan-400" /> : <Copy className="h-3.5 w-3.5 text-zinc-400" />}
+        {copied ? (
+          <Check className="h-3.5 w-3.5 text-cyan-400" />
+        ) : (
+          <Copy className="h-3.5 w-3.5 text-zinc-400" />
+        )}
         <span>{copied ? copiedLabel : copyLabel}</span>
       </button>
 
@@ -55,7 +59,7 @@ export function ShareButtons({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-zinc-300 hover:border-cyan-500/50 hover:text-cyan-300 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-zinc-300 transition-colors hover:border-cyan-500/50 hover:text-cyan-300"
       >
         WhatsApp
       </a>
@@ -64,7 +68,7 @@ export function ShareButtons({
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-zinc-300 hover:border-cyan-500/50 hover:text-cyan-300 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-zinc-300 transition-colors hover:border-cyan-500/50 hover:text-cyan-300"
       >
         X (Twitter)
       </a>

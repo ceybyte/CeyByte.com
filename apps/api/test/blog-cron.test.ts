@@ -27,10 +27,14 @@ describe("Scheduled Blog Posts Cron", () => {
     const res = await checkScheduledPosts(env, db);
     expect(res.publishedCount).toBe(1);
 
-    const post1 = await env.DB.prepare("SELECT status FROM blog_posts WHERE id = 'b1'").first<{ status: string }>();
+    const post1 = await env.DB.prepare("SELECT status FROM blog_posts WHERE id = 'b1'").first<{
+      status: string;
+    }>();
     expect(post1?.status).toBe("published");
 
-    const post2 = await env.DB.prepare("SELECT status FROM blog_posts WHERE id = 'b2'").first<{ status: string }>();
+    const post2 = await env.DB.prepare("SELECT status FROM blog_posts WHERE id = 'b2'").first<{
+      status: string;
+    }>();
     expect(post2?.status).toBe("scheduled");
   });
 });

@@ -20,13 +20,7 @@ export interface BlogViewProps {
   };
 }
 
-export function BlogView({
-  posts,
-  alsoInEnglishPosts,
-  locale,
-  tagItems,
-  copy,
-}: BlogViewProps) {
+export function BlogView({ posts, alsoInEnglishPosts, locale, tagItems, copy }: BlogViewProps) {
   const [activeTag, setActiveTag] = useState<string>("all");
 
   const featured = useMemo(() => {
@@ -54,11 +48,7 @@ export function BlogView({
   return (
     <div className="space-y-10">
       {/* Tag Filters */}
-      <TagFilterBar
-        activeTag={activeTag}
-        onSelectTag={setActiveTag}
-        tags={tagItems}
-      />
+      <TagFilterBar activeTag={activeTag} onSelectTag={setActiveTag} tags={tagItems} />
 
       {/* Featured Hero (shown only on 'all' filter and when posts exist) */}
       {activeTag === "all" && featured && (
@@ -73,13 +63,13 @@ export function BlogView({
       {/* Empty State */}
       {filteredPosts.length === 0 && (
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-12 text-center backdrop-blur-sm">
-          <p className="text-zinc-400 text-sm">{copy.empty}</p>
+          <p className="text-sm text-zinc-400">{copy.empty}</p>
         </div>
       )}
 
       {/* Main Grid */}
       {gridPosts.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {gridPosts.map((post) => (
             <PostCard key={post.id} post={post} locale={locale} />
           ))}
@@ -88,25 +78,20 @@ export function BlogView({
 
       {/* Also In English Section (for SI / TA when English articles exist without translation) */}
       {locale !== "en" && activeTag === "all" && alsoInEnglishPosts.length > 0 && (
-        <section className="mt-16 pt-12 border-t border-zinc-800 space-y-6">
+        <section className="mt-16 space-y-6 border-t border-zinc-800 pt-12">
           <div className="space-y-1">
-            <h3 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <h3 className="text-foreground flex items-center gap-2 text-xl font-bold tracking-tight">
               <span>{copy.alsoInEnglish}</span>
-              <span className="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-800 text-cyan-300">
+              <span className="rounded border border-cyan-800 bg-cyan-950/70 px-2 py-0.5 font-mono text-xs text-cyan-300">
                 EN
               </span>
             </h3>
             <p className="text-xs text-zinc-400">{copy.alsoInEnglishLead}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {alsoInEnglishPosts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                locale={locale}
-                isAlsoInEnglish={true}
-              />
+              <PostCard key={post.id} post={post} locale={locale} isAlsoInEnglish={true} />
             ))}
           </div>
         </section>

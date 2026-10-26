@@ -7,7 +7,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { processMarkdown, calculateReadingTime, extractPlainText } from "../packages/shared/src/markdown/index";
+import {
+  processMarkdown,
+  calculateReadingTime,
+  extractPlainText,
+} from "../packages/shared/src/markdown/index";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -148,7 +152,10 @@ async function run() {
         const parsedTags = JSON.parse(raw.tags);
         tags = Array.isArray(parsedTags) ? parsedTags : [raw.tags];
       } catch {
-        tags = raw.tags.split(",").map((t) => t.trim()).filter(Boolean);
+        tags = raw.tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
       }
     }
 

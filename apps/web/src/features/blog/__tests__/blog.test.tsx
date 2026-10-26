@@ -16,7 +16,7 @@ describe("S10 Blog UI Components", () => {
     title: "How CB POS Works Out VAT and SSCL from MRP",
     excerpt: "A transparent breakdown of Sri Lanka's dual-tax calculations.",
     bodyMd: "# Dual Tax\n\nExplanation of VAT and SSCL.",
-    html: "<h1 id=\"dual-tax\">Dual Tax</h1><p>Explanation of VAT and SSCL.</p>",
+    html: '<h1 id="dual-tax">Dual Tax</h1><p>Explanation of VAT and SSCL.</p>',
     toc: [],
     tags: ["tax", "releases"],
     status: "published",
@@ -50,13 +50,7 @@ describe("S10 Blog UI Components", () => {
   });
 
   test("PostCard renders reading time and title with semantic link", () => {
-    const html = renderToString(
-      <PostCard
-        post={mockPost}
-        locale="en"
-        readingTimeLabel="5 min read"
-      />,
-    );
+    const html = renderToString(<PostCard post={mockPost} locale="en" readingTimeLabel="5 min read" />);
 
     expect(html).toContain("How CB POS Works Out VAT and SSCL from MRP");
     expect(html).toContain("5 min read");
@@ -65,12 +59,7 @@ describe("S10 Blog UI Components", () => {
 
   test("FeaturedPostCard renders full-width hero layout with featured badge", () => {
     const html = renderToString(
-      <FeaturedPostCard
-        post={mockPost}
-        locale="en"
-        featuredLabel="Featured"
-        readingTimeLabel="5 min read"
-      />,
+      <FeaturedPostCard post={mockPost} locale="en" featuredLabel="Featured" readingTimeLabel="5 min read" />,
     );
 
     expect(html).toContain("Featured");
