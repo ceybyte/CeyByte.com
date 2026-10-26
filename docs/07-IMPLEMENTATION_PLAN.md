@@ -340,11 +340,11 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ## Phase 12 — Donations (Sprint 11) → **M2**
 
-- [ ] `POST /api/donations`, `/{ref}/submit`, `/{ref}/status`, `GET /api/donations/summary`; upload purpose `donation_slip` (ref + secret, magic bytes).
-- [ ] S09: amount chips (cents), bank details with copy buttons (`DONATION_*` vars baked at build), optional bank txn reference, slip dropzone, pending/approved states, resume link, supporters wall and monthly total (runtime), legal line.
-- [ ] Admin Donations: slip preview (presigned GET, sandboxed), approve/reject with reasons, `recomputeSupporter`, `bumpGeoVersion`, message moderation.
-- [ ] Cron: `awaiting_payment` > 14 days → `cancelled`; rejected slips purged after 90 days. Dashboard "My donations".
-- [ ] **Design gates.**
+- [x] `POST /api/donations`, `/{ref}/submit`, `/{ref}/status`, `GET /api/donations/summary`; upload purpose `donation_slip` (ref + secret, magic bytes).
+- [x] S09: amount chips (cents), bank details with copy buttons (`DONATION_*` vars baked at build), optional bank txn reference, slip dropzone, pending/approved states, resume link, supporters wall and monthly total (runtime), legal line.
+- [x] Admin Donations: slip preview (presigned GET, sandboxed), approve/reject with reasons, `recomputeSupporter`, `bumpGeoVersion`, message moderation.
+- [x] Cron: `awaiting_payment` > 14 days → `cancelled`; rejected slips purged after 90 days. Dashboard "My donations".
+- [x] **Design gates.**
 
 **Verify:** `05-donation.spec.ts`. **Exit (M2):** AC-11.1–AC-11.3 and AC-08.2 pass with the real bank details in production.
 

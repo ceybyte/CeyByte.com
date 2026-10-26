@@ -84,12 +84,12 @@
   - `GET /api/admin/donations/settings`
   - `PUT /api/admin/donations/settings`
 
-- [ ] **Step 1: Write failing test in `apps/api/test/donation-settings.test.ts` for donation settings CRUD and KV fallback**
-- [ ] **Step 2: Run test to verify failure**
-- [ ] **Step 3: Define donation schemas in `packages/shared/src/schemas/donations.ts` and export**
-- [ ] **Step 4: Implement `/admin/donations/settings` GET and PUT routes in `apps/api/src/routes/admin.ts`**
-- [ ] **Step 5: Run test to verify it passes**
-- [ ] **Step 6: Commit `feat(api): add donation schemas and admin donation payment settings endpoints`**
+- [x] **Step 1: Write failing test in `apps/api/test/donation-settings.test.ts` for donation settings CRUD and KV fallback**
+- [x] **Step 2: Run test to verify failure**
+- [x] **Step 3: Define donation schemas in `packages/shared/src/schemas/donations.ts` and export**
+- [x] **Step 4: Implement `/admin/donations/settings` GET and PUT routes in `apps/api/src/routes/admin.ts`**
+- [x] **Step 5: Run test to verify it passes**
+- [x] **Step 6: Commit `feat(api): add donation schemas and admin donation payment settings endpoints`**
 
 ---
 
@@ -107,12 +107,12 @@
   - `POST /api/donations/:ref/submit`
   - `GET /api/donations/:ref/status`
 
-- [ ] **Step 1: Write failing tests in `apps/api/test/donations.test.ts` for donation creation, reference generation, cookie signing, slip submission, and status resumption**
-- [ ] **Step 2: Run test to verify failure**
-- [ ] **Step 3: Implement `donationsRoutes` in `apps/api/src/routes/donations.ts`**
-- [ ] **Step 4: Mount `donationsRoutes` in `apps/api/src/index.ts`**
-- [ ] **Step 5: Run test to verify all pass**
-- [ ] **Step 6: Commit `feat(api): implement public donation creation, slip submit, and summary routes`**
+- [x] **Step 1: Write failing tests in `apps/api/test/donations.test.ts` for donation creation, reference generation, cookie signing, slip submission, and status resumption**
+- [x] **Step 2: Run test to verify failure**
+- [x] **Step 3: Implement `donationsRoutes` in `apps/api/src/routes/donations.ts`**
+- [x] **Step 4: Mount `donationsRoutes` in `apps/api/src/index.ts`**
+- [x] **Step 5: Run test to verify all pass**
+- [x] **Step 6: Commit `feat(api): implement public donation creation, slip submit, and summary routes`**
 
 ---
 
@@ -130,11 +130,11 @@
   - `POST /api/admin/donations/:id/reject`
   - Helper `recomputeSupporter(db, merchantId)`
 
-- [ ] **Step 1: Write failing tests in `apps/api/test/admin-donations.test.ts` for queue listing, presigned slip viewing, approval activating gold pin, and rejection with reason**
-- [ ] **Step 2: Run test to verify failure**
-- [ ] **Step 3: Implement queue listing, slip-url presigning, approval with `recomputeSupporter` and `bumpGeoVersion`, and rejection in `apps/api/src/routes/admin.ts`**
-- [ ] **Step 4: Run test to verify all pass**
-- [ ] **Step 5: Commit `feat(api): implement admin donation queue, review actions, and gold supporter activation`**
+- [x] **Step 1: Write failing tests in `apps/api/test/admin-donations.test.ts` for queue listing, presigned slip viewing, approval activating gold pin, and rejection with reason**
+- [x] **Step 2: Run test to verify failure**
+- [x] **Step 3: Implement queue listing, slip-url presigning, approval with `recomputeSupporter` and `bumpGeoVersion`, and rejection in `apps/api/src/routes/admin.ts`**
+- [x] **Step 4: Run test to verify all pass**
+- [x] **Step 5: Commit `feat(api): implement admin donation queue, review actions, and gold supporter activation`**
 
 ---
 
@@ -147,11 +147,11 @@
 - Consumes: `c.env.UPLOADS`, `donations` table.
 - Produces: Daily cron task cancelling `awaiting_payment` donations > 14 days old and deleting rejected slips > 90 days old.
 
-- [ ] **Step 1: Write failing test in `apps/api/test/donations-cron.test.ts` for abandoned donation cancellation and old slip purging**
-- [ ] **Step 2: Run test to verify failure**
-- [ ] **Step 3: Implement donation cleanup logic in `apps/api/src/scheduled.ts`**
-- [ ] **Step 4: Run test to verify it passes**
-- [ ] **Step 5: Commit `feat(api): add cron cleanup for abandoned donations and expired slips`**
+- [x] **Step 1: Write failing test in `apps/api/test/donations-cron.test.ts` for abandoned donation cancellation and old slip purging**
+- [x] **Step 2: Run test to verify failure**
+- [x] **Step 3: Implement donation cleanup logic in `apps/api/src/scheduled.ts`**
+- [x] **Step 4: Run test to verify it passes**
+- [x] **Step 5: Commit `feat(api): add cron cleanup for abandoned donations and expired slips`**
 
 ---
 
@@ -164,11 +164,11 @@
 **Interfaces:**
 - Produces: Identical keys for `donate.*` and `admin.donations.*` across English, Sinhala, and Tamil.
 
-- [ ] **Step 1: Add English translations for `donate` and `admin.donations` in `messages/en.json`**
-- [ ] **Step 2: Add Sinhala translations in `messages/si.json`**
-- [ ] **Step 3: Add Tamil translations in `messages/ta.json`**
-- [ ] **Step 4: Run `bun scripts/i18n-check.ts --strict` and verify 100% key parity**
-- [ ] **Step 5: Commit `feat(i18n): add trilingual translations for donations flow and admin settings`**
+- [x] **Step 1: Add English translations for `donate` and `admin.donations` in `messages/en.json`**
+- [x] **Step 2: Add Sinhala translations in `messages/si.json`**
+- [x] **Step 3: Add Tamil translations in `messages/ta.json`**
+- [x] **Step 4: Run `bun scripts/i18n-check.ts --strict` and verify 100% key parity**
+- [x] **Step 5: Commit `feat(i18n): add trilingual translations for donations flow and admin settings`**
 
 ---
 
@@ -188,13 +188,13 @@
 - Consumes: `donate.*` translations, Turnstile widget, `GET /api/donations/summary`, `POST /api/donations`, `POST /api/donations/:ref/submit`, `POST /api/uploads/presign`.
 - Produces: Interactive S09 Donate page with two-step donation card, Gold `#FFD700` styling, copy buttons, QR code expander, supporters wall, and resume capability.
 
-- [ ] **Step 1: Write failing unit test in `apps/web/src/features/donations/__tests__/donations.test.tsx`**
-- [ ] **Step 2: Run test to verify failure**
-- [ ] **Step 3: Implement client API client in `apps/web/src/features/donations/api.ts`**
-- [ ] **Step 4: Build donation card, bank details card, dropzone, transparency strip, and supporters wall components**
-- [ ] **Step 5: Assemble `apps/web/src/app/[locale]/donate/page.tsx` with SSG metadata and client hydration**
-- [ ] **Step 6: Run test to verify it passes**
-- [ ] **Step 7: Commit `feat(web): implement S09 donation page, bank details card, and supporters wall`**
+- [x] **Step 1: Write failing unit test in `apps/web/src/features/donations/__tests__/donations.test.tsx`**
+- [x] **Step 2: Run test to verify failure**
+- [x] **Step 3: Implement client API client in `apps/web/src/features/donations/api.ts`**
+- [x] **Step 4: Build donation card, bank details card, dropzone, transparency strip, and supporters wall components**
+- [x] **Step 5: Assemble `apps/web/src/app/[locale]/donate/page.tsx` with SSG metadata and client hydration**
+- [x] **Step 6: Run test to verify it passes**
+- [x] **Step 7: Commit `feat(web): implement S09 donation page, bank details card, and supporters wall`**
 
 ---
 
@@ -211,13 +211,13 @@
 - Consumes: Admin session, `GET/POST /api/admin/donations/*`, `GET/PUT /api/admin/donations/settings`.
 - Produces: Tabbed admin view for reviewing pending donation slips with sandboxed preview and managing bank accounts + QR upload.
 
-- [ ] **Step 1: Write failing unit test in `apps/web/src/features/admin/__tests__/admin-donations.test.tsx`**
-- [ ] **Step 2: Run test to verify failure**
-- [ ] **Step 3: Add API methods to `apps/web/src/features/admin/api.ts`**
-- [ ] **Step 4: Build `donations-queue.tsx`, `slip-preview-modal.tsx`, and `donation-settings.tsx`**
-- [ ] **Step 5: Create `apps/web/src/app/[locale]/admin/donations/page.tsx`**
-- [ ] **Step 6: Run test to verify it passes**
-- [ ] **Step 7: Commit `feat(web): add admin donations queue and payment settings portal`**
+- [x] **Step 1: Write failing unit test in `apps/web/src/features/admin/__tests__/admin-donations.test.tsx`**
+- [x] **Step 2: Run test to verify failure**
+- [x] **Step 3: Add API methods to `apps/web/src/features/admin/api.ts`**
+- [x] **Step 4: Build `donations-queue.tsx`, `slip-preview-modal.tsx`, and `donation-settings.tsx`**
+- [x] **Step 5: Create `apps/web/src/app/[locale]/admin/donations/page.tsx`**
+- [x] **Step 6: Run test to verify it passes**
+- [x] **Step 7: Commit `feat(web): add admin donations queue and payment settings portal`**
 
 ---
 
@@ -229,8 +229,8 @@
 - Consumes: Playwright, running web preview + API worker, seeded test database.
 - Produces: Full E2E test verifying AC-11.1–AC-11.3 and AC-08.2.
 
-- [ ] **Step 1: Implement `e2e/05-donation.spec.ts` testing donor submission, file rejection, magic bytes, admin approval, and gold map pin activation**
-- [ ] **Step 2: Run Playwright test: `PW_CHANNEL=chrome bunx playwright test e2e/05-donation.spec.ts`**
-- [ ] **Step 3: Run full verification: `bun run typecheck`, `bun run lint`, `bun run test`, `bun scripts/i18n-check.ts --strict`**
-- [ ] **Step 4: Commit `test(e2e): add end-to-end acceptance tests for donations and gold supporter activation`**
-- [ ] **Step 5: Update `docs/07-IMPLEMENTATION_PLAN.md` ticking Phase 12 items**
+- [x] **Step 1: Implement `e2e/05-donation.spec.ts` testing donor submission, file rejection, magic bytes, admin approval, and gold map pin activation**
+- [x] **Step 2: Run Playwright test: `PW_CHANNEL=chrome bunx playwright test e2e/05-donation.spec.ts`**
+- [x] **Step 3: Run full verification: `bun run typecheck`, `bun run lint`, `bun run test`, `bun scripts/i18n-check.ts --strict`**
+- [x] **Step 4: Commit `test(e2e): add end-to-end acceptance tests for donations and gold supporter activation`**
+- [x] **Step 5: Update `docs/07-IMPLEMENTATION_PLAN.md` ticking Phase 12 items**
