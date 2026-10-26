@@ -375,3 +375,98 @@ export async function updateDonationPaymentSettings(
     body: JSON.stringify(settings),
   });
 }
+
+/* =====================================================================
+ * BLOG
+ * ===================================================================== */
+
+export interface AdminBlogPost {
+  id: string;
+  translationKey: string;
+  locale: "en" | "si" | "ta";
+  slug: string;
+  title: string;
+  excerpt: string;
+  bodyMd: string;
+  bodyHast?: string | null;
+  tocJson?: unknown;
+  coverImageKey?: string | null;
+  coverAlt?: string | null;
+  tags: string[];
+  status: "draft" | "scheduled" | "published" | "archived";
+  readingMinutes: number;
+  publishedAt?: string | number | null;
+  createdAt?: string | number | null;
+  updatedAt?: string | number | null;
+}
+
+export async function fetchAdminBlogPosts(params?: {
+  status?: string;
+  locale?: string;
+  search?: string;
+}): Promise<{ items: AdminBlogPost[]; total: number }> {
+  const query = new URLSearchParams();
+  if (params?.status && params.status !== "all") query.set("status", params.status);
+  if (params?.locale && params.locale !== "all") query.set("locale", params.locale);
+  if (params?.search) query.set("search", params.search);
+  const qs = query.toString();
+  return request<{ items: AdminBlogPost[]; total: number }>(`/api/admin/blog/posts${qs ? `?${qs}` : ""}`);
+}
+
+export async function fetchAdminBlogPost(id: string): Promise<AdminBlogPost> {
+  return request<AdminBlogPost>(`/api/admin/blog/posts/${encodeURIComponent(id)}`);
+}
+
+export async function createAdminBlogPost(
+  post: Partial<AdminBlogPost>,
+): Promise<{ id: string; slug: string; readingMinutes: number; status: string }> {
+  return request<{ id: string; slug: string; readingMinutes: number; status: string }>(
+    "/api/admin/blog/posts",
+    {
+      method: "POST",
+      body: JSON.stringify(post),
+    },
+  );
+}
+
+export async function updateAdminBlogPost(
+  id: string,
+  post: Partial<AdminBlogPost>,
+): Promise<AdminBlogPost> {
+  return request<AdminBlogPost>(`/api/admin/blog/posts/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    body: JSON.stringify(post),
+  });
+}
+
+export async function publishAdminBlogPost(
+  id: string,
+): Promise<{ status: string; publishedAt: string }> {
+  return request<{ status: string; publishedAt: string }>(
+    `/api/admin/blog/posts/${encodeURIComponent(id)}/publish`,
+    {
+      method: "POST",
+    },
+  );
+}
+
+export async function deleteAdminBlogPost(id: string): Promise<{ deleted: boolean }> {
+  return request<{ deleted: boolean }>(`/api/admin/blog/posts/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+}
+
+export async function presignAdminBlogMedia(file: {
+  fileName: string;
+  contentType: string;
+  size: number;
+  postId?: string;
+}): Promise<{ uploadUrl: string; key: string; expiresAt: number }> {
+  return request<{ uploadUrl: string; key: string; expiresAt: number }>(
+    "/api/admin/media/presign",
+    {
+      method: "POST",
+      body: JSON.stringify(file),
+    },
+  );
+}
