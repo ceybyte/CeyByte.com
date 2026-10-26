@@ -473,9 +473,45 @@
       "audit": "Audit"
     },
     "donations": {
+      "title": "Donations Queue",
+      "queue": "Queue",
+      "all": "All Donations",
+      "settings": "Payment Settings",
+      "pendingReview": "Pending Review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "empty": "No donations in this queue.",
       "approve": "Approve (a)",
       "reject": "Reject (r)",
-      "rejectReasons": "Amount doesn't match · Slip unreadable · Duplicate · Not found in statement · Other"
+      "rejectReasons": "Amount doesn't match · Slip unreadable · Duplicate · Not found in statement · Other",
+      "approveMessage": "Approve public message",
+      "rejectionReason": "Rejection reason",
+      "rejectionReasonPlaceholder": "Explain why this slip cannot be accepted...",
+      "confirmApprove": "Approve donation",
+      "confirmReject": "Reject donation",
+      "previewSlip": "View Slip",
+      "copyRef": "Copy reference",
+      "amount": "Amount",
+      "donor": "Donor",
+      "shop": "Shop",
+      "txnRef": "Txn Reference",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions",
+      "settingsTitle": "Donation Payment Options",
+      "settingsDesc": "Configure bank accounts and QR codes shown to donors on the donation page.",
+      "addAccount": "Add Bank Account",
+      "accountName": "Account Name",
+      "accountNumber": "Account Number",
+      "bankName": "Bank Name",
+      "branchName": "Branch Name",
+      "qrImage": "QR Code Image",
+      "qrUpload": "Upload QR Code (PNG/JPG ≤ 2 MB)",
+      "qrUploading": "Uploading QR...",
+      "notes": "Transfer Instructions / Notes",
+      "enabled": "Active",
+      "saveSettings": "Save Payment Options",
+      "saved": "Settings saved successfully."
     },
     "merchants": {
       "reveal": "Reveal contact (logged)",
@@ -703,5 +739,102 @@
         "cta": "Delete permanently"
       }
     }
+  },
+  "donate": {
+    "title": "Help keep CB POS free for every shop in Sri Lanka.",
+    "lead": "CB POS has no subscription and no ads. Donations from shops and supporters pay for development, test equipment and a code-signing certificate. Giving is entirely optional, and the software is the same either way.",
+    "funds": {
+      "title": "Where your donation goes",
+      "cert": "A code-signing certificate, so Windows stops warning people",
+      "hardware": "Printers, scanners and scales to test with",
+      "i18n": "Sinhala and Tamil translations",
+      "infra": "Hosting beyond the free plans"
+    },
+    "method": {
+      "title": "Donate by bank transfer",
+      "help": "Use online banking, your banking app or CEFT, or deposit cash at any branch."
+    },
+    "amount": {
+      "label": "Amount",
+      "custom": "Other",
+      "customPlaceholder": "Enter amount in LKR",
+      "min": "The minimum is Rs. 100.00"
+    },
+    "name": {
+      "label": "Name on the supporters wall",
+      "placeholder": "Your name or shop name"
+    },
+    "anonymous": "Keep my name private",
+    "message": {
+      "label": "A message for the wall (optional, up to 140 characters)",
+      "placeholder": "Why you support CB POS..."
+    },
+    "showAmount": "Show my amount on the wall",
+    "link": {
+      "label": "My shop is on the map. Add a Gold Supporter badge to my pin.",
+      "phone": "The phone number used for your listing",
+      "phonePlaceholder": "077 123 4567"
+    },
+    "contact": {
+      "label": "Email or phone, in case we need to check your transfer (optional, private)",
+      "placeholder": "email@example.com or 07X XXXXXXX",
+      "help": "Only our team sees this to verify your transfer."
+    },
+    "create": "Show the bank details",
+    "creating": "Preparing transfer details...",
+    "ref": {
+      "title": "Your reference: {ref}",
+      "help": "Please add this reference to the transfer remark so we can match your donation."
+    },
+    "bank": {
+      "accountName": "Account name",
+      "accountNumber": "Account number",
+      "bank": "Bank",
+      "branch": "Branch",
+      "notes": "Notes",
+      "copy": "Copy",
+      "copied": "Copied",
+      "scanQr": "Scan QR to pay",
+      "scanQrHelp": "Scan this QR code using your banking app (Q+, Flash, FriMi, iPay) to transfer directly."
+    },
+    "slip": {
+      "label": "Upload your deposit slip or a screenshot of the transfer",
+      "help": "JPG, PNG or PDF, up to 5 MB.",
+      "drag": "Drag & drop your slip here or click to browse",
+      "uploaded": "Slip uploaded: {name}",
+      "uploading": "Uploading slip..."
+    },
+    "txnRef": {
+      "label": "Bank transaction reference (optional)",
+      "placeholder": "e.g. FT261026001",
+      "help": "This helps us find your transfer faster."
+    },
+    "submit": "Send for checking",
+    "submitting": "Submitting...",
+    "pending": {
+      "title": "Thank you. We'll confirm within 48 hours.",
+      "body": "Once we've matched your transfer, your name appears on the supporters wall, and your shop's pin turns gold if you linked it."
+    },
+    "approved": {
+      "title": "Thank you. We've received your donation."
+    },
+    "resume": {
+      "button": "Already transferred? Upload your slip",
+      "title": "Resume donation submission",
+      "prompt": "Enter your reference code (e.g. CB-DN-XXXXXX)",
+      "placeholder": "CB-DN-XXXXXX",
+      "submit": "Find donation"
+    },
+    "wall": {
+      "title": "Supporters Wall",
+      "empty": "Be the first supporter this month!",
+      "anonymous": "Anonymous supporter",
+      "goldSupporter": "Gold Supporter"
+    },
+    "transparency": {
+      "title": "Donations this month",
+      "body": "Rs. {total} from {count} supporters, updated live."
+    },
+    "legal": "Donations are voluntary and don't unlock any features. They aren't tax-deductible, and we can't refund them except where the law requires it."
   }
 }
