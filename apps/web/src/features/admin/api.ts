@@ -282,3 +282,97 @@ export async function updateAdminFeedback(
     body: JSON.stringify(body),
   });
 }
+
+export interface AdminDonation {
+  id: string;
+  referenceCode: string;
+  amountCents: number;
+  displayName: string | null;
+  isAnonymous: boolean;
+  publicMessage: string | null;
+  showAmountPublicly: boolean;
+  contactPrivate: string | null;
+  merchantId: string | null;
+  merchantShopName?: string | null;
+  merchantPhone?: string | null;
+  status: "pending" | "approved" | "rejected" | "cancelled";
+  slipKey: string | null;
+  txnReference: string | null;
+  rejectionReason: string | null;
+  reviewedBy: string | null;
+  reviewedAt: string | number | null;
+  createdAt: string | number;
+  updatedAt: string | number;
+}
+
+export interface AdminDonationsListResponse {
+  items: AdminDonation[];
+  total: number;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function fetchAdminDonations(params?: {
+  status?: string;
+  page?: number;
+  pageSize?: number;
+  search?: string;
+}): Promise<AdminDonationsListResponse> {
+  const q = new URLSearchParams();
+  if (params?.status && params.status !== "all") q.set("status", params.status);
+  if (params?.page) q.set("page", String(params.page));
+  if (params?.pageSize) q.set("pageSize", String(params.pageSize));
+  if (params?.search) q.set("search", params.search);
+  const query = q.toString();
+  return request<AdminDonationsListResponse>(`/api/admin/donations${query ? `?${query}` : ""}`);
+}
+
+export async function fetchDonationSlipUrl(
+  id: string,
+): Promise<{ url: string; expiresAt: number; contentType: string }> {
+  return request<{ url: string; expiresAt: number; contentType: string }>(
+    `/api/admin/donations/${encodeURIComponent(id)}/slip-url`,
+  );
+}
+
+export async function approveDonation(
+  id: string,
+  body?: { approveMessage?: boolean },
+): Promise<{ id: string; status: "approved" }> {
+  return request<{ id: string; status: "approved" }>(
+    `/api/admin/donations/${encodeURIComponent(id)}/approve`,
+    {
+      method: "POST",
+      body: JSON.stringify(body || {}),
+    },
+  );
+}
+
+export async function rejectDonation(
+  id: string,
+  reason: string,
+): Promise<{ id: string; status: "rejected" }> {
+  return request<{ id: string; status: "rejected" }>(
+    `/api/admin/donations/${encodeURIComponent(id)}/reject`,
+    {
+      method: "POST",
+      body: JSON.stringify({ reason }),
+    },
+  );
+}
+
+import type { DonationPaymentOptionItem } from "@cbpos/shared";
+
+export async function fetchDonationPaymentSettings(): Promise<DonationPaymentOptionItem[]> {
+  return request<DonationPaymentOptionItem[]>("/api/admin/donations/settings");
+}
+
+export async function updateDonationPaymentSettings(
+  settings: DonationPaymentOptionItem[],
+): Promise<DonationPaymentOptionItem[]> {
+  return request<DonationPaymentOptionItem[]>("/api/admin/donations/settings", {
+    method: "PUT",
+    body: JSON.stringify(settings),
+  });
+}
+
