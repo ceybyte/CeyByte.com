@@ -109,6 +109,19 @@ To build sustainable community support without recurring payment gateway overhea
   - Approve action: updates donation to `approved`, approves message if checked, runs `recomputeSupporter()`, triggers `bumpGeoVersion()`, and writes audit log.
   - Reject action: prompts for a reason (e.g. "Slip unreadable", "Amount mismatch", "Duplicate submission"), updates status to `rejected`, and logs event.
 
+### 3.5 Decision 5: Admin Donation Settings & Dynamic Payment Options
+- Dedicated **"Settings / Payment Options"** view within `/admin/donations`.
+- Administrators can configure one or more bank transfer payment options:
+  - **Account Name** (e.g., "Ceylon Byte (Pvt) Ltd")
+  - **Account Number** (e.g., "100234567890")
+  - **Bank Name** (e.g., "Commercial Bank of Ceylon")
+  - **Branch Name** (e.g., "Kollupitiya Branch")
+  - **QR Code Image (Optional):** Uploadable bank QR or LankaQR image (PNG/JPG ≤ 2 MB) stored in R2 and served publicly, allowing donors using Sri Lankan banking apps (Q+, Flash, FriMi, iPay) to scan and pay instantly.
+  - **Instructions / Notes (Optional):** Custom transfer instructions (e.g., "Include your reference in remarks").
+  - **Active Toggle:** Enable or disable specific accounts without deleting them.
+- **Persistence & Fallback:** Stored in Cloudflare KV key `settings:donation_payment_options` with audit logging in `admin_audit_log`. If no custom accounts are configured, seamlessly falls back to environment variables (`DONATION_ACCOUNT_NAME`, `DONATION_ACCOUNT_NUMBER`, `DONATION_BANK_NAME`, `DONATION_BANK_BRANCH`).
+- **Donor Experience (S09):** In Step 2, donors view active payment option cards with individual 1-click copy buttons. If a QR code is attached, an interactive "Scan QR to Pay" expander displays the high-resolution QR image with a zoom/save option.
+
 ---
 
 ## 4. API & Data Contract
@@ -133,21 +146,24 @@ The `donations` table is already defined in SQLite D1:
 - `reviewedBy`, `reviewedAt`, `rejectionReason`, `createdAt`, `updatedAt`
 
 ### 4.2 Endpoint Specifications
-1. `GET /api/donations/summary` -> public, cached 600s.
-2. `POST /api/donations` -> Turnstile verified, rate-limited (`RL_FORMS`), creates `awaiting_payment` record and sets `cb_dn_{ref}` cookie.
+1. `GET /api/donations/summary` -> public, cached 600s. Returns monthly total, supporter count, supporters list, and active payment options (bank accounts + QR image URLs).
+2. `POST /api/donations` -> Turnstile verified, rate-limited (`RL_FORMS`), creates `awaiting_payment` record and sets `cb_dn_{ref}` cookie. Returns reference code and active bank details.
 3. `POST /api/donations/:ref/submit` -> validated against `cb_dn_{ref}` cookie, runs R2 `verifyUpload`, sets `status = "pending_review"`.
 4. `GET /api/donations/:ref/status` -> validated against `cb_dn_{ref}` cookie or user session, returns status and bank details for resumption.
 5. `GET /api/admin/donations` -> admin auth, lists queue with pagination.
 6. `GET /api/admin/donations/:id/slip-url` -> admin auth, returns 120s presigned GET URL.
 7. `POST /api/admin/donations/:id/approve` -> admin auth, sets `approved`, recomputes supporter status, invalidates geo cache.
 8. `POST /api/admin/donations/:id/reject` -> admin auth, sets `rejected` with reason.
+9. `GET /api/admin/donations/settings` -> admin auth, returns current payment options and fallback configuration.
+10. `PUT /api/admin/donations/settings` -> admin auth, validates and updates active payment options in KV, creates audit log entry.
 
 ---
 
 ## 5. What's Left for the Builder
 - Implementing `apps/api/src/routes/donations.ts` and mounting in `apps/api/src/index.ts`.
-- Extending `apps/api/src/routes/admin.ts` with donation queue handlers and `recomputeSupporter` helper.
+- Extending `apps/api/src/routes/admin.ts` with donation queue handlers, `recomputeSupporter` helper, and settings routes.
 - Building frontend page `apps/web/src/app/[locale]/donate/page.tsx` and components under `apps/web/src/features/donations/`.
+- Building Admin Donations Queue and Payment Options Settings tab under `apps/web/src/features/admin/`.
 - Adding trilingual localization keys in `messages/{en,si,ta}.json` under `donate.*`.
 - Creating end-to-end acceptance tests in `e2e/05-donation.spec.ts`.
 - Registering the cron cleanup tasks in `apps/api/src/scheduled.ts`.
