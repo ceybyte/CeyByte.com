@@ -352,13 +352,13 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ## Phase 13 — Blog & extras (Sprint 12) → **M3**
 
-- [ ] Blog routes (S10) from `.content/blog.json`; tags, reading time (locale-aware divisor), related posts, "Also in English".
-- [ ] Admin Blog: editor, cover upload, scheduling; cron triggers a rebuild when a scheduled post is due.
-- [ ] OG images per post; RSS per locale; sitemap includes posts.
-- [ ] Docs video embeds (`::video`, captions required).
-- [ ] Payment gateway ADR (card and/or LankaQR): fees, donation eligibility, webhook security. Build only after approval.
-- [ ] Launch posts: "CB POS is free", "How CB POS works out VAT and SSCL from MRP" (with the disclaimer and [C1]/[C2] examples), a first shop story (written consent).
-- [ ] **Design gates.**
+- [x] Blog routes (S10) from `.content/blog.json`; tags, reading time (locale-aware divisor), related posts, "Also in English".
+- [x] Admin Blog: editor, cover upload, scheduling; cron triggers a rebuild when a scheduled post is due.
+- [x] OG images per post; RSS per locale; sitemap includes posts.
+- [x] Docs video embeds (`::video`, captions required).
+- [x] Payment gateway ADR (card and/or LankaQR): fees, donation eligibility, webhook security. Build only after approval.
+- [x] Launch posts: "CB POS is free", "How CB POS works out VAT and SSCL from MRP" (with the disclaimer and [C1]/[C2] examples), a first shop story (written consent).
+- [x] **Design gates.**
 
 **Exit (M3):** blog live in EN, with SI/TA posts as translations arrive.
 
