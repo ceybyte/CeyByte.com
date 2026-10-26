@@ -14,6 +14,7 @@ import { webhooksRoutes } from "./routes/webhooks";
 import { docsFeedbackRoutes } from "./routes/docs-feedback";
 import { uploadsRoutes } from "./routes/uploads";
 import { feedbackRoutes } from "./routes/feedback";
+import { donationsRoutes } from "./routes/donations";
 import { meRoutes } from "./routes/me";
 import { syncReleases } from "./lib/releases-sync";
 import { rebuildIfDirty } from "./lib/geo-cache";
@@ -49,6 +50,7 @@ const api = new Hono<AppEnv>()
   .route("/", docsFeedbackRoutes)
   .route("/", uploadsRoutes)
   .route("/", feedbackRoutes)
+  .route("/", donationsRoutes)
   .route("/", meRoutes)
   .route("/", webhooksRoutes);
 
