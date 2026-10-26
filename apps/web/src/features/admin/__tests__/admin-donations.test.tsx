@@ -50,12 +50,7 @@ describe("Admin Donations UI Components", () => {
   ];
 
   test("DonationsQueue renders donations table, filter tabs, and action buttons", () => {
-    const html = renderToString(
-      <DonationsQueue
-        initialDonations={[mockDonation]}
-        total={1}
-      />,
-    );
+    const html = renderToString(<DonationsQueue initialDonations={[mockDonation]} total={1} />);
 
     expect(html).toContain("Donations Queue");
     expect(html).toContain("CB-DN-ABC123");
@@ -68,9 +63,7 @@ describe("Admin Donations UI Components", () => {
   });
 
   test("DonationSettings renders bank accounts management form and add button", () => {
-    const html = renderToString(
-      <DonationSettings initialSettings={mockSettings} />,
-    );
+    const html = renderToString(<DonationSettings initialSettings={mockSettings} />);
 
     expect(html).toContain("Donation Payment Options");
     expect(html).toContain("Commercial Bank");

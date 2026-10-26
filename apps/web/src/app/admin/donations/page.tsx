@@ -2,7 +2,7 @@ import { AdminDonationsPortal } from "@/features/admin/components/admin-donation
 
 export default function AdminDonationsPage() {
   return (
-    <div className="p-3 sm:p-6 max-w-7xl mx-auto">
+    <div className="mx-auto max-w-7xl p-3 sm:p-6">
       <AdminDonationsPortal />
     </div>
   );

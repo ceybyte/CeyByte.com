@@ -117,11 +117,7 @@ app.notFound(onNotFound);
 export async function scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
   const db = makeDb(env.DB);
   ctx.waitUntil(
-    Promise.all([
-      syncReleases(env, "cron"),
-      rebuildIfDirty(env.CACHE_KV, db),
-      cleanupDonations(env, db),
-    ]),
+    Promise.all([syncReleases(env, "cron"), rebuildIfDirty(env.CACHE_KV, db), cleanupDonations(env, db)]),
   );
 }
 

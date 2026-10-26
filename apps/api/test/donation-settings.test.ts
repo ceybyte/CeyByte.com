@@ -1,6 +1,7 @@
 import { env } from "cloudflare:test";
 import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
+import type { DonationPaymentOptions } from "@cbpos/shared";
 
 const ORIGIN = "http://localhost:3000";
 const IP = "203.0.113.8";
@@ -55,7 +56,7 @@ describe("Admin Donation Payment Settings API", () => {
     const res = await call("/admin/donations/settings", { cookie });
     expect(res.status).toBe(200);
 
-    const json = (await res.json()) as { ok: boolean; data: any[] };
+    const json = (await res.json()) as { ok: boolean; data: DonationPaymentOptions };
     expect(json.ok).toBe(true);
     expect(Array.isArray(json.data)).toBe(true);
     expect(json.data.length).toBeGreaterThanOrEqual(1);
@@ -102,7 +103,7 @@ describe("Admin Donation Payment Settings API", () => {
     });
 
     expect(putRes.status).toBe(200);
-    const putJson = (await putRes.json()) as { ok: boolean; data: any[] };
+    const putJson = (await putRes.json()) as { ok: boolean; data: DonationPaymentOptions };
     expect(putJson.ok).toBe(true);
     expect(putJson.data).toHaveLength(2);
     expect(putJson.data[0].accountNumber).toBe("8001234567");
@@ -113,7 +114,7 @@ describe("Admin Donation Payment Settings API", () => {
 
     // Verify GET returns the newly set options
     const getRes = await call("/admin/donations/settings", { cookie });
-    const getJson = (await getRes.json()) as { ok: boolean; data: any[] };
+    const getJson = (await getRes.json()) as { ok: boolean; data: DonationPaymentOptions };
     expect(getJson.data).toEqual(newOptions);
 
     // Verify admin_audit_log entry

@@ -9,7 +9,7 @@ import { SupportersWall } from "./SupportersWall";
 import { fetchDonationSummary } from "../api";
 import type { DonationSummary } from "../types";
 
-export function DonationView({ locale }: { locale: string }) {
+export function DonationView() {
   const t = useTranslations("donate");
 
   const [summary, setSummary] = useState<DonationSummary>({
@@ -18,7 +18,6 @@ export function DonationView({ locale }: { locale: string }) {
     supporters: [],
     paymentOptions: [],
   });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -30,8 +29,6 @@ export function DonationView({ locale }: { locale: string }) {
         }
       } catch (err) {
         console.error("Failed to load donation summary:", err);
-      } finally {
-        if (!cancelled) setLoading(false);
       }
     }
     loadData();
@@ -135,15 +132,13 @@ export function DonationView({ locale }: { locale: string }) {
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
       {/* S09 Hero Section */}
       <div className="mb-10 text-center">
-        <div className="inline-flex size-14 items-center justify-center rounded-2xl border border-gold/40 bg-gold/10 text-gold shadow-xs mb-4">
+        <div className="border-gold/40 bg-gold/10 text-gold mb-4 inline-flex size-14 items-center justify-center rounded-2xl border shadow-xs">
           <HeartHandshake className="size-7" />
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-text sm:text-4xl md:text-5xl">
+        <h1 className="text-text text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
           {t("title")}
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-          {t("lead")}
-        </p>
+        <p className="text-muted mx-auto mt-4 max-w-2xl text-base leading-relaxed sm:text-lg">{t("lead")}</p>
       </div>
 
       {/* S09 Section 1: Transparency Strip & Monthly Live Total */}
@@ -157,25 +152,17 @@ export function DonationView({ locale }: { locale: string }) {
 
       {/* S09 Section 2: Two-Step Interactive Donation Card */}
       <div className="mb-14">
-        <DonationCard
-          initialPaymentOptions={summary.paymentOptions}
-          copy={copyForCard}
-        />
+        <DonationCard initialPaymentOptions={summary.paymentOptions} copy={copyForCard} />
       </div>
 
       {/* S09 Section 3: Supporters Wall */}
       <div className="mb-14">
-        <SupportersWall
-          supporters={summary.supporters}
-          copy={copyForWall}
-        />
+        <SupportersWall supporters={summary.supporters} copy={copyForWall} />
       </div>
 
       {/* S09 Section 4: Legal & Statutory Disclaimer */}
-      <div className="rounded-lg border border-hairline/60 bg-surface/30 p-4 text-center">
-        <p className="text-xs text-muted leading-relaxed max-w-2xl mx-auto">
-          {t("legal")}
-        </p>
+      <div className="border-hairline/60 bg-surface/30 rounded-lg border p-4 text-center">
+        <p className="text-muted mx-auto max-w-2xl text-xs leading-relaxed">{t("legal")}</p>
       </div>
     </div>
   );

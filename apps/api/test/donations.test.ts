@@ -55,7 +55,15 @@ describe("Public Donations API (/api/donations)", () => {
       const res = await call("/donations/summary");
       expect(res.status).toBe(200);
 
-      const json = (await res.json()) as { ok: boolean; data: any };
+      const json = (await res.json()) as {
+        ok: boolean;
+        data: {
+          monthlyTotalCents: number;
+          totalSupportersCount: number;
+          supporters: unknown[];
+          paymentOptions: unknown[];
+        };
+      };
       expect(json.ok).toBe(true);
       expect(json.data.monthlyTotalCents).toBe(0);
       expect(json.data.totalSupportersCount).toBe(0);
@@ -91,21 +99,32 @@ describe("Public Donations API (/api/donations)", () => {
       const res = await call("/donations/summary");
       expect(res.status).toBe(200);
 
-      const json = (await res.json()) as { ok: boolean; data: any };
+      const json = (await res.json()) as {
+        ok: boolean;
+        data: {
+          monthlyTotalCents: number;
+          totalSupportersCount: number;
+          supporters: Array<{
+            displayName: string;
+            amountCents: number | null;
+            publicMessage: string | null;
+          }>;
+        };
+      };
       expect(json.ok).toBe(true);
       expect(json.data.monthlyTotalCents).toBe(350000); // 100,000 + 250,000
       expect(json.data.totalSupportersCount).toBe(2);
       expect(json.data.supporters).toHaveLength(2);
 
-      const donor1 = json.data.supporters.find((s: any) => s.displayName === "Ruwan Silva");
+      const donor1 = json.data.supporters.find((s) => s.displayName === "Ruwan Silva");
       expect(donor1).toBeDefined();
-      expect(donor1.amountCents).toBe(100000);
-      expect(donor1.publicMessage).toBe("Great POS!");
+      expect(donor1?.amountCents).toBe(100000);
+      expect(donor1?.publicMessage).toBe("Great POS!");
 
-      const donor2 = json.data.supporters.find((s: any) => s.displayName === "Anonymous Supporter");
+      const donor2 = json.data.supporters.find((s) => s.displayName === "Anonymous Supporter");
       expect(donor2).toBeDefined();
-      expect(donor2.amountCents).toBeNull();
-      expect(donor2.publicMessage).toBeNull();
+      expect(donor2?.amountCents).toBeNull();
+      expect(donor2?.publicMessage).toBeNull();
     });
   });
 
@@ -149,7 +168,16 @@ describe("Public Donations API (/api/donations)", () => {
       });
 
       expect(res.status).toBe(201);
-      const json = (await res.json()) as { ok: boolean; data: any };
+      const json = (await res.json()) as {
+        ok: boolean;
+        data: {
+          referenceCode: string;
+          amountCents: number;
+          status: string;
+          paymentOptions: unknown[];
+          merchantId?: string;
+        };
+      };
       expect(json.ok).toBe(true);
       expect(json.data.referenceCode).toMatch(/^CB-DN-[A-Z0-9]{6}$/);
       expect(json.data.amountCents).toBe(150000);
@@ -167,16 +195,14 @@ describe("Public Donations API (/api/donations)", () => {
       expect(refCookie).toContain("SameSite=Lax");
 
       // Verify DB record
-      const row = await env.DB.prepare(
-        "SELECT * FROM donations WHERE reference_code = ?",
-      )
+      const row = await env.DB.prepare("SELECT * FROM donations WHERE reference_code = ?")
         .bind(json.data.referenceCode)
-        .first<any>();
+        .first<{ status: string; merchant_id: string | null; submit_secret_hash: string }>();
 
       expect(row).not.toBeNull();
-      expect(row.status).toBe("awaiting_payment");
-      expect(row.merchant_id).toBe("m-test-1"); // Merchant linked successfully in DB!
-      expect(row.submit_secret_hash).toHaveLength(64); // SHA-256 hex string
+      expect(row?.status).toBe("awaiting_payment");
+      expect(row?.merchant_id).toBe("m-test-1"); // Merchant linked successfully in DB!
+      expect(row?.submit_secret_hash).toHaveLength(64); // SHA-256 hex string
     });
   });
 
@@ -215,7 +241,10 @@ describe("Public Donations API (/api/donations)", () => {
           turnstileToken: "cf-test-token",
         }),
       });
-      const createJson = (await createRes.json()) as { ok: boolean; data: any };
+      const createJson = (await createRes.json()) as {
+        ok: boolean;
+        data: { referenceCode: string };
+      };
       const ref = createJson.data.referenceCode;
       const cookie = createRes.headers.getSetCookie().find((c) => c.startsWith(`cb_dn_${ref}=`));
 
@@ -249,7 +278,10 @@ describe("Public Donations API (/api/donations)", () => {
           turnstileToken: "cf-test-token",
         }),
       });
-      const createJson = (await createRes.json()) as { ok: boolean; data: any };
+      const createJson = (await createRes.json()) as {
+        ok: boolean;
+        data: { referenceCode: string };
+      };
       const ref = createJson.data.referenceCode;
       const cookie = createRes.headers.getSetCookie().find((c) => c.startsWith(`cb_dn_${ref}=`));
 
@@ -286,7 +318,10 @@ describe("Public Donations API (/api/donations)", () => {
           turnstileToken: "cf-test-token",
         }),
       });
-      const createJson = (await createRes.json()) as { ok: boolean; data: any };
+      const createJson = (await createRes.json()) as {
+        ok: boolean;
+        data: { referenceCode: string };
+      };
       const ref = createJson.data.referenceCode;
       const cookie = createRes.headers.getSetCookie().find((c) => c.startsWith(`cb_dn_${ref}=`));
 
@@ -307,23 +342,34 @@ describe("Public Donations API (/api/donations)", () => {
       });
 
       expect(submitRes.status).toBe(200);
-      const submitJson = (await submitRes.json()) as { ok: boolean; data: any };
+      const submitJson = (await submitRes.json()) as { ok: boolean; data: { status: string } };
       expect(submitJson.ok).toBe(true);
       expect(submitJson.data.status).toBe("pending_review");
 
       // Check DB updated
-      const row = await env.DB.prepare("SELECT * FROM donations WHERE reference_code = ?")
-        .bind(ref)
-        .first<any>();
-      expect(row.status).toBe("pending_review");
-      expect(row.slip_key).toBe(validSlipKey);
-      expect(row.slip_mime).toBe("image/png");
-      expect(row.txn_reference).toBe("FT2610269999");
+      const row = await env.DB.prepare("SELECT * FROM donations WHERE reference_code = ?").bind(ref).first<{
+        status: string;
+        slip_key: string | null;
+        slip_mime: string | null;
+        txn_reference: string | null;
+      }>();
+      expect(row?.status).toBe("pending_review");
+      expect(row?.slip_key).toBe(validSlipKey);
+      expect(row?.slip_mime).toBe("image/png");
+      expect(row?.txn_reference).toBe("FT2610269999");
 
       // Resumption check: GET /api/donations/:ref/status
       const statusRes = await call(`/donations/${ref}/status`, { cookie });
       expect(statusRes.status).toBe(200);
-      const statusJson = (await statusRes.json()) as { ok: boolean; data: any };
+      const statusJson = (await statusRes.json()) as {
+        ok: boolean;
+        data: {
+          referenceCode: string;
+          status: string;
+          amountCents: number;
+          paymentOptions: unknown[];
+        };
+      };
       expect(statusJson.ok).toBe(true);
       expect(statusJson.data.referenceCode).toBe(ref);
       expect(statusJson.data.status).toBe("pending_review");

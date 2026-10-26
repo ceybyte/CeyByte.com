@@ -18,7 +18,8 @@ function generateReferenceCode(): string {
   crypto.getRandomValues(bytes);
   let code = "";
   for (let i = 0; i < 6; i++) {
-    code += ALPHABET[bytes[i]! % ALPHABET.length];
+    const byte = bytes[i] ?? 0;
+    code += ALPHABET[byte % ALPHABET.length];
   }
   return `CB-DN-${code}`;
 }
@@ -35,8 +36,8 @@ export const donationsRoutes = new Hono<AppEnv>()
     const cached = await c.env.CACHE_KV.get<{
       monthlyTotalCents: number;
       totalSupportersCount: number;
-      supporters: any[];
-      paymentOptions: any[];
+      supporters: unknown[];
+      paymentOptions: unknown[];
     }>("donations:summary", "json");
 
     if (cached) {
@@ -65,19 +66,21 @@ export const donationsRoutes = new Hono<AppEnv>()
 
     let monthlyTotalCents = 0;
     for (const row of approvedRows) {
-      const createdIso = (row.createdAt instanceof Date ? row.createdAt : new Date(row.createdAt)).toISOString();
+      const createdIso = (
+        row.createdAt instanceof Date ? row.createdAt : new Date(row.createdAt)
+      ).toISOString();
       if (createdIso.startsWith(currentYearMonth)) {
         monthlyTotalCents += row.amountCents;
       }
     }
 
     const supporters = approvedRows.slice(0, 50).map((row) => {
-      const createdIso = (row.createdAt instanceof Date ? row.createdAt : new Date(row.createdAt)).toISOString();
+      const createdIso = (
+        row.createdAt instanceof Date ? row.createdAt : new Date(row.createdAt)
+      ).toISOString();
       return {
         id: row.id,
-        displayName: row.isAnonymous
-          ? "Anonymous Supporter"
-          : row.displayName || "Community Supporter",
+        displayName: row.isAnonymous ? "Anonymous Supporter" : row.displayName || "Community Supporter",
         month: createdIso.slice(0, 7),
         isMerchantSupporter: Boolean(row.merchantId),
         amountCents: row.showAmountPublicly ? row.amountCents : null,
@@ -120,12 +123,7 @@ export const donationsRoutes = new Hono<AppEnv>()
       const merchant = await db
         .select({ id: merchants.id })
         .from(merchants)
-        .where(
-          and(
-            eq(merchants.phone, parsed.data.linkMerchantPhone),
-            isNull(merchants.deletedAt),
-          ),
-        )
+        .where(and(eq(merchants.phone, parsed.data.linkMerchantPhone), isNull(merchants.deletedAt)))
         .get();
       if (merchant) {
         merchantId = merchant.id;
@@ -138,12 +136,7 @@ export const donationsRoutes = new Hono<AppEnv>()
       const userMerchant = await db
         .select({ id: merchants.id })
         .from(merchants)
-        .where(
-          and(
-            eq(merchants.ownerUserId, userId),
-            isNull(merchants.deletedAt),
-          ),
-        )
+        .where(and(eq(merchants.ownerUserId, userId), isNull(merchants.deletedAt)))
         .get();
       if (userMerchant) {
         merchantId = userMerchant.id;
@@ -221,11 +214,7 @@ export const donationsRoutes = new Hono<AppEnv>()
     const ref = c.req.param("ref");
     const db = c.get("db");
 
-    const donation = await db
-      .select()
-      .from(donations)
-      .where(eq(donations.referenceCode, ref))
-      .get();
+    const donation = await db.select().from(donations).where(eq(donations.referenceCode, ref)).get();
 
     if (!donation) {
       throw new ApiError("NOT_FOUND");
@@ -241,7 +230,11 @@ export const donationsRoutes = new Hono<AppEnv>()
         isAuthorized = true;
       }
     }
-    if (!isAuthorized && sessionUser && (donation.userId === sessionUser.id || sessionUser.role === "admin")) {
+    if (
+      !isAuthorized &&
+      sessionUser &&
+      (donation.userId === sessionUser.id || sessionUser.role === "admin")
+    ) {
       isAuthorized = true;
     }
 
@@ -283,11 +276,7 @@ export const donationsRoutes = new Hono<AppEnv>()
     const ref = c.req.param("ref");
     const db = c.get("db");
 
-    const donation = await db
-      .select()
-      .from(donations)
-      .where(eq(donations.referenceCode, ref))
-      .get();
+    const donation = await db.select().from(donations).where(eq(donations.referenceCode, ref)).get();
 
     if (!donation) {
       throw new ApiError("NOT_FOUND");
@@ -303,7 +292,11 @@ export const donationsRoutes = new Hono<AppEnv>()
         isAuthorized = true;
       }
     }
-    if (!isAuthorized && sessionUser && (donation.userId === sessionUser.id || sessionUser.role === "admin")) {
+    if (
+      !isAuthorized &&
+      sessionUser &&
+      (donation.userId === sessionUser.id || sessionUser.role === "admin")
+    ) {
       isAuthorized = true;
     }
 

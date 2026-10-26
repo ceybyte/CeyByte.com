@@ -67,4 +67,31 @@ export const uploadsRoutes = new Hono<AppEnv>()
       ok: true,
       data: verified,
     } as const);
+  })
+  .put("/uploads/direct/:key{.+}", async (c) => {
+    const key = decodeURIComponent(c.req.param("key"));
+    const contentType = c.req.header("content-type") || "application/octet-stream";
+    const body = await c.req.arrayBuffer();
+    if (!c.env.UPLOADS) {
+      throw new ApiError("ENV_MISCONFIGURED");
+    }
+    await c.env.UPLOADS.put(key, body, {
+      httpMetadata: { contentType },
+    });
+    return c.text("OK", 200);
+  })
+  .get("/uploads/direct/:key{.+}", async (c) => {
+    const key = decodeURIComponent(c.req.param("key"));
+    if (!c.env.UPLOADS) {
+      throw new ApiError("ENV_MISCONFIGURED");
+    }
+    const obj = await c.env.UPLOADS.get(key);
+    if (!obj) {
+      throw new ApiError("NOT_FOUND");
+    }
+    return new Response(obj.body, {
+      headers: {
+        "Content-Type": obj.httpMetadata?.contentType || "application/octet-stream",
+      },
+    });
   });

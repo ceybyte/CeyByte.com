@@ -9,11 +9,7 @@ import {
   formatTicketNumber,
   parseTicketNumber,
 } from "./feedback";
-import {
-  DonationCreateSchema,
-  DonationSubmitSchema,
-  DonationPaymentOptionsSchema,
-} from "./donations";
+import { DonationCreateSchema, DonationSubmitSchema, DonationPaymentOptionsSchema } from "./donations";
 
 describe("Shared Schemas", () => {
   describe("Manifest Schema", () => {
@@ -256,11 +252,15 @@ describe("Shared Schemas", () => {
       expect(DonationCreateSchema.safeParse({ ...valid, turnstileToken: "" }).success).toBe(false);
 
       // Rejects message > 140 chars
-      expect(DonationCreateSchema.safeParse({ ...valid, publicMessage: "a".repeat(141) }).success).toBe(false);
+      expect(DonationCreateSchema.safeParse({ ...valid, publicMessage: "a".repeat(141) }).success).toBe(
+        false,
+      );
     });
 
     it("validates DonationSubmitSchema", () => {
-      expect(DonationSubmitSchema.safeParse({ slipKey: "donations/slip-1.png", txnReference: "TXN12345" }).success).toBe(true);
+      expect(
+        DonationSubmitSchema.safeParse({ slipKey: "donations/slip-1.png", txnReference: "TXN12345" }).success,
+      ).toBe(true);
       expect(DonationSubmitSchema.safeParse({ slipKey: "" }).success).toBe(false);
     });
 

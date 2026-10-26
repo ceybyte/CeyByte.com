@@ -25,11 +25,15 @@ describe("Donations Scheduled Cron Cleanup", () => {
     const result = await cleanupDonations(env, db);
     expect(result.cancelledCount).toBe(1);
 
-    const oldRow = await env.DB.prepare("SELECT status FROM donations WHERE id = 'd-old'").first<any>();
-    expect(oldRow.status).toBe("cancelled");
+    const oldRow = await env.DB.prepare("SELECT status FROM donations WHERE id = 'd-old'").first<{
+      status: string;
+    }>();
+    expect(oldRow?.status).toBe("cancelled");
 
-    const recentRow = await env.DB.prepare("SELECT status FROM donations WHERE id = 'd-recent'").first<any>();
-    expect(recentRow.status).toBe("awaiting_payment");
+    const recentRow = await env.DB.prepare("SELECT status FROM donations WHERE id = 'd-recent'").first<{
+      status: string;
+    }>();
+    expect(recentRow?.status).toBe("awaiting_payment");
   });
 
   it("purges R2 slip objects for rejected donations older than 90 days", async () => {
@@ -68,14 +72,18 @@ describe("Donations Scheduled Cron Cleanup", () => {
     const oldSlipInR2 = await env.UPLOADS.get(oldSlipKey);
     expect(oldSlipInR2).toBeNull();
 
-    const oldRow = await env.DB.prepare("SELECT slip_key FROM donations WHERE id = 'd-rej-old'").first<any>();
-    expect(oldRow.slip_key).toBeNull();
+    const oldRow = await env.DB.prepare("SELECT slip_key FROM donations WHERE id = 'd-rej-old'").first<{
+      slip_key: string | null;
+    }>();
+    expect(oldRow?.slip_key).toBeNull();
 
     // Recent rejected slip object should still exist in R2
     const recentSlipInR2 = await env.UPLOADS.get(recentSlipKey);
     expect(recentSlipInR2).not.toBeNull();
 
-    const recentRow = await env.DB.prepare("SELECT slip_key FROM donations WHERE id = 'd-rej-rec'").first<any>();
-    expect(recentRow.slip_key).toBe(recentSlipKey);
+    const recentRow = await env.DB.prepare("SELECT slip_key FROM donations WHERE id = 'd-rej-rec'").first<{
+      slip_key: string | null;
+    }>();
+    expect(recentRow?.slip_key).toBe(recentSlipKey);
   });
 });

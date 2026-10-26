@@ -110,7 +110,10 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
     const resPending = await call("/admin/donations?status=pending_review", { cookie });
     expect(resPending.status).toBe(200);
 
-    const jsonPending = (await resPending.json()) as { ok: boolean; data: any };
+    const jsonPending = (await resPending.json()) as {
+      ok: boolean;
+      data: { items: Array<{ id: string; shopName?: string | null }> };
+    };
     expect(jsonPending.ok).toBe(true);
     expect(jsonPending.data.items).toHaveLength(2);
     // Oldest first
@@ -120,7 +123,10 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
 
     // Query approved
     const resAppr = await call("/admin/donations?status=approved", { cookie });
-    const jsonAppr = (await resAppr.json()) as { ok: boolean; data: any };
+    const jsonAppr = (await resAppr.json()) as {
+      ok: boolean;
+      data: { items: Array<{ id: string }> };
+    };
     expect(jsonAppr.data.items).toHaveLength(1);
     expect(jsonAppr.data.items[0].id).toBe("d-appr");
   });
@@ -139,7 +145,10 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
     const res = await call("/admin/donations/d-slip/slip-url", { cookie });
     expect(res.status).toBe(200);
 
-    const json = (await res.json()) as { ok: boolean; data: any };
+    const json = (await res.json()) as {
+      ok: boolean;
+      data: { url?: string; mime?: string; size?: number };
+    };
     expect(json.ok).toBe(true);
     expect(json.data.url).toBeDefined();
     expect(json.data.mime).toBe("image/png");
@@ -177,21 +186,29 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
     });
 
     expect(res.status).toBe(200);
-    const json = (await res.json()) as { ok: boolean; data: any };
+    const json = (await res.json()) as { ok: boolean; data: { status: string } };
     expect(json.ok).toBe(true);
     expect(json.data.status).toBe("approved");
 
     // Verify donation DB state
-    const dRow = await env.DB.prepare("SELECT * FROM donations WHERE id = 'd-gold'").first<any>();
-    expect(dRow.status).toBe("approved");
-    expect(dRow.message_approved).toBe(1);
-    expect(dRow.reviewed_by).toBeDefined();
-    expect(dRow.reviewed_at).toBeDefined();
+    const dRow = await env.DB.prepare("SELECT * FROM donations WHERE id = 'd-gold'").first<{
+      status: string;
+      message_approved: number;
+      reviewed_by: string | null;
+      reviewed_at: string | null;
+    }>();
+    expect(dRow?.status).toBe("approved");
+    expect(dRow?.message_approved).toBe(1);
+    expect(dRow?.reviewed_by).toBeDefined();
+    expect(dRow?.reviewed_at).toBeDefined();
 
     // Verify merchant is now gold supporter
-    const mRow = await env.DB.prepare("SELECT * FROM merchants WHERE id = 'm-gold'").first<any>();
-    expect(mRow.is_supporter).toBe(1);
-    expect(mRow.supporter_since).toBeDefined();
+    const mRow = await env.DB.prepare("SELECT * FROM merchants WHERE id = 'm-gold'").first<{
+      is_supporter: number;
+      supporter_since: string | null;
+    }>();
+    expect(mRow?.is_supporter).toBe(1);
+    expect(mRow?.supporter_since).toBeDefined();
 
     // Verify geo version bumped in KV
     const geoVer = await env.CACHE_KV.get<{ n: number }>("geo:version", "json");
@@ -199,11 +216,13 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
     expect(geoVer?.n).toBeGreaterThanOrEqual(1);
 
     // Verify geo snapshot in KV includes isSupporter: true
-    const snapshot = await env.CACHE_KV.get<any>(`geo:snapshot:v${geoVer?.n}`, "json");
+    const snapshot = await env.CACHE_KV.get<{
+      features: Array<{ properties: { id: string; isSupporter: boolean } }>;
+    }>(`geo:snapshot:v${geoVer?.n}`, "json");
     expect(snapshot).not.toBeNull();
-    const feature = snapshot.features.find((f: any) => f.properties.id === "m_gold01");
+    const feature = snapshot?.features.find((f) => f.properties.id === "m_gold01");
     expect(feature).toBeDefined();
-    expect(feature.properties.isSupporter).toBe(true);
+    expect(feature?.properties.isSupporter).toBe(true);
 
     // Verify summary cache was purged
     const summaryCheck = await env.CACHE_KV.get("donations:summary");
@@ -212,9 +231,9 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
     // Verify admin audit log
     const audit = await env.DB.prepare(
       "SELECT * FROM admin_audit_log WHERE entity_type = 'donation' AND entity_id = 'd-gold' ORDER BY created_at DESC LIMIT 1",
-    ).first<any>();
+    ).first<{ id: string; action: string }>();
     expect(audit).not.toBeNull();
-    expect(audit.action).toBe("approve");
+    expect(audit?.action).toBe("approve");
   });
 
   it("POST /api/admin/donations/:id/reject records reason and audit log", async () => {
@@ -244,14 +263,19 @@ describe("Admin Donations Management API (/api/admin/donations)", () => {
     });
 
     expect(res.status).toBe(200);
-    const json = (await res.json()) as { ok: boolean; data: any };
+    const json = (await res.json()) as { ok: boolean; data: { status: string } };
     expect(json.ok).toBe(true);
     expect(json.data.status).toBe("rejected");
 
-    const row = await env.DB.prepare("SELECT * FROM donations WHERE id = 'd-rej'").first<any>();
-    expect(row.status).toBe("rejected");
-    expect(row.rejection_reason).toBe("Slip was illegible / blurry photo");
-    expect(row.reviewed_by).toBeDefined();
-    expect(row.reviewed_at).toBeDefined();
+    const row = await env.DB.prepare("SELECT * FROM donations WHERE id = 'd-rej'").first<{
+      status: string;
+      rejection_reason: string;
+      reviewed_by: string | null;
+      reviewed_at: string | null;
+    }>();
+    expect(row?.status).toBe("rejected");
+    expect(row?.rejection_reason).toBe("Slip was illegible / blurry photo");
+    expect(row?.reviewed_by).toBeDefined();
+    expect(row?.reviewed_at).toBeDefined();
   });
 });

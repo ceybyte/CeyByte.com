@@ -70,12 +70,11 @@ const objectUrl = (env: Env, key: string) =>
   new URL(`https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/cbpos-uploads/${key}`);
 
 export async function presignPut(env: Env, key: string, contentType: string, expiresSec = 300) {
+  if (env.ENVIRONMENT === "test" || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY) {
+    return `/api/uploads/direct/${encodeURIComponent(key)}`;
+  }
   const url = objectUrl(env, key);
   url.searchParams.set("X-Amz-Expires", String(expiresSec));
-  if (env.ENVIRONMENT === "test" || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY) {
-    url.searchParams.set("X-Amz-Signature", "test-mock-signature");
-    return url.toString();
-  }
   const signed = await client(env).sign(
     new Request(url, { method: "PUT", headers: { "content-type": contentType } }),
     { aws: { signQuery: true } },
@@ -85,12 +84,11 @@ export async function presignPut(env: Env, key: string, contentType: string, exp
 
 /** Admin-only viewing of private objects (slips, crash logs). */
 export async function presignGet(env: Env, key: string, expiresSec = 120) {
+  if (env.ENVIRONMENT === "test" || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY) {
+    return `/api/uploads/direct/${encodeURIComponent(key)}`;
+  }
   const url = objectUrl(env, key);
   url.searchParams.set("X-Amz-Expires", String(expiresSec));
-  if (env.ENVIRONMENT === "test" || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY) {
-    url.searchParams.set("X-Amz-Signature", "test-mock-signature");
-    return url.toString();
-  }
   const signed = await client(env).sign(new Request(url, { method: "GET" }), { aws: { signQuery: true } });
   return signed.url;
 }

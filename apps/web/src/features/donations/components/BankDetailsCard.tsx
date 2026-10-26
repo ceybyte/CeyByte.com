@@ -3,13 +3,7 @@
 import React, { useState } from "react";
 import { Copy, Check, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import type { DonationPaymentOption } from "../types";
 
 export interface BankDetailsCardProps {
@@ -52,14 +46,12 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
     : null;
 
   return (
-    <div className="rounded-lg border border-hairline bg-surface p-5 shadow-xs transition-colors">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-hairline/60 pb-3">
+    <div className="border-hairline bg-surface rounded-lg border p-5 shadow-xs transition-colors">
+      <div className="border-hairline/60 flex flex-wrap items-start justify-between gap-3 border-b pb-3">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted">
-            {copy.bank}
-          </span>
-          <h3 className="text-lg font-bold text-text">{option.bankName}</h3>
-          <p className="text-xs text-muted">
+          <span className="text-muted text-xs font-semibold tracking-wider uppercase">{copy.bank}</span>
+          <h3 className="text-text text-lg font-bold">{option.bankName}</h3>
+          <p className="text-muted text-xs">
             {copy.branch}: <span className="text-text">{option.branchName}</span>
           </p>
         </div>
@@ -67,31 +59,24 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
         {option.qrImageKey && (
           <Dialog open={qrOpen} onOpenChange={setQrOpen}>
             <DialogTrigger asChild>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                className="gap-1.5 text-xs font-medium"
-              >
+              <Button type="button" variant="secondary" size="sm" className="gap-1.5 text-xs font-medium">
                 <QrCode className="size-4" />
                 {copy.scanQr}
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-xs text-center sm:max-w-sm">
               <DialogHeader>
-                <DialogTitle className="text-center font-bold text-text">
-                  {copy.scanQr}
-                </DialogTitle>
+                <DialogTitle className="text-text text-center font-bold">{copy.scanQr}</DialogTitle>
               </DialogHeader>
               <div className="mt-2 flex flex-col items-center justify-center gap-3">
                 {qrSrc && (
                   <img
                     src={qrSrc}
                     alt={`${option.bankName} QR`}
-                    className="size-52 rounded border border-hairline bg-white p-2 object-contain shadow-xs"
+                    className="border-hairline size-52 rounded border bg-white object-contain p-2 shadow-xs"
                   />
                 )}
-                <p className="text-xs leading-relaxed text-muted">{copy.scanQrHelp}</p>
+                <p className="text-muted text-xs leading-relaxed">{copy.scanQrHelp}</p>
               </div>
             </DialogContent>
           </Dialog>
@@ -99,12 +84,12 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-md border border-hairline/60 bg-surface-elevated/40 p-3">
-          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">
+        <div className="border-hairline/60 bg-surface-elevated/40 rounded-md border p-3">
+          <span className="text-muted text-[11px] font-medium tracking-wider uppercase">
             {copy.accountName}
           </span>
           <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="font-semibold text-text select-all">{option.accountName}</span>
+            <span className="text-text font-semibold select-all">{option.accountName}</span>
             <Button
               type="button"
               variant="ghost"
@@ -114,20 +99,20 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
               aria-label={copy.copy}
             >
               {copiedField === "name" ? (
-                <Check className="size-3.5 text-azure" />
+                <Check className="text-azure size-3.5" />
               ) : (
-                <Copy className="size-3.5 text-muted hover:text-text" />
+                <Copy className="text-muted hover:text-text size-3.5" />
               )}
             </Button>
           </div>
         </div>
 
-        <div className="rounded-md border border-hairline/60 bg-surface-elevated/40 p-3">
-          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">
+        <div className="border-hairline/60 bg-surface-elevated/40 rounded-md border p-3">
+          <span className="text-muted text-[11px] font-medium tracking-wider uppercase">
             {copy.accountNumber}
           </span>
           <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="font-mono font-bold tracking-wider text-text select-all">
+            <span className="text-text font-mono font-bold tracking-wider select-all">
               {option.accountNumber}
             </span>
             <Button
@@ -139,9 +124,9 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
               aria-label={copy.copy}
             >
               {copiedField === "number" ? (
-                <Check className="size-3.5 text-azure" />
+                <Check className="text-azure size-3.5" />
               ) : (
-                <Copy className="size-3.5 text-muted hover:text-text" />
+                <Copy className="text-muted hover:text-text size-3.5" />
               )}
             </Button>
           </div>
@@ -149,8 +134,8 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
       </div>
 
       {option.notes && (
-        <div className="mt-3 rounded border border-hairline/40 bg-surface/50 p-2.5 text-xs text-muted">
-          {copy.notes && <strong className="mr-1 text-text">{copy.notes}:</strong>}
+        <div className="border-hairline/40 bg-surface/50 text-muted mt-3 rounded border p-2.5 text-xs">
+          {copy.notes && <strong className="text-text mr-1">{copy.notes}:</strong>}
           <span>{option.notes}</span>
         </div>
       )}

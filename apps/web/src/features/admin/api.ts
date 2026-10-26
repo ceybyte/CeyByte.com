@@ -375,4 +375,3 @@ export async function updateDonationPaymentSettings(
     body: JSON.stringify(settings),
   });
 }
-

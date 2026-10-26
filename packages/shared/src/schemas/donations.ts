@@ -2,10 +2,7 @@ import { z } from "zod";
 import { normalizePhone } from "../phone";
 
 export const DonationCreateSchema = z.object({
-  amountCents: z
-    .number()
-    .int()
-    .min(10000, { message: "errors.DONATION_AMOUNT_TOO_LOW" }), // min Rs. 100.00
+  amountCents: z.number().int().min(10000, { message: "errors.DONATION_AMOUNT_TOO_LOW" }), // min Rs. 100.00
   displayName: z
     .string()
     .trim()

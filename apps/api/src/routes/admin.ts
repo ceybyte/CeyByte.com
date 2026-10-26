@@ -1,4 +1,4 @@
-import type { District, MerchantStatus } from "@cbpos/shared";
+import type { District, DonationStatus, MerchantStatus } from "@cbpos/shared";
 import {
   adminAuditLog,
   docsArticles,
@@ -639,9 +639,7 @@ export const adminRoutes = new Hono<AppEnv>()
     const pageSize = Math.max(1, Math.min(100, Number(c.req.query("pageSize") ?? 20)));
 
     const whereClause =
-      statusParam && statusParam !== "all"
-        ? eq(donations.status, statusParam as any)
-        : undefined;
+      statusParam && statusParam !== "all" ? eq(donations.status, statusParam as DonationStatus) : undefined;
 
     const orderClause =
       statusParam === "pending_review" ? asc(donations.createdAt) : desc(donations.createdAt);
@@ -679,10 +677,7 @@ export const adminRoutes = new Hono<AppEnv>()
         .orderBy(orderClause)
         .limit(pageSize)
         .offset((page - 1) * pageSize),
-      db
-        .select({ n: count() })
-        .from(donations)
-        .where(whereClause),
+      db.select({ n: count() }).from(donations).where(whereClause),
     ]);
 
     return c.json({
@@ -708,7 +703,7 @@ export const adminRoutes = new Hono<AppEnv>()
         slipSize: donations.slipSize,
       })
       .from(donations)
-      .where(eq(donations.id, id))
+      .where(or(eq(donations.id, id), eq(donations.referenceCode, id)))
       .get();
 
     if (!donation || !donation.slipKey) {
@@ -736,7 +731,7 @@ export const adminRoutes = new Hono<AppEnv>()
     const donation = await db
       .select()
       .from(donations)
-      .where(eq(donations.id, id))
+      .where(or(eq(donations.id, id), eq(donations.referenceCode, id)))
       .get();
 
     if (!donation) {
@@ -755,7 +750,7 @@ export const adminRoutes = new Hono<AppEnv>()
         reviewedAt: now,
         updatedAt: now,
       })
-      .where(eq(donations.id, id));
+      .where(eq(donations.id, donation.id));
 
     if (donation.merchantId) {
       await recomputeSupporter(db, donation.merchantId);
@@ -768,7 +763,7 @@ export const adminRoutes = new Hono<AppEnv>()
       actorUserId: user?.id ?? null,
       action: "approve",
       entityType: "donation",
-      entityId: id,
+      entityId: donation.id,
       diff: {
         before: { status: donation.status },
         after: { status: "approved", messageApproved },
@@ -778,7 +773,7 @@ export const adminRoutes = new Hono<AppEnv>()
     return c.json({
       ok: true,
       data: {
-        id,
+        id: donation.id,
         status: "approved",
       },
     });
@@ -799,7 +794,7 @@ export const adminRoutes = new Hono<AppEnv>()
     const donation = await db
       .select()
       .from(donations)
-      .where(eq(donations.id, id))
+      .where(or(eq(donations.id, id), eq(donations.referenceCode, id)))
       .get();
 
     if (!donation) {
@@ -817,7 +812,7 @@ export const adminRoutes = new Hono<AppEnv>()
         reviewedAt: now,
         updatedAt: now,
       })
-      .where(eq(donations.id, id));
+      .where(eq(donations.id, donation.id));
 
     if (donation.merchantId) {
       const stillSupporter = await recomputeSupporter(db, donation.merchantId);
@@ -832,7 +827,7 @@ export const adminRoutes = new Hono<AppEnv>()
       actorUserId: user?.id ?? null,
       action: "reject",
       entityType: "donation",
-      entityId: id,
+      entityId: donation.id,
       diff: {
         before: { status: donation.status },
         after: { status: "rejected", reason },
@@ -842,7 +837,7 @@ export const adminRoutes = new Hono<AppEnv>()
     return c.json({
       ok: true,
       data: {
-        id,
+        id: donation.id,
         status: "rejected",
       },
     });

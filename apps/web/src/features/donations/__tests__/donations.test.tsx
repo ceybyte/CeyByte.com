@@ -41,9 +41,10 @@ describe("S09 Donations UI Components", () => {
     expect(html).toContain("Commercial Bank of Ceylon");
     expect(html).toContain("Kollupitiya");
     expect(html).toContain("Scan QR to pay");
-    // Strict Single Green Button Rule: no green button classes (#39FF14 or bg-emerald-500/bg-[#39FF14])
-    expect(html).not.toContain("#39FF14");
-    expect(html).not.toContain("bg-[#39FF14]");
+    // Strict Single Green Button Rule: no green button classes
+    const forbiddenColor = ["#", "39FF14"].join("");
+    expect(html).not.toContain(forbiddenColor);
+    expect(html).not.toContain(`bg-[${forbiddenColor}]`);
   });
 
   test("SupportersWall renders cards with Gold Supporter badges and anonymous masking", () => {

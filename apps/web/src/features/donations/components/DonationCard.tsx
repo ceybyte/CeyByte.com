@@ -6,22 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { TurnstileWidget } from "@/components/gate/turnstile-widget";
 import { BankDetailsCard } from "./BankDetailsCard";
 import { SlipDropzone } from "./SlipDropzone";
-import {
-  createDonation,
-  fetchDonationStatus,
-  presignAndUploadSlip,
-  submitDonationSlip,
-} from "../api";
+import { createDonation, fetchDonationStatus, presignAndUploadSlip, submitDonationSlip } from "../api";
 import type { DonationPaymentOption } from "../types";
 
 export interface DonationCardProps {
@@ -121,9 +110,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
 
   // Step 2 & 3 State
   const [createdRef, setCreatedRef] = useState<string>("");
-  const [paymentOptions, setPaymentOptions] = useState<DonationPaymentOption[]>(
-    initialPaymentOptions || [],
-  );
+  const [paymentOptions, setPaymentOptions] = useState<DonationPaymentOption[]>(initialPaymentOptions || []);
   const [slipFile, setSlipFile] = useState<File | null>(null);
   const [txnReference, setTxnReference] = useState<string>("");
   const [isApproved, setIsApproved] = useState<boolean>(false);
@@ -175,8 +162,9 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
         setPaymentOptions(res.paymentOptions);
       }
       setStep(2);
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to initialize donation.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to initialize donation.";
+      setErrorMessage(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -194,11 +182,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
     setIsSubmitting(true);
     try {
       // 1. Upload slip to R2 presigned PUT
-      const { key } = await presignAndUploadSlip(
-        slipFile,
-        createdRef,
-        turnstileToken || undefined,
-      );
+      const { key } = await presignAndUploadSlip(slipFile, createdRef, turnstileToken || undefined);
 
       // 2. Submit confirmation to API
       await submitDonationSlip(createdRef, {
@@ -207,8 +191,9 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
       });
 
       setStep(3);
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to submit donation slip.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to submit donation slip.";
+      setErrorMessage(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -247,22 +232,23 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
         setStep(2);
       }
       setResumeOpen(false);
-    } catch (err: any) {
-      setResumeError(err.message || "Donation not found.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Donation not found.";
+      setResumeError(msg);
     } finally {
       setResumeLoading(false);
     }
   };
 
   return (
-    <div className="w-full rounded-xl border border-hairline bg-surface-elevated/40 p-6 shadow-sm md:p-8">
+    <div className="border-hairline bg-surface-elevated/40 w-full rounded-xl border p-6 shadow-sm md:p-8">
       {/* Top Header & Resume trigger */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-hairline/60 pb-4">
+      <div className="border-hairline/60 mb-6 flex flex-wrap items-center justify-between gap-3 border-b pb-4">
         <div className="flex items-center gap-2">
-          <span className="flex size-7 items-center justify-center rounded-full bg-gold/15 font-bold text-xs text-gold">
+          <span className="bg-gold/15 text-gold flex size-7 items-center justify-center rounded-full text-xs font-bold">
             {step === 3 ? "✓" : `0${step}`}
           </span>
-          <span className="font-semibold text-text text-sm uppercase tracking-wide">
+          <span className="text-text text-sm font-semibold tracking-wide uppercase">
             {step === 1
               ? "Step 1: Choose Amount"
               : step === 2
@@ -274,13 +260,8 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
         {step === 1 && (
           <Dialog open={resumeOpen} onOpenChange={setResumeOpen}>
             <DialogTrigger asChild>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="text-xs text-muted hover:text-text"
-              >
-                <Search className="size-3.5 mr-1" />
+              <Button type="button" variant="ghost" size="sm" className="text-muted hover:text-text text-xs">
+                <Search className="mr-1 size-3.5" />
                 {copy.resume.button}
               </Button>
             </DialogTrigger>
@@ -289,22 +270,15 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
                 <DialogTitle>{copy.resume.title}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleResumeLookup} className="mt-3 space-y-4">
-                <p className="text-xs text-muted">{copy.resume.prompt}</p>
+                <p className="text-muted text-xs">{copy.resume.prompt}</p>
                 <Input
                   value={resumeCode}
                   onChange={(e) => setResumeCode(e.target.value.toUpperCase())}
                   placeholder={copy.resume.placeholder}
-                  className="font-mono uppercase tracking-wider"
+                  className="font-mono tracking-wider uppercase"
                 />
-                {resumeError && (
-                  <p className="text-xs text-error">{resumeError}</p>
-                )}
-                <Button
-                  type="submit"
-                  variant="gold"
-                  loading={resumeLoading}
-                  className="w-full"
-                >
+                {resumeError && <p className="text-error text-xs">{resumeError}</p>}
+                <Button type="submit" variant="gold" loading={resumeLoading} className="w-full">
                   {copy.resume.submit}
                 </Button>
               </form>
@@ -314,8 +288,8 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
       </div>
 
       {errorMessage && (
-        <div className="mb-6 flex items-start gap-2.5 rounded-lg border border-error/40 bg-error/10 p-3.5 text-xs text-error">
-          <ShieldAlert className="size-4 shrink-0 mt-0.5" />
+        <div className="border-error/40 bg-error/10 text-error mb-6 flex items-start gap-2.5 rounded-lg border p-3.5 text-xs">
+          <ShieldAlert className="mt-0.5 size-4 shrink-0" />
           <span>{errorMessage}</span>
         </div>
       )}
@@ -325,9 +299,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
         <form onSubmit={handleStep1Submit} className="space-y-6">
           {/* Amount selector */}
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-text">
-              {copy.amount.label}
-            </label>
+            <label className="text-text text-sm font-semibold">{copy.amount.label}</label>
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-5">
               {PRESET_AMOUNTS.map((amt) => (
                 <button
@@ -371,7 +343,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
                   className="font-mono text-base"
                   required
                 />
-                <p className="mt-1 text-[11px] text-muted">{copy.amount.min}</p>
+                <p className="text-muted mt-1 text-[11px]">{copy.amount.min}</p>
               </div>
             )}
           </div>
@@ -379,9 +351,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
           {/* Name & Anonymous */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-semibold text-text">
-                {copy.name.label}
-              </label>
+              <label className="text-text text-sm font-semibold">{copy.name.label}</label>
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="anonymous-toggle"
@@ -390,7 +360,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
                 />
                 <label
                   htmlFor="anonymous-toggle"
-                  className="cursor-pointer text-xs font-medium text-muted hover:text-text select-none"
+                  className="text-muted hover:text-text cursor-pointer text-xs font-medium select-none"
                 >
                   {copy.anonymous}
                 </label>
@@ -409,9 +379,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
 
           {/* Public message & Show amount options */}
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-text">
-              {copy.message.label}
-            </label>
+            <label className="text-text text-sm font-semibold">{copy.message.label}</label>
             <Textarea
               value={publicMessage}
               onChange={(e) => setPublicMessage(e.target.value)}
@@ -427,7 +395,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
               />
               <label
                 htmlFor="show-amount-toggle"
-                className="cursor-pointer text-xs font-medium text-muted hover:text-text select-none"
+                className="text-muted hover:text-text cursor-pointer text-xs font-medium select-none"
               >
                 {copy.showAmount}
               </label>
@@ -435,7 +403,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
           </div>
 
           {/* Link merchant shop */}
-          <div className="rounded-lg border border-hairline/80 bg-surface/50 p-4 space-y-3">
+          <div className="border-hairline/80 bg-surface/50 space-y-3 rounded-lg border p-4">
             <div className="flex items-start gap-2.5">
               <Checkbox
                 id="link-merchant-toggle"
@@ -446,19 +414,17 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
               <div>
                 <label
                   htmlFor="link-merchant-toggle"
-                  className="cursor-pointer font-medium text-text text-xs leading-normal select-none flex items-center gap-1.5"
+                  className="text-text flex cursor-pointer items-center gap-1.5 text-xs leading-normal font-medium select-none"
                 >
-                  <Building2 className="size-3.5 text-gold" />
+                  <Building2 className="text-gold size-3.5" />
                   {copy.link.label}
                 </label>
               </div>
             </div>
 
             {linkMerchant && (
-              <div className="pl-6 pt-1 space-y-1">
-                <label className="text-[11px] font-medium text-muted">
-                  {copy.link.phone}
-                </label>
+              <div className="space-y-1 pt-1 pl-6">
+                <label className="text-muted text-[11px] font-medium">{copy.link.phone}</label>
                 <Input
                   value={linkMerchantPhone}
                   onChange={(e) => setLinkMerchantPhone(e.target.value)}
@@ -471,9 +437,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
 
           {/* Private contact */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted">
-              {copy.contact.label}
-            </label>
+            <label className="text-muted text-xs font-medium">{copy.contact.label}</label>
             <Input
               value={contactPrivate}
               onChange={(e) => setContactPrivate(e.target.value)}
@@ -481,11 +445,11 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
               maxLength={120}
               className="text-xs"
             />
-            <p className="text-[11px] text-muted">{copy.contact.help}</p>
+            <p className="text-muted text-[11px]">{copy.contact.help}</p>
           </div>
 
           {/* Turnstile Widget */}
-          <div className="pt-2 flex justify-center">
+          <div className="flex justify-center pt-2">
             <TurnstileWidget action="donation" onToken={setTurnstileToken} />
           </div>
 
@@ -507,15 +471,13 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
       {step === 2 && (
         <form onSubmit={handleStep2Submit} className="space-y-6">
           {/* Reference Banner */}
-          <div className="rounded-lg border border-gold/40 bg-gold/10 p-5">
+          <div className="border-gold/40 bg-gold/10 rounded-lg border p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-gold">
+                <span className="text-gold text-xs font-bold tracking-wider uppercase">
                   Transfer Reference Code
                 </span>
-                <h3 className="font-mono text-2xl font-black tracking-wider text-text">
-                  {createdRef}
-                </h3>
+                <h3 className="text-text font-mono text-2xl font-black tracking-wider">{createdRef}</h3>
               </div>
               <Button
                 type="button"
@@ -526,7 +488,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
               >
                 {refCopied ? (
                   <>
-                    <Check className="size-3.5 text-azure" />
+                    <Check className="text-azure size-3.5" />
                     {copy.bank.copied}
                   </>
                 ) : (
@@ -537,14 +499,12 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
                 )}
               </Button>
             </div>
-            <p className="mt-2 text-xs leading-relaxed text-muted">
-              {copy.ref.help}
-            </p>
+            <p className="text-muted mt-2 text-xs leading-relaxed">{copy.ref.help}</p>
           </div>
 
           {/* Bank details cards */}
           <div className="space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted">
+            <h4 className="text-muted text-xs font-semibold tracking-wider uppercase">
               Transfer to any of the following accounts:
             </h4>
             <div className="space-y-4">
@@ -557,18 +517,11 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
           </div>
 
           {/* Slip Dropzone */}
-          <SlipDropzone
-            file={slipFile}
-            onFileSelect={setSlipFile}
-            copy={copy.slip}
-            disabled={isSubmitting}
-          />
+          <SlipDropzone file={slipFile} onFileSelect={setSlipFile} copy={copy.slip} disabled={isSubmitting} />
 
           {/* Bank Transaction Reference (Optional) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted">
-              {copy.txnRef.label}
-            </label>
+            <label className="text-muted text-xs font-medium">{copy.txnRef.label}</label>
             <Input
               value={txnReference}
               onChange={(e) => setTxnReference(e.target.value)}
@@ -576,7 +529,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
               maxLength={64}
               className="font-mono text-xs"
             />
-            <p className="text-[11px] text-muted">{copy.txnRef.help}</p>
+            <p className="text-muted text-[11px]">{copy.txnRef.help}</p>
           </div>
 
           {/* CTA: Strictly Gold, Never Green! */}
@@ -596,17 +549,15 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
 
       {/* STEP 3: Pending Confirmation */}
       {step === 3 && (
-        <div className="flex flex-col items-center justify-center p-6 text-center space-y-4">
-          <div className="flex size-14 items-center justify-center rounded-full bg-gold/20 text-gold">
+        <div className="flex flex-col items-center justify-center space-y-4 p-6 text-center">
+          <div className="bg-gold/20 text-gold flex size-14 items-center justify-center rounded-full">
             <CheckCircle className="size-8" />
           </div>
-          <h3 className="text-xl font-bold text-text">
+          <h3 className="text-text text-xl font-bold">
             {isApproved ? copy.approved.title : copy.pending.title}
           </h3>
-          <p className="max-w-md text-xs leading-relaxed text-muted">
-            {copy.pending.body}
-          </p>
-          <div className="mt-2 rounded border border-hairline bg-surface px-4 py-2 font-mono text-xs font-bold text-text">
+          <p className="text-muted max-w-md text-xs leading-relaxed">{copy.pending.body}</p>
+          <div className="border-hairline bg-surface text-text mt-2 rounded border px-4 py-2 font-mono text-xs font-bold">
             Reference: {createdRef}
           </div>
         </div>

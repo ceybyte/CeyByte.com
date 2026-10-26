@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Trash2, Save, UploadCloud, CheckCircle2, AlertCircle, QrCode } from "lucide-react";
+import { Plus, Trash2, Save, CheckCircle2, AlertCircle, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,13 +15,8 @@ export interface DonationSettingsProps {
   onSaved?: (saved: DonationPaymentOptionItem[]) => void;
 }
 
-export function DonationSettings({
-  initialSettings,
-  onSaved,
-}: DonationSettingsProps) {
-  const [settings, setSettings] = useState<DonationPaymentOptionItem[]>(
-    initialSettings || [],
-  );
+export function DonationSettings({ initialSettings, onSaved }: DonationSettingsProps) {
+  const [settings, setSettings] = useState<DonationPaymentOptionItem[]>(initialSettings || []);
   const [saving, setSaving] = useState(false);
   const [uploadingQrIndex, setUploadingQrIndex] = useState<number | null>(null);
   const [message, setMessage] = useState<{
@@ -49,15 +44,15 @@ export function DonationSettings({
     setMessage(null);
   };
 
-  const handleFieldChange = (
+  const handleFieldChange = <K extends keyof DonationPaymentOptionItem>(
     index: number,
-    field: keyof DonationPaymentOptionItem,
-    value: any,
+    field: K,
+    value: DonationPaymentOptionItem[K],
   ) => {
     setSettings((prev) => {
       const copy = [...prev];
       const target = { ...copy[index] };
-      (target as any)[field] = value;
+      (target as Record<string, unknown>)[field] = value;
       copy[index] = target as DonationPaymentOptionItem;
       return copy;
     });
@@ -78,9 +73,10 @@ export function DonationSettings({
       setMessage(null);
       const { key } = await presignAndUploadSlip(file, `qr-${Date.now()}`);
       handleFieldChange(index, "qrImageKey", key);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to upload QR code image.";
       setMessage({
-        text: err.message || "Failed to upload QR code image.",
+        text: msg,
         type: "error",
       });
     } finally {
@@ -122,9 +118,10 @@ export function DonationSettings({
       setSettings(saved);
       setMessage({ text: "Settings saved successfully.", type: "success" });
       if (onSaved) onSaved(saved);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to save payment options.";
       setMessage({
-        text: err.message || "Failed to save payment options.",
+        text: msg,
         type: "error",
       });
     } finally {
@@ -134,12 +131,10 @@ export function DonationSettings({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-hairline pb-4">
+      <div className="border-hairline flex flex-wrap items-center justify-between gap-4 border-b pb-4">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-text">
-            Donation Payment Options
-          </h2>
-          <p className="mt-1 text-xs text-muted">
+          <h2 className="text-text text-xl font-bold tracking-tight">Donation Payment Options</h2>
+          <p className="text-muted mt-1 text-xs">
             Configure bank accounts and QR codes shown to donors on the donation page.
           </p>
         </div>
@@ -175,26 +170,22 @@ export function DonationSettings({
 
       <form onSubmit={handleSave} className="space-y-6">
         {settings.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-hairline p-12 text-center text-muted">
-            <QrCode className="size-10 text-muted/40" />
+          <div className="border-hairline text-muted flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+            <QrCode className="text-muted/40 size-10" />
             <p className="mt-2 text-sm font-medium">No bank accounts configured.</p>
-            <p className="mt-1 text-xs">
-              Click &ldquo;Add Bank Account&rdquo; above to create one.
-            </p>
+            <p className="mt-1 text-xs">Click &ldquo;Add Bank Account&rdquo; above to create one.</p>
           </div>
         ) : (
           <div className="space-y-5">
             {settings.map((account, index) => (
               <div
                 key={account.id}
-                className="relative rounded-lg border border-hairline bg-surface p-5 shadow-xs transition-colors"
+                className="border-hairline bg-surface relative rounded-lg border p-5 shadow-xs transition-colors"
               >
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-hairline/60 pb-3">
+                <div className="border-hairline/60 mb-4 flex flex-wrap items-center justify-between gap-3 border-b pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-muted">
-                      #{index + 1}
-                    </span>
-                    <span className="font-semibold text-text text-sm">
+                    <span className="text-muted font-mono text-xs font-bold">#{index + 1}</span>
+                    <span className="text-text text-sm font-semibold">
                       {account.bankName || "New Account"}
                     </span>
                   </div>
@@ -204,13 +195,11 @@ export function DonationSettings({
                       <Switch
                         id={`enabled-${account.id}`}
                         checked={account.isEnabled}
-                        onCheckedChange={(val) =>
-                          handleFieldChange(index, "isEnabled", val)
-                        }
+                        onCheckedChange={(val) => handleFieldChange(index, "isEnabled", val)}
                       />
                       <label
                         htmlFor={`enabled-${account.id}`}
-                        className="cursor-pointer text-xs font-medium text-text select-none"
+                        className="text-text cursor-pointer text-xs font-medium select-none"
                       >
                         Active
                       </label>
@@ -221,7 +210,7 @@ export function DonationSettings({
                       variant="ghost"
                       size="icon"
                       onClick={() => handleRemoveAccount(index)}
-                      className="size-8 text-muted hover:text-error"
+                      className="text-muted hover:text-error size-8"
                       aria-label="Delete bank account"
                     >
                       <Trash2 className="size-4" />
@@ -231,87 +220,67 @@ export function DonationSettings({
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-text">
-                      Bank Name *
-                    </label>
+                    <label className="text-text text-xs font-semibold">Bank Name *</label>
                     <Input
                       value={account.bankName}
-                      onChange={(e) =>
-                        handleFieldChange(index, "bankName", e.target.value)
-                      }
+                      onChange={(e) => handleFieldChange(index, "bankName", e.target.value)}
                       placeholder="Commercial Bank of Ceylon"
                       required
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-text">
-                      Branch Name *
-                    </label>
+                    <label className="text-text text-xs font-semibold">Branch Name *</label>
                     <Input
                       value={account.branchName}
-                      onChange={(e) =>
-                        handleFieldChange(index, "branchName", e.target.value)
-                      }
+                      onChange={(e) => handleFieldChange(index, "branchName", e.target.value)}
                       placeholder="Kollupitiya"
                       required
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-text">
-                      Account Name *
-                    </label>
+                    <label className="text-text text-xs font-semibold">Account Name *</label>
                     <Input
                       value={account.accountName}
-                      onChange={(e) =>
-                        handleFieldChange(index, "accountName", e.target.value)
-                      }
+                      onChange={(e) => handleFieldChange(index, "accountName", e.target.value)}
                       placeholder="CeyByte Foundation"
                       required
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-text">
-                      Account Number *
-                    </label>
+                    <label className="text-text text-xs font-semibold">Account Number *</label>
                     <Input
                       value={account.accountNumber}
-                      onChange={(e) =>
-                        handleFieldChange(index, "accountNumber", e.target.value)
-                      }
+                      onChange={(e) => handleFieldChange(index, "accountNumber", e.target.value)}
                       placeholder="100012345678"
                       className="font-mono"
                       required
                     />
                   </div>
 
-                  <div className="sm:col-span-2 space-y-1">
-                    <label className="text-xs font-semibold text-text">
+                  <div className="space-y-1 sm:col-span-2">
+                    <label className="text-text text-xs font-semibold">
                       Transfer Instructions / Notes (Optional)
                     </label>
                     <Textarea
                       value={account.notes || ""}
-                      onChange={(e) =>
-                        handleFieldChange(index, "notes", e.target.value || null)
-                      }
+                      onChange={(e) => handleFieldChange(index, "notes", e.target.value || null)}
                       placeholder="Please include your reference code in transfer remarks."
                       rows={2}
                     />
                   </div>
 
                   {/* QR Upload / Key */}
-                  <div className="sm:col-span-2 rounded border border-hairline/60 bg-surface-elevated/40 p-3 space-y-2">
+                  <div className="border-hairline/60 bg-surface-elevated/40 space-y-2 rounded border p-3 sm:col-span-2">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <label className="text-xs font-semibold text-text flex items-center gap-1.5">
-                        <QrCode className="size-3.5 text-muted" />
+                      <label className="text-text flex items-center gap-1.5 text-xs font-semibold">
+                        <QrCode className="text-muted size-3.5" />
                         QR Code Image (Optional)
                       </label>
                       {account.qrImageKey && (
-                        <span className="font-mono text-[10px] text-azure">
-                          {account.qrImageKey}
-                        </span>
+                        <span className="text-azure font-mono text-[10px]">{account.qrImageKey}</span>
                       )}
                     </div>
 
@@ -332,10 +301,8 @@ export function DonationSettings({
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() =>
-                            handleFieldChange(index, "qrImageKey", null)
-                          }
-                          className="text-xs text-muted hover:text-error"
+                          onClick={() => handleFieldChange(index, "qrImageKey", null)}
+                          className="text-muted hover:text-error text-xs"
                         >
                           Remove QR
                         </Button>
@@ -354,7 +321,7 @@ export function DonationSettings({
             variant="secondary"
             loading={saving}
             disabled={settings.length === 0}
-            className="gap-2 font-bold px-6"
+            className="gap-2 px-6 font-bold"
           >
             <Save className="size-4" />
             Save Payment Options

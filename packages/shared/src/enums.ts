@@ -109,6 +109,7 @@ export const DONATION_STATUSES = [
   "cancelled",
   "refunded",
 ] as const;
+export type DonationStatus = (typeof DONATION_STATUSES)[number];
 
 export const AUDIT_LEVELS = ["info", "warn"] as const;
 

@@ -4,11 +4,7 @@ import React, { useEffect, useState } from "react";
 import { HeartHandshake, Settings, Inbox, Loader2 } from "lucide-react";
 import { DonationsQueue } from "./donations-queue";
 import { DonationSettings } from "./donation-settings";
-import {
-  fetchAdminDonations,
-  fetchDonationPaymentSettings,
-  type AdminDonation,
-} from "../api";
+import { fetchAdminDonations, fetchDonationPaymentSettings, type AdminDonation } from "../api";
 import type { DonationPaymentOptionItem } from "@cbpos/shared";
 
 export function AdminDonationsPortal() {
@@ -28,8 +24,9 @@ export function AdminDonationsPortal() {
       ]);
       setDonations(donationsRes.items || []);
       setSettings(settingsRes || []);
-    } catch (err: any) {
-      setError(err.message || "Failed to load donations portal data.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to load donations portal data.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -44,23 +41,21 @@ export function AdminDonationsPortal() {
   return (
     <div className="space-y-6">
       {/* Top Banner & Tab Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-hairline pb-4">
+      <div className="border-hairline flex flex-wrap items-center justify-between gap-4 border-b pb-4">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg border border-gold/30 bg-gold/10 text-gold">
+          <div className="border-gold/30 bg-gold/10 text-gold flex size-10 items-center justify-center rounded-lg border">
             <HeartHandshake className="size-5" />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-text">
-              Donations & Payment Management
-            </h1>
-            <p className="text-xs text-muted">
+            <h1 className="text-text text-xl font-bold tracking-tight">Donations & Payment Management</h1>
+            <p className="text-muted text-xs">
               Review transfer slips, approve Gold Supporter badges, and manage bank accounts.
             </p>
           </div>
         </div>
 
         {/* Tab switchers */}
-        <div className="flex items-center gap-1 rounded-lg border border-hairline bg-surface p-1">
+        <div className="border-hairline bg-surface flex items-center gap-1 rounded-lg border p-1">
           <button
             type="button"
             onClick={() => setActiveTab("queue")}
@@ -73,7 +68,7 @@ export function AdminDonationsPortal() {
             <Inbox className="size-3.5" />
             Queue
             {pendingCount > 0 && (
-              <span className="rounded-full bg-gold/20 px-1.5 py-0.2 font-mono text-[10px] font-bold text-gold">
+              <span className="bg-gold/20 py-0.2 text-gold rounded-full px-1.5 font-mono text-[10px] font-bold">
                 {pendingCount}
               </span>
             )}
@@ -96,30 +91,23 @@ export function AdminDonationsPortal() {
 
       {loading ? (
         <div className="flex h-64 items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-azure" />
+          <Loader2 className="text-azure size-6 animate-spin" />
         </div>
       ) : error ? (
-        <div className="rounded-lg border border-error/40 bg-error/10 p-6 text-center text-xs text-error">
+        <div className="border-error/40 bg-error/10 text-error rounded-lg border p-6 text-center text-xs">
           <p>{error}</p>
           <button
             type="button"
             onClick={loadData}
-            className="mt-3 text-xs underline hover:no-underline font-semibold"
+            className="mt-3 text-xs font-semibold underline hover:no-underline"
           >
             Try reloading
           </button>
         </div>
       ) : activeTab === "queue" ? (
-        <DonationsQueue
-          initialDonations={donations}
-          total={donations.length}
-          onRefresh={loadData}
-        />
+        <DonationsQueue initialDonations={donations} total={donations.length} onRefresh={loadData} />
       ) : (
-        <DonationSettings
-          initialSettings={settings}
-          onSaved={(newSettings) => setSettings(newSettings)}
-        />
+        <DonationSettings initialSettings={settings} onSaved={(newSettings) => setSettings(newSettings)} />
       )}
     </div>
   );

@@ -19,12 +19,7 @@ export async function cleanupDonations(
   const abandoned = await db
     .select({ id: donations.id })
     .from(donations)
-    .where(
-      and(
-        eq(donations.status, "awaiting_payment"),
-        lt(donations.createdAt, fourteenDaysAgo),
-      ),
-    );
+    .where(and(eq(donations.status, "awaiting_payment"), lt(donations.createdAt, fourteenDaysAgo)));
 
   let cancelledCount = 0;
   for (const item of abandoned) {

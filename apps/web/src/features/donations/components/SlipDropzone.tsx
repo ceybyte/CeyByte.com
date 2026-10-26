@@ -21,12 +21,7 @@ const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 const ALLOWED_EXTS = [".jpg", ".jpeg", ".png", ".pdf"];
 
-export function SlipDropzone({
-  file,
-  onFileSelect,
-  copy,
-  disabled = false,
-}: SlipDropzoneProps) {
+export function SlipDropzone({ file, onFileSelect, copy, disabled = false }: SlipDropzoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -41,8 +36,7 @@ export function SlipDropzone({
     }
 
     const ext = "." + (selectedFile.name.split(".").pop()?.toLowerCase() || "");
-    const isValidType =
-      ALLOWED_TYPES.includes(selectedFile.type) || ALLOWED_EXTS.includes(ext);
+    const isValidType = ALLOWED_TYPES.includes(selectedFile.type) || ALLOWED_EXTS.includes(ext);
 
     if (!isValidType) {
       setError("Only JPG, PNG and PDF files are allowed.");
@@ -90,12 +84,12 @@ export function SlipDropzone({
 
   return (
     <div className="w-full space-y-2">
-      <label className="text-sm font-semibold text-text">{copy.label}</label>
+      <label className="text-text text-sm font-semibold">{copy.label}</label>
 
       {file ? (
-        <div className="flex items-center justify-between rounded-lg border border-gold/40 bg-gold/5 p-4 transition-all">
+        <div className="border-gold/40 bg-gold/5 flex items-center justify-between rounded-lg border p-4 transition-all">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-gold/20 text-gold">
+            <div className="bg-gold/20 text-gold flex size-10 shrink-0 items-center justify-center rounded-md">
               {file.type === "application/pdf" ? (
                 <FileText className="size-5" />
               ) : (
@@ -103,10 +97,8 @@ export function SlipDropzone({
               )}
             </div>
             <div className="overflow-hidden">
-              <p className="truncate text-sm font-medium text-text">{file.name}</p>
-              <p className="text-xs text-muted">
-                {(file.size / 1024).toFixed(1)} KB
-              </p>
+              <p className="text-text truncate text-sm font-medium">{file.name}</p>
+              <p className="text-muted text-xs">{(file.size / 1024).toFixed(1)} KB</p>
             </div>
           </div>
 
@@ -116,7 +108,7 @@ export function SlipDropzone({
             size="icon"
             onClick={handleClear}
             disabled={disabled}
-            className="size-8 text-muted hover:text-text"
+            className="text-muted hover:text-text size-8"
             aria-label="Remove slip"
           >
             <X className="size-4" />
@@ -142,14 +134,14 @@ export function SlipDropzone({
             className="hidden"
             disabled={disabled}
           />
-          <UploadCloud className="size-9 text-muted/60" />
-          <p className="mt-2 text-sm font-medium text-text">{copy.drag}</p>
-          <p className="mt-1 text-xs text-muted">{copy.help}</p>
+          <UploadCloud className="text-muted/60 size-9" />
+          <p className="text-text mt-2 text-sm font-medium">{copy.drag}</p>
+          <p className="text-muted mt-1 text-xs">{copy.help}</p>
         </div>
       )}
 
       {error && (
-        <div className="flex items-center gap-1.5 text-xs font-medium text-error">
+        <div className="text-error flex items-center gap-1.5 text-xs font-medium">
           <AlertCircle className="size-3.5" />
           <span>{error}</span>
         </div>

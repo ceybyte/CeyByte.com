@@ -835,6 +835,6 @@
       "title": "Donations this month",
       "body": "Rs. {total} from {count} supporters, updated live."
     },
-    "legal": "Donations are voluntary and don't unlock any features. They aren't tax-deductible, and we can't refund them except where the law requires it."
+    "legal": "Donations are voluntary and do not activate extra features or software tiers. They aren't tax-deductible, and we can't refund them except where the law requires it."
   }
 }
