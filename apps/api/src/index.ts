@@ -18,7 +18,7 @@ import { donationsRoutes } from "./routes/donations";
 import { meRoutes } from "./routes/me";
 import { syncReleases } from "./lib/releases-sync";
 import { rebuildIfDirty } from "./lib/geo-cache";
-import { cleanupDonations } from "./scheduled";
+import { cleanupDonations, checkScheduledPosts } from "./scheduled";
 import { makeDb } from "./lib/db";
 import type { AppEnv } from "./types";
 
@@ -117,7 +117,12 @@ app.notFound(onNotFound);
 export async function scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
   const db = makeDb(env.DB);
   ctx.waitUntil(
-    Promise.all([syncReleases(env, "cron"), rebuildIfDirty(env.CACHE_KV, db), cleanupDonations(env, db)]),
+    Promise.all([
+      syncReleases(env, "cron"),
+      rebuildIfDirty(env.CACHE_KV, db),
+      cleanupDonations(env, db),
+      checkScheduledPosts(env, db),
+    ]),
   );
 }
 

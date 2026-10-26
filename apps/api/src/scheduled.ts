@@ -1,6 +1,8 @@
-import { donations } from "@cbpos/shared/db/schema";
-import { and, eq, isNotNull, lt } from "drizzle-orm";
+import { blogPosts, donations } from "@cbpos/shared/db/schema";
+import { and, eq, isNotNull, lt, lte } from "drizzle-orm";
 import type { Db } from "./lib/db";
+import { triggerRebuild } from "./lib/rebuild";
+import { auditInsert } from "./lib/audit";
 
 /**
  * Daily cron cleanup for donations:
@@ -65,4 +67,50 @@ export async function cleanupDonations(
   }
 
   return { cancelledCount, purgedSlipsCount };
+}
+
+/**
+ * Cron task to activate scheduled blog posts that have reached their publishedAt time.
+ * If any posts transition to published, triggers site rebuild.
+ */
+export async function checkScheduledPosts(
+  env: Env,
+  db: Db,
+): Promise<{ publishedCount: number }> {
+  const now = new Date();
+  const duePosts = await db
+    .select({ id: blogPosts.id, title: blogPosts.title, slug: blogPosts.slug, locale: blogPosts.locale })
+    .from(blogPosts)
+    .where(and(eq(blogPosts.status, "scheduled"), lte(blogPosts.publishedAt, now)));
+
+  let publishedCount = 0;
+  for (const post of duePosts) {
+    await db
+      .update(blogPosts)
+      .set({
+        status: "published",
+        updatedAt: now,
+      })
+      .where(eq(blogPosts.id, post.id));
+
+    await auditInsert(db, {
+      actorUserId: null,
+      action: "post.publish_scheduled",
+      entityType: "post",
+      entityId: post.id,
+      diff: {
+        before: { status: "scheduled" },
+        after: { status: "published" },
+        note: `Automatically published scheduled post "${post.title}"`,
+      },
+    });
+
+    publishedCount++;
+  }
+
+  if (publishedCount > 0) {
+    await triggerRebuild(env, "scheduled_blog_publish");
+  }
+
+  return { publishedCount };
 }

@@ -7,6 +7,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { processMarkdown, calculateReadingTime, extractPlainText } from "../packages/shared/src/markdown/index";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -92,21 +94,97 @@ async function run() {
     }
   }
 
-  // 3. Blog Posts
+  // 3. Blog Posts (Strict schedule enforcement: future scheduled posts must never be included in production)
+  const nowMs = Date.now();
   const blogStatusFilter =
-    target === "production" ? "WHERE status = 'published'" : "WHERE status IN ('published', 'draft')";
-  const blogQuery = `SELECT id, translation_key, locale, slug, title, excerpt, body_md, tags, status, reading_minutes, published_at FROM blog_posts ${blogStatusFilter} ORDER BY published_at DESC;`;
+    target === "production"
+      ? "WHERE (status = 'published' AND (published_at IS NULL OR published_at <= " +
+        nowMs +
+        ")) OR (status = 'scheduled' AND published_at <= " +
+        nowMs +
+        ")"
+      : "WHERE status IN ('published', 'draft', 'scheduled')";
+  const blogQuery = `SELECT id, translation_key, locale, slug, title, excerpt, body_md, body_hast, toc_json, cover_image_key, cover_alt, og_image_key, tags, status, reading_minutes, seo_title, seo_description, published_at, created_at, updated_at FROM blog_posts ${blogStatusFilter} ORDER BY published_at DESC;`;
   const rawBlog = await queryD1<Record<string, unknown> & { locale?: string }>(blogQuery);
-  const blog: Array<Record<string, unknown> & { locale?: string }> =
+  const blogPool: Array<Record<string, unknown> & { locale?: string }> =
     rawBlog && rawBlog.length > 0 ? [...rawBlog] : (fallbackData?.blog ?? []);
   if (fallbackData?.blog) {
-    const presentLocales = new Set(blog.map((b) => b.locale));
+    const presentLocales = new Set(blogPool.map((b) => b.locale));
     for (const loc of ["en", "si", "ta"]) {
       if (!presentLocales.has(loc)) {
         const missing = fallbackData.blog.filter((b) => b.locale === loc);
-        blog.push(...missing);
+        blogPool.push(...missing);
       }
     }
+  }
+
+  // Filter out any future scheduled posts if using fixtures in production
+  const filteredBlog =
+    target === "production"
+      ? blogPool.filter((p) => {
+          if (p.status === "scheduled" || p.status === "published") {
+            if (p.published_at && typeof p.published_at === "number" && p.published_at > nowMs) {
+              return false;
+            }
+          }
+          return p.status === "published" || p.status === "scheduled";
+        })
+      : blogPool;
+
+  // Process markdown AST and TOC for each blog post
+  const blog = [];
+  for (const raw of filteredBlog) {
+    const bodyMd = String(raw.body_md || raw.bodyMd || "");
+    const locale = String(raw.locale || "en");
+    const proc = await processMarkdown(bodyMd, { locale });
+    const plain = extractPlainText(bodyMd);
+    const readingMinutes = Number(raw.reading_minutes || raw.readingMinutes) || calculateReadingTime(plain);
+
+    let tags: string[] = [];
+    if (Array.isArray(raw.tags)) {
+      tags = raw.tags as string[];
+    } else if (typeof raw.tags === "string") {
+      try {
+        const parsedTags = JSON.parse(raw.tags);
+        tags = Array.isArray(parsedTags) ? parsedTags : [raw.tags];
+      } catch {
+        tags = raw.tags.split(",").map((t) => t.trim()).filter(Boolean);
+      }
+    }
+
+    blog.push({
+      id: raw.id,
+      translationKey: raw.translation_key || raw.translationKey,
+      translation_key: raw.translation_key || raw.translationKey,
+      locale,
+      slug: raw.slug,
+      title: raw.title,
+      excerpt: raw.excerpt,
+      bodyMd,
+      body_md: bodyMd,
+      html: proc.html,
+      bodyHast: proc.html,
+      body_hast: proc.html,
+      toc: proc.toc,
+      tocJson: proc.toc,
+      toc_json: proc.toc,
+      coverImageKey: raw.cover_image_key || raw.coverImageKey || null,
+      cover_image_key: raw.cover_image_key || raw.coverImageKey || null,
+      coverAlt: raw.cover_alt || raw.coverAlt || null,
+      cover_alt: raw.cover_alt || raw.coverAlt || null,
+      ogImageKey: raw.og_image_key || raw.ogImageKey || null,
+      og_image_key: raw.og_image_key || raw.ogImageKey || null,
+      tags,
+      status: raw.status || "published",
+      readingMinutes,
+      reading_minutes: readingMinutes,
+      seoTitle: raw.seo_title || raw.seoTitle || null,
+      seoDescription: raw.seo_description || raw.seoDescription || null,
+      publishedAt: raw.published_at || raw.publishedAt || null,
+      published_at: raw.published_at || raw.publishedAt || null,
+      createdAt: raw.created_at || raw.createdAt || null,
+      updatedAt: raw.updated_at || raw.updatedAt || null,
+    });
   }
 
   // 4. Releases
