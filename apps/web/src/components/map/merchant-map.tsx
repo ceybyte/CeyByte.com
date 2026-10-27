@@ -341,7 +341,16 @@ export function MerchantMap({
       }
     });
 
+    // Automatically resize map when parent container changes width (e.g. desktop sidebar toggle)
+    const resizeObserver = new ResizeObserver(() => {
+      map.resize();
+    });
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
     return () => {
+      resizeObserver.disconnect();
       if (popupRef.current) {
         popupRef.current.remove();
       }

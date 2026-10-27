@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { ChevronUp, SlidersHorizontal, Plus } from "lucide-react";
+import { ChevronUp, SlidersHorizontal, Plus, PanelLeft, PanelLeftClose } from "lucide-react";
 import { useGate } from "@/components/gate/gate-context";
 import { useMerchantGeo } from "./use-merchant-geo";
 import { FilterBar } from "./filter-bar";
@@ -37,6 +37,7 @@ export function MapShell() {
   const [flyToCoords, setFlyToCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [isWebglSupported, setIsWebglSupported] = useState<boolean>(true);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState<boolean>(true);
 
   // WebGL context check
   useEffect(() => {
@@ -136,14 +137,27 @@ export function MapShell() {
       {/* Desktop Left Panel (360px wide, #252526 per DESIGN S03) */}
       <aside
         aria-label="Merchant map filters and directory"
-        className="border-hairline bg-surface z-10 hidden w-[360px] shrink-0 flex-col overflow-hidden border-r md:flex"
+        className={`border-hairline bg-surface z-10 hidden shrink-0 flex-col overflow-hidden border-r transition-[width,opacity] duration-300 md:flex ${
+          isDesktopSidebarOpen ? "w-[360px] opacity-100" : "pointer-events-none w-0 border-r-0 opacity-0"
+        }`}
       >
         {/* Panel Header */}
-        <div className="border-hairline bg-surface border-b p-4">
-          <h1 className="text-text text-base leading-tight font-semibold">{t("title")}</h1>
-          <p className="text-text-muted mt-1 font-mono text-xs">
-            {t("subtitle", { shops: totalCount, covered: coveredCount })}
-          </p>
+        <div className="border-hairline bg-surface flex items-start justify-between border-b p-4">
+          <div>
+            <h1 className="text-text text-base leading-tight font-semibold">{t("title")}</h1>
+            <p className="text-text-muted mt-1 font-mono text-xs">
+              {t("subtitle", { shops: totalCount, covered: coveredCount })}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsDesktopSidebarOpen(false)}
+            title="Collapse sidebar"
+            className="text-text-muted hover:text-text hover:bg-surface-elevated focus-visible:ring-azure rounded-md p-1.5 transition-colors focus-visible:ring-1 focus-visible:outline-none"
+            aria-label="Collapse sidebar"
+          >
+            <PanelLeftClose className="h-4 w-4" />
+          </button>
         </div>
 
         {/* Filter Bar */}
@@ -209,6 +223,22 @@ export function MapShell() {
           onVisibleCountChange={setVisibleCount}
           flyToCoords={flyToCoords}
         />
+
+        {/* Desktop Floating Toggle Button (shown when sidebar is collapsed) */}
+        {!isDesktopSidebarOpen && (
+          <button
+            type="button"
+            onClick={() => setIsDesktopSidebarOpen(true)}
+            className="border-hairline bg-surface/90 text-text hover:bg-surface-elevated hover:border-azure/40 absolute top-4 left-4 z-20 hidden items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium shadow-md backdrop-blur-md transition-all md:flex"
+            aria-label={t("coverage.title")}
+          >
+            <PanelLeft className="text-azure-text h-4 w-4" />
+            <span>{t("coverage.title")}</span>
+            <span className="text-text-muted bg-surface-elevated border-hairline rounded border px-1.5 py-0.5 font-mono text-[11px]">
+              {coveredCount}/25
+            </span>
+          </button>
+        )}
 
         {/* Mobile Header Bar & Drawer Trigger (< md) */}
         <div className="absolute inset-x-3 top-3 z-10 flex items-center gap-2 md:hidden">
