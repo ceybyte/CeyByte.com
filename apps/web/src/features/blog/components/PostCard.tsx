@@ -26,42 +26,42 @@ export function PostCard({ post, locale, readingTimeLabel, isAlsoInEnglish = fal
   const timeLabel = readingTimeLabel || `${post.readingMinutes} min read`;
 
   return (
-    <article className="group relative flex flex-col justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 backdrop-blur-sm transition-all duration-200 hover:border-cyan-500/40 hover:bg-zinc-900/80">
+    <article className="group border-hairline bg-surface/70 hover:border-azure/40 hover:bg-surface-elevated/80 relative flex flex-col justify-between rounded-2xl border p-5 shadow-xs backdrop-blur-sm transition-all duration-200">
       <div className="space-y-3">
         {/* Meta Strip */}
-        <div className="flex items-center justify-between font-mono text-[11px] text-zinc-400">
+        <div className="text-2xs text-muted flex items-center justify-between font-mono">
           <div className="flex flex-wrap items-center gap-1.5">
             {post.tags[0] && (
-              <span className="rounded bg-zinc-800/80 px-2 py-0.5 font-semibold text-cyan-300 uppercase">
+              <span className="border-hairline bg-surface-elevated text-2xs text-azure-text rounded-full border px-2 py-0.5 font-semibold uppercase">
                 {post.tags[0]}
               </span>
             )}
             {isAlsoInEnglish && (
-              <span className="rounded border border-cyan-800/50 bg-cyan-950/60 px-1.5 py-0.5 font-mono text-[10px] text-cyan-300">
+              <span className="border-azure/30 bg-azure/10 text-azure-text rounded-full border px-1.5 py-0.5 font-mono text-[10px] font-semibold">
                 EN
               </span>
             )}
           </div>
-          <span className="text-zinc-500 uppercase">{timeLabel}</span>
+          <span className="text-muted uppercase">{timeLabel}</span>
         </div>
 
         {/* Title */}
-        <h3 className="text-foreground line-clamp-2 text-lg font-bold tracking-tight transition-colors group-hover:text-cyan-300">
+        <h3 className="text-foreground group-hover:text-azure-text line-clamp-2 text-lg font-bold tracking-tight transition-colors">
           <Link href={postUrl} className="focus:outline-none">
             {post.title}
           </Link>
         </h3>
 
         {/* Excerpt */}
-        <p className="line-clamp-3 text-sm leading-relaxed text-zinc-400">{post.excerpt}</p>
+        <p className="text-muted line-clamp-3 text-sm leading-relaxed">{post.excerpt}</p>
       </div>
 
       {/* Footer */}
-      <div className="mt-5 flex items-center justify-between border-t border-zinc-800/60 pt-3 text-xs">
-        <span className="font-mono text-zinc-500">{dateFormatted}</span>
+      <div className="border-hairline mt-5 flex items-center justify-between border-t pt-3 text-xs">
+        <span className="text-muted font-mono">{dateFormatted}</span>
         <Link
           href={postUrl}
-          className="inline-flex items-center gap-1 font-semibold text-cyan-400 transition-colors transition-transform group-hover:translate-x-0.5 hover:text-cyan-300"
+          className="text-azure-text inline-flex items-center gap-1 font-semibold transition-all group-hover:translate-x-0.5 hover:underline"
         >
           Read
           <ArrowRight className="h-3.5 w-3.5" />

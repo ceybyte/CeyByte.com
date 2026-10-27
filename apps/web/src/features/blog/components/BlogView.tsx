@@ -62,8 +62,8 @@ export function BlogView({ posts, alsoInEnglishPosts, locale, tagItems, copy }: 
 
       {/* Empty State */}
       {filteredPosts.length === 0 && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-12 text-center backdrop-blur-sm">
-          <p className="text-sm text-zinc-400">{copy.empty}</p>
+        <div className="border-hairline bg-surface/70 rounded-2xl border p-12 text-center shadow-xs backdrop-blur-sm">
+          <p className="text-muted text-sm">{copy.empty}</p>
         </div>
       )}
 
@@ -78,15 +78,15 @@ export function BlogView({ posts, alsoInEnglishPosts, locale, tagItems, copy }: 
 
       {/* Also In English Section (for SI / TA when English articles exist without translation) */}
       {locale !== "en" && activeTag === "all" && alsoInEnglishPosts.length > 0 && (
-        <section className="mt-16 space-y-6 border-t border-zinc-800 pt-12">
+        <section className="border-hairline mt-16 space-y-6 border-t pt-12">
           <div className="space-y-1">
             <h3 className="text-foreground flex items-center gap-2 text-xl font-bold tracking-tight">
               <span>{copy.alsoInEnglish}</span>
-              <span className="rounded border border-cyan-800 bg-cyan-950/70 px-2 py-0.5 font-mono text-xs text-cyan-300">
+              <span className="border-azure/30 bg-azure/10 text-2xs text-azure-text rounded-full border px-2 py-0.5 font-mono font-semibold">
                 EN
               </span>
             </h3>
-            <p className="text-xs text-zinc-400">{copy.alsoInEnglishLead}</p>
+            <p className="text-muted text-xs">{copy.alsoInEnglishLead}</p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

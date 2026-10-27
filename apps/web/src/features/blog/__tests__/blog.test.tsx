@@ -26,7 +26,7 @@ describe("S10 Blog UI Components", () => {
     updatedAt: "2026-10-21T00:00:00.000Z",
   };
 
-  test("TagFilterBar renders all categories with cyan accent on active filter and adheres to green button rule", () => {
+  test("TagFilterBar renders all categories with azure accent on active filter and adheres to green button rule", () => {
     const html = renderToString(
       <TagFilterBar
         activeTag="all"
@@ -44,7 +44,7 @@ describe("S10 Blog UI Components", () => {
     expect(html).toContain("All");
     expect(html).toContain("Releases");
     expect(html).toContain("Tax");
-    expect(html).toContain("border-cyan-400");
+    expect(html).toContain("border-azure/40");
     const forbiddenGreen = ["#", "39FF14"].join("");
     expect(html).not.toContain(forbiddenGreen);
   });
@@ -78,6 +78,6 @@ describe("S10 Blog UI Components", () => {
 
     expect(html).toContain("Also in English");
     expect(html).toContain("This article is currently only available in English.");
-    expect(html).toContain("border-cyan-400");
+    expect(html).toContain("border-l-azure");
   });
 });

@@ -376,7 +376,8 @@
 .prose-ceybyte p {
   margin-top: 1.15rem;
   margin-bottom: 1.15rem;
-  color: #d4d4d8;
+  color: var(--text);
+  opacity: 0.92;
 }
 
 .prose-ceybyte h1,
@@ -409,7 +410,7 @@
   line-height: 1.4;
   margin-top: 1.75rem;
   margin-bottom: 0.75rem;
-  color: #fafafa;
+  color: var(--text);
 }
 
 .prose-ceybyte h4 {
@@ -425,7 +426,7 @@
   transition: color var(--dur-hover) ease-out;
 }
 .prose-ceybyte a:hover {
-  color: #38bdf8;
+  color: var(--azure);
 }
 
 .prose-ceybyte ul {
@@ -445,12 +446,13 @@
 .prose-ceybyte li {
   margin-top: 0.35rem;
   margin-bottom: 0.35rem;
-  color: #d4d4d8;
+  color: var(--text);
+  opacity: 0.92;
 }
 
 .prose-ceybyte strong {
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text);
 }
 
 .prose-ceybyte code:not(pre code) {
@@ -468,7 +470,7 @@
   margin-bottom: 1.25rem;
   padding: 1rem 1.25rem;
   border-radius: 12px;
-  background-color: #18181b;
+  background-color: var(--surface-legal);
   border: 1px solid var(--hairline);
   overflow-x: auto;
   font-family: var(--font-mono, monospace);
@@ -481,7 +483,7 @@
   padding: 0;
   border: none;
   font-size: inherit;
-  color: #e4e4e7;
+  color: var(--text);
 }
 
 .prose-ceybyte table {
@@ -500,13 +502,13 @@
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
   text-transform: uppercase;
-  color: #a1a1aa;
+  color: var(--text-muted);
 }
 
 .prose-ceybyte td {
   border: 1px solid var(--hairline);
   padding: 0.625rem 0.875rem;
-  color: #d4d4d8;
+  color: var(--text);
 }
 
 .prose-ceybyte blockquote {
@@ -554,7 +556,7 @@
 .prose-ceybyte .step-card .step-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text);
 }
 
 .prose-ceybyte .step-card .step-body > *:first-child {
@@ -596,31 +598,31 @@
 }
 
 .prose-ceybyte .callout-tip {
-  border-left-color: #10b981;
+  border-left-color: var(--success);
   background-color: rgba(16, 185, 129, 0.08);
 }
 .prose-ceybyte .callout-tip .callout-header {
-  color: #34d399;
+  color: var(--success);
 }
 
 .prose-ceybyte .callout-warning,
 .prose-ceybyte .callout-warn {
-  border-left-color: #f59e0b;
+  border-left-color: var(--warning);
   background-color: rgba(245, 158, 11, 0.08);
 }
 .prose-ceybyte .callout-warning .callout-header,
 .prose-ceybyte .callout-warn .callout-header {
-  color: #fbbf24;
+  color: var(--warning-text);
 }
 
 .prose-ceybyte .callout-caution,
 .prose-ceybyte .callout-danger {
-  border-left-color: #f43f5e;
+  border-left-color: var(--error);
   background-color: rgba(244, 63, 94, 0.08);
 }
 .prose-ceybyte .callout-caution .callout-header,
 .prose-ceybyte .callout-danger .callout-header {
-  color: #fb7185;
+  color: var(--error);
 }
 
 .prose-ceybyte .callout-important {
@@ -630,13 +632,16 @@
 .prose-ceybyte .callout-important .callout-header {
   color: #c084fc;
 }
+[data-theme="light"] .prose-ceybyte .callout-important .callout-header {
+  color: #7e22ce;
+}
 
 .prose-ceybyte .callout-disclaimer {
-  border-left-color: #71717a;
-  background-color: rgba(113, 113, 122, 0.08);
+  border-left-color: var(--hairline);
+  background-color: var(--surface-elevated);
 }
 .prose-ceybyte .callout-disclaimer .callout-header {
-  color: #a1a1aa;
+  color: var(--text-muted);
 }
 
 /* Keyboard shortcut keycaps */

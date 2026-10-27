@@ -18,7 +18,7 @@ export function RelatedPosts({
   if (!posts || posts.length === 0) return null;
 
   return (
-    <section className="mt-16 space-y-6 border-t border-zinc-800 pt-10">
+    <section className="border-hairline mt-16 space-y-6 border-t pt-10">
       <h3 className="text-foreground text-xl font-bold tracking-tight">{title}</h3>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {posts.map((post) => (

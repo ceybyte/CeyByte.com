@@ -61,8 +61,8 @@ export function FeedbackBoard({ locale }: FeedbackBoardProps) {
       {/* Header section */}
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100">Feedback</h1>
-          <p className="mt-1 max-w-xl text-sm text-zinc-400">
+          <h1 className="text-foreground text-3xl font-extrabold tracking-tight">Feedback</h1>
+          <p className="text-muted mt-1 max-w-xl text-sm">
             Tell us what&apos;s broken or what you&apos;d like next. We read every ticket and post updates on
             it here.
           </p>
@@ -72,16 +72,16 @@ export function FeedbackBoard({ locale }: FeedbackBoardProps) {
         <div className="flex items-center gap-3">
           <Link
             href={`/${locale}/feedback/new?type=feature`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-zinc-200 shadow-sm transition-colors hover:border-zinc-600 hover:bg-zinc-800"
+            className="border-hairline bg-surface/80 text-text hover:bg-surface-elevated hover:border-azure/30 inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold shadow-xs transition-all"
           >
-            <Lightbulb className="h-3.5 w-3.5 text-amber-400" />
+            <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
             <span>Suggest a feature</span>
           </Link>
           <Link
             href={`/${locale}/feedback/new?type=bug`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-zinc-200 shadow-sm transition-colors hover:border-zinc-600 hover:bg-zinc-800"
+            className="border-hairline bg-surface/80 text-text hover:bg-surface-elevated hover:border-azure/30 inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold shadow-xs transition-all"
           >
-            <Bug className="h-3.5 w-3.5 text-rose-400" />
+            <Bug className="h-3.5 w-3.5 text-rose-500" />
             <span>Report a problem</span>
           </Link>
         </div>
@@ -109,25 +109,25 @@ export function FeedbackBoard({ locale }: FeedbackBoardProps) {
       />
 
       {/* Board Ticket List Card */}
-      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/40 shadow-sm">
+      <div className="border-hairline bg-surface/70 overflow-hidden rounded-2xl border shadow-xs backdrop-blur-sm">
         {loading ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-20 text-zinc-500">
-            <Loader2 className="text-azure-400 h-6 w-6 animate-spin" />
+          <div className="text-muted flex flex-col items-center justify-center gap-3 py-20">
+            <Loader2 className="text-azure-text h-6 w-6 animate-spin" />
             <span className="text-xs">Loading feedback tickets...</span>
           </div>
         ) : tickets.length === 0 ? (
           <div className="px-4 py-20 text-center">
-            <p className="mb-3 text-sm text-zinc-400">No tickets match these filters.</p>
+            <p className="text-muted mb-3 text-sm">No tickets match these filters.</p>
             <button
               type="button"
               onClick={handleClearFilters}
-              className="text-azure-400 hover:text-azure-300 px-4 py-1.5 text-xs font-medium underline"
+              className="text-azure-text px-4 py-1.5 text-xs font-medium hover:underline"
             >
               Clear filters
             </button>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800/80">
+          <div className="divide-hairline divide-y">
             {tickets.map((ticket) => (
               <FeedbackCard key={ticket.id} ticket={ticket} locale={locale} />
             ))}
@@ -136,7 +136,7 @@ export function FeedbackBoard({ locale }: FeedbackBoardProps) {
 
         {/* Pagination footer */}
         {!loading && totalPages > 1 && (
-          <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-950/40 px-6 py-4 text-xs text-zinc-400">
+          <div className="border-hairline bg-surface-elevated/40 text-muted flex items-center justify-between border-t px-6 py-4 text-xs">
             <span>
               Showing <span className="font-mono">{tickets.length}</span> of{" "}
               <span className="font-mono">{total}</span> tickets
@@ -146,18 +146,18 @@ export function FeedbackBoard({ locale }: FeedbackBoardProps) {
                 type="button"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="rounded border border-zinc-800 bg-zinc-900 px-3 py-1 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="border-hairline bg-surface text-text hover:bg-surface-elevated rounded-lg border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Previous
               </button>
-              <span className="font-mono text-zinc-300">
+              <span className="text-text font-mono">
                 {page} / {totalPages}
               </span>
               <button
                 type="button"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="rounded border border-zinc-800 bg-zinc-900 px-3 py-1 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="border-hairline bg-surface text-text hover:bg-surface-elevated rounded-lg border px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
               </button>

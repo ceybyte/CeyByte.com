@@ -49,14 +49,14 @@ export function VoteButton({
       onClick={handleVote}
       disabled={submitting}
       aria-label={`Vote for ticket ${ticketNumber}. Current votes: ${votes}`}
-      className={`flex min-w-[48px] flex-col items-center justify-center rounded-lg border px-2 py-2 transition-all ${
+      className={`flex min-w-[48px] flex-col items-center justify-center rounded-xl border px-2 py-2 transition-all ${
         voted
-          ? "bg-azure-950/60 border-azure-500/80 text-azure-400"
-          : "border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"
+          ? "border-azure/40 bg-azure/10 text-azure-text font-semibold shadow-xs"
+          : "border-hairline bg-surface/80 text-muted hover:border-hairline hover:text-text hover:bg-surface-elevated"
       } ${className}`}
     >
       <ChevronUp
-        className={`h-4 w-4 transition-transform ${voted ? "text-azure-400" : "group-hover:-translate-y-0.5"}`}
+        className={`h-4 w-4 transition-transform ${voted ? "text-azure-text" : "group-hover:-translate-y-0.5"}`}
       />
       <span className="mt-0.5 font-mono text-xs font-semibold">{votes}</span>
     </button>

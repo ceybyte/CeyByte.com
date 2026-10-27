@@ -38,8 +38,8 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
 
   if (loading) {
     return (
-      <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-3 px-4 py-20 text-zinc-500">
-        <Loader2 className="text-azure-400 h-6 w-6 animate-spin" />
+      <div className="text-muted mx-auto flex max-w-4xl flex-col items-center justify-center gap-3 px-4 py-20">
+        <Loader2 className="text-azure-text h-6 w-6 animate-spin" />
         <span className="text-xs">Loading ticket {ticketNumber}...</span>
       </div>
     );
@@ -48,11 +48,11 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
   if (error || !ticket) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-20 text-center">
-        <h2 className="mb-2 text-xl font-bold text-zinc-100">Ticket Not Found</h2>
-        <p className="mb-6 text-sm text-zinc-400">{error || "This ticket does not exist."}</p>
+        <h2 className="text-foreground mb-2 text-xl font-bold">Ticket Not Found</h2>
+        <p className="text-muted mb-6 text-sm">{error || "This ticket does not exist."}</p>
         <Link
           href={`/${locale}/feedback`}
-          className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-semibold text-zinc-200 hover:bg-zinc-800"
+          className="border-hairline bg-surface text-text hover:bg-surface-elevated rounded-xl border px-4 py-2 text-xs font-semibold shadow-xs"
         >
           Return to Feedback Board
         </Link>
@@ -67,38 +67,38 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
       {/* Back link */}
       <Link
         href={`/${locale}/feedback`}
-        className="mb-6 inline-block text-xs text-zinc-500 hover:text-zinc-300"
+        className="text-muted hover:text-text mb-6 inline-block text-xs transition-colors"
       >
         ← Back to feedback board
       </Link>
 
       {/* Main card */}
-      <div className="space-y-8 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 p-6 shadow-sm sm:p-8">
+      <div className="border-hairline bg-surface/70 space-y-8 overflow-hidden rounded-2xl border p-6 shadow-xs backdrop-blur-sm sm:p-8">
         {/* Top Header Row */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-azure-400 font-mono text-sm font-bold">{ticket.formattedNumber}</span>
-              <span className="inline-flex items-center gap-1 rounded bg-zinc-800 px-2 py-0.5 text-[11px] font-semibold tracking-wider text-zinc-300 uppercase">
+              <span className="text-azure-text font-mono text-sm font-bold">{ticket.formattedNumber}</span>
+              <span className="border-hairline bg-surface-elevated text-2xs text-muted inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-semibold tracking-wider uppercase">
                 {ticket.type === "bug" ? (
                   <>
-                    <Bug className="h-3 w-3 text-rose-400" />
+                    <Bug className="h-3 w-3 text-rose-500" />
                     <span>Bug</span>
                   </>
                 ) : (
                   <>
-                    <Lightbulb className="h-3 w-3 text-amber-400" />
+                    <Lightbulb className="h-3 w-3 text-amber-500" />
                     <span>Feature</span>
                   </>
                 )}
               </span>
               {ticket.severity && (
-                <span className="rounded border border-rose-800/40 bg-rose-950/80 px-2 py-0.5 text-[11px] font-semibold text-rose-400">
+                <span className="text-2xs rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 font-semibold text-rose-600 dark:text-rose-400">
                   {ticket.severity.replace("_", " ")}
                 </span>
               )}
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-100">{ticket.title}</h1>
+            <h1 className="text-foreground text-2xl font-bold tracking-tight">{ticket.title}</h1>
           </div>
 
           <div className="flex-shrink-0">
@@ -111,8 +111,8 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
         </div>
 
         {/* Status Timeline */}
-        <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
-          <div className="mb-3 text-[11px] font-semibold tracking-wider text-zinc-400 uppercase">
+        <div className="border-hairline bg-surface-elevated/40 rounded-2xl border p-4">
+          <div className="text-2xs text-muted mb-3 font-semibold tracking-wider uppercase">
             Progress Timeline
           </div>
           <div className="relative grid grid-cols-5 gap-2">
@@ -125,21 +125,17 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
                   <div
                     className={`mb-1.5 flex h-6 w-6 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                       isCurrent
-                        ? "bg-azure-500 border-azure-400 text-white shadow-sm"
+                        ? "border-azure bg-azure text-white shadow-xs"
                         : isPassed
-                          ? "border-azure-500/60 text-azure-400 bg-zinc-800"
-                          : "border-zinc-800 bg-zinc-900 text-zinc-600"
+                          ? "border-azure/60 bg-surface text-azure-text"
+                          : "border-hairline bg-surface-elevated text-muted"
                     }`}
                   >
                     {isPassed ? "✓" : idx + 1}
                   </div>
                   <span
-                    className={`text-[11px] capitalize ${
-                      isCurrent
-                        ? "text-azure-400 font-semibold"
-                        : isPassed
-                          ? "text-zinc-300"
-                          : "text-zinc-600"
+                    className={`text-2xs capitalize ${
+                      isCurrent ? "text-azure-text font-semibold" : isPassed ? "text-text" : "text-muted"
                     }`}
                   >
                     {step.replace("_", " ")}
@@ -150,12 +146,12 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
           </div>
 
           {ticket.status === "shipped" && ticket.releaseVersion && (
-            <div className="mt-4 flex items-center justify-center gap-1.5 border-t border-zinc-800 pt-3 text-center text-xs font-medium text-emerald-400">
+            <div className="border-hairline mt-4 flex items-center justify-center gap-1.5 border-t pt-3 text-center text-xs font-medium text-emerald-600 dark:text-emerald-400">
               <CheckCircle2 className="h-4 w-4" />
               <span>Resolved and shipped in CB POS v{ticket.releaseVersion}</span>
               <Link
                 href={`/${locale}/releases`}
-                className="ml-1 inline-flex items-center gap-0.5 text-emerald-300 underline hover:text-emerald-200"
+                className="ml-1 inline-flex items-center gap-0.5 underline hover:opacity-80"
               >
                 <span>View Release Notes</span>
                 <ExternalLink className="h-3 w-3" />
@@ -165,29 +161,29 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
         </div>
 
         {/* Environment metadata pills */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-400">
+        <div className="text-muted flex flex-wrap items-center gap-3 text-xs">
           {ticket.appVersion && (
-            <div className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5">
-              <Layers className="h-3.5 w-3.5 text-zinc-500" />
+            <div className="border-hairline bg-surface text-text inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5">
+              <Layers className="text-muted h-3.5 w-3.5" />
               <span>App: v{ticket.appVersion}</span>
             </div>
           )}
           {ticket.windowsVersion && (
-            <div className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5">
-              <Monitor className="h-3.5 w-3.5 text-zinc-500" />
+            <div className="border-hairline bg-surface text-text inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5">
+              <Monitor className="text-muted h-3.5 w-3.5" />
               <span>{ticket.windowsVersion}</span>
             </div>
           )}
-          <div className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5">
-            <Calendar className="h-3.5 w-3.5 text-zinc-500" />
+          <div className="border-hairline bg-surface text-text inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5">
+            <Calendar className="text-muted h-3.5 w-3.5" />
             <span>Reported {new Date(ticket.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
 
         {/* Description body */}
         <div className="space-y-3">
-          <h2 className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">Description</h2>
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-950/60 p-5 font-sans text-sm leading-relaxed whitespace-pre-wrap text-zinc-200">
+          <h2 className="text-2xs text-muted font-semibold tracking-wider uppercase">Description</h2>
+          <div className="border-hairline bg-surface text-text rounded-xl border p-5 font-sans text-sm leading-relaxed whitespace-pre-wrap">
             {ticket.bodyMd}
           </div>
         </div>
@@ -195,8 +191,8 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
         {/* Approved public screenshot (if any) */}
         {ticket.screenshotPublicKey && (
           <div className="space-y-3">
-            <h2 className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">Screenshot</h2>
-            <div className="max-w-lg overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 p-2">
+            <h2 className="text-2xs text-muted font-semibold tracking-wider uppercase">Screenshot</h2>
+            <div className="border-hairline bg-surface max-w-lg overflow-hidden rounded-xl border p-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`https://cdn.ceybyte.com/${ticket.screenshotPublicKey}`}
@@ -209,19 +205,19 @@ export function TicketDetailView({ ticketNumber, locale }: TicketDetailViewProps
 
         {/* Official Team Response (if any) */}
         {ticket.adminResponseMd && (
-          <div className="border-l-azure-500 space-y-2 rounded-xl border border-l-2 border-zinc-800 bg-zinc-950 p-5">
+          <div className="border-hairline border-l-azure bg-surface space-y-2 rounded-xl border border-l-2 p-5">
             <div className="flex items-center justify-between">
-              <div className="text-azure-400 flex items-center gap-1.5 text-xs font-bold">
+              <div className="text-azure-text flex items-center gap-1.5 text-xs font-bold">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>Ceybyte Team</span>
               </div>
               {ticket.adminRespondedAt && (
-                <span className="text-[11px] text-zinc-500">
+                <span className="text-2xs text-muted">
                   {new Date(ticket.adminRespondedAt).toLocaleDateString()}
                 </span>
               )}
             </div>
-            <div className="text-xs leading-relaxed whitespace-pre-wrap text-zinc-300">
+            <div className="text-text text-xs leading-relaxed whitespace-pre-wrap">
               {ticket.adminResponseMd}
             </div>
           </div>

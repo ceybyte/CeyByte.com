@@ -157,21 +157,21 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
   if (createdTicket) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-        <div className="bg-azure-950 border-azure-700/60 text-azure-400 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border">
+        <div className="border-azure/40 bg-azure/10 text-azure-text mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border">
           <Check className="h-6 w-6" />
         </div>
-        <h2 className="mb-2 text-2xl font-bold text-zinc-100">Ticket submitted</h2>
-        <p className="mb-6 text-sm text-zinc-400">
-          Ticket <span className="text-azure-400 font-mono font-bold">{createdTicket.formattedNumber}</span>{" "}
+        <h2 className="text-foreground mb-2 text-2xl font-bold">Ticket submitted</h2>
+        <p className="text-muted mb-6 text-sm">
+          Ticket <span className="text-azure-text font-mono font-bold">{createdTicket.formattedNumber}</span>{" "}
           is in. We&apos;ll post updates on it here.
         </p>
 
         {type === "question" ? (
-          <div className="mb-6 space-y-3 rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-left">
-            <h3 className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+          <div className="border-hairline bg-surface mb-6 space-y-3 rounded-2xl border p-6 text-left shadow-xs">
+            <h3 className="text-2xs text-text font-semibold tracking-wider uppercase">
               Thank you. These pages might already answer your question:
             </h3>
-            <ul className="text-azure-400 space-y-2 text-xs">
+            <ul className="text-azure-text space-y-2 text-xs">
               <li>
                 <Link href={`/${locale}/docs`} className="flex items-center gap-1.5 hover:underline">
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -196,14 +196,14 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
           <div className="flex items-center justify-center gap-3">
             <Link
               href={`/${locale}/feedback/${createdTicket.formattedNumber}`}
-              className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-5 py-2.5 text-xs font-semibold text-zinc-100 transition-colors hover:bg-zinc-700"
+              className="border-hairline bg-surface text-text hover:bg-surface-elevated hover:border-azure/40 inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-xs font-semibold shadow-xs transition-all"
             >
               <span>View your ticket ({createdTicket.formattedNumber})</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link
               href={`/${locale}/feedback`}
-              className="px-4 py-2.5 text-xs font-medium text-zinc-400 hover:text-zinc-200"
+              className="text-muted hover:text-text px-4 py-2.5 text-xs font-medium transition-colors"
             >
               Back to board
             </Link>
@@ -218,18 +218,18 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
       <div className="mb-8">
         <Link
           href={`/${locale}/feedback`}
-          className="mb-3 inline-block text-xs text-zinc-500 hover:text-zinc-300"
+          className="text-muted hover:text-text mb-3 inline-block text-xs transition-colors"
         >
           ← Back to feedback board
         </Link>
-        <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100">Tell us what happened</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <h1 className="text-foreground text-3xl font-extrabold tracking-tight">Tell us what happened</h1>
+        <p className="text-muted mt-1 text-sm">
           We read every report and keep our development roadmap public.
         </p>
       </div>
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-800 bg-red-950/80 p-3 text-xs font-medium text-red-300">
+        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs font-medium text-red-600 dark:text-red-400">
           {error}
         </div>
       )}
@@ -237,61 +237,59 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Type Option Cards */}
         <div>
-          <label className="mb-2 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+          <label className="text-2xs text-muted mb-2 block font-semibold tracking-wider uppercase">
             What&apos;s this about?
           </label>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <button
               type="button"
               onClick={() => setType("bug")}
-              className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all ${
+              className={`flex flex-col items-center justify-center rounded-2xl border p-4 text-center transition-all ${
                 type === "bug"
-                  ? "border-azure-500 ring-azure-500/30 bg-zinc-900 shadow-md ring-1"
-                  : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700"
+                  ? "border-azure bg-surface ring-azure/30 shadow-xs ring-1"
+                  : "border-hairline bg-surface/50 text-muted hover:bg-surface-elevated hover:border-hairline"
               }`}
             >
-              <Bug className={`mb-2 h-5 w-5 ${type === "bug" ? "text-rose-400" : "text-zinc-500"}`} />
-              <span className="text-xs font-semibold text-zinc-200">Something isn&apos;t working</span>
-              <span className="mt-0.5 text-[10px] text-zinc-500">Bug or error</span>
+              <Bug className={`mb-2 h-5 w-5 ${type === "bug" ? "text-rose-500" : "text-muted"}`} />
+              <span className="text-text text-xs font-semibold">Something isn&apos;t working</span>
+              <span className="text-2xs text-muted mt-0.5">Bug or error</span>
             </button>
 
             <button
               type="button"
               onClick={() => setType("feature")}
-              className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all ${
+              className={`flex flex-col items-center justify-center rounded-2xl border p-4 text-center transition-all ${
                 type === "feature"
-                  ? "border-azure-500 ring-azure-500/30 bg-zinc-900 shadow-md ring-1"
-                  : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700"
+                  ? "border-azure bg-surface ring-azure/30 shadow-xs ring-1"
+                  : "border-hairline bg-surface/50 text-muted hover:bg-surface-elevated hover:border-hairline"
               }`}
             >
-              <Lightbulb
-                className={`mb-2 h-5 w-5 ${type === "feature" ? "text-amber-400" : "text-zinc-500"}`}
-              />
-              <span className="text-xs font-semibold text-zinc-200">I&apos;d like something new</span>
-              <span className="mt-0.5 text-[10px] text-zinc-500">Feature request</span>
+              <Lightbulb className={`mb-2 h-5 w-5 ${type === "feature" ? "text-amber-500" : "text-muted"}`} />
+              <span className="text-text text-xs font-semibold">I&apos;d like something new</span>
+              <span className="text-2xs text-muted mt-0.5">Feature request</span>
             </button>
 
             <button
               type="button"
               onClick={() => setType("question")}
-              className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all ${
+              className={`flex flex-col items-center justify-center rounded-2xl border p-4 text-center transition-all ${
                 type === "question"
-                  ? "border-azure-500 ring-azure-500/30 bg-zinc-900 shadow-md ring-1"
-                  : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700"
+                  ? "border-azure bg-surface ring-azure/30 shadow-xs ring-1"
+                  : "border-hairline bg-surface/50 text-muted hover:bg-surface-elevated hover:border-hairline"
               }`}
             >
               <HelpCircle
-                className={`mb-2 h-5 w-5 ${type === "question" ? "text-azure-400" : "text-zinc-500"}`}
+                className={`mb-2 h-5 w-5 ${type === "question" ? "text-azure-text" : "text-muted"}`}
               />
-              <span className="text-xs font-semibold text-zinc-200">I have a question</span>
-              <span className="mt-0.5 text-[10px] text-zinc-500">Help & advice</span>
+              <span className="text-text text-xs font-semibold">I have a question</span>
+              <span className="text-2xs text-muted mt-0.5">Help & advice</span>
             </button>
           </div>
         </div>
 
         {/* Short Title */}
         <div>
-          <label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+          <label className="text-2xs text-muted mb-1 block font-semibold tracking-wider uppercase">
             Short title
           </label>
           <input
@@ -301,30 +299,30 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
             placeholder="For example, receipts cut off halfway on a 58mm printer"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none"
+            className="border-hairline bg-surface text-text placeholder:text-muted focus:border-azure/50 focus:ring-azure/40 w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:ring-1 focus:outline-none"
           />
         </div>
 
         {/* Similar Tickets Panel ("Is it one of these?") */}
         {similarTickets.length > 0 && (
-          <div className="space-y-2.5 rounded-xl border border-zinc-800 bg-zinc-900/80 p-4">
+          <div className="border-hairline bg-surface/70 space-y-2.5 rounded-2xl border p-4 shadow-xs backdrop-blur-sm">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+              <span className="text-2xs text-muted font-semibold tracking-wider uppercase">
                 Is it one of these?
               </span>
-              {searchingSimilar && <Loader2 className="text-azure-400 h-3.5 w-3.5 animate-spin" />}
+              {searchingSimilar && <Loader2 className="text-azure-text h-3.5 w-3.5 animate-spin" />}
             </div>
-            <div className="divide-y divide-zinc-800/80">
+            <div className="divide-hairline divide-y">
               {similarTickets.map((st) => (
                 <div key={st.id} className="flex items-center justify-between gap-3 py-2.5 text-xs">
                   <div className="flex items-center gap-2 truncate">
-                    <span className="font-mono font-semibold text-zinc-400">{st.formattedNumber}</span>
-                    <span className="truncate text-zinc-200">{st.title}</span>
+                    <span className="text-muted font-mono font-semibold">{st.formattedNumber}</span>
+                    <span className="text-text truncate">{st.title}</span>
                   </div>
                   <Link
                     href={`/${locale}/feedback/${st.formattedNumber}`}
                     target="_blank"
-                    className="text-azure-400 hover:text-azure-300 flex-shrink-0 text-xs font-medium underline"
+                    className="text-azure-text flex-shrink-0 text-xs font-medium hover:underline"
                   >
                     Vote for this one instead ({st.voteCount} votes)
                   </Link>
@@ -337,10 +335,8 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
         {/* Description Body */}
         <div>
           <div className="mb-1 flex items-center justify-between">
-            <label className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
-              Tell us more
-            </label>
-            <span className="text-[11px] text-zinc-500">
+            <label className="text-2xs text-muted font-semibold tracking-wider uppercase">Tell us more</label>
+            <span className="text-2xs text-muted">
               {type === "bug"
                 ? "What were you doing, what did you expect, and what happened instead?"
                 : "Markdown supported"}
@@ -354,20 +350,20 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
             value={bodyMd}
             onChange={(e) => setBodyMd(e.target.value)}
             placeholder="Describe details, steps to reproduce, or why this feature would help your store..."
-            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none"
+            className="border-hairline bg-surface text-text placeholder:text-muted focus:border-azure/50 focus:ring-azure/40 w-full rounded-xl border p-3 text-sm transition-colors focus:ring-1 focus:outline-none"
           />
         </div>
 
         {/* Environment (Version & Windows) */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+            <label className="text-2xs text-muted mb-1 block font-semibold tracking-wider uppercase">
               CB POS version
             </label>
             <select
               value={appVersion}
               onChange={(e) => setAppVersion(e.target.value)}
-              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200 focus:outline-none"
+              className="border-hairline bg-surface text-text focus:border-azure/50 focus:ring-azure/40 w-full rounded-xl border px-3 py-2 text-xs transition-colors focus:ring-1 focus:outline-none"
             >
               <option value="1.4.2">v1.4.2 (Latest)</option>
               <option value="1.4.0">v1.4.0</option>
@@ -377,13 +373,13 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+            <label className="text-2xs text-muted mb-1 block font-semibold tracking-wider uppercase">
               Windows version
             </label>
             <select
               value={windowsVersion}
               onChange={(e) => setWindowsVersion(e.target.value)}
-              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200 focus:outline-none"
+              className="border-hairline bg-surface text-text focus:border-azure/50 focus:ring-azure/40 w-full rounded-xl border px-3 py-2 text-xs transition-colors focus:ring-1 focus:outline-none"
             >
               <option value="Windows 11">Windows 11</option>
               <option value="Windows 10">Windows 10</option>
@@ -396,7 +392,7 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
         {/* Severity (only for bugs) */}
         {type === "bug" && (
           <div>
-            <label className="mb-2 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+            <label className="text-2xs text-muted mb-2 block font-semibold tracking-wider uppercase">
               How much is this affecting you?
             </label>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -408,10 +404,10 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
               ].map((opt) => (
                 <label
                   key={opt.id}
-                  className={`flex cursor-pointer items-center gap-2.5 rounded-lg border p-3 text-xs transition-colors ${
+                  className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-xs transition-all ${
                     severity === opt.id
-                      ? "border-zinc-700 bg-zinc-900 text-zinc-100"
-                      : "border-zinc-800/80 bg-zinc-950 text-zinc-400 hover:text-zinc-300"
+                      ? "border-azure/40 bg-azure/10 text-azure-text font-semibold shadow-xs"
+                      : "border-hairline bg-surface text-muted hover:text-text hover:bg-surface-elevated"
                   }`}
                 >
                   <input
@@ -420,7 +416,7 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
                     value={opt.id}
                     checked={severity === opt.id}
                     onChange={(e) => setSeverity(e.target.value)}
-                    className="text-azure-500 focus:ring-0"
+                    className="text-azure-text focus:ring-0"
                   />
                   <span>{opt.label}</span>
                 </label>
@@ -431,29 +427,29 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
 
         {/* Error log upload [J1] [H9] */}
         {type === "bug" && (
-          <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+          <div className="border-hairline bg-surface/70 space-y-2 rounded-2xl border p-4 shadow-xs backdrop-blur-sm">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+              <label className="text-2xs text-muted font-semibold tracking-wider uppercase">
                 Error log (optional)
               </label>
               {uploadingCrashLog && (
-                <span className="text-azure-400 flex items-center gap-1 text-[11px]">
+                <span className="text-2xs text-azure-text flex items-center gap-1">
                   <Loader2 className="h-3 w-3 animate-spin" /> Uploading log...
                 </span>
               )}
               {crashLogKey && (
-                <span className="flex items-center gap-1 text-[11px] text-emerald-400">
+                <span className="text-2xs flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                   <Check className="h-3 w-3" /> cbpos_logs.txt uploaded
                 </span>
               )}
             </div>
-            <p className="text-[11px] leading-relaxed text-zinc-500">
+            <p className="text-2xs text-muted leading-relaxed">
               In CB POS, go to Settings › Admin Tools › Error Logs and click Export Logs. It saves{" "}
-              <code className="font-mono text-zinc-300">cbpos_logs.txt</code>, up to 5 MB. Please remove any
+              <code className="text-text font-mono">cbpos_logs.txt</code>, up to 5 MB. Please remove any
               passwords or network addresses before you upload it. Only our team sees logs. [J1] [H9]
             </p>
-            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-700 bg-zinc-950/60 p-3 text-xs text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200">
-              <Upload className="h-4 w-4 text-zinc-500" />
+            <label className="border-hairline bg-surface text-muted hover:border-azure/40 hover:bg-surface-elevated hover:text-text flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed p-3 text-xs transition-all">
+              <Upload className="text-muted h-4 w-4" />
               <span>{crashLogFile ? crashLogFile.name : "Select cbpos_logs.txt, .log or .zip"}</span>
               <input type="file" accept=".txt,.log,.zip" onChange={handleCrashLogSelect} className="hidden" />
             </label>
@@ -461,27 +457,27 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
         )}
 
         {/* Screenshot upload */}
-        <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+        <div className="border-hairline bg-surface/70 space-y-2 rounded-2xl border p-4 shadow-xs backdrop-blur-sm">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+            <label className="text-2xs text-muted font-semibold tracking-wider uppercase">
               Screenshot (optional)
             </label>
             {uploadingScreenshot && (
-              <span className="text-azure-400 flex items-center gap-1 text-[11px]">
+              <span className="text-2xs text-azure-text flex items-center gap-1">
                 <Loader2 className="h-3 w-3 animate-spin" /> Uploading image...
               </span>
             )}
             {screenshotKey && (
-              <span className="flex items-center gap-1 text-[11px] text-emerald-400">
+              <span className="text-2xs flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                 <Check className="h-3 w-3" /> Screenshot attached
               </span>
             )}
           </div>
-          <p className="text-[11px] leading-relaxed text-zinc-500">
+          <p className="text-2xs text-muted leading-relaxed">
             PNG or JPG, up to 5 MB. We keep it private unless we mark it safe to show.
           </p>
-          <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-700 bg-zinc-950/60 p-3 text-xs text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200">
-            <Upload className="h-4 w-4 text-zinc-500" />
+          <label className="border-hairline bg-surface text-muted hover:border-azure/40 hover:bg-surface-elevated hover:text-text flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed p-3 text-xs transition-all">
+            <Upload className="text-muted h-4 w-4" />
             <span>{screenshotFile ? screenshotFile.name : "Select PNG or JPG image"}</span>
             <input
               type="file"
@@ -494,7 +490,7 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
 
         {/* Contact Input */}
         <div>
-          <label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-300 uppercase">
+          <label className="text-2xs text-muted mb-1 block font-semibold tracking-wider uppercase">
             Email or phone (optional)
           </label>
           <input
@@ -503,9 +499,9 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
             placeholder="077 123 4567 or email@example.com"
             value={contactPrivate}
             onChange={(e) => setContactPrivate(e.target.value)}
-            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none"
+            className="border-hairline bg-surface text-text placeholder:text-muted focus:border-azure/50 focus:ring-azure/40 w-full rounded-xl border px-3.5 py-2.5 text-xs transition-colors focus:ring-1 focus:outline-none"
           />
-          <p className="mt-1 text-[11px] text-zinc-500">
+          <p className="text-2xs text-muted mt-1">
             Only the Ceylon Byte team sees this, and only to follow up on your ticket.
           </p>
         </div>
@@ -519,14 +515,14 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
         <div className="flex items-center justify-end gap-3 pt-4">
           <Link
             href={`/${locale}/feedback`}
-            className="px-4 py-2 text-xs font-medium text-zinc-400 hover:text-zinc-200"
+            className="text-muted hover:text-text px-4 py-2 text-xs font-medium transition-colors"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={submitting || uploadingCrashLog || uploadingScreenshot}
-            className="rounded-lg border border-zinc-700 bg-zinc-800 px-6 py-2.5 text-xs font-semibold text-zinc-100 shadow-sm transition-colors hover:bg-zinc-700 disabled:opacity-50"
+            className="border-hairline bg-surface text-text hover:bg-surface-elevated hover:border-azure/40 rounded-xl border px-6 py-2.5 text-xs font-semibold shadow-xs transition-all disabled:opacity-50"
           >
             {submitting ? "Sending ticket..." : "Send ticket"}
           </button>

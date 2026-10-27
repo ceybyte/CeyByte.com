@@ -105,7 +105,7 @@ export default async function BlogPostPage({
         <div className="mb-8">
           <Link
             href={`/${locale}/blog`}
-            className="group inline-flex items-center gap-2 font-mono text-xs text-zinc-400 transition-colors hover:text-cyan-400"
+            className="group text-muted hover:text-azure-text inline-flex items-center gap-2 font-mono text-xs transition-colors"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             <span>{t("backToBlog")}</span>
@@ -116,16 +116,16 @@ export default async function BlogPostPage({
         {post.isFallback && <AlsoInEnglishBanner title={t("alsoInEnglish")} lead={t("alsoInEnglishLead")} />}
 
         {/* Article Header */}
-        <header className="space-y-6 border-b border-zinc-800 pb-10">
+        <header className="border-hairline space-y-6 border-b pb-10">
           {/* Metadata Strip */}
-          <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-zinc-400">
+          <div className="text-muted flex flex-wrap items-center gap-3 font-mono text-xs">
             {post.tags.length > 0 && (
               <div className="flex flex-wrap items-center gap-1.5">
-                <Tag className="h-3.5 w-3.5 text-cyan-400" />
+                <Tag className="text-azure-text h-3.5 w-3.5" />
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded border border-cyan-800/40 bg-cyan-950/60 px-2 py-0.5 text-[11px] font-semibold text-cyan-300 uppercase"
+                    className="border-hairline bg-surface-elevated text-2xs text-azure-text rounded-full border px-2 py-0.5 font-mono font-semibold uppercase"
                   >
                     {tag}
                   </span>
@@ -134,13 +134,13 @@ export default async function BlogPostPage({
             )}
 
             {dateFormatted && (
-              <div className="flex items-center gap-1.5 text-zinc-400">
-                <Calendar className="h-3.5 w-3.5 text-zinc-500" />
+              <div className="text-muted flex items-center gap-1.5">
+                <Calendar className="text-muted h-3.5 w-3.5" />
                 <span>{dateFormatted}</span>
               </div>
             )}
 
-            <div className="flex items-center gap-1.5 font-semibold text-cyan-400">
+            <div className="text-azure-text flex items-center gap-1.5 font-semibold">
               <Clock className="h-3.5 w-3.5" />
               <span>{t("readingTime", { minutes: post.readingMinutes })}</span>
             </div>
@@ -152,7 +152,7 @@ export default async function BlogPostPage({
           </h1>
 
           {/* Excerpt */}
-          <p className="text-lg leading-relaxed font-normal text-zinc-300 md:text-xl">{post.excerpt}</p>
+          <p className="text-muted text-lg leading-relaxed font-normal md:text-xl">{post.excerpt}</p>
         </header>
 
         {/* Article Body */}

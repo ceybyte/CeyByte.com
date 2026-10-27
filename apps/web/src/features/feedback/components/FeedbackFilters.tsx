@@ -24,16 +24,16 @@ export function FeedbackFilters({
   onSearchChange,
 }: FeedbackFiltersProps) {
   return (
-    <div className="mb-6 flex flex-col justify-between gap-4 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 md:flex-row md:items-center">
+    <div className="border-hairline bg-surface/70 mb-6 flex flex-col justify-between gap-4 rounded-2xl border p-4 shadow-xs backdrop-blur-sm md:flex-row md:items-center">
       {/* Type Tabs */}
-      <div className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-950 p-1">
+      <div className="border-hairline bg-surface-elevated/50 flex items-center gap-1 rounded-xl border p-1">
         <button
           type="button"
           onClick={() => onTypeChange("all")}
-          className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+          className={`rounded-lg px-3 py-1.5 text-xs transition-all ${
             currentType === "all"
-              ? "bg-zinc-800 text-zinc-100 shadow-sm"
-              : "text-zinc-400 hover:text-zinc-200"
+              ? "border-hairline bg-surface text-text border font-semibold shadow-xs"
+              : "text-muted hover:text-text"
           }`}
         >
           All
@@ -41,10 +41,10 @@ export function FeedbackFilters({
         <button
           type="button"
           onClick={() => onTypeChange("bug")}
-          className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+          className={`rounded-lg px-3 py-1.5 text-xs transition-all ${
             currentType === "bug"
-              ? "bg-zinc-800 text-zinc-100 shadow-sm"
-              : "text-zinc-400 hover:text-zinc-200"
+              ? "border-hairline bg-surface text-text border font-semibold shadow-xs"
+              : "text-muted hover:text-text"
           }`}
         >
           Bugs
@@ -52,10 +52,10 @@ export function FeedbackFilters({
         <button
           type="button"
           onClick={() => onTypeChange("feature")}
-          className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+          className={`rounded-lg px-3 py-1.5 text-xs transition-all ${
             currentType === "feature"
-              ? "bg-zinc-800 text-zinc-100 shadow-sm"
-              : "text-zinc-400 hover:text-zinc-200"
+              ? "border-hairline bg-surface text-text border font-semibold shadow-xs"
+              : "text-muted hover:text-text"
           }`}
         >
           Features
@@ -66,13 +66,13 @@ export function FeedbackFilters({
       <div className="flex flex-wrap items-center gap-3">
         {/* Search */}
         <div className="relative flex-1 sm:w-60">
-          <Search className="absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
+          <Search className="text-muted absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search feedback..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 py-1.5 pr-3 pl-9 text-xs text-zinc-200 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none"
+            className="border-hairline bg-surface text-text placeholder:text-muted focus:border-azure/50 focus:ring-azure/40 w-full rounded-xl border py-2 pr-3 pl-9 text-xs transition-colors focus:ring-1 focus:outline-none"
           />
         </div>
 
@@ -80,7 +80,7 @@ export function FeedbackFilters({
         <select
           value={currentStatus}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-1.5 text-xs text-zinc-300 focus:border-zinc-700 focus:outline-none"
+          className="border-hairline bg-surface text-text focus:border-azure/50 focus:ring-azure/40 rounded-xl border px-3 py-2 text-xs transition-colors focus:ring-1 focus:outline-none"
         >
           <option value="all">Any status</option>
           <option value="open">Open</option>
@@ -94,12 +94,14 @@ export function FeedbackFilters({
         </select>
 
         {/* Sort Select / Toggle */}
-        <div className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-950 p-1">
+        <div className="border-hairline bg-surface-elevated/50 flex items-center gap-1 rounded-xl border p-1">
           <button
             type="button"
             onClick={() => onSortChange("votes")}
-            className={`rounded px-2.5 py-1 text-xs font-medium ${
-              currentSort === "votes" ? "bg-zinc-800 text-zinc-100" : "text-zinc-400 hover:text-zinc-200"
+            className={`rounded-lg px-2.5 py-1 text-xs transition-all ${
+              currentSort === "votes"
+                ? "border-hairline bg-surface text-text border font-semibold shadow-xs"
+                : "text-muted hover:text-text"
             }`}
           >
             Most votes
@@ -107,8 +109,10 @@ export function FeedbackFilters({
           <button
             type="button"
             onClick={() => onSortChange("newest")}
-            className={`rounded px-2.5 py-1 text-xs font-medium ${
-              currentSort === "newest" ? "bg-zinc-800 text-zinc-100" : "text-zinc-400 hover:text-zinc-200"
+            className={`rounded-lg px-2.5 py-1 text-xs transition-all ${
+              currentSort === "newest"
+                ? "border-hairline bg-surface text-text border font-semibold shadow-xs"
+                : "text-muted hover:text-text"
             }`}
           >
             Newest
