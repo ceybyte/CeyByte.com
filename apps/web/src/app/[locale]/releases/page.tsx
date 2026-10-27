@@ -93,26 +93,29 @@ export default async function ReleasesPage({ params }: Props) {
   };
 
   return (
-    <div className="bg-canvas min-h-[calc(100vh-var(--header-h))] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-      <div className="mx-auto max-w-4xl space-y-10">
-        {/* Header with Hairline Branches Figure */}
-        <div className="border-hairline bg-surface relative overflow-hidden rounded-lg border p-6 sm:p-8">
-          <div className="pointer-events-none absolute -top-8 -right-8 w-72 opacity-20 sm:w-96">
-            <Figure name="branches" intensity={0.4} />
-          </div>
-
-          <div className="relative z-10 max-w-xl">
-            <span className="text-primary font-mono text-xs font-semibold tracking-wider uppercase">
-              CB POS VERSIONS
-            </span>
-            <h1 className="text-display text-text mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              {t("title")}
-            </h1>
-            <p className="text-text-muted mt-3 text-sm leading-relaxed sm:text-base">{t("lead")}</p>
-            <p className="text-text-muted/70 mt-4 text-xs italic">{t("asIs")}</p>
-          </div>
+    <div className="bg-canvas min-h-[calc(100vh-var(--header-h))]">
+      {/* Full-width Hero Header matching Features */}
+      <section className="border-hairline bg-surface/30 relative overflow-hidden border-b py-14 sm:py-20">
+        <div className="pointer-events-none absolute -top-12 -right-12 w-80 opacity-15 sm:w-96">
+          <Figure name="branches" intensity={0.4} />
         </div>
 
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <span className="text-azure-text font-mono text-xs font-semibold tracking-wider uppercase">
+              CB POS VERSIONS
+            </span>
+            <h1 className="text-display text-text mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+              {t("title")}
+            </h1>
+            <p className="text-muted mt-4 text-base leading-relaxed sm:text-lg">{t("lead")}</p>
+            <p className="text-muted/70 mt-3 text-xs italic">{t("asIs")}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <div className="container mx-auto max-w-4xl space-y-10 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         {/* Large Card for Latest Version */}
         <LatestReleaseCard release={latestCardData} locale={locale} />
 

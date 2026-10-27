@@ -129,56 +129,62 @@ export function DonationView() {
   };
 
   return (
-    <div className="relative mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      {/* S09 Releases-Matched Monolith Header Card with Isometric Hairline Element */}
-      <div className="border-hairline bg-surface group relative mb-12 overflow-hidden rounded-2xl p-6 shadow-2xl sm:p-10">
-        {/* Isometric Hairline Hardware Element */}
-        <DonationFigure className="pointer-events-none absolute -top-10 -right-10 w-[340px] opacity-30 group-hover:opacity-85 sm:top-1/2 sm:-right-6 sm:w-[460px] sm:-translate-y-1/2 sm:opacity-60 md:right-0 lg:right-4 lg:w-[500px]" />
+    <div className="bg-canvas min-h-[calc(100vh-var(--header-h))]">
+      {/* Full-width Hero Header matching Features */}
+      <section className="border-hairline bg-surface/30 relative overflow-hidden border-b py-14 sm:py-20">
+        <DonationFigure className="pointer-events-none absolute -top-10 -right-10 w-[340px] opacity-20 sm:-top-8 sm:-right-6 sm:w-[460px] sm:opacity-35 md:right-0 lg:right-8 lg:w-[480px]" />
 
-        {/* Content on the Left */}
-        <div className="relative z-10 max-w-xl space-y-3">
-          <h1 className="text-text text-3xl leading-tight font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-            {t("title")}
-          </h1>
-          <p className="text-muted text-sm leading-relaxed sm:text-base">{t("lead")}</p>
-          <div className="text-muted flex flex-wrap items-center gap-3 pt-2 font-mono text-xs sm:gap-4">
-            <span className="flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-emerald-400" aria-hidden="true"></span>
-              <span>100% Open &amp; Audited</span>
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <span className="text-gold-text font-mono text-xs font-semibold tracking-wider uppercase">
+              COMMUNITY SPONSORSHIP
             </span>
-            <span aria-hidden="true">•</span>
-            <span className="flex items-center gap-1.5">
-              <span className="bg-gold size-1.5 rounded-full" aria-hidden="true"></span>
-              <span>Community Backed</span>
-            </span>
-            <span aria-hidden="true">•</span>
-            <span className="text-text-secondary flex items-center gap-1.5">Commercial Bank Wire</span>
+            <h1 className="text-display text-text mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+              {t("title")}
+            </h1>
+            <p className="text-muted mt-4 text-base leading-relaxed sm:text-lg">{t("lead")}</p>
+            <div className="text-muted mt-4 flex flex-wrap items-center gap-3 font-mono text-xs sm:gap-4">
+              <span className="flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full bg-emerald-400" aria-hidden="true"></span>
+                <span>Open &amp; Audited</span>
+              </span>
+              <span aria-hidden="true">•</span>
+              <span className="flex items-center gap-1.5">
+                <span className="bg-gold size-1.5 rounded-full" aria-hidden="true"></span>
+                <span>Community Backed</span>
+              </span>
+              <span aria-hidden="true">•</span>
+              <span className="text-text-secondary flex items-center gap-1.5">Commercial Bank Wire</span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* S09 Section 1: Transparency Strip & Monthly Live Total */}
-      <div className="mb-10">
-        <TransparencyStrip
-          monthlyTotalCents={summary.monthlyTotalCents}
-          totalSupportersCount={summary.totalSupportersCount}
-          copy={copyForTransparency}
-        />
-      </div>
+      {/* Main Content */}
+      <div className="relative mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+        {/* S09 Section 1: Transparency Strip & Monthly Live Total */}
+        <div className="mb-10">
+          <TransparencyStrip
+            monthlyTotalCents={summary.monthlyTotalCents}
+            totalSupportersCount={summary.totalSupportersCount}
+            copy={copyForTransparency}
+          />
+        </div>
 
-      {/* S09 Section 2: Two-Step Interactive Donation Card */}
-      <div className="mb-14">
-        <DonationCard initialPaymentOptions={summary.paymentOptions} copy={copyForCard} />
-      </div>
+        {/* S09 Section 2: Two-Step Interactive Donation Card */}
+        <div className="mb-14">
+          <DonationCard initialPaymentOptions={summary.paymentOptions} copy={copyForCard} />
+        </div>
 
-      {/* S09 Section 3: Supporters Wall */}
-      <div className="mb-14">
-        <SupportersWall supporters={summary.supporters} copy={copyForWall} />
-      </div>
+        {/* S09 Section 3: Supporters Wall */}
+        <div className="mb-14">
+          <SupportersWall supporters={summary.supporters} copy={copyForWall} />
+        </div>
 
-      {/* S09 Section 4: Legal & Statutory Disclaimer */}
-      <div className="border-hairline/60 bg-surface/30 rounded-[--radius-md] border p-4 text-center">
-        <p className="text-muted mx-auto max-w-2xl text-xs leading-relaxed">{t("legal")}</p>
+        {/* S09 Section 4: Legal & Statutory Disclaimer */}
+        <div className="border-hairline/60 bg-surface/30 rounded-[--radius-md] border p-4 text-center">
+          <p className="text-muted mx-auto max-w-2xl text-xs leading-relaxed">{t("legal")}</p>
+        </div>
       </div>
     </div>
   );
