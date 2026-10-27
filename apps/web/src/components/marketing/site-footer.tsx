@@ -3,9 +3,6 @@ import { Link } from "@/i18n/routing";
 import { Logo } from "@/components/brand/logo";
 import { Crosshair } from "@/components/brand/crosshair";
 
-// Injected at build time: NEXT_PUBLIC_GIT_SHA (7-char), NEXT_PUBLIC_APP_VERSION.
-const GIT_SHA = process.env.NEXT_PUBLIC_GIT_SHA ?? "dev";
-
 export function SiteFooter() {
   const t = useTranslations("footer");
   const tn = useTranslations("nav");
@@ -58,19 +55,13 @@ export function SiteFooter() {
               WhatsApp
             </a>
             <a
-              href="https://github.com/ceybyte/cbpos-releases"
+              href="https://facebook.com/CeylonByte"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-azure-text transition-colors duration-[--dur-hover]"
             >
-              GitHub
+              Facebook
             </a>
-            <Link
-              href="/dashboard"
-              className="hover:text-azure-text transition-colors duration-[--dur-hover]"
-            >
-              {fl("merchantPortal")}
-            </Link>
             <Link
               href="/legal/terms"
               className="hover:text-azure-text transition-colors duration-[--dur-hover]"
@@ -86,14 +77,10 @@ export function SiteFooter() {
           </nav>
         </div>
 
-        {/* Row 2: Copyright & Build SHA | Engineered In Sri Lanka badge */}
+        {/* Row 2: Copyright | Engineered In Sri Lanka badge */}
         <div className="border-hairline-grid text-muted mt-6 flex flex-col items-center justify-between gap-3 border-t pt-4 font-mono text-[11px] sm:flex-row">
           <div className="flex flex-wrap items-center gap-3">
             <span>{t("copyright", { year })}</span>
-            <span className="text-hairline-grid" aria-hidden="true">
-              ·
-            </span>
-            <span className="text-2xs opacity-80">{t("build", { sha: GIT_SHA })}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>

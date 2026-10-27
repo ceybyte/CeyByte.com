@@ -84,14 +84,15 @@ describe("MobileNav and SiteFooter merchant entry points", () => {
     expect(html).toContain("Sign out");
   });
 
-  test("SiteFooter includes Merchant portal link", () => {
+  test("SiteFooter includes Facebook community link and excludes Merchant portal link", () => {
     const html = renderToString(
       <NextIntlClientProvider locale="en" messages={enMessages}>
         <SiteFooter />
       </NextIntlClientProvider>,
     );
 
-    expect(html).toContain("Merchant portal");
-    expect(html).toContain('href="/dashboard"');
+    expect(html).toContain("Facebook");
+    expect(html).toContain('href="https://facebook.com/CeylonByte"');
+    expect(html).not.toContain("Merchant portal");
   });
 });

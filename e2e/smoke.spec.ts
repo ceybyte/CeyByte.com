@@ -20,10 +20,10 @@ test("API answers on the same origin", async ({ request }) => {
 test("home page navigation exposes merchant entry points", async ({ page, isMobile }) => {
   await page.goto("/en");
 
-  // Footer contains Merchant portal link across all devices
-  const merchantPortalLink = page.getByRole("contentinfo").getByRole("link", { name: "Merchant portal" });
-  await expect(merchantPortalLink).toBeVisible();
-  await expect(merchantPortalLink).toHaveAttribute("href", /\/en\/dashboard\/?/);
+  // Footer contains Facebook community link across all devices
+  const facebookLink = page.getByRole("contentinfo").getByRole("link", { name: "Facebook" });
+  await expect(facebookLink).toBeVisible();
+  await expect(facebookLink).toHaveAttribute("href", "https://facebook.com/CeylonByte");
 
   if (isMobile) {
     const menuBtn = page.getByRole("banner").getByRole("button", { name: /open navigation menu/i });

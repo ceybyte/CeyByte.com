@@ -46,14 +46,20 @@ describe("SiteFooter (Style 1: Ultra-Clean 2-Row Editorial)", () => {
     expect(html).not.toContain("CB&nbsp;POS");
 
     // Mission statement
-    expect(html).toContain("Open retail technology &amp; software engineered in Sri Lanka by Ceylon Byte.");
+    expect(html).toContain("Digitizing Sri Lanka, Byte by Byte.");
 
     // Navigation links
     expect(html).toContain('href="/features"');
     expect(html).toContain('href="/docs"');
     expect(html).toContain('href="/releases"');
+    expect(html).toContain('href="https://facebook.com/CeylonByte"');
+    expect(html).not.toContain('href="https://github.com/ceybyte/cbpos-releases"');
+    expect(html).not.toContain('href="/dashboard"');
     expect(html).toContain('href="/legal/terms"');
     expect(html).toContain('href="/legal/privacy"');
+
+    // Build text must be absent
+    expect(html).not.toContain("build ");
 
     // Engineered in Sri Lanka badge
     expect(html).toContain("ENGINEERED IN SRI LANKA");

@@ -33,7 +33,7 @@
     "signOut": "ඉවත් වන්න"
   },
   "footer": {
-    "mission": "Ceylon Byte විසින් ශ්‍රී ලංකාවේදී නිර්මාණය කරන ලද විවෘත සිල්ලර තාක්ෂණය සහ මෘදුකාංග.",
+    "mission": "පියවරෙන් පියවර, ඩිජිටල් ශ්‍රී ලංකාවක් කරා.",
     "latest": "Latest: v{version} · {channel}",
     "col": {
       "software": "තාක්ෂණය සහ මෘදුකාංගය",
@@ -46,6 +46,7 @@
       "hardwareGuide": "ESC/POS දෘඩාංග මාර්ගෝපදේශය",
       "shortcuts": "මුද්‍රණය කළ හැකි කෙටිමං පත්‍රිකාව",
       "whatsapp": "WhatsApp වෙළෙඳ ප්‍රජාව",
+      "facebook": "Facebook",
       "github": "GitHub විවෘත මූලාශ්‍ර නිකුතු",
       "supportersWall": "ආධාරකරුවන්ගේ පුවරුව",
       "merchantPortal": "වෙළෙඳ පද්ධතියට පිවිසීම",

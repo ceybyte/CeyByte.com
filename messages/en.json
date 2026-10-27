@@ -33,7 +33,7 @@
     "signOut": "Sign out"
   },
   "footer": {
-    "mission": "Open retail technology & software engineered in Sri Lanka by Ceylon Byte.",
+    "mission": "Digitizing Sri Lanka, Byte by Byte.",
     "latest": "Latest: v{version} · {channel}",
     "col": {
       "software": "Software & Architecture",
@@ -46,6 +46,7 @@
       "hardwareGuide": "ESC/POS hardware guide",
       "shortcuts": "Printable keymap sheet",
       "whatsapp": "WhatsApp merchant group",
+      "facebook": "Facebook",
       "github": "GitHub open source releases",
       "supportersWall": "Supporters wall",
       "merchantPortal": "Merchant portal login",

@@ -33,7 +33,7 @@
     "signOut": "வெளியேறு"
   },
   "footer": {
-    "mission": "Ceylon Byte ஆல் இலங்கையில் உருவாக்கப்பட்ட திறந்த சில்லறை வணிக தொழில்நுட்பம் மற்றும் மென்பொருள்.",
+    "mission": "படிப்படியாக, டிஜிட்டல் இலங்கை நோக்கி.",
     "latest": "Latest: v{version} · {channel}",
     "col": {
       "software": "கட்டமைப்பு & மென்பொருள்",
@@ -46,6 +46,7 @@
       "hardwareGuide": "ESC/POS வன்பொருள் வழிகாட்டி",
       "shortcuts": "அச்சிடக்கூடிய குறுக்குவழி தாள்",
       "whatsapp": "WhatsApp வணிகர் சமூகம்",
+      "facebook": "Facebook",
       "github": "GitHub திறந்த மூல வெளியீடுகள்",
       "supportersWall": "ஆதரவாளர் சுவர்",
       "merchantPortal": "வணிகர் போர்டல் உள்நுழைவு",
