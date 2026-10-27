@@ -16,6 +16,7 @@ import { uploadsRoutes } from "./routes/uploads";
 import { feedbackRoutes } from "./routes/feedback";
 import { donationsRoutes } from "./routes/donations";
 import { meRoutes } from "./routes/me";
+import { tilesRoutes } from "./routes/tiles";
 import { syncReleases } from "./lib/releases-sync";
 import { rebuildIfDirty } from "./lib/geo-cache";
 import { cleanupDonations, checkScheduledPosts } from "./scheduled";
@@ -53,6 +54,7 @@ const api = new Hono<AppEnv>()
   .route("/", feedbackRoutes)
   .route("/", donationsRoutes)
   .route("/", meRoutes)
+  .route("/", tilesRoutes)
   .route("/", webhooksRoutes);
 
 // Main worker app: handles root redirect, PostHog reverse proxy, ticket shell rewrite, and /api/* routes.

@@ -511,7 +511,7 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ---
 
-## Phase 16 — UI Consistency, Collapsible Map Sidebar & Version Synchronization
+## Phase 18 — UI Consistency, Collapsible Map Sidebar & Version Synchronization (Sprint 15, Completed)
 
 **Goal:** Elevate visual consistency across light and dark themes, modernize footer branding and links, allow the map sidebar to be toggled on desktop to view the map full-width, harmonize page hero headers across Releases, Donate, and Feedback with Features, and establish a single source of truth for the latest version.
 
@@ -537,6 +537,36 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 **Verify:** `bun run format && bun run lint && bun run typecheck && bun scripts/i18n-check.ts && bun run test`.
 **Exit:** 275 tests passing, 0 lint errors, 0 type errors, 100% trilingual key parity. ✅ Met 2026-10-27.
+
+---
+
+## Phase 19 — Map Page Hero Header Unification, Full-Height Shop View & Basemap CORS Resolution (Sprint 16, Completed)
+
+**Goal:** Unify the map page hero header with releases, donate, and feedback; expand sidebar space for "shops in view" by moving district statistics to the hero header and making filters collapsible; fix "Add my shop" button contrast in light and dark themes; and eliminate map loading errors (MapLibre relative sprite URL warning and upstream Protomaps CORS blocking).
+
+### 19.1 Full-Width Map Page Hero Header
+- [x] Implement full-width Page Hero Header in `MapShell.tsx` with decorative isometric hardware `<Figure name="hub" intensity={0.4} />`, uppercase eyebrow `{t("coverage.title")}`, main heading `{t("title")}`, live district coverage subtitle `{t("subtitle", { shops: totalCount, covered: coveredCount })}`, and "Add my shop" CTA button.
+- [x] Update `apps/web/src/app/[locale]/map/page.tsx` wrapper from fixed `h-[calc(100vh-var(--header-h))] overflow-hidden` to `min-h-[calc(100vh-var(--header-h))] w-full` to seamlessly integrate the top hero header and full interactive map.
+
+### 19.2 Full-Height Sidebar View for "Shops in View"
+- [x] Relocate the static title and district summary counts out of the sidebar into the new top hero header, eliminating redundant vertical padding.
+- [x] Make `DistrictGrid` (5x5 short codes) and `FilterBar` collapsible under an active filter toggle button (`<SlidersHorizontal />`) with live active-filter counter badge.
+- [x] Keep filters collapsed by default so `MerchantList` ("shops in view") receives 100% full vertical height of the sidebar without scrolling obstruction.
+- [x] Add removable active district badge (`{district} ×`) in the live in-view results counter for instant one-click filter clearing.
+
+### 19.3 High-Contrast CTA Button Design Tokens
+- [x] Eliminate unstyled `bg-brand-green ... text-black` class in `MapShell.tsx` across desktop sidebar, mobile drawer, and hero header.
+- [x] Implement canonical design tokens: `bg-primary hover:bg-primary-hover active:bg-primary-press text-primary-foreground focus-visible:outline-text font-bold`.
+- [x] Guarantees high-contrast bold dark `#121212` text on fluorescent green `#39ff14` across both light and dark themes.
+
+### 19.4 Basemap Tiles CORS Proxy & Absolute Asset URLs
+- [x] Resolve MapLibre relative asset warning (`Invalid sprite URL "/sprites/v4/dark", must be absolute`) by prepending `window.location.origin` to both `sprite` and `glyphs` URLs in `apps/web/src/components/map/style.ts`.
+- [x] Create `/api/tiles/:filename` route in `apps/api/src/routes/tiles.ts` that serves from R2 bucket `PUBLIC` (`tiles/<filename>`) and transparently proxies upstream Protomaps PMTiles with byte ranges.
+- [x] Forward HTTP byte range headers and attach `Access-Control-Allow-Origin: *`, `Cross-Origin-Resource-Policy: cross-origin`, and `Accept-Ranges: bytes`, permanently bypassing browser CORS restrictions on `https://ceybyte.com`.
+- [x] Update default PMTiles URL in `apps/web/src/components/map/style.ts` to `/api/tiles/sri-lanka.pmtiles`.
+
+**Verify:** `bun run lint && bun run typecheck && bun scripts/i18n-check.ts --strict && bun run test && cd apps/web && bun run build`.
+**Exit:** Map hero unified, sidebar expanded for shops in view, CORS resolved, 0 lint/type errors, static export passing across all 147 pages. ✅ Met 2026-10-28.
 
 ---
 

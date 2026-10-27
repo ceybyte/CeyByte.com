@@ -34,10 +34,10 @@ export default async function MapPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="bg-canvas relative h-[calc(100vh-var(--header-h))] w-full overflow-hidden">
+    <div className="bg-canvas relative min-h-[calc(100vh-var(--header-h))] w-full">
       <Suspense
         fallback={
-          <div className="bg-canvas flex h-full w-full items-center justify-center">
+          <div className="bg-canvas flex h-96 w-full items-center justify-center">
             <div className="border-hairline border-t-azure h-8 w-8 animate-spin rounded-full border-2" />
           </div>
         }

@@ -96,8 +96,7 @@ export const CBPOS_LIGHT_FLAVOR: Flavor = {
   ocean_label: "#A1A1AA",
 };
 
-export const DEFAULT_PMTILES_URL =
-  process.env.NEXT_PUBLIC_TILES_URL || "https://build.protomaps.com/20261024.pmtiles";
+export const DEFAULT_PMTILES_URL = process.env.NEXT_PUBLIC_TILES_URL || "/api/tiles/sri-lanka.pmtiles";
 
 /**
  * Builds a MapLibre StyleSpecification tailored with our tokens and English Latin-script labels.
@@ -107,15 +106,19 @@ export function buildBasemapStyle(
   tileUrl: string = DEFAULT_PMTILES_URL,
 ): StyleSpecification {
   const flavor = theme === "light" ? CBPOS_LIGHT_FLAVOR : CBPOS_DARK_FLAVOR;
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const fullTileUrl = tileUrl.startsWith("http")
+    ? tileUrl
+    : `${origin}${tileUrl.startsWith("/") ? "" : "/"}${tileUrl}`;
 
   return {
     version: 8,
-    glyphs: "/fonts/{fontstack}/{range}.pbf",
-    sprite: `/sprites/v4/${theme}`,
+    glyphs: `${origin}/fonts/{fontstack}/{range}.pbf`,
+    sprite: `${origin}/sprites/v4/${theme}`,
     sources: {
       protomaps: {
         type: "vector",
-        url: tileUrl.startsWith("pmtiles://") ? tileUrl : `pmtiles://${tileUrl}`,
+        url: fullTileUrl.startsWith("pmtiles://") ? fullTileUrl : `pmtiles://${fullTileUrl}`,
         attribution: "© OpenStreetMap contributors · Protomaps",
       },
     },
