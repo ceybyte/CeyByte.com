@@ -532,8 +532,8 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [x] Modernize `/feedback` header: adopt full-width hero with `Figure name="patch"` and integrated action buttons.
 
 ### 18.4 Version SSOT & Feedback Form Sync
-- [x] Create `packages/shared/src/version.ts` exporting canonical `LATEST_APP_VERSION = "1.3.0"` and `APP_VERSION_OPTIONS`.
-- [x] Re-export in `apps/web/src/lib/constants.ts` and update `FeedbackSubmitForm.tsx` to dynamically derive options and default to `LATEST_APP_VERSION`.
+- [x] Establish canonical `LATEST_APP_VERSION = "1.3.0"` and `APP_VERSION_OPTIONS` in `packages/shared/src/version.ts` and isolate client constants in `apps/web/src/lib/constants.ts` to prevent server-side markdown AST dependencies from leaking into Next.js client bundles during static export.
+- [x] Update `FeedbackSubmitForm.tsx` to dynamically derive options and default to `LATEST_APP_VERSION`.
 
 **Verify:** `bun run format && bun run lint && bun run typecheck && bun scripts/i18n-check.ts && bun run test`.
 **Exit:** 275 tests passing, 0 lint errors, 0 type errors, 100% trilingual key parity. ✅ Met 2026-10-27.
