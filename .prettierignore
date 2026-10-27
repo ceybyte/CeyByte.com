@@ -9,3 +9,4 @@ skills-lock.json
 **/.wrangler/
 apps/api/drizzle/
 apps/web/public/data/
+apps/web/public/mockups/

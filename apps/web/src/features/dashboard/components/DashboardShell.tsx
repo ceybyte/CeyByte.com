@@ -4,7 +4,6 @@ import { createContext, useContext, useCallback, useEffect, useState } from "rea
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { DashboardNav } from "./DashboardNav";
-import { EmptyDashboard } from "./EmptyDashboard";
 import { fetchDashboardListing } from "../api";
 import type { LatestRelease, MerchantListing } from "../types";
 import { Loader2 } from "lucide-react";

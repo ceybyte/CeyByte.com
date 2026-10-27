@@ -14,6 +14,7 @@ export default tseslint.config(
       "**/.agents/**",
       "**/out/**",
       "**/dist/**",
+      "docs/**",
     ],
   },
   js.configs.recommended,
