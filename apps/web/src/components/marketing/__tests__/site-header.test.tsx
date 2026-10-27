@@ -8,27 +8,11 @@ mock.module("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-// Mock next-intl
-mock.module("next-intl", () => ({
-  useTranslations: () => (key: string) => {
-    const translations: Record<string, string> = {
-      ariaLabel: "Main navigation",
-      product: "Product",
-      map: "Map",
-      docs: "Docs",
-      releases: "Releases",
-      donate: "Donate",
-      download: "Download CB POS",
-      openMenu: "Open navigation menu",
-      closeMenu: "Close navigation menu",
-      signIn: "Sign in",
-      dashboard: "Dashboard",
-      signOut: "Sign out",
-    };
-    return translations[key] ?? key;
-  },
-  useLocale: () => "en",
-}));
+import { NextIntlClientProvider } from "next-intl";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+const enMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"));
 
 // Mock @/i18n/routing
 mock.module("@/i18n/routing", () => ({
@@ -67,7 +51,11 @@ import { SiteHeader } from "../site-header";
 describe("SiteHeader dynamic merchant auth entry", () => {
   test("renders 'Sign in' link pointing to /login when unauthenticated", () => {
     mockSession = { data: null, isPending: false };
-    const html = renderToString(<SiteHeader />);
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <SiteHeader />
+      </NextIntlClientProvider>,
+    );
 
     expect(html).toContain("Sign in");
     expect(html).toContain('href="/login"');
@@ -79,7 +67,11 @@ describe("SiteHeader dynamic merchant auth entry", () => {
       data: { user: { id: "user_123", email: "merchant@example.com" } },
       isPending: false,
     };
-    const html = renderToString(<SiteHeader />);
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <SiteHeader />
+      </NextIntlClientProvider>,
+    );
     expect(html).toContain("Dashboard");
     expect(html).toContain('href="/dashboard"');
     expect(html).not.toContain("Sign in");
@@ -87,7 +79,11 @@ describe("SiteHeader dynamic merchant auth entry", () => {
 
   test("renders master brand Logo without CB POS badge in nav", () => {
     mockSession = { data: null, isPending: false };
-    const html = renderToString(<SiteHeader />);
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <SiteHeader />
+      </NextIntlClientProvider>,
+    );
 
     // Must NOT contain CB POS badge in the logo
     expect(html).not.toContain("CB&nbsp;POS");

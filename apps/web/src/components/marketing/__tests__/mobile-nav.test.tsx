@@ -8,47 +8,11 @@ mock.module("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-mock.module("next-intl", () => ({
-  useTranslations: (namespace?: string) => (key: string) => {
-    if (namespace === "footer" || namespace === "footer.links") {
-      const footerMap: Record<string, string> = {
-        "col.product": "Product",
-        "col.community": "Community",
-        "col.legal": "Legal",
-        mission: "Free point-of-sale software",
-        download: "Download",
-        releases: "Releases",
-        docs: "Docs",
-        shortcuts: "Keyboard shortcuts",
-        map: "Merchant map",
-        feedback: "Feedback",
-        donate: "Donate",
-        whatsapp: "WhatsApp community",
-        blog: "Blog",
-        merchantPortal: "Merchant portal",
-        terms: "Terms",
-        privacy: "Privacy",
-        taxDisclaimer: "Tax disclaimer",
-        dataSafety: "Data safety",
-        cookies: "Cookies",
-      };
-      return footerMap[key] ?? key;
-    }
-    const navMap: Record<string, string> = {
-      ariaLabel: "Main navigation",
-      product: "Product",
-      map: "Map",
-      download: "Download CB POS",
-      openMenu: "Open navigation menu",
-      closeMenu: "Close navigation menu",
-      signIn: "Sign in",
-      dashboard: "Dashboard",
-      signOut: "Sign out",
-    };
-    return navMap[key] ?? key;
-  },
-  useLocale: () => "en",
-}));
+import { NextIntlClientProvider } from "next-intl";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+const enMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"));
 
 mock.module("@/i18n/routing", () => ({
   Link: ({
@@ -96,7 +60,11 @@ describe("MobileNav and SiteFooter merchant entry points", () => {
 
   test("MobileNav renders 'Sign in' when unauthenticated", () => {
     mockSession = { data: null, isPending: false };
-    const html = renderToString(<MobileNav navLinks={dummyLinks} />);
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <MobileNav navLinks={dummyLinks} />
+      </NextIntlClientProvider>,
+    );
 
     expect(html).toContain("Sign in");
     expect(html).toContain('href="/login"');
@@ -105,7 +73,11 @@ describe("MobileNav and SiteFooter merchant entry points", () => {
 
   test("MobileNav renders 'Dashboard' and 'Sign out' when authenticated", () => {
     mockSession = { data: { user: { id: "1" } }, isPending: false };
-    const html = renderToString(<MobileNav navLinks={dummyLinks} />);
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <MobileNav navLinks={dummyLinks} />
+      </NextIntlClientProvider>,
+    );
 
     expect(html).toContain("Dashboard");
     expect(html).toContain('href="/dashboard"');
@@ -113,7 +85,11 @@ describe("MobileNav and SiteFooter merchant entry points", () => {
   });
 
   test("SiteFooter includes Merchant portal link", () => {
-    const html = renderToString(<SiteFooter />);
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <SiteFooter />
+      </NextIntlClientProvider>,
+    );
 
     expect(html).toContain("Merchant portal");
     expect(html).toContain('href="/dashboard"');

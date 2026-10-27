@@ -27,33 +27,19 @@ mock.module("@/i18n/routing", () => ({
   usePathname: () => "/",
 }));
 
-const enMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"));
+import { NextIntlClientProvider } from "next-intl";
 
-mock.module("next-intl", () => ({
-  useTranslations: (namespace?: string) => (key: string, values?: Record<string, string | number>) => {
-    let result = key;
-    if (namespace === "footer") {
-      result = enMessages.footer[key] ?? key;
-    } else if (namespace === "footer.links") {
-      result = enMessages.footer.links[key] ?? key;
-    } else {
-      result = key;
-    }
-    if (values) {
-      for (const [k, v] of Object.entries(values)) {
-        result = result.replace(`{${k}}`, String(v));
-      }
-    }
-    return result;
-  },
-  useLocale: () => "en",
-}));
+const enMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"));
 
 import { SiteFooter } from "../site-footer";
 
 describe("SiteFooter (Style 1: Ultra-Clean 2-Row Editorial)", () => {
   test("renders master logo, mission statement, navigation links, and engineered badge without theme/language switches or verbose tax legalLine", () => {
-    const html = renderToString(<SiteFooter />);
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <SiteFooter />
+      </NextIntlClientProvider>,
+    );
 
     // Master branding (no CB POS product badge in footer)
     expect(html).toContain("CeyByte");
