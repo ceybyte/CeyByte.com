@@ -3,16 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import {
-  ChevronUp,
-  ChevronDown,
-  SlidersHorizontal,
-  Plus,
-  PanelLeft,
-  PanelLeftClose,
-  Search,
-  X,
-} from "lucide-react";
+import { ChevronUp, ChevronDown, SlidersHorizontal, Plus, Search, X } from "lucide-react";
 import { Figure } from "@/components/brand/figure";
 import { useGate } from "@/components/gate/gate-context";
 import { useMerchantGeo } from "./use-merchant-geo";
@@ -47,7 +38,6 @@ export function MapShell() {
   const [flyToCoords, setFlyToCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [isWebglSupported, setIsWebglSupported] = useState<boolean>(true);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false);
-  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState<boolean>(true);
   const [isFiltersExpanded, setIsFiltersExpanded] = useState<boolean>(false);
 
   // WebGL context check
@@ -229,16 +219,16 @@ export function MapShell() {
         {/* Desktop Left Panel (360px wide) */}
         <aside
           aria-label="Merchant map filters and directory"
-          className={`border-hairline bg-surface z-10 hidden shrink-0 flex-col overflow-hidden border-r transition-[width,opacity] duration-300 md:flex ${
-            isDesktopSidebarOpen ? "w-[360px] opacity-100" : "pointer-events-none w-0 border-r-0 opacity-0"
-          }`}
+          className="border-hairline bg-surface z-10 hidden w-[360px] shrink-0 flex-col overflow-hidden border-r md:flex"
         >
-          {/* Compact Top Bar: Search, Filter Toggle, and Collapse */}
+          {/* Compact Top Bar: Search and Filter Toggle */}
           <div className="border-hairline bg-surface flex flex-col border-b">
             <div className="flex items-center justify-between gap-2 p-3">
               <div className="relative flex-1">
                 <Search className="text-text-muted pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
                 <input
+                  id="map-desktop-search"
+                  name="search"
                   type="text"
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
@@ -278,16 +268,6 @@ export function MapShell() {
                 <ChevronDown
                   className={`h-3 w-3 transition-transform duration-200 ${isFiltersExpanded ? "rotate-180" : ""}`}
                 />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsDesktopSidebarOpen(false)}
-                title="Collapse sidebar"
-                className="text-text-muted hover:text-text hover:bg-surface-elevated focus-visible:ring-azure cursor-pointer rounded-md p-1.5 transition-colors focus-visible:ring-1 focus-visible:outline-none"
-                aria-label="Collapse sidebar"
-              >
-                <PanelLeftClose className="h-4 w-4" />
               </button>
             </div>
 
@@ -380,26 +360,12 @@ export function MapShell() {
             flyToCoords={flyToCoords}
           />
 
-          {/* Desktop Floating Toggle Button (shown when sidebar is collapsed) */}
-          {!isDesktopSidebarOpen && (
-            <button
-              type="button"
-              onClick={() => setIsDesktopSidebarOpen(true)}
-              className="border-hairline bg-surface/90 text-text hover:bg-surface-elevated hover:border-azure/40 absolute top-4 left-4 z-20 hidden cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium shadow-md backdrop-blur-md transition-all md:flex"
-              aria-label={t("coverage.title")}
-            >
-              <PanelLeft className="text-azure-text h-4 w-4" />
-              <span>{t("coverage.title")}</span>
-              <span className="text-text-muted bg-surface-elevated border-hairline rounded border px-1.5 py-0.5 font-mono text-[11px]">
-                {coveredCount}/25
-              </span>
-            </button>
-          )}
-
           {/* Mobile Header Bar & Drawer Trigger (< md) */}
           <div className="absolute inset-x-3 top-3 z-10 flex items-center gap-2 md:hidden">
             <div className="border-hairline bg-surface/90 flex-1 rounded-sm border px-3 py-2 shadow-md backdrop-blur-md">
               <input
+                id="map-mobile-search"
+                name="search"
                 type="text"
                 value={filters.search}
                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}

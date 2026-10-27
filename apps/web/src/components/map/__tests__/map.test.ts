@@ -245,4 +245,13 @@ describe("Merchant Map Logic & Coverage", () => {
       expect(record.ipHash).toBeUndefined();
     }
   });
+
+  it("verifies CSP policy in _headers permits 'unsafe-eval' for MapLibre Web Worker", async () => {
+    const fs = await import("fs/promises");
+    const path = await import("path");
+    const headersContent = await fs.readFile(path.resolve(process.cwd(), "public/_headers"), "utf8");
+    expect(headersContent).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+    expect(headersContent).toContain("worker-src 'self' blob:");
+    expect(headersContent).toContain("connect-src 'self'");
+  });
 });

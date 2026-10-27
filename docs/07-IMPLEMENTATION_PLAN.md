@@ -32,7 +32,9 @@ Every UI item also passes the design gates in `CLAUDE.md §7` (hallmark, impecca
 | 11 | P12 Donations | **M2** |
 | 12 | P13 Blog & extras | **M3** |
 | 13 | P14 Brand architecture foundation · P15 Retail experience & design polish | **M3+** |
-| 14 | P16 UI consistency, collapsible map sidebar & version synchronization | **M3+** |
+| 14 | P16 Mobile responsiveness, HUD, prose styling & donate redesign | **M3+** |
+| 15 | P17 Merchant dashboard brand elevation · P18 UI consistency & footer modernization | **M3+** |
+| 16 | P19 Map page hero header, full-height shop view & basemap CORS / CSP resolution | **M3+** |
 
 ```mermaid
 gantt
@@ -565,8 +567,13 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 - [x] Forward HTTP byte range headers and attach `Access-Control-Allow-Origin: *`, `Cross-Origin-Resource-Policy: cross-origin`, and `Accept-Ranges: bytes`, permanently bypassing browser CORS restrictions on `https://ceybyte.com`.
 - [x] Update default PMTiles URL in `apps/web/src/components/map/style.ts` to `/api/tiles/sri-lanka.pmtiles`.
 
+### 19.5 CSP Unsafe-Eval Support, Form Autofill Accessibility & Side Panel Collapse Removal
+- [x] Add `'unsafe-eval'` to `script-src` directive in `apps/web/public/_headers` (and document in `docs/02-TRD.md`), allowing MapLibre GL JS Web Worker (`maplibre-gl-worker.js`) to evaluate dynamic vector tile expressions without CSP termination.
+- [x] Remove desktop map sidebar collapse state (`isDesktopSidebarOpen`), `<PanelLeftClose />` collapse button, and `<PanelLeft />` floating trigger in `map-shell.tsx`, keeping sidebar permanently docked at `w-[360px]` for a clean, stable UI.
+- [x] Add unique `id` and `name` attributes to all map form inputs and selects (`#map-desktop-search`, `#map-mobile-search`, `#map-filter-search`, `#map-filter-district`, `#map-filter-category`, `#map-filter-supporters`), eliminating browser autofill console audit warnings.
+
 **Verify:** `bun run lint && bun run typecheck && bun scripts/i18n-check.ts --strict && bun run test && cd apps/web && bun run build`.
-**Exit:** Map hero unified, sidebar expanded for shops in view, CORS resolved, 0 lint/type errors, static export passing across all 147 pages. ✅ Met 2026-10-28.
+**Exit:** Map hero unified, sidebar expanded for shops in view, CORS and CSP resolved, 0 lint/type errors, static export passing across all 147 pages. ✅ Met 2026-10-28.
 
 ---
 

@@ -31,6 +31,8 @@ export function FilterBar({ filters, onFilterChange, onResetFilters }: FilterBar
       <div className="relative">
         <Search className="text-text-muted pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
         <input
+          id="map-filter-search"
+          name="search"
           type="text"
           value={filters.search}
           onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
@@ -54,6 +56,8 @@ export function FilterBar({ filters, onFilterChange, onResetFilters }: FilterBar
       <div className="grid grid-cols-2 gap-2">
         <div className="space-y-1">
           <select
+            id="map-filter-district"
+            name="district"
             value={filters.district}
             onChange={(e) => onFilterChange({ ...filters, district: e.target.value })}
             aria-label={t("filter.district")}
@@ -78,6 +82,8 @@ export function FilterBar({ filters, onFilterChange, onResetFilters }: FilterBar
 
         <div className="space-y-1">
           <select
+            id="map-filter-category"
+            name="category"
             value={filters.category}
             onChange={(e) => onFilterChange({ ...filters, category: e.target.value })}
             aria-label={t("filter.category")}
@@ -105,6 +111,8 @@ export function FilterBar({ filters, onFilterChange, onResetFilters }: FilterBar
       <div className="flex items-center justify-between pt-1">
         <label className="text-text flex cursor-pointer items-center gap-2 text-xs select-none">
           <Switch
+            id="map-filter-supporters"
+            name="supportersOnly"
             checked={filters.supportersOnly}
             onCheckedChange={(checked) => onFilterChange({ ...filters, supportersOnly: Boolean(checked) })}
             size="sm"

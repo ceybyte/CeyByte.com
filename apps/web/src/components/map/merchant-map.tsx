@@ -31,7 +31,8 @@ let workerConfigured = false;
 function configureMapLibreWorker() {
   if (typeof window !== "undefined" && !workerConfigured) {
     try {
-      setWorkerUrl("/maplibre-gl-worker.js");
+      const origin = window.location.origin;
+      setWorkerUrl(`${origin}/maplibre-gl-worker.js`);
       workerConfigured = true;
     } catch {
       // ignore

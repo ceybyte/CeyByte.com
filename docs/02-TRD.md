@@ -553,7 +553,7 @@ Zone backstop: one free WAF rate-limiting rule on `POST /api/*` (block 10 s abov
 
 ```
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://cdn.ceybyte.com https://lh3.googleusercontent.com; font-src 'self'; connect-src 'self' https://cdn.ceybyte.com https://*.r2.cloudflarestorage.com; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; child-src blob:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://cdn.ceybyte.com https://lh3.googleusercontent.com; font-src 'self'; connect-src 'self' https://cdn.ceybyte.com https://*.r2.cloudflarestorage.com; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; child-src blob:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -563,7 +563,7 @@ Zone backstop: one free WAF rate-limiting rule on `POST /api/*` (block 10 s abov
   Cache-Control: public, max-age=31536000, immutable
 ```
 
-- Static export can't use per-request nonces, so `script-src` needs `'unsafe-inline'` for Next's inline bootstrap. Mitigations: no user HTML is ever rendered unsanitised (`rehype-sanitize`), no third-party scripts except Turnstile, and Trusted Types are planned (ADR-0011).
+- Static export can't use per-request nonces, so `script-src` needs `'unsafe-inline'` for Next's inline bootstrap and `'unsafe-eval'` for MapLibre GL JS vector tile and style expression evaluation in Web Workers. Mitigations: no user HTML is ever rendered unsanitised (`rehype-sanitize`), no third-party scripts except Turnstile, and Trusted Types are planned (ADR-0011).
 - Rive WASM is self-hosted. MapLibre needs `worker-src blob:`.
 
 ### 12.4 Webhooks
