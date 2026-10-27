@@ -40,6 +40,8 @@ jobs:
         with:
           bun-version-file: package.json
       - run: bun install --frozen-lockfile
+      - run: bun run db:migrate:local
+      - run: bun run db:seed:local
       - run: bunx playwright install --with-deps chromium
       - run: bun run e2e
       - uses: actions/upload-artifact@v4
