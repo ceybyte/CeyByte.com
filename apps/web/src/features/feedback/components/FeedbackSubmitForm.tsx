@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Bug, Lightbulb, HelpCircle, Upload, Check, Loader2, ArrowRight } from "lucide-react";
 import { TurnstileWidget } from "@/components/gate/turnstile-widget";
+import { LATEST_APP_VERSION, APP_VERSION_OPTIONS } from "@/lib/constants";
 import { SimilarTicket } from "../types";
 import { fetchSimilarTickets, presignAndUploadFile, submitTicket } from "../api";
 
@@ -16,7 +17,7 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
   const [type, setType] = useState<"bug" | "feature" | "question">(initialType);
   const [title, setTitle] = useState("");
   const [bodyMd, setBodyMd] = useState("");
-  const [appVersion, setAppVersion] = useState("1.4.2");
+  const [appVersion, setAppVersion] = useState<string>(LATEST_APP_VERSION);
   const [windowsVersion, setWindowsVersion] = useState("Windows 11");
   const [severity, setSeverity] = useState<string>("wrong_output");
   const [contactPrivate, setContactPrivate] = useState("");
@@ -365,10 +366,11 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
               onChange={(e) => setAppVersion(e.target.value)}
               className="border-hairline bg-surface text-text focus:border-azure/50 focus:ring-azure/40 w-full rounded-xl border px-3 py-2 text-xs transition-colors focus:ring-1 focus:outline-none"
             >
-              <option value="1.4.2">v1.4.2 (Latest)</option>
-              <option value="1.4.0">v1.4.0</option>
-              <option value="1.3.0">v1.3.0</option>
-              <option value="unknown">I&apos;m not sure</option>
+              {APP_VERSION_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
             </select>
           </div>
 

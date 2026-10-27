@@ -9,3 +9,4 @@ export * from "./schemas/feedback";
 export * from "./schemas/manifest";
 export * from "./sri-lanka";
 export * from "./tax";
+export * from "./version";
