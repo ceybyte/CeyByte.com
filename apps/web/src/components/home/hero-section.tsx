@@ -120,23 +120,21 @@ export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps
                   <div className="bg-surface-elevated border-hairline flex items-center justify-between border-b px-3 py-2 font-mono text-xs">
                     <div className="flex items-center gap-2">
                       <span className="bg-primary size-2 rounded-full" />
-                      <span className="text-azure-text font-semibold">CB POS v{version}</span>
+                      <span className="text-text font-semibold">CB POS v{version}</span>
                       <span className="text-muted hidden sm:inline">· Till 01</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="bg-primary/10 text-primary border-primary/20 rounded border px-1.5 py-0.5 text-[10px]">
                         OFFLINE READY
                       </span>
-                      <span className="text-muted/60 font-mono text-[10px] uppercase">
-                        {t("mockupLabel")}
-                      </span>
+                      <span className="text-muted font-mono text-[10px] uppercase">{t("mockupLabel")}</span>
                     </div>
                   </div>
 
                   {/* Simulated Real Sales Screen Contents (PRD §F-02, 06 §3.1) */}
                   <div className="space-y-4 p-4 font-mono text-xs sm:p-5">
                     {/* Cart Header */}
-                    <div className="text-muted/70 border-hairline grid grid-cols-12 border-b pb-2 text-[11px]">
+                    <div className="text-muted border-hairline grid grid-cols-12 border-b pb-2 text-[11px]">
                       <span className="col-span-6">ITEM / DESCRIPTION</span>
                       <span className="col-span-2 text-right">QTY/WT</span>
                       <span className="col-span-2 text-right">PRICE</span>
