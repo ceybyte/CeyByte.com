@@ -213,18 +213,19 @@ Tax demo default: MRP `1,180.00` → base `1,000.00`, VAT `180.00`. Rounding is 
 
 Full-width `surface` band with a hairline top and bottom, crosshairs at all 4 corners, and a pointer-follow azure glow (desktop).
 
-### 3.8 Section 8 — Global architectural footer
+### 3.8 Section 8 — Global architectural footer (Style 1: Ultra-Clean 2-Row Editorial)
 
 | Key | Copy |
 |---|---|
 | `footer.mission` | Free point-of-sale software for Sri Lankan shops, made in Sri Lanka by Ceylon Byte. |
-| `footer.latest` | Latest: v{version} · {channel} |
-| `footer.col.product` | Product: Download · Releases · Docs · Keyboard shortcuts |
-| `footer.col.community` | Community: Merchant map · Feedback · Donate · WhatsApp community · Blog |
-| `footer.col.legal` | Legal: Terms · Privacy · Tax disclaimer · Data safety · Cookies |
-| `footer.legalLine` | CB POS comes as is, without a warranty. Its tax calculations aren't certified by the IRD, and keeping backups of your data is up to you. |
-| `footer.copyright` | © {year} Ceylon Byte. Made in Sri Lanka. |
+| `footer.engineeredInSL` | Engineered in Sri Lanka |
+| `footer.merchantPortal` | Merchant portal |
+| `footer.copyright` | © {year} Ceylon Byte. All rights reserved. |
 | `footer.build` | build {sha} |
+| `footer.col.legal` | Legal: Terms · Privacy · Tax disclaimer · Data safety · Cookies |
+
+Row 1: Ceylon Byte master logo, platform mission statement, and core navigation links (Download, Releases, Map, Features, Docs, Blog, Feedback, Donate, Merchant Portal).
+Row 2: Copyright notice, legal links, build SHA, and "Engineered in Sri Lanka" status badge with live green ping indicator. Redundant language/theme toggles and verbose tax legalLine removed.
 
 ---
 

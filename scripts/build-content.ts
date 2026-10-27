@@ -25,6 +25,14 @@ if (!existsSync(CONTENT_DIR)) {
 }
 
 const args = new Set(process.argv.slice(2));
+
+if (args.has("--if-missing")) {
+  const reqFiles = ["categories.json", "docs.json", "blog.json", "releases.json"];
+  if (reqFiles.every((f) => existsSync(resolve(CONTENT_DIR, f)))) {
+    process.exit(0);
+  }
+}
+
 const target = args.has("--remote") ? "production" : args.has("--preview") ? "preview" : "local";
 const db = target === "preview" ? "cbpos-db-preview" : "cbpos-db";
 const flags = { local: ["--local"], preview: ["--remote", "--env", "preview"], production: ["--remote"] }[
@@ -38,7 +46,10 @@ type FallbackData = {
   releases?: unknown[];
 };
 
+let d1Failed = false;
+
 async function queryD1<T>(query: string): Promise<T[] | null> {
+  if (d1Failed) return null;
   try {
     const proc = Bun.spawn(
       ["bunx", "wrangler", "d1", "execute", db, ...flags, "--command", query, "--json"],
@@ -50,14 +61,19 @@ async function queryD1<T>(query: string): Promise<T[] | null> {
     );
     const stdout = await new Response(proc.stdout).text();
     const code = await proc.exited;
-    if (code !== 0) return null;
+    if (code !== 0) {
+      d1Failed = true;
+      return null;
+    }
 
     const parsed = JSON.parse(stdout);
     if (Array.isArray(parsed) && parsed[0]?.results) {
       return parsed[0].results as T[];
     }
+    d1Failed = true;
     return null;
   } catch {
+    d1Failed = true;
     return null;
   }
 }

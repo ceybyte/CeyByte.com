@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "dev": "bun run --filter @cbpos/api --filter @cbpos/web dev",
+    "build:content": "bun run --filter @cbpos/web build:content",
     "build": "bun run --filter @cbpos/web build",
     "preview": "bun run build && bun run --filter @cbpos/api dev",
     "deploy": "bun run --filter @cbpos/api --filter @cbpos/www-redirect deploy",

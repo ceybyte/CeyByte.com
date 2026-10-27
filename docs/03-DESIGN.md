@@ -698,6 +698,7 @@ The client wires `hero-pos` `lang` to the current locale. `scan` fires every 4 s
 | Bento "Weighing & Backups", backup half | `Vault` (dial and bolts) | AES-encrypted backups with a password [G2] |
 | Docs › Multiple tills hub | `Hub` (tiles on links to a hub) | Main PC + terminals in LAN Sync [G4] |
 | Releases page header | `Branches` (commit graph) | Version history |
+| Donate page header card | Custom Hairline Hardware Slab (`DonationFigure.tsx`: 3D PCB slab, 8 knobs, dual bus, elevated nodes, pulsing azure node) | Hardware & test equipment funding |
 | 404 page | `Plug` (plug rises toward the socket, falls short) | A link that doesn't connect |
 | Empty search/filter results | `Basket` (tilts to show a bare floor) | Nothing here |
 | Feedback board empty state | `Query` (question mark) | Ask or report something |

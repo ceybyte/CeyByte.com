@@ -438,6 +438,53 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ---
 
+## Phase 16 — Mobile Responsiveness, Telemetry HUD, Content Styling & Donate Redesign (Sprint 14, Completed)
+
+**Goal:** Eliminate mobile responsive glitches, elevate the sticky header and establish clean master-brand logo treatment, convert telemetry into a sleek Floating Glass Capsule HUD, introduce a dedicated `.prose-ceybyte` stylesheet for docs and blog articles, simplify footer into an ultra-clean 2-row editorial layout, redesign the donate monolith with custom isometric hairline hardware figures (no yellow gradient lines), standardize corner radii tokens, and harden CI content extraction.
+
+### 16.1 Navigation Bar & Master Brand Elevation
+- [x] Remove `[CB POS]` badge from header logo to clearly distinguish master platform brand (Ceylon Byte) from the software application (`CB POS`). Dynamic aria-labels ensure accessibility.
+- [x] Expand header height to `--header-h: 76px` desktop / `68px` mobile, giving generous vertical breathing space.
+- [x] Implement Style 2 micro-interactions: subtle pill background highlight with hairline accent underline on hover and active states.
+
+### 16.2 Hero Section & Download CTA Responsiveness
+- [x] Route "Explore Features →" button directly to `/{locale}/features` (was previously anchored to `#features`).
+- [x] Prevent button text clipping/overflow on 360px mobile viewports with flexible wrapping, balanced whitespace, and adaptive badge sizing.
+
+### 16.3 Middle Section Telemetry Strip (Style 2: Floating Glass Capsule HUD)
+- [x] Replace full-bleed telemetry grid with a floating glass capsule HUD (`border-hairline bg-surface-elevated/40 backdrop-blur-md rounded-2xl`).
+- [x] Present 5 key metrics (`0 ms`, `Rs. 0`, `25/25`, `18% + 2.5%`, Live Directory button) with clean responsive wrapping and live data connection.
+
+### 16.4 Dedicated Prose Stylesheet (`.prose-ceybyte`)
+- [x] Implement custom `.prose-ceybyte` CSS layer in `globals.css` with dedicated typography, headings, tables, step-cards, code blocks, callouts, and keycaps.
+- [x] Apply `.prose-ceybyte` to `markdown-renderer.tsx` (docs articles) and `apps/web/src/app/[locale]/blog/[slug]/page.tsx` (blog posts) to resolve unstyled raw markdown dump.
+
+### 16.5 Minimalist Footer Redesign (Style 1: Ultra-Clean 2-Row Editorial)
+- [x] Row 1: Master brand logo, platform-level mission statement, and clean navigation links (including Merchant Portal entry point).
+- [x] Row 2: Copyright notice, legal links, build SHA, and "Engineered in Sri Lanka" status badge with live green ping indicator.
+- [x] Remove redundant language/theme toggles and verbose IRD legal disclaimer paragraph. Maintained 100% strict trilingual key parity (704 keys across en, si, ta).
+
+### 16.6 Donate Page Monolith Redesign & Backend Integration (`/donate`)
+- [x] Implement Style 1 (Releases-Matched Monolith) container card.
+- [x] Strictly eliminate yellow gradient top hairline border and top community funding badge per explicit design requirements.
+- [x] Create `DonationFigure.tsx`: precision isometric SVG hairline hardware element using semantic CSS tokens (`var(--surface)`, `var(--hairline)`, `var(--azure)`), completely free of raw hex literals (ESLint Gate 48).
+- [x] Fix ICU message syntax parameter formatting for dynamic strings (`ref.title`, `slip.uploaded`, and `transparency.body`) using `t.raw` to prevent SSR formatting crashes.
+- [x] Verify end-to-end integration with backend endpoints (`createDonation`, `presignAndUploadSlip`, `submitDonationSlip`, and `fetchDonationSummary`).
+
+### 16.7 Corner Radius System Standardization
+- [x] Standardize corner radius tokens across `:root` and `@theme inline` in `globals.css`: `--radius-sm: 4px`, `--radius-md: 8px`, `--radius-lg: 12px`, `--radius-xl: 16px`, `--radius-full: 9999px`.
+- [x] Apply `rounded-2xl` uniformly across bento cards (`hardware-card.tsx`, `tax-card.tsx`, `keyboard-card.tsx`, `offline-card.tsx`, `receipt-card.tsx`, `weighing-card.tsx`), eliminating harsh flat edges.
+
+### 16.8 CI & Build Pipeline Hardening
+- [x] Update `scripts/build-content.ts` with `--if-missing` fast-exit and D1 connection failure short-circuiting to eliminate redundant wrangler timeout delays.
+- [x] Wire `apps/web`'s `typecheck` and `test` scripts with `bun run build:content --if-missing` to guarantee static JSON content exists on fresh checkouts before TypeScript compilation or tests run.
+- [x] Add explicit `bun run build:content` step to `.github/workflows/ci.yml` before `typecheck`.
+
+**Verify:** `bun run lint && bun run typecheck && bun run check:claims && bun scripts/i18n-check.ts --strict && bun test`.
+**Exit:** All Phase 16 criteria met, verified with clean CI, type checks, and design compliance. ✅ Met 2026-10-27.
+
+---
+
 
 
 ## Ongoing (every sprint)

@@ -10,8 +10,8 @@
     "build:map-teaser": "bun ../../scripts/map-teaser.ts",
     "build": "bun run build:content && bun run build:search && bun run build:og && bun run build:map-teaser && bun --bun next build && rm -rf out/styleguide && cp public/404.html out/404.html",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
-    "test": "bun test src"
+    "typecheck": "bun run build:content --if-missing && tsc --noEmit",
+    "test": "bun run build:content --if-missing && bun test src"
   },
   "dependencies": {
     "@cbpos/shared": "workspace:*",
