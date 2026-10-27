@@ -31,6 +31,7 @@ Every UI item also passes the design gates in `CLAUDE.md §7` (hallmark, impecca
 | 10 | P11 Merchant dashboard | — |
 | 11 | P12 Donations | **M2** |
 | 12 | P13 Blog & extras | **M3** |
+| 13 | P14 Brand architecture foundation · P15 Retail experience & design polish | **M3+** |
 
 ```mermaid
 gantt
@@ -54,6 +55,9 @@ gantt
   P12 Donations         :p12, after p11, 5d
   section M3
   P13 Blog              :p13, after p12, 5d
+  section Brand & Polish
+  P14 Brand Foundation  :p14, after p13, 3d
+  P15 Retail Polish     :crit, p15, after p14, 3d
 ```
 
 ---
@@ -364,25 +368,73 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ---
 
-## Phase 14 — CeyByte Brand Architecture & Sri Lankan Retail Redesign
+## Phase 14 — CeyByte Brand Architecture & Retail Foundation (Sprint 13)
 
 - [x] **Brand Architecture Realignment:** Established CEYBYTE (Ceylon Byte) as the master brand across `Logo`, `SiteHeader`, and `SiteFooter`, with `CB POS` as the product badge. Official brand assets generated to WebP from `docs/brand/source/`.
 - [x] **Expanded Sticky Header:** Top navigation updated to provide immediate access to Product, Features, Merchant Map, Docs, Blog, Feedback, Releases, and Donate without clutter.
 - [x] **Hero Hook Realignment:** Replaced generic internet-down hook with "The Free POS for Sri Lankan Shops" (offline-ready, zero subscriptions, automated 18% VAT / 2.5% SSCL). Removed background keyboard overlap artifact.
 - [x] **Sri Lankan Retail Problem Grid:** Expanded from 3 generic points to 6 authentic shopkeeper realities (subscription trap across 100+ POS systems, fragile foreign webapps, enterprise cost barriers, hardware locks, manual dual-tax arithmetic errors, single-language barriers).
-- [x] **Bento Grid Polish:** Removed internal citation brackets (`[E1] [E4]`, `[C1] [C2]`), unified typography, and enforced continuous industrial border radius.
 - [x] **Atmospheric Final CTA:** Integrated subtle radial azure glow and SVG film noise texture for premium visual depth.
 - [x] **Mobile Download Gate Fix:** Converted download modal action buttons on mobile into a sticky bottom action bar with `safe-area-inset-bottom` so CTAs are never obscured.
 - [x] **Zero AI Slop Purge:** Purged all generic `<Sparkles>` icons across the repository in favor of meaningful domain icons (`<Heart>`, `<Award>`, `<Bookmark>`, `<Eye>`).
-- [x] **Grilling Decision Consensus (Rounds 1–3 Settled):**
-  - *Homepage vs Features:* Homepage maintains the high-impact industrial Bento Grid. The interactive Shop Category Switcher (Grocery, Pharmacy, Hardware, Apparel) lives on the dedicated `/features` route.
-  - *Telemetry & Map Privacy:* Verified shop count and 25-district presence only with explicit merchant opt-in; strictly zero revenue, financial, or transaction volume tracking on public telemetry.
-  - *Download Flow:* Direct `.exe` download with standard primary CTA and optional 2-step listing gate on both mobile and desktop.
 - [x] **Implementation - Dedicated `/features` Shop Category Hub:** Built interactive switcher for Grocery, Pharmacy, Hardware, and Apparel with trilingual strings and domain-specific workflows.
 - [x] **Verification & Design Audit:** Ran full test suites (90/90 pass), claim checks (0 banned claims), 100% strict 3-locale parity (700 keys), and TypeScript compilation checks (0 errors).
 
-**Verify:** `bun run typecheck`, `bun run check:claims`, `bun scripts/i18n-check.ts --strict`, `bun test`.
-**Exit:** 100% test parity, zero claim violations, strict 3-locale synchronization. Completed and verified.
+**Exit:** Foundation committed (`fdde74a`, `1c79f8a`).
+
+---
+
+## Phase 15 — Sri Lanka Retail Experience & Impeccable Design Polish (Sprint 13, Completed)
+
+**Goal:** Address every remaining item from the design critique, eliminate AI-slop, enforce strict `docs/03-DESIGN.md` rules, and finalize SEO and master branding.
+
+### 15.1 Telemetry Strip & Live Merchant Directory Card
+- [x] Replace developer jargon (`0 ms lag`, `0/25`) with 4 shopkeeper-centric performance guarantees:
+  1. `Offline SQLite`: Instant cashiering uninterrupted by power cuts or fiber drops.
+  2. `Rs. 0 Forever`: Community-powered software with zero monthly subscription lockouts.
+  3. `25 Districts`: Island-wide retail deployment from Jaffna to Matara.
+  4. `Dual-Tax Engine`: Automated 18% VAT and 2.5% SSCL reverse-math from shelf MRP.
+- [x] Redesign the Map Teaser card: purposeful framing ("Sri Lanka Merchant Directory"), live pulse dot, district coverage preview, and actionable "Explore District Map →" button.
+- [x] Update translations in `messages/en.json`, `messages/si.json`, `messages/ta.json` with strict 3-locale key parity (703 keys synchronized).
+
+### 15.2 Site Footer Deduplication & 4-Column Restructure
+- [x] Remove duplicate links (`/map`, `/feedback`, `/donate`, `/blog`) from the footer that already live in the sticky header.
+- [x] Restructure into 4 non-redundant columns per the approved prototype:
+  - **Col 1 (CeyByte Master Brand):** Official logo, "Engineered in Sri Lanka by Ceylon Byte", build SHA, copyright.
+  - **Col 2 (Architecture & Software):** Offline SQLite engine, Windows 10/11 installer, ESC/POS hardware guide, Printable keyboard shortcuts.
+  - **Col 3 (Community & Ecosystem):** WhatsApp merchant community, GitHub open source releases, Supporters wall, Merchant portal login.
+  - **Col 4 (Compliance & Trust):** PDPA data safety, End User License Agreement (EULA), Terms of service, IRD tax non-certification disclaimer, Cookie policy.
+
+### 15.3 Bento Grid Impeccable Redesign & Token Compliance
+- [x] Enforce `03-DESIGN.md §2.2` Single Green Button rule: remove all interior neon green `text-primary` and `bg-primary` in `keyboard-card.tsx`, `offline-card.tsx`, `hardware-card.tsx`, `tax-card.tsx`, and `weighing-card.tsx`.
+- [x] Replace interior accents with Azure highlights (`--color-azure`, `--color-azure-text`) and semantic status tokens.
+- [x] Remove forbidden shadows (`shadow-md` in keyboard-card, `shadow-inner` in receipt-card) per `03-DESIGN.md §1` ("no shadows").
+- [x] Enforce strict continuous corner radii (`--radius-md` 6px and `--radius-sm` 4px only; no arbitrary `rounded-lg`).
+- [x] Balance card heights and eliminate awkward gaps using strict CSS grid auto-rows and consistent padding.
+
+### 15.4 Donate Page Industrial Overhaul (`/donate`)
+- [x] Eliminate generic SaaS / AI-slop layout in `DonationView.tsx`, `DonationCard.tsx`, `TransparencyStrip.tsx`, `BankDetailsCard.tsx`, `SupportersWall.tsx`.
+- [x] Enforce `03-DESIGN.md` tokens: replace all `rounded-2xl` and `rounded-lg` with `rounded-[--radius-md]` (6px) or `rounded-[--radius-sm]` (4px).
+- [x] Remove all shadows (`shadow-xs`, `shadow-md`) per "no shadows" rule.
+- [x] Implement industrial hairline borders, crosshair marks, monospace bank transfer details, and gold supporter accents (`--color-gold`).
+- [x] Fix `<img>` lint warning in `BankDetailsCard.tsx` and `slip-preview-modal.tsx` using Next.js `<Image />`.
+
+### 15.5 Comprehensive SEO, OpenGraph & CeyByte Master Branding
+- [x] Update `layout.tsx`: set title template to `%s · CeyByte` and default title to `CeyByte — Free Point of Sale Software for Sri Lankan Shops (CB\u00a0POS)`.
+- [x] Update `metadata.ts`: set `siteName: "CeyByte"`.
+- [x] Add targeted Sri Lankan retail keywords ("Sri Lanka POS", "Free Point of Sale Sri Lanka", "Sinhala POS", "Tamil POS", "Offline POS software", "Ceylon Byte", "VAT SSCL billing calculator").
+- [x] Ensure OpenGraph images have explicit dimensions (1200×630) and Twitter large cards across all core routes (`/`, `/features`, `/map`, `/docs`, `/releases`, `/donate`, `/blog`).
+- [x] Add `Organization` and `SoftwareApplication` JSON-LD schemas referencing Ceylon Byte and CeyByte.
+
+### 15.6 Full Verification & Quality Gates
+- [x] `bun run lint` (0 errors, 0 warnings across all workspaces).
+- [x] `bun run typecheck` (0 errors across 4 workspaces: `@cbpos/web`, `@cbpos/api`, `@cbpos/shared`, `@cbpos/www-redirect`).
+- [x] `bun run check:claims` (0 banned marketing claims or buzzwords found).
+- [x] `bun scripts/i18n-check.ts --strict` (100% strict 3-locale synchronization, 703 keys × 3 locales).
+- [x] `bun test` in `@cbpos/web` (90/90 pass), `@cbpos/shared` (72/72 pass), `@cbpos/api` (104/104 pass), `@cbpos/www-redirect` (1/1 pass).
+
+**Verify:** `bun run lint && bun run typecheck && bun run check:claims && bun scripts/i18n-check.ts --strict && bun test`.
+**Exit:** All Phase 15 criteria met, verified with clean CI, type checks, and design compliance. ✅ Met 2026-10-27.
 
 ---
 

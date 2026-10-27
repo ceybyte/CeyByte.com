@@ -21,13 +21,13 @@ export function WeighingCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-lg border p-6 transition-colors sm:p-8",
+        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-[--radius-md] border p-6 transition-colors sm:p-8",
         className,
       )}
     >
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
+          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-[--radius-sm] border">
             <Scale className="size-5" />
           </div>
           <span className="text-muted font-mono text-[11px] font-semibold tracking-wider">
@@ -41,9 +41,9 @@ export function WeighingCard({ className }: { className?: string }) {
       </div>
 
       {/* Interactive Scale Parser & USB Encryption Module */}
-      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-lg border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
+      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-[--radius-md] border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
         {/* Barcode Selector & Dissector */}
-        <div className="border-hairline bg-canvas space-y-3 rounded border p-4 font-mono text-xs">
+        <div className="border-hairline bg-canvas space-y-3 rounded-[--radius-sm] border p-4 font-mono text-xs">
           <div className="text-muted border-hairline/40 flex items-center justify-between border-b pb-1 text-[11px]">
             <span className="text-azure flex items-center gap-1.5">
               <Barcode className="size-4" />
@@ -56,7 +56,7 @@ export function WeighingCard({ className }: { className?: string }) {
                   type="button"
                   onClick={() => setSelectedBarcodeIndex(idx)}
                   className={cn(
-                    "cursor-pointer rounded px-2 py-0.5 text-[10px] transition-colors",
+                    "cursor-pointer rounded-[--radius-sm] px-2 py-0.5 text-[10px] transition-colors",
                     selectedBarcodeIndex === idx
                       ? "bg-azure text-inverse font-bold"
                       : "bg-surface-legal text-muted hover:text-text",
@@ -70,25 +70,25 @@ export function WeighingCard({ className }: { className?: string }) {
 
           {/* Barcode Dissection Graphic */}
           <div className="grid grid-cols-4 gap-2 pt-1 text-center text-[11px]">
-            <div className="bg-surface-elevated border-hairline rounded border p-2">
+            <div className="bg-surface-elevated border-hairline rounded-[--radius-sm] border p-2">
               <span className="text-muted mb-0.5 block text-[10px]">PREFIX</span>
               <span className="text-azure font-bold">20</span>
               <span className="text-muted/60 mt-0.5 block text-[9px]">Weighed Item</span>
             </div>
 
-            <div className="bg-surface-elevated border-hairline rounded border p-2">
+            <div className="bg-surface-elevated border-hairline rounded-[--radius-sm] border p-2">
               <span className="text-muted mb-0.5 block text-[10px]">PLU CODE</span>
               <span className="text-text font-bold">{current.plu}</span>
               <span className="text-muted/60 mt-0.5 block truncate text-[9px]">{current.name}</span>
             </div>
 
-            <div className="bg-primary/10 border-primary/30 rounded border p-2">
+            <div className="bg-azure/10 border-azure/30 rounded-[--radius-sm] border p-2">
               <span className="text-muted mb-0.5 block text-[10px]">WEIGHT</span>
-              <span className="text-primary font-bold">{current.weight}</span>
-              <span className="text-primary/80 mt-0.5 block text-[9px]">3 Decimals</span>
+              <span className="text-azure-text font-bold">{current.weight}</span>
+              <span className="text-azure/80 mt-0.5 block text-[9px]">3 Decimals</span>
             </div>
 
-            <div className="bg-surface-elevated border-hairline rounded border p-2">
+            <div className="bg-surface-elevated border-hairline rounded-[--radius-sm] border p-2">
               <span className="text-muted mb-0.5 block text-[10px]">BILL LINE</span>
               <span className="font-bold text-white">{current.price}</span>
               <span className="text-muted/60 mt-0.5 block text-[9px]">Exact Total</span>
@@ -97,9 +97,9 @@ export function WeighingCard({ className }: { className?: string }) {
         </div>
 
         {/* AES Encrypted USB Backup Assurance Strip */}
-        <div className="border-hairline bg-canvas flex flex-col items-start justify-between gap-3 rounded border p-3 font-mono text-xs sm:flex-row sm:items-center">
+        <div className="border-hairline bg-canvas flex flex-col items-start justify-between gap-3 rounded-[--radius-sm] border p-3 font-mono text-xs sm:flex-row sm:items-center">
           <div className="flex items-center gap-2">
-            <div className="bg-primary/10 border-primary/20 text-primary flex size-6 items-center justify-center rounded border">
+            <div className="bg-azure/10 border-azure/20 text-azure flex size-6 items-center justify-center rounded-[--radius-sm] border">
               <Lock className="size-3.5" />
             </div>
             <div>
@@ -109,7 +109,7 @@ export function WeighingCard({ className }: { className?: string }) {
               </p>
             </div>
           </div>
-          <div className="text-primary flex items-center gap-1.5 text-[10px] font-semibold">
+          <div className="text-azure-text flex items-center gap-1.5 text-[10px] font-semibold">
             <ShieldCheck className="size-3.5" />
             <span>AES-ENCRYPTED</span>
           </div>

@@ -26,7 +26,7 @@ export function SupportersWall({ supporters, copy }: SupportersWallProps) {
       </div>
 
       {supporters.length === 0 ? (
-        <div className="border-hairline bg-surface/40 flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+        <div className="border-hairline bg-surface/40 flex flex-col items-center justify-center rounded-[--radius-md] border border-dashed p-12 text-center">
           <Heart className="text-muted/40 size-10" />
           <p className="text-muted mt-3 text-sm">{copy.empty}</p>
         </div>
@@ -40,13 +40,13 @@ export function SupportersWall({ supporters, copy }: SupportersWallProps) {
             return (
               <div
                 key={s.id}
-                className="border-hairline bg-surface flex flex-col justify-between rounded-lg border p-4.5 shadow-xs transition-transform hover:-translate-y-0.5"
+                className="border-hairline bg-surface flex flex-col justify-between rounded-[--radius-md] border p-4.5 transition-transform hover:-translate-y-0.5"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <span className="text-text line-clamp-1 font-semibold">{name}</span>
                     {s.isMerchantSupporter && (
-                      <span className="border-gold/40 bg-gold/15 text-gold inline-flex items-center gap-1 rounded border px-2 py-0.5 text-[11px] font-bold">
+                      <span className="border-gold/40 bg-gold/15 text-gold inline-flex items-center gap-1 rounded-[--radius-sm] border px-2 py-0.5 text-[11px] font-bold">
                         <Award className="size-3" />
                         {copy.goldSupporter}
                       </span>

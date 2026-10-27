@@ -129,13 +129,16 @@ export function DonationView() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    <div className="relative mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
       {/* S09 Hero Section */}
-      <div className="mb-10 text-center">
-        <div className="border-gold/40 bg-gold/10 text-gold mb-4 inline-flex size-14 items-center justify-center rounded-2xl border shadow-xs">
-          <HeartHandshake className="size-7" />
+      <div className="mb-12 text-center">
+        <span className="text-gold mb-3 block font-mono text-xs font-semibold tracking-wider uppercase">
+          CEYBYTE COMMUNITY FUNDING
+        </span>
+        <div className="border-gold/40 bg-gold/10 text-gold mb-4 inline-flex size-12 items-center justify-center rounded-[--radius-md] border">
+          <HeartHandshake className="size-6" />
         </div>
-        <h1 className="text-text text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+        <h1 className="text-display text-text text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
           {t("title")}
         </h1>
         <p className="text-muted mx-auto mt-4 max-w-2xl text-base leading-relaxed sm:text-lg">{t("lead")}</p>
@@ -161,7 +164,7 @@ export function DonationView() {
       </div>
 
       {/* S09 Section 4: Legal & Statutory Disclaimer */}
-      <div className="border-hairline/60 bg-surface/30 rounded-lg border p-4 text-center">
+      <div className="border-hairline/60 bg-surface/30 rounded-[--radius-md] border p-4 text-center">
         <p className="text-muted mx-auto max-w-2xl text-xs leading-relaxed">{t("legal")}</p>
       </div>
     </div>

@@ -20,15 +20,31 @@ export type PageMeta = {
   description: string;
   /** Override default OG image (absolute URL). */
   ogImage?: string;
+  /** Additional or overriding SEO keywords. */
+  keywords?: string[];
 };
 
-export function buildMetadata({ locale, path, title, description, ogImage }: PageMeta): Metadata {
+export function buildMetadata({ locale, path, title, description, ogImage, keywords }: PageMeta): Metadata {
   const canonical = `${SITE_URL}/${locale}${path}`;
   const alternates = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}${path}`]));
+
+  const defaultKeywords = [
+    "Sri Lanka POS",
+    "Free Point of Sale Sri Lanka",
+    "Sinhala POS",
+    "Tamil POS",
+    "Offline POS software",
+    "Ceylon Byte",
+    "CeyByte",
+    "CB POS",
+    "VAT SSCL billing calculator",
+    "Sri Lankan retail software",
+  ];
 
   return {
     title,
     description,
+    keywords: keywords ?? defaultKeywords,
     metadataBase: new URL(SITE_URL),
     alternates: {
       canonical,
@@ -41,15 +57,18 @@ export function buildMetadata({ locale, path, title, description, ogImage }: Pag
       title,
       description,
       url: canonical,
-      siteName: "CB POS",
+      siteName: "CeyByte",
       locale: OG_LOCALE[locale] ?? "en_US",
       type: "website",
-      images: ogImage ? [{ url: ogImage, width: 1200, height: 630 }] : undefined,
+      images: ogImage
+        ? [{ url: ogImage, width: 1200, height: 630 }]
+        : [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: "CeyByte — CB POS" }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: ogImage ? [ogImage] : [`${SITE_URL}/og-image.png`],
     },
   };
 }

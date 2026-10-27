@@ -241,7 +241,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
   };
 
   return (
-    <div className="border-hairline bg-surface-elevated/40 w-full rounded-xl border p-6 shadow-sm md:p-8">
+    <div className="border-hairline bg-surface-elevated/40 w-full rounded-[--radius-md] border p-6 md:p-8">
       {/* Top Header & Resume trigger */}
       <div className="border-hairline/60 mb-6 flex flex-wrap items-center justify-between gap-3 border-b pb-4">
         <div className="flex items-center gap-2">
@@ -288,7 +288,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
       </div>
 
       {errorMessage && (
-        <div className="border-error/40 bg-error/10 text-error mb-6 flex items-start gap-2.5 rounded-lg border p-3.5 text-xs">
+        <div className="border-error/40 bg-error/10 text-error mb-6 flex items-start gap-2.5 rounded-[--radius-md] border p-3.5 text-xs">
           <ShieldAlert className="mt-0.5 size-4 shrink-0" />
           <span>{errorMessage}</span>
         </div>
@@ -309,9 +309,9 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
                     setSelectedPreset(amt);
                     setCustomAmount("");
                   }}
-                  className={`flex h-12 cursor-pointer items-center justify-center rounded-lg border font-mono text-sm font-bold transition-all ${
+                  className={`flex h-12 cursor-pointer items-center justify-center rounded-[--radius-sm] border font-mono text-sm font-bold transition-all ${
                     selectedPreset === amt
-                      ? "border-gold bg-gold/15 text-gold shadow-xs"
+                      ? "border-gold bg-gold/15 text-gold"
                       : "border-hairline bg-surface text-text hover:border-azure/40 hover:bg-surface-elevated"
                   }`}
                 >
@@ -321,9 +321,9 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
               <button
                 type="button"
                 onClick={() => setSelectedPreset("custom")}
-                className={`flex h-12 cursor-pointer items-center justify-center rounded-lg border text-sm font-semibold transition-all ${
+                className={`flex h-12 cursor-pointer items-center justify-center rounded-[--radius-sm] border text-sm font-semibold transition-all ${
                   selectedPreset === "custom"
-                    ? "border-gold bg-gold/15 text-gold shadow-xs"
+                    ? "border-gold bg-gold/15 text-gold"
                     : "border-hairline bg-surface text-text hover:border-azure/40 hover:bg-surface-elevated"
                 }`}
               >
@@ -403,7 +403,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
           </div>
 
           {/* Link merchant shop */}
-          <div className="border-hairline/80 bg-surface/50 space-y-3 rounded-lg border p-4">
+          <div className="border-hairline/80 bg-surface/50 space-y-3 rounded-[--radius-md] border p-4">
             <div className="flex items-start gap-2.5">
               <Checkbox
                 id="link-merchant-toggle"
@@ -471,7 +471,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
       {step === 2 && (
         <form onSubmit={handleStep2Submit} className="space-y-6">
           {/* Reference Banner */}
-          <div className="border-gold/40 bg-gold/10 rounded-lg border p-5">
+          <div className="border-gold/40 bg-gold/10 rounded-[--radius-md] border p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <span className="text-gold text-xs font-bold tracking-wider uppercase">
@@ -557,7 +557,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
             {isApproved ? copy.approved.title : copy.pending.title}
           </h3>
           <p className="text-muted max-w-md text-xs leading-relaxed">{copy.pending.body}</p>
-          <div className="border-hairline bg-surface text-text mt-2 rounded border px-4 py-2 font-mono text-xs font-bold">
+          <div className="border-hairline bg-surface text-text mt-2 rounded-[--radius-sm] border px-4 py-2 font-mono text-xs font-bold">
             Reference: {createdRef}
           </div>
         </div>

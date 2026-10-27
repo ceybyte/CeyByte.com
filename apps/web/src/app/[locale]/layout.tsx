@@ -39,15 +39,15 @@ export async function generateMetadata({
   const base = buildMetadata({
     locale,
     path: "/",
-    title: "CB\u00a0POS: free point-of-sale for Sri Lankan shops",
+    title: "CeyByte — Free Point of Sale Software for Sri Lankan Shops (CB\u00a0POS)",
     description:
       "Free Windows point-of-sale software that bills without the internet, works out 18% VAT and 2.5% SSCL from the shelf price, and prints Sinhala, Tamil or English receipts.",
   });
   return {
     ...base,
     title: {
-      default: "CB\u00a0POS: free point-of-sale for Sri Lankan shops",
-      template: "%s · CB\u00a0POS",
+      default: "CeyByte — Free Point of Sale Software for Sri Lankan Shops (CB\u00a0POS)",
+      template: "%s · CeyByte",
     },
     robots: { index: true, follow: true },
     other: { "content-language": locale },

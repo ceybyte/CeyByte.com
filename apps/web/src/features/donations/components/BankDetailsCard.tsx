@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { Copy, Check, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -46,7 +47,7 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
     : null;
 
   return (
-    <div className="border-hairline bg-surface rounded-lg border p-5 shadow-xs transition-colors">
+    <div className="border-hairline bg-surface rounded-[--radius-md] border p-5 transition-colors">
       <div className="border-hairline/60 flex flex-wrap items-start justify-between gap-3 border-b pb-3">
         <div>
           <span className="text-muted text-xs font-semibold tracking-wider uppercase">{copy.bank}</span>
@@ -70,10 +71,13 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
               </DialogHeader>
               <div className="mt-2 flex flex-col items-center justify-center gap-3">
                 {qrSrc && (
-                  <img
+                  <Image
                     src={qrSrc}
                     alt={`${option.bankName} QR`}
-                    className="border-hairline size-52 rounded border bg-white object-contain p-2 shadow-xs"
+                    width={208}
+                    height={208}
+                    unoptimized
+                    className="border-hairline size-52 rounded-[--radius-sm] border bg-white object-contain p-2"
                   />
                 )}
                 <p className="text-muted text-xs leading-relaxed">{copy.scanQrHelp}</p>
@@ -84,7 +88,7 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="border-hairline/60 bg-surface-elevated/40 rounded-md border p-3">
+        <div className="border-hairline/60 bg-surface-elevated/40 rounded-[--radius-sm] border p-3">
           <span className="text-muted text-[11px] font-medium tracking-wider uppercase">
             {copy.accountName}
           </span>
@@ -107,7 +111,7 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
           </div>
         </div>
 
-        <div className="border-hairline/60 bg-surface-elevated/40 rounded-md border p-3">
+        <div className="border-hairline/60 bg-surface-elevated/40 rounded-[--radius-sm] border p-3">
           <span className="text-muted text-[11px] font-medium tracking-wider uppercase">
             {copy.accountNumber}
           </span>
@@ -134,7 +138,7 @@ export function BankDetailsCard({ option, copy }: BankDetailsCardProps) {
       </div>
 
       {option.notes && (
-        <div className="border-hairline/40 bg-surface/50 text-muted mt-3 rounded border p-2.5 text-xs">
+        <div className="border-hairline/40 bg-surface/50 text-muted mt-3 rounded-[--radius-sm] border p-2.5 text-xs">
           {copy.notes && <strong className="text-text mr-1">{copy.notes}:</strong>}
           <span>{option.notes}</span>
         </div>

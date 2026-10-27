@@ -63,13 +63,13 @@ export function KeyboardCard({ className }: { className?: string }) {
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       className={cn(
-        "border-hairline bg-surface focus-visible:ring-azure/50 group relative flex flex-col justify-between overflow-hidden rounded-lg border p-6 transition-colors outline-none focus-visible:ring-1 sm:p-8",
+        "border-hairline bg-surface focus-visible:ring-azure/50 group relative flex flex-col justify-between overflow-hidden rounded-[--radius-md] border p-6 transition-colors outline-none focus-visible:ring-1 sm:p-8",
         className,
       )}
     >
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
+          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-[--radius-sm] border">
             <KeyboardIcon className="size-5" />
           </div>
           <span className="text-muted font-mono text-[11px] font-semibold tracking-wider">
@@ -83,11 +83,11 @@ export function KeyboardCard({ className }: { className?: string }) {
       </div>
 
       {/* Interactive Keycaps Demo */}
-      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-lg border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
+      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-[--radius-md] border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
         <div className="flex items-center justify-between">
           <p className="text-muted/80 font-mono text-xs">{t("demo")}</p>
           {isFocused && (
-            <span className="text-azure bg-azure/10 border-azure/20 animate-pulse rounded border px-2 py-0.5 font-mono text-[10px]">
+            <span className="text-azure bg-azure/10 border-azure/20 animate-pulse rounded-[--radius-sm] border px-2 py-0.5 font-mono text-[10px]">
               KEYBOARD LISTENING
             </span>
           )}
@@ -103,16 +103,16 @@ export function KeyboardCard({ className }: { className?: string }) {
                 type="button"
                 onClick={() => triggerKey(action)}
                 className={cn(
-                  "flex cursor-pointer items-center gap-1.5 rounded border px-2.5 py-1.5 font-mono text-xs transition-all select-none",
+                  "flex cursor-pointer items-center gap-1.5 rounded-[--radius-sm] border px-2.5 py-1.5 font-mono text-xs transition-all select-none",
                   isSelected
-                    ? "bg-primary text-primary-foreground border-primary scale-105 shadow-md"
+                    ? "bg-azure text-text-inverse border-azure font-bold"
                     : "bg-surface-legal text-text border-hairline hover:border-azure/40 hover:bg-surface-elevated",
                 )}
               >
                 <Kbd
                   className={cn(
                     "py-0.2 px-1",
-                    isSelected ? "text-primary-foreground border-transparent bg-black/20" : "",
+                    isSelected ? "text-text-inverse border-transparent bg-black/20" : "",
                   )}
                 >
                   {action.key}
@@ -124,7 +124,7 @@ export function KeyboardCard({ className }: { className?: string }) {
         </div>
 
         {/* Mini Console Output */}
-        <div className="bg-canvas border-hairline text-azure flex min-h-[72px] flex-col justify-end space-y-1 rounded border p-3 font-mono text-xs">
+        <div className="bg-canvas border-hairline text-azure flex min-h-[72px] flex-col justify-end space-y-1 rounded-[--radius-sm] border p-3 font-mono text-xs">
           <div className="text-muted/60 border-hairline/40 flex items-center gap-1 border-b pb-1 text-[10px]">
             <Terminal className="size-3" />
             <span>TILL ACTION LOG</span>

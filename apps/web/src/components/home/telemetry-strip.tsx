@@ -28,9 +28,10 @@ export function TelemetryStrip() {
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="divide-hairline grid grid-cols-1 divide-y md:grid-cols-2 md:divide-y-0 lg:grid-cols-12 lg:divide-x">
-            {/* Stat 1: 0 ms */}
+            {/* Stat 1: Offline SQLite */}
             <div className="lg:col-span-2">
               <StatTile
+                badge={t("stats.tagArchitecture")}
                 value={0}
                 format={() => t("stats.lag")}
                 label={t("stats.lagLabel")}
@@ -41,6 +42,7 @@ export function TelemetryStrip() {
             {/* Stat 2: Rs. 0 / mo */}
             <div className="lg:col-span-2">
               <StatTile
+                badge={t("stats.tagPricing")}
                 value={0}
                 format={() => t("stats.price")}
                 label={t("stats.priceLabel")}
@@ -51,6 +53,7 @@ export function TelemetryStrip() {
             {/* Stat 3: {covered}/25 */}
             <div className="lg:col-span-2">
               <StatTile
+                badge={t("stats.tagCoverage")}
                 value={isLoading ? null : covered}
                 format={(n) => t("stats.districts", { covered: n })}
                 label={t("stats.districtsLabel")}
@@ -62,6 +65,7 @@ export function TelemetryStrip() {
             <div className="lg:col-span-3">
               <div className="flex h-full flex-col justify-between">
                 <StatTile
+                  badge={t("stats.tagTax")}
                   value={18}
                   format={() => t("stats.tax")}
                   label={t("stats.taxLabel")}
@@ -74,7 +78,17 @@ export function TelemetryStrip() {
             {/* Map Teaser Card (linking to /{locale}/map) */}
             <div className="bg-surface-elevated/40 hover:bg-surface-elevated/70 group flex flex-col justify-between p-4 transition-colors sm:p-5 lg:col-span-3">
               <Link href={`/${locale}/map`} className="flex h-full flex-col justify-between gap-3">
-                <div className="border-hairline bg-canvas relative aspect-[4/2.5] w-full overflow-hidden rounded border">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted/80 font-mono text-[10px] font-semibold tracking-wider uppercase">
+                    {t("mapTeaser.badge")}
+                  </span>
+                  <div className="text-azure flex items-center gap-1.5 font-mono text-[10px]">
+                    <span className="bg-azure size-1.5 animate-pulse rounded-full" />
+                    <span>LIVE DIRECTORY</span>
+                  </div>
+                </div>
+
+                <div className="border-hairline bg-canvas relative aspect-[4/2.2] w-full overflow-hidden rounded-[--radius-sm] border">
                   <Image
                     src="/map-teaser.png"
                     alt="Sri Lanka Merchant Telemetry Map Preview"
@@ -82,8 +96,9 @@ export function TelemetryStrip() {
                     className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100"
                     sizes="(max-width: 768px) 100vw, 300px"
                   />
-                  <div className="bg-azure/10 text-azure border-azure/30 absolute top-2 right-2 rounded border px-1.5 py-0.5 font-mono text-[10px]">
-                    LIVE MAP
+                  <div className="from-canvas/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+                  <div className="text-text/80 absolute bottom-2 left-2 font-mono text-[10px]">
+                    25 SRI LANKAN DISTRICTS
                   </div>
                 </div>
 

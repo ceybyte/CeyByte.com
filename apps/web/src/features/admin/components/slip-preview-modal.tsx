@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Image from "next/image";
 import { Download, X, FileText, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -45,7 +46,7 @@ export function SlipPreviewModal({
       <div className="fixed inset-0 bg-black/75 backdrop-blur-xs transition-opacity" onClick={onClose} />
 
       {/* Modal Dialog Content */}
-      <div className="border-hairline bg-surface relative z-10 flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border shadow-2xl">
+      <div className="border-hairline bg-surface relative z-10 flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-[--radius-md] border">
         {/* Header */}
         <div className="border-hairline flex flex-row items-center justify-between border-b px-6 py-4">
           <div className="flex items-center gap-2.5">
@@ -86,14 +87,17 @@ export function SlipPreviewModal({
               <iframe
                 src={slipUrl}
                 title={`Slip preview for ${referenceCode}`}
-                className="border-hairline h-[600px] w-full rounded border bg-white shadow-xs"
+                className="border-hairline h-[600px] w-full rounded-[--radius-sm] border bg-white"
                 sandbox="allow-scripts allow-same-origin"
               />
             ) : (
-              <img
+              <Image
                 src={slipUrl}
                 alt={`Slip for ${referenceCode}`}
-                className="border-hairline max-h-[65vh] max-w-full rounded border object-contain shadow-xs"
+                width={800}
+                height={600}
+                unoptimized
+                className="border-hairline max-h-[65vh] max-w-full rounded-[--radius-sm] border object-contain"
               />
             )
           ) : (

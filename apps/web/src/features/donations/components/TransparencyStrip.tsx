@@ -44,9 +44,9 @@ export function TransparencyStrip({ monthlyTotalCents, totalSupportersCount, cop
   return (
     <div className="w-full space-y-6">
       {/* Monthly summary banner */}
-      <div className="border-gold/30 bg-gold/5 flex flex-col gap-4 rounded-lg border p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-gold/30 bg-gold/5 flex flex-col gap-4 rounded-[--radius-md] border p-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3.5">
-          <div className="border-gold/30 bg-gold/15 text-gold flex size-11 shrink-0 items-center justify-center rounded-lg border">
+          <div className="border-gold/30 bg-gold/15 text-gold flex size-11 shrink-0 items-center justify-center rounded-[--radius-sm] border">
             <BarChart3 className="size-6" />
           </div>
           <div>
@@ -71,9 +71,9 @@ export function TransparencyStrip({ monthlyTotalCents, totalSupportersCount, cop
             return (
               <div
                 key={i}
-                className="border-hairline bg-surface flex items-start gap-3 rounded-lg border p-3.5 shadow-xs"
+                className="border-hairline bg-surface flex items-start gap-3 rounded-[--radius-md] border p-3.5"
               >
-                <div className="border-hairline bg-surface-elevated text-azure mt-0.5 flex size-7 shrink-0 items-center justify-center rounded border">
+                <div className="border-hairline bg-surface-elevated text-azure mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-[--radius-sm] border">
                   <Icon className="size-4" />
                 </div>
                 <p className="text-text/90 text-xs leading-relaxed font-medium">{pillar.text}</p>

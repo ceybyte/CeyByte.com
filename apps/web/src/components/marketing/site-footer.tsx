@@ -41,39 +41,24 @@ export function SiteFooter() {
             )}
           </div>
 
-          {/* Col 2: Product */}
-          <FooterCol title={t("col.product")}>
-            <FooterLink href="/">
-              <span>{fl("download")}</span>
+          {/* Col 2: Software & Engine */}
+          <FooterCol title={t("col.software")}>
+            <FooterLink href="/features">
+              <span>{fl("offlineEngine")}</span>
             </FooterLink>
             <FooterLink href="/releases">
-              <span>{fl("releases")}</span>
+              <span>{fl("windowsInstaller")}</span>
             </FooterLink>
             <FooterLink href="/docs">
-              <span>{fl("docs")}</span>
+              <span>{fl("hardwareGuide")}</span>
             </FooterLink>
             <FooterLink href="/docs/shortcuts/print">
               <span>{fl("shortcuts")}</span>
             </FooterLink>
           </FooterCol>
 
-          {/* Col 3: Community */}
+          {/* Col 3: Community & Ecosystem */}
           <FooterCol title={t("col.community")}>
-            <FooterLink href="/map">
-              <span>{fl("map")}</span>
-            </FooterLink>
-            <FooterLink href="/feedback">
-              <span>{fl("feedback")}</span>
-            </FooterLink>
-            <FooterLink href="/donate">
-              <span>{fl("donate")}</span>
-            </FooterLink>
-            <FooterLink href="/blog">
-              <span>{fl("blog")}</span>
-            </FooterLink>
-            <FooterLink href="/dashboard">
-              <span>{fl("merchantPortal")}</span>
-            </FooterLink>
             <a
               href="https://chat.whatsapp.com/BS73D23VD74BbseKuoC1BM"
               target="_blank"
@@ -82,10 +67,27 @@ export function SiteFooter() {
             >
               {fl("whatsapp")}
             </a>
+            <a
+              href="https://github.com/ceybyte/cbpos-releases"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted hover:text-azure-text text-sm transition-colors duration-[--dur-hover]"
+            >
+              {fl("github")}
+            </a>
+            <FooterLink href="/donate">
+              <span>{fl("supportersWall")}</span>
+            </FooterLink>
+            <FooterLink href="/dashboard">
+              <span>{fl("merchantPortal")}</span>
+            </FooterLink>
           </FooterCol>
 
-          {/* Col 4: Legal */}
+          {/* Col 4: Legal & Compliance */}
           <FooterCol title={t("col.legal")}>
+            <FooterLink href="/legal/data-safety">
+              <span>{fl("dataSafety")}</span>
+            </FooterLink>
             <FooterLink href="/legal/terms">
               <span>{fl("terms")}</span>
             </FooterLink>
@@ -94,9 +96,6 @@ export function SiteFooter() {
             </FooterLink>
             <FooterLink href="/legal/tax-disclaimer">
               <span>{fl("taxDisclaimer")}</span>
-            </FooterLink>
-            <FooterLink href="/legal/data-safety">
-              <span>{fl("dataSafety")}</span>
             </FooterLink>
             <FooterLink href="/legal/cookies">
               <span>{fl("cookies")}</span>

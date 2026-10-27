@@ -8,7 +8,8 @@ export function websiteSchema(locale: string) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "CB POS",
+    name: "CeyByte",
+    alternateName: "CB POS",
     url: `${SITE_URL}/${locale}/`,
     potentialAction: {
       "@type": "SearchAction",
@@ -23,7 +24,9 @@ export function organizationSchema() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Ceylon Byte",
+    alternateName: "CeyByte",
     url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
     foundingLocation: { "@type": "Place", name: "Sri Lanka" },
   } as const;
 }
@@ -57,7 +60,12 @@ export function softwareSchema() {
     description:
       "Free offline-first point-of-sale software for Sri Lankan retail shops. Calculates VAT and SSCL, prints Sinhala, Tamil and English receipts.",
     inLanguage: ["en", "si", "ta"],
-    creator: { "@type": "Organization", name: "Ceylon Byte" },
+    creator: {
+      "@type": "Organization",
+      name: "Ceylon Byte",
+      alternateName: "CeyByte",
+      url: SITE_URL,
+    },
   } as const;
 }
 

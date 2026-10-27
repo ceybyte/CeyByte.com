@@ -45,13 +45,13 @@ export function ReceiptCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-lg border p-6 transition-colors sm:p-8",
+        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-[--radius-md] border p-6 transition-colors sm:p-8",
         className,
       )}
     >
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
+          <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-[--radius-sm] border">
             <Languages className="size-5" />
           </div>
           <span className="text-muted font-mono text-[11px] font-semibold tracking-wider">
@@ -65,7 +65,7 @@ export function ReceiptCard({ className }: { className?: string }) {
       </div>
 
       {/* Interactive Thermal Receipt Preview */}
-      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-lg border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
+      <div className="border-hairline bg-surface-elevated/40 -mx-6 mt-4 -mb-6 space-y-4 rounded-b-[--radius-md] border-t p-6 pt-4 sm:-mx-8 sm:-mb-8 sm:p-8">
         {/* Language Tabs */}
         <div className="flex items-center justify-between">
           <span className="text-muted flex items-center gap-1.5 font-mono text-[11px]">
@@ -73,12 +73,12 @@ export function ReceiptCard({ className }: { className?: string }) {
             <span>80MM RECEIPT LANG</span>
           </span>
 
-          <div className="bg-canvas border-hairline inline-flex rounded-md border p-0.5 font-mono text-xs">
+          <div className="bg-canvas border-hairline inline-flex rounded-[--radius-sm] border p-0.5 font-mono text-xs">
             <button
               type="button"
               onClick={() => setLang("en")}
               className={cn(
-                "cursor-pointer rounded px-2.5 py-1 transition-colors",
+                "cursor-pointer rounded-[--radius-sm] px-2.5 py-1 transition-colors",
                 lang === "en" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text",
               )}
             >
@@ -88,7 +88,7 @@ export function ReceiptCard({ className }: { className?: string }) {
               type="button"
               onClick={() => setLang("si")}
               className={cn(
-                "cursor-pointer rounded px-2.5 py-1 transition-colors",
+                "cursor-pointer rounded-[--radius-sm] px-2.5 py-1 transition-colors",
                 lang === "si" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text",
               )}
             >
@@ -98,7 +98,7 @@ export function ReceiptCard({ className }: { className?: string }) {
               type="button"
               onClick={() => setLang("ta")}
               className={cn(
-                "cursor-pointer rounded px-2.5 py-1 transition-colors",
+                "cursor-pointer rounded-[--radius-sm] px-2.5 py-1 transition-colors",
                 lang === "ta" ? "bg-azure text-inverse font-bold" : "text-muted hover:text-text",
               )}
             >
@@ -108,7 +108,7 @@ export function ReceiptCard({ className }: { className?: string }) {
         </div>
 
         {/* 80mm Thermal Receipt Simulation */}
-        <div className="border-hairline/80 bg-canvas text-text/90 space-y-2.5 rounded border p-4 font-mono text-xs leading-snug shadow-inner">
+        <div className="border-hairline/80 bg-canvas text-text/90 space-y-2.5 rounded-[--radius-sm] border p-4 font-mono text-xs leading-snug">
           {/* Header */}
           <div className="border-hairline border-b border-dashed pb-2 text-center">
             <p className="text-xs font-bold text-white">{data.shop}</p>

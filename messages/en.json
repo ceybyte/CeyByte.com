@@ -36,26 +36,24 @@
     "mission": "Free point-of-sale software for Sri Lankan shops, made in Sri Lanka by Ceylon Byte.",
     "latest": "Latest: v{version} \u00b7 {channel}",
     "col": {
-      "product": "Product",
-      "community": "Community",
-      "legal": "Legal"
+      "software": "Software & Architecture",
+      "community": "Community & Ecosystem",
+      "legal": "Compliance & Trust"
     },
     "links": {
-      "download": "Download",
-      "releases": "Releases",
-      "docs": "Docs",
-      "shortcuts": "Keyboard shortcuts",
-      "map": "Merchant map",
-      "feedback": "Feedback",
-      "donate": "Donate",
-      "whatsapp": "WhatsApp community",
-      "blog": "Blog",
-      "merchantPortal": "Merchant portal",
-      "terms": "Terms",
-      "privacy": "Privacy",
-      "taxDisclaimer": "Tax disclaimer",
-      "dataSafety": "Data safety",
-      "cookies": "Cookies"
+      "offlineEngine": "Offline SQLite architecture",
+      "windowsInstaller": "Windows 10/11 installer",
+      "hardwareGuide": "ESC/POS hardware guide",
+      "shortcuts": "Printable keymap sheet",
+      "whatsapp": "WhatsApp merchant group",
+      "github": "GitHub open source releases",
+      "supportersWall": "Supporters wall",
+      "merchantPortal": "Merchant portal login",
+      "terms": "Terms of service",
+      "privacy": "Privacy policy",
+      "taxDisclaimer": "Tax calculation disclaimer",
+      "dataSafety": "PDPA data safety",
+      "cookies": "Cookie policy"
     },
     "legalLine": "CB\u00a0POS comes as is, without a warranty. Its tax calculations aren\u2019t certified by the IRD, and keeping backups of your data is up to you.",
     "copyright": "\u00a9 {year} Ceylon Byte. Made in Sri Lanka.",
@@ -84,17 +82,22 @@
       "mockupLabel": "real CB\u00a0POS capture"
     },
     "stats": {
+      "tagArchitecture": "OFFLINE SQLITE",
       "lag": "0 ms",
-      "lagLabel": "spent waiting for the internet at the till. Each sale saves to your own computer first.",
+      "lagLabel": "Zero cloud lag at the till. Each sale saves directly to your computer first.",
+      "tagPricing": "ZERO SUBSCRIPTION",
       "price": "Rs. 0 / mo",
-      "priceLabel": "CB POS is free and stays free. There's no paid version waiting for you later.",
+      "priceLabel": "Free forever. No credit cards, trial expirations, or locked records.",
+      "tagCoverage": "25 DISTRICTS",
       "districts": "{covered}/25",
-      "districtsLabel": "districts with a CB POS shop on the map",
+      "districtsLabel": "Districts with active CB POS shops running on retail counters.",
+      "tagTax": "DUAL-TAX ENGINE",
       "tax": "18% + 2.5%",
-      "taxLabel": "VAT and SSCL worked out from your shelf price, once VAT registration is on*",
-      "taxNote": "* CB POS calculates these. The IRD hasn't certified it. Read the tax disclaimer."
+      "taxLabel": "Automated reverse 18% VAT and 2.5% SSCL calculation from shelf MRP*",
+      "taxNote": "* Non-certified by IRD; see tax disclaimer."
     },
     "mapTeaser": {
+      "badge": "MERCHANT NETWORK",
       "title": "{shops} shops in {covered} districts, updated live",
       "cta": "See the shops on the map",
       "empty": "No CB POS shop in your district yet. Yours could be the first."
