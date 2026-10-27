@@ -485,6 +485,30 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ---
 
+## Phase 17 — Merchant Dashboard Brand Elevation & Navigation De-blocking
+
+**Goal:** Remove the skewed CB POS logo slash from the merchant dashboard sidebar in favor of an elevated Merchant Portal badge displaying dynamic shop name / platform status, and de-block all sub-navigation tabs (My Tickets, My Donations, Settings) so merchants without a linked shop can access all user-scoped features.
+
+### 17.1 Sidebar Header Brand Elevation
+- [x] Replace skewed `<LogoSlash />` in `DashboardNav.tsx` with Style 2 Micro Card component (`bg-card/70 border-border rounded-xl p-3`).
+- [x] Implement dynamic overline: Displays `listing.shopName` when a shop is linked (e.g. `PERERA STORES`), or falls back to `CEYLON BYTE` when unlinked.
+- [x] Implement status badge: Displays `Linked` or `Active` with an emerald pulse dot.
+- [x] Display store glyph with clean `Merchant Portal` label.
+
+### 17.2 Layout Decoupling & Navigation De-blocking
+- [x] Decouple `DashboardShell.tsx` from blocking `{children}` when `listing === null`. Allow `listing: MerchantListing | null` in `DashboardContext`.
+- [x] Move `<EmptyDashboard />` onboarding prompt specifically into shop-dependent views (`OverviewView.tsx` and `ListingView.tsx`).
+- [x] De-block user-scoped views (`TicketsTab.tsx`, `DonationsTab.tsx`, `SettingsTab.tsx`) so they render their tickets, donation receipts, language switches, and forms unconditionally.
+
+### 17.3 Unlinked Account Management & Deletion
+- [x] Update `SettingsTab.tsx` to handle `listing === null` without runtime errors, falling back to user session email for profile display and confirmation modal.
+- [x] Update API `DELETE /api/me/account` in `apps/api/src/routes/me.ts` to allow unlinked users to delete their account by confirming with their email address or `"DELETE"`, safely revoking sessions and removing user rows.
+
+**Verify:** `bun run format && bun run lint && bun run typecheck && bun run check:claims && bun scripts/i18n-check.ts --strict && bun run test`.
+**Exit:** 275 tests passing across all workspaces, 0 lint errors, 0 type errors, 100% strict trilingual key parity. ✅ Met 2026-10-27.
+
+---
+
 
 
 ## Ongoing (every sprint)

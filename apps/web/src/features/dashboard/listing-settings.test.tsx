@@ -145,4 +145,26 @@ describe("S13 Dashboard Tabs: Listing, Tickets, Donations & Settings (F-09)", ()
     expect(html).toContain("Delete my listing and account");
     expect(html).toContain("Delete permanently");
   });
+
+  test("renders SettingsTab cleanly when listing is null for unlinked merchant", () => {
+    const html = renderToString(
+      <SettingsTab
+        locale="en"
+        listing={null}
+        copy={{
+          language: "Language",
+          deleteTitle: "Delete my listing and account",
+          deleteBody: "Your shop disappears from the map straight away.",
+          deleteConfirm: "Type your shop name to confirm",
+          deleteCta: "Delete permanently",
+        }}
+      />,
+    );
+
+    expect(html).toContain("Settings");
+    expect(html).toContain("Language");
+    expect(html).toContain("English");
+    expect(html).toContain("Merchant User");
+    expect(html).toContain("Delete permanently");
+  });
 });

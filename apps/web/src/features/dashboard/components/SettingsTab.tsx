@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 interface SettingsTabProps {
   locale: string;
-  listing: MerchantListing;
+  listing?: MerchantListing | null;
   copy: {
     language: string;
     deleteTitle: string;
@@ -60,7 +60,9 @@ export function SettingsTab({ locale, listing, copy }: SettingsTabProps) {
           </div>
           <div>
             <h3 className="text-foreground text-sm font-semibold">Account Profile</h3>
-            <p className="text-muted-foreground font-mono text-xs">{session?.user?.email ?? listing.phone}</p>
+            <p className="text-muted-foreground font-mono text-xs">
+              {session?.user?.email ?? listing?.phone ?? "Merchant User"}
+            </p>
           </div>
         </div>
 
@@ -121,7 +123,7 @@ export function SettingsTab({ locale, listing, copy }: SettingsTabProps) {
       {/* Delete Confirmation Modal */}
       <DeleteAccountModal
         locale={locale}
-        expectedShopName={listing.shopName}
+        expectedShopName={listing?.shopName ?? session?.user?.email ?? "DELETE"}
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         copy={{

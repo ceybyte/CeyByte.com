@@ -4,14 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Store, MessageSquare, HeartHandshake, Settings, LogOut } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { LogoSlash } from "@/components/brand/logo-slash";
+import type { MerchantListing } from "../types";
 import { toast } from "sonner";
 
 interface DashboardNavProps {
   locale: string;
+  listing?: MerchantListing | null;
 }
 
-export function DashboardNav({ locale }: DashboardNavProps) {
+export function DashboardNav({ locale, listing }: DashboardNavProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -37,13 +38,27 @@ export function DashboardNav({ locale }: DashboardNavProps) {
     <>
       {/* Desktop Left Nav */}
       <aside className="border-border bg-card/60 hidden min-h-[calc(100vh-var(--header-h))] w-64 flex-col border-r backdrop-blur-sm md:flex">
-        <div className="border-border flex items-center justify-between border-b p-5">
-          <Link href={`/${locale}`} className="inline-block">
-            <LogoSlash className="h-5 w-auto" />
-          </Link>
-          <span className="text-muted-foreground bg-muted/60 border-border rounded border px-2 py-0.5 font-mono text-[10px] tracking-widest uppercase">
-            Merchant
-          </span>
+        <div className="border-border/80 border-b p-3">
+          <div className="border-border bg-card/70 rounded-xl border p-3 shadow-xs">
+            <div className="flex items-center justify-between gap-1">
+              <span
+                className="text-muted-foreground max-w-[130px] truncate font-mono text-[10px] tracking-widest uppercase"
+                title={listing?.shopName ?? "Ceylon Byte"}
+              >
+                {listing?.shopName ?? "Ceylon Byte"}
+              </span>
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+                <span className="size-1.5 animate-pulse rounded-full bg-emerald-400" aria-hidden="true" />
+                {listing ? "Linked" : "Active"}
+              </span>
+            </div>
+            <div className="mt-1.5 flex items-center gap-2">
+              <div className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-400">
+                <Store className="size-3.5" aria-hidden="true" />
+              </div>
+              <span className="text-foreground text-xs font-semibold tracking-tight">Merchant Portal</span>
+            </div>
+          </div>
         </div>
 
         <nav className="flex-1 space-y-1 p-3">

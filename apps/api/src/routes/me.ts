@@ -393,13 +393,13 @@ export const meRoutes = new Hono<AppEnv>()
       where: and(eq(merchants.ownerUserId, session.user.id), isNull(merchants.deletedAt)),
     });
 
-    if (!merchant) {
-      throw new ApiError("NOT_FOUND");
-    }
-
     const body = await c.req.json().catch(() => ({}));
     const parse = DeleteAccountSchema.safeParse(body);
-    if (!parse.success || parse.data.confirmShopName !== merchant.shopName) {
+    const typed = parse.success ? parse.data.confirmShopName.trim() : "";
+    const expectedName = merchant ? merchant.shopName.trim() : (session.user.email?.trim() ?? "DELETE");
+    const isMatch = parse.success && (typed === expectedName || typed === "DELETE");
+
+    if (!isMatch) {
       throw new ApiError("VALIDATION_FAILED", {
         fields: { confirmShopName: "errors.CONFIRMATION_MISMATCH" },
       });
@@ -407,30 +407,32 @@ export const meRoutes = new Hono<AppEnv>()
 
     const now = Date.now();
 
-    // Soft delete merchant listing
-    await db
-      .update(merchants)
-      .set({
-        deletedAt: new Date(now),
-        isPublicOnMap: false,
-        updatedAt: new Date(now),
-      })
-      .where(eq(merchants.id, merchant.id));
+    if (merchant) {
+      // Soft delete merchant listing
+      await db
+        .update(merchants)
+        .set({
+          deletedAt: new Date(now),
+          isPublicOnMap: false,
+          updatedAt: new Date(now),
+        })
+        .where(eq(merchants.id, merchant.id));
 
-    // Invalidate geo-cache so pin is removed
-    await bumpGeoVersion(c.env.CACHE_KV, db);
+      // Invalidate geo-cache so pin is removed
+      await bumpGeoVersion(c.env.CACHE_KV, db);
+
+      // Audit log
+      await db.insert(merchantLogs).values({
+        id: `ml_${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`,
+        merchantId: merchant.id,
+        event: "deleted",
+        meta: { userId: session.user.id },
+        createdAt: new Date(now),
+      });
+    }
 
     // Revoke all sessions for this user
     await db.delete(sessions).where(eq(sessions.userId, session.user.id));
-
-    // Audit log
-    await db.insert(merchantLogs).values({
-      id: `ml_${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`,
-      merchantId: merchant.id,
-      event: "deleted",
-      meta: { userId: session.user.id },
-      createdAt: new Date(now),
-    });
 
     return c.json({ ok: true });
   });

@@ -10,6 +10,7 @@ mock.module("next/navigation", () => ({
 
 import { EmptyDashboard } from "./components/EmptyDashboard";
 import { OverviewTab } from "./components/OverviewTab";
+import { DashboardNav } from "./components/DashboardNav";
 import type { MerchantListing } from "./types";
 
 const mockListing: MerchantListing = {
@@ -104,5 +105,20 @@ describe("S13 Merchant Dashboard Overview (F-09)", () => {
     expect(html).toContain("We&#x27;re reviewing it");
     expect(html).toContain("We&#x27;re taking a quick look at your listing.");
     expect(html).not.toContain("Hide from map");
+  });
+
+  test("renders DashboardNav with Style 2 Merchant Portal micro-card and without LogoSlash", () => {
+    const unlinkedHtml = renderToString(<DashboardNav locale="en" />);
+    expect(unlinkedHtml).not.toContain("logo-slash");
+    expect(unlinkedHtml).toContain("Merchant Portal");
+    expect(unlinkedHtml).toContain("Ceylon Byte");
+    expect(unlinkedHtml).toContain("Active");
+
+    const linkedHtml = renderToString(<DashboardNav locale="en" listing={mockListing} />);
+    expect(linkedHtml).not.toContain("logo-slash");
+    expect(linkedHtml).toContain("Merchant Portal");
+    expect(linkedHtml).toContain("Perera Stores");
+    expect(linkedHtml).not.toContain("Ceylon Byte");
+    expect(linkedHtml).toContain("Linked");
   });
 });

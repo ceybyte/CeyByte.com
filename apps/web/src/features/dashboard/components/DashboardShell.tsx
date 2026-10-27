@@ -10,8 +10,12 @@ import type { LatestRelease, MerchantListing } from "../types";
 import { Loader2 } from "lucide-react";
 
 export interface DashboardContextValue {
-  listing: MerchantListing;
+  listing: MerchantListing | null;
   latestRelease: LatestRelease | null;
+  emptyCopy: {
+    emptyTitle: string;
+    emptyBody: string;
+  };
   onListingUpdated: (updated: MerchantListing) => void;
   refreshListing: () => Promise<void>;
 }
@@ -81,23 +85,20 @@ export function DashboardShell({ locale, children, copy }: DashboardShellProps) 
 
   return (
     <div className="bg-canvas flex min-h-[calc(100vh-var(--header-h))] flex-col md:flex-row">
-      <DashboardNav locale={locale} />
+      <DashboardNav locale={locale} listing={listing} />
 
       <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-        {!listing ? (
-          <EmptyDashboard locale={locale} onClaimSuccess={loadListing} copy={copy} />
-        ) : (
-          <DashboardContext.Provider
-            value={{
-              listing,
-              latestRelease,
-              onListingUpdated: (updated) => setListing(updated),
-              refreshListing: loadListing,
-            }}
-          >
-            {children}
-          </DashboardContext.Provider>
-        )}
+        <DashboardContext.Provider
+          value={{
+            listing,
+            latestRelease,
+            emptyCopy: copy,
+            onListingUpdated: (updated) => setListing(updated),
+            refreshListing: loadListing,
+          }}
+        >
+          {children}
+        </DashboardContext.Provider>
       </main>
     </div>
   );

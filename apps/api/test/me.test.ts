@@ -235,4 +235,28 @@ describe("Owner-Scoped /api/me Endpoints (F-09 / AC-09.2)", () => {
     const afterRes = await call("/me/listing", { cookie: session.cookie });
     expect(afterRes.status).toBe(401);
   });
+
+  it("allows unlinked merchant user to delete their account using email or DELETE", async () => {
+    const session = await createMerchantUserSession("unlinked_del");
+
+    // Mismatched name fails
+    const failRes = await call("/me/account", {
+      method: "DELETE",
+      cookie: session.cookie,
+      body: JSON.stringify({ confirmShopName: "Random Text" }),
+    });
+    expect(failRes.status).toBe(422);
+
+    // Confirmation with DELETE succeeds
+    const deleteRes = await call("/me/account", {
+      method: "DELETE",
+      cookie: session.cookie,
+      body: JSON.stringify({ confirmShopName: "DELETE" }),
+    });
+    expect(deleteRes.status).toBe(200);
+
+    // Session is revoked
+    const afterRes = await call("/me/tickets", { cookie: session.cookie });
+    expect(afterRes.status).toBe(401);
+  });
 });

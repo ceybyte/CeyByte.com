@@ -17,6 +17,7 @@ export default async function DashboardListingPage({ params }: Props) {
 
   return (
     <ListingView
+      locale={locale}
       copy={{
         listingTitle: t("listing.title"),
         listingPublic: t("listing.public"),
