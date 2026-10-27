@@ -113,14 +113,14 @@ test.describe.serial("Merchant Dashboard & Ownership Lifecycle (F-09 / AC-09.1 &
     await page.waitForURL(/\/en\/dashboard/, { timeout: 15_000 });
 
     // Shop name and live status pill must be visible
-    await expect(page.getByText(shopName)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole("heading", { name: shopName })).toBeVisible({ timeout: 10_000 });
     await expect(page.getByText("Shown on the map")).toBeVisible();
     await expect(page.getByText("Peradeniya, Kandy")).toBeVisible();
   });
 
   test("Step 4: Owner can toggle public map visibility live", async () => {
     await page.goto("/en/dashboard");
-    await expect(page.getByText(shopName)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole("heading", { name: shopName })).toBeVisible({ timeout: 10_000 });
 
     // Find the visibility toggle button (initially "Hide from map")
     const hideBtn = page.getByRole("button", { name: /Hide from map/i });

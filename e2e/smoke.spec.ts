@@ -6,7 +6,7 @@ test("home page is served as static HTML with no accessibility violations", asyn
   const response = await page.goto("/");
   expect(response?.status()).toBe(200);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    /Keep billing when the internet goes down/i,
+    /The Free POS for Sri Lankan Shops/i,
   );
 
   const results = await new AxeBuilder({ page }).analyze();
