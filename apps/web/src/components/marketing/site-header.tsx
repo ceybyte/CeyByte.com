@@ -40,14 +40,17 @@ export function SiteHeader() {
     >
       <div className="mx-auto flex h-full max-w-[--content-max] items-center gap-4 px-[--gutter]">
         {/* Logo */}
-        <Link href="/" className="shrink-0 rounded-[--radius-sm]">
-          <Logo size="md" />
+        <Link
+          href="/"
+          className="focus-visible:ring-azure shrink-0 rounded-[--radius-sm] focus-visible:ring-2 focus-visible:outline-none"
+        >
+          <Logo size="md" showProductBadge={false} />
         </Link>
 
         {/* Desktop nav */}
         <nav
           aria-label={t("ariaLabel")}
-          className="hidden md:flex md:flex-1 md:items-center md:gap-6 md:pl-4"
+          className="hidden md:flex md:flex-1 md:items-center md:gap-1 md:pl-4 lg:gap-2"
         >
           {navLinks.map(({ href, label }) => {
             const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -55,11 +58,16 @@ export function SiteHeader() {
               <Link
                 key={href}
                 href={href}
-                className={`text-sm transition-colors duration-[--dur-hover] ${
-                  isActive ? "text-text font-medium" : "text-muted hover:text-text focus-visible:text-text"
+                className={`relative rounded-lg px-3 py-1.5 text-sm transition-all duration-[--dur-hover] ${
+                  isActive
+                    ? "text-text bg-surface-elevated/70 font-semibold"
+                    : "text-muted hover:text-text hover:bg-surface-elevated/40"
                 }`}
               >
                 {label}
+                {isActive && (
+                  <span className="bg-azure absolute right-3 bottom-0 left-3 h-0.5 rounded-full" />
+                )}
               </Link>
             );
           })}

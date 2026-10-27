@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CeyByte UI/UX Mockups — Complete Donate Page Redesign (5 Styles)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              canvas: "#1e1e1e",
+              surface: "#252526",
+              "surface-elevated": "#2d2d30",
+              "surface-legal": "#18181b",
+              hairline: "#3e3e42",
+              "hairline-grid": "#333337",
+              primary: "#39ff14",
+              "primary-hover": "#5cff3d",
+              azure: "#0393dd",
+              "azure-text": "#0eaae9",
+              gold: "#ffd700",
+              "gold-text": "#ffd700",
+              muted: "#b5b5b5",
+              text: "#ffffff",
+            },
+            fontFamily: {
+              sans: ["Geist", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            },
+            borderRadius: {
+              sm: "4px",
+              md: "8px",
+              lg: "12px",
+              xl: "16px",
+              "2xl": "20px",
+              "3xl": "24px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #121214;
+        color: #f4f4f5;
+        font-family: "Geist", sans-serif;
+      }
+      .device-mobile {
+        max-width: 390px;
+        margin: 0 auto;
+        border: 8px solid #27272a;
+        border-radius: 40px;
+        min-height: 844px;
+        overflow: hidden;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      }
+      .device-tablet {
+        max-width: 768px;
+        margin: 0 auto;
+        border: 8px solid #27272a;
+        border-radius: 24px;
+        min-height: 900px;
+        overflow: hidden;
+      }
+      .device-desktop {
+        width: 100%;
+        border: none;
+        border-radius: 0;
+      }
+      .glow-gold {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.12);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen pb-32">
+    <!-- TOP PERSISTENT CONTROLLER PANEL -->
+    <header
+      class="sticky top-0 z-50 border-b border-zinc-800 bg-[#18181b]/95 px-4 py-3 shadow-xl backdrop-blur"
+    >
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="bg-gold/20 text-gold rounded px-2 py-0.5 font-mono text-xs font-bold tracking-wider"
+            >STYLE 1 REFINED</span
+          >
+          <h1 class="text-sm font-bold tracking-wide text-white">
+            Donate Page Mockup: Badge Removed + Isometric Hairline Element Added
+          </h1>
+        </div>
+
+        <!-- Viewport Device Switcher -->
+        <div class="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 p-1">
+          <button
+            onclick="setViewport('desktop')"
+            id="vp-desktop"
+            class="bg-azure rounded px-3 py-1 text-xs font-semibold text-white transition-all"
+          >
+            Desktop
+          </button>
+          <button
+            onclick="setViewport('tablet')"
+            id="vp-tablet"
+            class="rounded px-3 py-1 text-xs font-semibold text-zinc-400 transition-all hover:text-white"
+          >
+            Tablet
+          </button>
+          <button
+            onclick="setViewport('mobile')"
+            id="vp-mobile"
+            class="rounded px-3 py-1 text-xs font-semibold text-zinc-400 transition-all hover:text-white"
+          >
+            Mobile (390px)
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Selection Sub-Bar -->
+      <div
+        class="mx-auto mt-3 flex max-w-7xl flex-wrap items-center justify-between gap-4 border-t border-zinc-800/80 pt-3"
+      >
+        <!-- Donate Style Selector -->
+        <div class="flex items-center gap-3">
+          <span class="text-gold font-mono text-xs font-bold uppercase">Donate Page Style:</span>
+          <select
+            id="donateSelector"
+            onchange="renderSelection()"
+            class="border-gold/40 focus:ring-gold rounded-lg border bg-zinc-800 px-3 py-1.5 text-xs font-medium text-white focus:ring-1"
+          >
+            <option value="1" selected>
+              Style 1: Releases-Matched Monolith (Updated: Badge Removed + Isometric Element Added)
+            </option>
+            <option value="2">Style 2: 3-Step Guided Tunnel with Live Progress Line</option>
+            <option value="3">Style 3: Minimalist Compact Card with Instant Currency Selector</option>
+            <option value="4">Style 4: Industrial Engineering Ledger & Live Transparency Board</option>
+            <option value="5">Style 5: Split Mission Showcase + Sticky Wire Terminal</option>
+          </select>
+        </div>
+
+        <!-- Locked Configuration Indicator -->
+        <div class="flex items-center gap-4 font-mono text-xs text-zinc-400">
+          <span class="text-emerald-400">✓ Nav: Style 2 (76px Edge-to-Edge)</span>
+          <span>•</span>
+          <span class="text-emerald-400">✓ Middle: Style 2 (Glass Capsule HUD)</span>
+          <span>•</span>
+          <span class="text-emerald-400">✓ Footer: Style 1 (Editorial 2-Row)</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- WORKSPACE CONTAINER -->
+    <main class="px-4 py-10 transition-all duration-300">
+      <div
+        id="deviceFrame"
+        class="device-desktop relative min-h-[900px] border border-zinc-800 bg-[#18181b] shadow-2xl"
+      >
+        <!-- LOCKED NAVBAR (Style 2: 76px Industrial Edge-to-Edge) -->
+        <nav
+          class="flex h-[76px] w-full items-center justify-between border-b border-[#3e3e42] bg-[#1e1e1e]/90 px-6 backdrop-blur-md transition-all md:px-10"
+        >
+          <div class="flex items-center gap-8">
+            <a href="#" class="group flex items-center gap-2">
+              <div class="flex items-center gap-2 text-lg font-bold tracking-tight text-white">
+                <span class="text-azure font-mono text-xl font-extrabold">C3</span>
+                <span>CEYLON BYTES</span>
+              </div>
+            </a>
+            <div class="hidden items-center gap-6 text-sm font-medium text-zinc-400 lg:flex">
+              <a href="#" class="py-6 transition-colors hover:text-white">Product</a>
+              <a href="#" class="py-6 transition-colors hover:text-white">Features</a>
+              <a href="#" class="py-6 transition-colors hover:text-white">District Map</a>
+              <a href="#" class="py-6 transition-colors hover:text-white">Docs Center</a>
+              <a href="#" class="py-6 transition-colors hover:text-white">Releases</a>
+              <a href="#" class="border-gold border-b-2 py-6 font-semibold text-white">Donate</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div
+              class="hidden items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-400 sm:flex"
+            >
+              <span class="bg-azure size-1.5 animate-pulse rounded-full"></span> v1.3.0 STABLE
+            </div>
+            <button
+              class="bg-primary flex items-center gap-2 rounded-lg px-5 py-2.5 text-xs font-bold text-black shadow-md transition-all hover:brightness-105"
+            >
+              <span>Download CB POS</span>
+            </button>
+          </div>
+        </nav>
+
+        <!-- LOCKED SECTION 2 (Middle Strip Style 2: Floating Glass Capsule HUD) -->
+        <div class="border-b border-zinc-800/80 bg-zinc-950/40 px-4 py-8 sm:px-6 lg:px-8">
+          <div class="mx-auto max-w-7xl">
+            <div class="mb-3 font-mono text-[10px] tracking-wider text-zinc-500 uppercase">
+              LOCKED MIDDLE STRIP (STYLE 2: GLASS CAPSULE HUD):
+            </div>
+            <div class="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-5 shadow-2xl backdrop-blur-md">
+              <div
+                class="grid grid-cols-2 gap-6 divide-y divide-zinc-800/80 sm:divide-x sm:divide-y-0 md:grid-cols-4 lg:grid-cols-5"
+              >
+                <div class="px-3">
+                  <span class="font-mono text-[10px] text-zinc-500 uppercase">LOCAL CASHIERING</span>
+                  <div class="mt-1 font-mono text-2xl font-bold text-white">0 ms</div>
+                  <p class="mt-1 text-[11px] text-zinc-400">Zero cloud dependencies</p>
+                </div>
+                <div class="px-3 pt-4 sm:pt-0">
+                  <span class="font-mono text-[10px] text-zinc-500 uppercase">LIFETIME LICENSE</span>
+                  <div class="mt-1 font-mono text-2xl font-bold text-white">Rs. 0</div>
+                  <p class="mt-1 text-[11px] text-zinc-400">No monthly rentals</p>
+                </div>
+                <div class="px-3 pt-4 sm:pt-0">
+                  <span class="font-mono text-[10px] text-zinc-500 uppercase">PROVINCIAL REACH</span>
+                  <div class="mt-1 font-mono text-2xl font-bold text-white">25/25</div>
+                  <p class="mt-1 text-[11px] text-zinc-400">All districts supported</p>
+                </div>
+                <div class="px-3 pt-4 sm:pt-0">
+                  <span class="font-mono text-[10px] text-zinc-500 uppercase">REVENUE TAX</span>
+                  <div class="mt-1 font-mono text-2xl font-bold text-white">18% + 2.5%</div>
+                  <p class="mt-1 text-[11px] text-zinc-400">Automatic VAT / SSCL</p>
+                </div>
+                <div class="col-span-2 flex flex-col justify-between px-3 pt-4 sm:pt-0 lg:col-span-1">
+                  <span class="text-azure font-mono text-[10px] font-bold uppercase">● LIVE DIRECTORY</span>
+                  <button
+                    class="bg-azure hover:bg-azure-hover mt-2 w-full rounded-lg py-2 text-xs font-bold text-white"
+                  >
+                    View Live Map →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN DONATE PAGE WORKSPACE (DYNAMIC 5 STYLES) -->
+        <div id="donateContainer" class="px-4 py-12 sm:px-6 lg:px-8"></div>
+
+        <!-- LOCKED FOOTER (Style 1: Ultra-Clean 2-Row Editorial) -->
+        <footer class="mt-16 w-full border-t border-[#3e3e42] bg-[#18181b] px-6 py-8 transition-all md:px-10">
+          <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
+            <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+              <span class="flex items-center gap-1.5 text-base font-bold text-white">
+                <span class="text-azure font-mono font-bold">C3</span> CEYLON BYTES
+              </span>
+              <span class="hidden text-zinc-600 sm:inline">|</span>
+              <p class="text-xs text-zinc-400">
+                Open retail technology & software engineered in Sri Lanka by Ceylon Byte.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-zinc-400">
+              <a href="#" class="hover:text-azure transition-colors">Features</a>
+              <a href="#" class="hover:text-azure transition-colors">Documentation</a>
+              <a href="#" class="hover:text-azure transition-colors">Releases</a>
+              <a href="#" class="hover:text-azure transition-colors">Community</a>
+              <a href="#" class="hover:text-azure transition-colors">Terms</a>
+              <a href="#" class="hover:text-azure transition-colors">Privacy</a>
+            </div>
+          </div>
+          <div
+            class="mx-auto mt-6 flex max-w-7xl flex-col items-center justify-between gap-2 border-t border-zinc-800/80 pt-4 font-mono text-[11px] text-zinc-500 sm:flex-row"
+          >
+            <div>© 2026 Ceylon Byte (Pvt) Ltd. All rights reserved.</div>
+            <div class="flex items-center gap-2">
+              <span class="size-1.5 rounded-full bg-emerald-500"></span>
+              <span>ENGINEERED IN SRI LANKA</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </main>
+
+    <!-- JAVASCRIPT TEMPLATES FOR DONATE PAGE (5 STYLES) -->
+    <script>
+      const donateTemplates = {
+        1: `<!-- Style 1: Releases-Matched Dual-Panel Monolith (Refined per User Feedback) -->
+        <div class="max-w-5xl mx-auto space-y-8">
+          <!-- Page Header Card (Direct /releases Match with Isometric Hairline Hardware Element) -->
+          <div class="border border-zinc-800 bg-[#252526] relative overflow-hidden rounded-2xl p-6 sm:p-10 shadow-2xl group">
+            <!-- Glowing top accent line (Gold) -->
+            <div class="pointer-events-none absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+
+            <!-- ISOMETRIC HAIRLINE HARDWARE ELEMENT (Matches User Reference Image) -->
+            <div class="pointer-events-none absolute -top-10 -right-10 sm:top-1/2 sm:-translate-y-1/2 sm:-right-6 md:right-0 lg:right-4 w-[340px] sm:w-[460px] lg:w-[500px] opacity-30 sm:opacity-60 group-hover:opacity-85 transition-all duration-500">
+              <svg viewBox="0 0 540 340" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto select-none pointer-events-none">
+                <style>
+                  @keyframes pulse-azure {
+                    0%, 100% { filter: drop-shadow(0 0 4px rgba(14, 170, 233, 0.6)); }
+                    50% { filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.95)); }
+                  }
+                  .node-azure-active {
+                    animation: pulse-azure 2.8s ease-in-out infinite;
+                  }
+                </style>
+                <defs>
+                  <!-- Cyan/Azure Glow Filter -->
+                  <filter id="azure-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#0eaae9" flood-opacity="0.8" />
+                  </filter>
+                  <filter id="node-shadow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.5" />
+                  </filter>
+
+                  <!-- Gradients -->
+                  <linearGradient id="board-surface" x1="100" y1="50" x2="420" y2="300" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#26262a" />
+                    <stop offset="100%" stop-color="#18181b" />
+                  </linearGradient>
+                  <linearGradient id="board-rim" x1="30" y1="160" x2="400" y2="330" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#202024" />
+                    <stop offset="100%" stop-color="#141416" />
+                  </linearGradient>
+                  <linearGradient id="cyl-body" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#323238" />
+                    <stop offset="100%" stop-color="#222226" />
+                  </linearGradient>
+                  <linearGradient id="cyl-top" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#3a3a42" />
+                    <stop offset="100%" stop-color="#2b2b31" />
+                  </linearGradient>
+                  <linearGradient id="azure-cyl-body" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#11364d" />
+                    <stop offset="100%" stop-color="#0b2333" />
+                  </linearGradient>
+                  <linearGradient id="azure-cyl-top" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#194868" />
+                    <stop offset="100%" stop-color="#0e3047" />
+                  </linearGradient>
+                </defs>
+
+                <!-- 1. BASE ISOMETRIC BOARD SLAB -->
+                <g class="board-slab">
+                  <!-- 3D Extrusion Rim Depth (14px) -->
+                  <path d="M 40 162 L 40 176 Q 40 192 60 202 L 345 330 Q 365 338 385 328 L 515 250 Q 530 240 530 226 L 530 212 L 515 226 Q 500 236 385 314 L 60 188 Q 40 178 40 162 Z" fill="url(#board-rim)" stroke="#3a3a42" stroke-width="1.2" />
+                  <!-- Top Surface Face with Rounded Corners -->
+                  <path d="M 60 188 Q 38 176 42 158 L 180 54 Q 198 42 218 52 L 512 210 Q 532 220 522 236 L 385 314 Q 365 324 345 314 Z" fill="url(#board-surface)" stroke="#464650" stroke-width="1.4" />
+                </g>
+
+                <!-- 2. HAIRLINE CIRCUIT TRACES -->
+                <g class="hairline-traces" stroke="#42424c" stroke-width="1.2" fill="none">
+                  <!-- Top Parallel Bus Traces -->
+                  <path d="M 174 67 L 484 233" />
+                  <path d="M 168 72 L 478 238" />
+
+                  <!-- Branch Traces from Knob 2 curving down -->
+                  <path d="M 228 97 Q 190 125 178 152" />
+                  <path d="M 222 102 Q 184 130 172 157" />
+
+                  <!-- Branch Traces from Knob 3 curving down -->
+                  <path d="M 270 118 Q 225 148 218 180" />
+
+                  <!-- Interconnect Traces connecting lower cluster & Azure Node -->
+                  <path d="M 178 196 Q 190 225 218 225 Q 248 225 268 240 Q 300 262 335 270 L 415 242 Q 445 232 462 232" />
+                  <path d="M 218 180 Q 242 186 268 210 Q 290 230 335 250" />
+                </g>
+
+                <!-- 3. TOP ROW OF 8 HARDWARE KNOBS -->
+                <!-- Knob 0 (Top-Left) -->
+                <g class="knob-0">
+                  <ellipse cx="185" cy="68" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 171 55 L 171 68 A 14 7 0 0 0 199 68 L 199 55 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="185" cy="55" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                  <path d="M 176 53 A 14 7 0 0 1 194 53" stroke="#686874" stroke-width="0.8" fill="none" />
+                </g>
+
+                <!-- Knob 1 -->
+                <g class="knob-1">
+                  <ellipse cx="227" cy="89" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 213 76 L 213 89 A 14 7 0 0 0 241 89 L 241 76 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="227" cy="76" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                  <path d="M 218 74 A 14 7 0 0 1 236 74" stroke="#686874" stroke-width="0.8" fill="none" />
+                </g>
+
+                <!-- Knob 2 -->
+                <g class="knob-2">
+                  <ellipse cx="270" cy="110" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 256 97 L 256 110 A 14 7 0 0 0 284 110 L 284 97 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="270" cy="97" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                  <path d="M 261 95 A 14 7 0 0 1 279 95" stroke="#686874" stroke-width="0.8" fill="none" />
+                </g>
+
+                <!-- Knob 3 -->
+                <g class="knob-3">
+                  <ellipse cx="312" cy="131" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 298 118 L 298 131 A 14 7 0 0 0 326 131 L 326 118 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="312" cy="118" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                  <path d="M 303 116 A 14 7 0 0 1 321 116" stroke="#686874" stroke-width="0.8" fill="none" />
+                </g>
+
+                <!-- Knob 4 -->
+                <g class="knob-4">
+                  <ellipse cx="355" cy="153" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 341 140 L 341 153 A 14 7 0 0 0 369 153 L 369 140 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="355" cy="140" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                  <path d="M 346 138 A 14 7 0 0 1 364 138" stroke="#686874" stroke-width="0.8" fill="none" />
+                </g>
+
+                <!-- Knob 5 -->
+                <g class="knob-5">
+                  <ellipse cx="397" cy="174" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 383 161 L 383 174 A 14 7 0 0 0 411 174 L 411 161 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="397" cy="161" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                  <path d="M 388 159 A 14 7 0 0 1 406 159" stroke="#686874" stroke-width="0.8" fill="none" />
+                </g>
+
+                <!-- Knob 6 -->
+                <g class="knob-6">
+                  <ellipse cx="440" cy="195" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 426 182 L 426 195 A 14 7 0 0 0 454 195 L 454 182 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="440" cy="182" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                  <path d="M 431 180 A 14 7 0 0 1 449 180" stroke="#686874" stroke-width="0.8" fill="none" />
+                </g>
+
+                <!-- Knob 7 (Bottom-Right) -->
+                <g class="knob-7">
+                  <ellipse cx="482" cy="216" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 468 203 L 468 216 A 14 7 0 0 0 496 216 L 496 203 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="482" cy="203" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                  <path d="M 473 201 A 14 7 0 0 1 491 201" stroke="#686874" stroke-width="0.8" fill="none" />
+                </g>
+
+                <!-- 4. LOWER CLUSTER: FLOATING ELEVATED NODES WITH FOOTPRINTS -->
+                <!-- Node L1: Left Upper -->
+                <g class="node-l1">
+                  <!-- Board Footprint -->
+                  <ellipse cx="172" cy="162" rx="17" ry="8.5" stroke="#3e3e48" stroke-width="1" stroke-dasharray="2,2" fill="#19191c" />
+                  <!-- Vertical Projection Dotted Guides -->
+                  <line x1="158" y1="144" x2="158" y2="162" stroke="#484852" stroke-width="0.9" stroke-dasharray="2,2" />
+                  <line x1="186" y1="144" x2="186" y2="162" stroke="#484852" stroke-width="0.9" stroke-dasharray="2,2" />
+                  <!-- Elevated Cylinder (Hovering) -->
+                  <path d="M 158 132 L 158 144 A 14 7 0 0 0 186 144 L 186 132 Z" fill="url(#cyl-body)" stroke="#4a4a54" stroke-width="1.2" filter="url(#node-shadow)" />
+                  <ellipse cx="172" cy="132" rx="14" ry="7" fill="url(#cyl-top)" stroke="#565662" stroke-width="1.2" />
+                </g>
+
+                <!-- Node L2: Left Lower (stacked below L1) -->
+                <g class="node-l2">
+                  <!-- Board Footprint -->
+                  <ellipse cx="172" cy="206" rx="17" ry="8.5" stroke="#3e3e48" stroke-width="1" stroke-dasharray="2,2" fill="#19191c" />
+                  <!-- Vertical Projection Dotted Guides -->
+                  <line x1="158" y1="188" x2="158" y2="206" stroke="#484852" stroke-width="0.9" stroke-dasharray="2,2" />
+                  <line x1="186" y1="188" x2="186" y2="206" stroke="#484852" stroke-width="0.9" stroke-dasharray="2,2" />
+                  <!-- Elevated Cylinder -->
+                  <path d="M 158 176 L 158 188 A 14 7 0 0 0 186 188 L 186 176 Z" fill="url(#cyl-body)" stroke="#4a4a54" stroke-width="1.2" filter="url(#node-shadow)" />
+                  <ellipse cx="172" cy="176" rx="14" ry="7" fill="url(#cyl-top)" stroke="#565662" stroke-width="1.2" />
+                </g>
+
+                <!-- Node M1: Center-Left -->
+                <g class="node-m1">
+                  <!-- Board Footprint -->
+                  <ellipse cx="218" cy="186" rx="17" ry="8.5" stroke="#3e3e48" stroke-width="1" stroke-dasharray="2,2" fill="#19191c" />
+                  <!-- Vertical Projection Dotted Guides -->
+                  <line x1="204" y1="168" x2="204" y2="186" stroke="#484852" stroke-width="0.9" stroke-dasharray="2,2" />
+                  <line x1="232" y1="168" x2="232" y2="186" stroke="#484852" stroke-width="0.9" stroke-dasharray="2,2" />
+                  <!-- Elevated Cylinder -->
+                  <path d="M 204 156 L 204 168 A 14 7 0 0 0 232 168 L 232 156 Z" fill="url(#cyl-body)" stroke="#4a4a54" stroke-width="1.2" filter="url(#node-shadow)" />
+                  <ellipse cx="218" cy="156" rx="14" ry="7" fill="url(#cyl-top)" stroke="#565662" stroke-width="1.2" />
+                </g>
+
+                <!-- NODE AZURE: THE ACTIVE HIGHLIGHTED NODE! -->
+                <g class="node-azure node-azure-active">
+                  <!-- Board Landing Footprint with Cyan Stroke & Glow -->
+                  <ellipse cx="268" cy="196" rx="18" ry="9" stroke="#0eaae9" stroke-opacity="0.5" stroke-dasharray="3,2" stroke-width="1.2" fill="#091824" />
+                  
+                  <!-- Vertical Projection Axis (Center & Edges) -->
+                  <line x1="268" y1="172" x2="268" y2="196" stroke="#0eaae9" stroke-opacity="0.4" stroke-width="1" stroke-dasharray="2,2" />
+                  <line x1="254" y1="172" x2="254" y2="196" stroke="#0eaae9" stroke-opacity="0.8" stroke-width="1.2" stroke-dasharray="2.5,2" />
+                  <line x1="282" y1="172" x2="282" y2="196" stroke="#0eaae9" stroke-opacity="0.8" stroke-width="1.2" stroke-dasharray="2.5,2" />
+
+                  <!-- Elevated Cyan Cylinder (Body + Top) with Azure Filter -->
+                  <path d="M 254 158 L 254 172 A 14 7 0 0 0 282 172 L 282 158 Z" fill="url(#azure-cyl-body)" stroke="#0eaae9" stroke-width="1.5" filter="url(#azure-glow)" />
+                  <ellipse cx="268" cy="158" rx="14" ry="7" fill="url(#azure-cyl-top)" stroke="#38bdf8" stroke-width="1.5" />
+                  
+                  <!-- Top Face Highlight Accent -->
+                  <ellipse cx="268" cy="158" rx="8" ry="4" stroke="#7dd3fc" stroke-opacity="0.6" stroke-width="1" fill="none" />
+                </g>
+
+                <!-- Node M2: Node below Azure -->
+                <g class="node-m2">
+                  <ellipse cx="270" cy="242" rx="20" ry="10" stroke="#36363e" stroke-width="1" fill="#1b1b1e" />
+                  <path d="M 256 229 L 256 242 A 14 7 0 0 0 284 242 L 284 229 Z" fill="url(#cyl-body)" stroke="#464650" stroke-width="1.2" />
+                  <ellipse cx="270" cy="229" rx="14" ry="7" fill="url(#cyl-top)" stroke="#52525c" stroke-width="1.2" />
+                </g>
+              </svg>
+            </div>
+
+            <!-- Content on the Left -->
+            <div class="relative z-10 max-w-xl space-y-3">
+              <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Keep CB POS 100% Free For Sri Lankan Shops</h1>
+              <p class="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                We never charge merchants subscriptions or transaction fees. Community funding pays for Windows Authenticode signing certs, thermal printer test hardware, and trilingual localizations.
+              </p>
+              <div class="pt-2 flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-mono text-zinc-400">
+                <span class="flex items-center gap-1.5"><span class="size-1.5 rounded-full bg-emerald-400"></span> 100% Open & Audited</span>
+                <span>•</span>
+                <span class="flex items-center gap-1.5"><span class="size-1.5 rounded-full bg-gold"></span> Community Backed</span>
+                <span>•</span>
+                <span class="flex items-center gap-1.5 text-zinc-300">Commercial Bank Wire</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Dual-Panel Card (Direct /releases Match) -->
+          <div class="border border-zinc-800 bg-[#252526] relative overflow-hidden rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <!-- Glowing top accent line (Gold) -->
+            <div class="pointer-events-none absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              
+              <!-- Left Column: Pledge & Information -->
+              <div class="lg:col-span-6 space-y-6">
+                <div>
+                  <label class="text-xs font-mono text-zinc-400 uppercase font-semibold block mb-2">Select Donation Amount</label>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button class="py-3 px-2 bg-zinc-900 border border-zinc-700/80 hover:border-gold rounded-xl text-sm font-mono font-bold text-white transition-all">Rs. 500</button>
+                    <button class="py-3 px-2 bg-gold/15 border-2 border-gold rounded-xl text-sm font-mono font-bold text-gold transition-all shadow-md">Rs. 1,000</button>
+                    <button class="py-3 px-2 bg-zinc-900 border border-zinc-700/80 hover:border-gold rounded-xl text-sm font-mono font-bold text-white transition-all">Rs. 2,500</button>
+                    <button class="py-3 px-2 bg-zinc-900 border border-zinc-700/80 hover:border-gold rounded-xl text-sm font-mono font-bold text-white transition-all">Custom</button>
+                  </div>
+                </div>
+
+                <div class="space-y-4">
+                  <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                      <label class="text-xs font-medium text-zinc-300">Your Name or Shop Name</label>
+                      <label class="text-xs text-zinc-400 flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" class="rounded bg-zinc-900 border-zinc-700 text-gold focus:ring-0">
+                        <span>Donate anonymously</span>
+                      </label>
+                    </div>
+                    <input type="text" placeholder="e.g. Perera Stores / Kasun Perera" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-azure">
+                  </div>
+
+                  <div>
+                    <label class="text-xs font-medium text-zinc-300 block mb-1.5">Public Message (Optional)</label>
+                    <textarea rows="2" placeholder="Leave a note for the community supporters wall..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-azure"></textarea>
+                  </div>
+
+                  <div class="p-3.5 bg-zinc-900/60 border border-zinc-800 rounded-xl flex items-center justify-between text-xs">
+                    <span class="text-zinc-400">Attach Gold Supporter Badge to your shop on the live Map:</span>
+                    <button class="text-azure hover:underline font-semibold">Link Shop Phone</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Bank Wire Specifier & Deposit Slip -->
+              <div class="lg:col-span-6 space-y-6 lg:border-l lg:border-zinc-800/80 lg:pl-8">
+                <!-- Bank Header -->
+                <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                  <div>
+                    <span class="text-[10px] font-mono text-gold font-bold uppercase tracking-wider">OFFICIAL RECIPIENT</span>
+                    <h3 class="text-base font-bold text-white mt-0.5">Commercial Bank of Ceylon</h3>
+                  </div>
+                  <span class="text-xs font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-md">Kollupitiya [012]</span>
+                </div>
+
+                <!-- Credentials Cards -->
+                <div class="space-y-3 font-mono">
+                  <div class="border border-zinc-800 bg-zinc-900 rounded-xl p-3.5 flex items-center justify-between">
+                    <div>
+                      <span class="text-[10px] text-zinc-500 uppercase block">Account Name</span>
+                      <span class="text-xs font-bold text-white select-all">CEYLON BYTE (PVT) LTD</span>
+                    </div>
+                    <button class="text-xs text-azure bg-azure/10 hover:bg-azure/20 border border-azure/30 px-2.5 py-1 rounded-md transition-colors">Copy</button>
+                  </div>
+
+                  <div class="border border-zinc-800 bg-zinc-900 rounded-xl p-3.5 flex items-center justify-between">
+                    <div>
+                      <span class="text-[10px] text-zinc-500 uppercase block">Account Number</span>
+                      <span class="text-base font-bold text-white tracking-wider select-all">8009 2314 5501</span>
+                    </div>
+                    <button class="text-xs text-azure bg-azure/10 hover:bg-azure/20 border border-azure/30 px-2.5 py-1 rounded-md transition-colors">Copy</button>
+                  </div>
+                </div>
+
+                <!-- Deposit Slip Dropzone (Matching Verify Expander) -->
+                <div class="border border-dashed border-zinc-700 hover:border-gold bg-zinc-900/40 rounded-xl p-5 text-center transition-colors cursor-pointer">
+                  <div class="size-8 rounded-full bg-gold/15 text-gold flex items-center justify-center mx-auto mb-1.5 text-sm font-bold">↑</div>
+                  <div class="text-xs font-bold text-white">Upload Transfer Screenshot or Deposit Slip</div>
+                  <p class="text-[11px] text-zinc-400 mt-1">Instant verification · PDF, JPG, PNG up to 5 MB</p>
+                </div>
+
+                <!-- CTA Button (Gold, Never Green!) -->
+                <button class="w-full bg-gold hover:bg-yellow-400 text-black font-bold text-sm py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all">
+                  <span>Submit Donation & Generate Ref Code →</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Transparency Strip (4 Pillars) -->
+          <div class="border border-zinc-800 bg-zinc-900/60 rounded-2xl p-6 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+              <span class="text-xs font-mono font-bold text-white flex items-center gap-2">
+                <span class="size-2 rounded-full bg-emerald-400"></span> LIVE MONTHLY TRANSPARENCY
+              </span>
+              <span class="text-xs font-mono text-zinc-400">Rs. 45,000 from 38 supporters this month</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+              <div class="space-y-1">
+                <div class="font-bold text-white">Windows Certs</div>
+                <p class="text-zinc-400 text-[11px]">Authenticode code-signing to bypass SmartScreen.</p>
+              </div>
+              <div class="space-y-1">
+                <div class="font-bold text-white">Hardware Testing</div>
+                <p class="text-zinc-400 text-[11px]">Testing ESC/POS thermal printers & barcode guns.</p>
+              </div>
+              <div class="space-y-1">
+                <div class="font-bold text-white">Localizations</div>
+                <p class="text-zinc-400 text-[11px]">100% Sinhala & Tamil receipts and UI parity.</p>
+              </div>
+              <div class="space-y-1">
+                <div class="font-bold text-white">Edge Infra</div>
+                <p class="text-zinc-400 text-[11px]">APAC Cloudflare endpoints for fast static delivery.</p>
+              </div>
+            </div>
+          </div>
+        </div>`,
+
+        2: `<!-- Style 2: 3-Step Guided Tunnel with Live Progress Line -->
+        <div class="max-w-3xl mx-auto space-y-8">
+          <!-- Step Indicator -->
+          <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="size-7 rounded-full bg-gold text-black font-bold font-mono text-xs flex items-center justify-center">01</span>
+              <span class="text-xs font-bold text-white uppercase">Choose Amount</span>
+            </div>
+            <div class="h-0.5 w-12 bg-zinc-800"></div>
+            <div class="flex items-center gap-3 opacity-60">
+              <span class="size-7 rounded-full bg-zinc-800 text-zinc-400 font-bold font-mono text-xs flex items-center justify-center">02</span>
+              <span class="text-xs font-bold text-zinc-400 uppercase">Bank Wire</span>
+            </div>
+            <div class="h-0.5 w-12 bg-zinc-800"></div>
+            <div class="flex items-center gap-3 opacity-60">
+              <span class="size-7 rounded-full bg-zinc-800 text-zinc-400 font-bold font-mono text-xs flex items-center justify-center">03</span>
+              <span class="text-xs font-bold text-zinc-400 uppercase">Upload Slip</span>
+            </div>
+          </div>
+
+          <!-- Step 1 Card -->
+          <div class="border border-zinc-800 bg-[#252526] rounded-2xl p-8 space-y-6 shadow-2xl relative overflow-hidden">
+            <div class="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+            <h3 class="text-xl font-bold text-white">How much would you like to contribute?</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <button class="p-4 bg-zinc-900 border border-zinc-700 hover:border-gold rounded-xl font-mono text-base font-bold text-white">Rs. 500</button>
+              <button class="p-4 bg-gold/15 border-2 border-gold rounded-xl font-mono text-base font-bold text-gold">Rs. 1,000</button>
+              <button class="p-4 bg-zinc-900 border border-zinc-700 hover:border-gold rounded-xl font-mono text-base font-bold text-white">Rs. 2,500</button>
+              <button class="p-4 bg-zinc-900 border border-zinc-700 hover:border-gold rounded-xl font-mono text-base font-bold text-white">Custom</button>
+            </div>
+            <div class="space-y-4 pt-2">
+              <input type="text" placeholder="Your Name or Business Name" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm text-white">
+              <button class="w-full bg-gold text-black font-bold text-sm py-3.5 rounded-xl">Continue to Bank Accounts →</button>
+            </div>
+          </div>
+        </div>`,
+
+        3: `<!-- Style 3: Minimalist Compact Card with Instant Currency Selector -->
+        <div class="max-w-2xl mx-auto space-y-6">
+          <div class="text-center space-y-2">
+            <span class="text-xs font-mono text-gold uppercase tracking-wider font-bold">COMMUNITY PLEDGE</span>
+            <h2 class="text-3xl font-extrabold text-white">Support Free Sri Lankan POS</h2>
+            <p class="text-xs text-zinc-400">Direct Ceylon Byte bank transfer with 0% platform cuts.</p>
+          </div>
+
+          <div class="border border-zinc-800 bg-surface rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative">
+            <div class="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+
+            <div class="flex justify-between items-center bg-zinc-900 border border-zinc-800 p-4 rounded-xl">
+              <span class="text-xs font-mono text-zinc-400">AMOUNT (LKR)</span>
+              <span class="text-2xl font-mono font-bold text-gold">Rs. 1,000.00</span>
+            </div>
+
+            <!-- Single Select Bank Pill -->
+            <div class="border border-zinc-800 bg-zinc-900 p-4 rounded-xl flex justify-between items-center">
+              <div>
+                <div class="text-sm font-bold text-white">Commercial Bank of Ceylon</div>
+                <div class="text-xs font-mono text-zinc-400 mt-0.5">8009 2314 5501 · Kollupitiya</div>
+              </div>
+              <button class="text-xs text-azure font-mono font-bold hover:underline">COPY ALL</button>
+            </div>
+
+            <div class="border border-dashed border-zinc-700 rounded-xl p-4 text-center cursor-pointer hover:border-gold">
+              <span class="text-xs text-zinc-300 font-semibold">Drop payment slip image here</span>
+            </div>
+
+            <button class="w-full bg-gold text-black font-bold text-xs py-3.5 rounded-xl">Complete & Get Listed on Map</button>
+          </div>
+        </div>`,
+
+        4: `<!-- Style 4: Industrial Engineering Ledger & Live Transparency Board -->
+        <div class="max-w-5xl mx-auto space-y-8 font-mono">
+          <div class="border border-zinc-800 bg-zinc-950 p-6 rounded-2xl">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-3 mb-6">
+              <div class="text-xs text-gold font-bold">LEDGER // DIRECT_LKR_PLEDGE</div>
+              <div class="text-xs text-zinc-500">TRANSPARENT COMMUNITY PROTOCOL</div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div class="text-xs text-zinc-400">BENEFICIARY: <span class="text-white font-bold">CEYLON BYTE (PVT) LTD</span></div>
+                <div class="text-xs text-zinc-400">BANK: <span class="text-white font-bold">COMMERCIAL BANK OF CEYLON</span></div>
+                <div class="text-xs text-zinc-400">ACCOUNT: <span class="text-gold font-bold">8009 2314 5501</span></div>
+                <div class="text-xs text-zinc-400">BRANCH: <span class="text-white">KOLLUPITIYA [012]</span></div>
+              </div>
+              <div class="space-y-3">
+                <input type="text" placeholder="ENTER PLEDGE AMOUNT (RS)" class="w-full bg-zinc-900 border border-zinc-800 text-xs text-white p-3 rounded-lg">
+                <input type="text" placeholder="SHOP NAME / REFERENCE" class="w-full bg-zinc-900 border border-zinc-800 text-xs text-white p-3 rounded-lg">
+                <button class="w-full bg-gold text-black text-xs font-bold py-3 rounded-lg">GENERATE_WIRE_MANIFEST</button>
+              </div>
+            </div>
+          </div>
+        </div>`,
+
+        5: `<!-- Style 5: Split Mission Showcase + Sticky Wire Terminal -->
+        <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-5 space-y-6">
+            <span class="text-xs font-mono text-gold font-bold uppercase">WHY WE FUND DIRECTLY</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Empowering 100,000 Small Sri Lankan Retailers</h2>
+            <p class="text-zinc-400 text-sm leading-relaxed">
+              Traditional commercial POS vendors in Sri Lanka charge Rs. 3,500 – Rs. 8,000 every single month just to keep the counter running. When shops can't pay, their sales records are locked.
+            </p>
+            <div class="p-4 bg-zinc-900 border border-zinc-800 rounded-xl space-y-2 text-xs">
+              <div class="font-bold text-white">✓ 100% Free Forever Promise</div>
+              <p class="text-zinc-400">CB POS core will never have subscriptions, trial lockouts, or ads.</p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 border border-zinc-800 bg-[#252526] rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative">
+            <div class="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
+              <span class="text-xs font-mono text-gold font-bold">TRANSFER SPECIFICATION</span>
+              <span class="text-xs font-mono text-zinc-400">COMMERCIAL BANK</span>
+            </div>
+            <div class="bg-zinc-900 p-4 rounded-xl space-y-2">
+              <div class="flex justify-between text-xs"><span class="text-zinc-400">Account:</span> <span class="font-mono font-bold text-white select-all">8009 2314 5501</span></div>
+              <div class="flex justify-between text-xs"><span class="text-zinc-400">Payee:</span> <span class="font-bold text-white select-all">Ceylon Byte (Pvt) Ltd</span></div>
+            </div>
+            <div class="grid grid-cols-4 gap-2">
+              <button class="py-2.5 bg-zinc-900 border border-zinc-700 rounded-lg text-xs font-mono font-bold text-white">Rs. 500</button>
+              <button class="py-2.5 bg-gold/15 border border-gold rounded-lg text-xs font-mono font-bold text-gold">Rs. 1,000</button>
+              <button class="py-2.5 bg-zinc-900 border border-zinc-700 rounded-lg text-xs font-mono font-bold text-white">Rs. 2,500</button>
+              <button class="py-2.5 bg-zinc-900 border border-zinc-700 rounded-lg text-xs font-mono font-bold text-white">Custom</button>
+            </div>
+            <button class="w-full bg-gold text-black font-bold text-xs py-3.5 rounded-xl">Submit Deposit Slip →</button>
+          </div>
+        </div>`,
+      };
+
+      function renderSelection() {
+        const donateVal = document.getElementById("donateSelector").value;
+        document.getElementById("donateContainer").innerHTML = donateTemplates[donateVal];
+      }
+
+      function setViewport(type) {
+        const frame = document.getElementById("deviceFrame");
+        document.getElementById("vp-desktop").className =
+          "px-3 py-1 rounded text-xs font-semibold text-zinc-400 hover:text-white transition-all";
+        document.getElementById("vp-tablet").className =
+          "px-3 py-1 rounded text-xs font-semibold text-zinc-400 hover:text-white transition-all";
+        document.getElementById("vp-mobile").className =
+          "px-3 py-1 rounded text-xs font-semibold text-zinc-400 hover:text-white transition-all";
+
+        if (type === "mobile") {
+          frame.className = "device-mobile bg-[#18181b] min-h-[844px] shadow-2xl relative";
+          document.getElementById("vp-mobile").className =
+            "px-3 py-1 rounded text-xs font-semibold bg-azure text-white transition-all";
+        } else if (type === "tablet") {
+          frame.className = "device-tablet bg-[#18181b] min-h-[900px] shadow-2xl relative";
+          document.getElementById("vp-tablet").className =
+            "px-3 py-1 rounded text-xs font-semibold bg-azure text-white transition-all";
+        } else {
+          frame.className =
+            "device-desktop bg-[#18181b] min-h-[900px] border border-zinc-800 shadow-2xl relative";
+          document.getElementById("vp-desktop").className =
+            "px-3 py-1 rounded text-xs font-semibold bg-azure text-white transition-all";
+        }
+      }
+
+      // Initial render
+      renderSelection();
+    </script>
+  </body>
+</html>

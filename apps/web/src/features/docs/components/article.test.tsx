@@ -9,6 +9,7 @@ import { TaxDisclaimerCallout } from "./tax-disclaimer-callout";
 import { ArticleFeedback } from "./article-feedback";
 import { ArticleToc } from "./article-toc";
 import { ArticleSidebar } from "./article-sidebar";
+import { MarkdownRenderer } from "./markdown-renderer";
 import { getCategories, getArticles } from "../source";
 
 const enMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"));
@@ -80,5 +81,15 @@ describe("S05 Doc Article Components", () => {
     expect(html).toContain("Get past Windows SmartScreen");
     // Getting Started is active
     expect(html).toContain("getting-started");
+  });
+
+  test("MarkdownRenderer wraps article in prose-ceybyte class", () => {
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <MarkdownRenderer html="<p>Test content</p>" />
+      </NextIntlClientProvider>,
+    );
+    expect(html).toContain("prose-ceybyte");
+    expect(html).toContain("Test content");
   });
 });

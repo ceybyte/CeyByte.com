@@ -1,11 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowUpRight } from "lucide-react";
 import { Crosshair } from "@/components/brand/crosshair";
-import { StatTile } from "@/components/brand/stat-tile";
 import { Reveal } from "@/components/motion/reveal";
 import { useStats } from "@/lib/use-stats";
 
@@ -18,7 +16,7 @@ export function TelemetryStrip() {
   const shops = stats?.listedShops ?? 0;
 
   return (
-    <section className="border-hairline bg-surface/30 relative border-b">
+    <section className="border-hairline/80 bg-canvas relative border-b py-6 sm:py-8">
       {/* Structural Crosshairs */}
       <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
@@ -27,95 +25,65 @@ export function TelemetryStrip() {
 
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="divide-hairline grid grid-cols-1 divide-y md:grid-cols-2 md:divide-y-0 lg:grid-cols-12 lg:divide-x">
-            {/* Stat 1: Offline SQLite */}
-            <div className="lg:col-span-2">
-              <StatTile
-                badge={t("stats.tagArchitecture")}
-                value={0}
-                format={() => t("stats.lag")}
-                label={t("stats.lagLabel")}
-                className="h-full justify-between"
-              />
-            </div>
-
-            {/* Stat 2: Rs. 0 / mo */}
-            <div className="lg:col-span-2">
-              <StatTile
-                badge={t("stats.tagPricing")}
-                value={0}
-                format={() => t("stats.price")}
-                label={t("stats.priceLabel")}
-                className="h-full justify-between"
-              />
-            </div>
-
-            {/* Stat 3: {covered}/25 */}
-            <div className="lg:col-span-2">
-              <StatTile
-                badge={t("stats.tagCoverage")}
-                value={isLoading ? null : covered}
-                format={(n) => t("stats.districts", { covered: n })}
-                label={t("stats.districtsLabel")}
-                className="h-full justify-between"
-              />
-            </div>
-
-            {/* Stat 4: 18% + 2.5% */}
-            <div className="lg:col-span-3">
-              <div className="flex h-full flex-col justify-between">
-                <StatTile
-                  badge={t("stats.tagTax")}
-                  value={18}
-                  format={() => t("stats.tax")}
-                  label={t("stats.taxLabel")}
-                  className="pb-2"
-                />
-                <p className="text-muted/70 px-5 pb-4 text-[11px] italic">{t("stats.taxNote")}</p>
+          <div className="border-hairline bg-surface/90 rounded-2xl border p-5 shadow-2xl backdrop-blur-md">
+            <div className="divide-hairline/80 grid grid-cols-2 gap-6 divide-y sm:divide-x sm:divide-y-0 md:grid-cols-4 lg:grid-cols-5">
+              {/* Item 1: Local Cashiering */}
+              <div className="px-3">
+                <span className="text-muted font-mono text-[10px] font-semibold uppercase">
+                  {t("stats.tagArchitecture")}
+                </span>
+                <div className="text-text mt-1 font-mono text-2xl font-bold">{t("stats.lag")}</div>
+                <p className="text-muted mt-1 text-[11px] leading-snug">{t("stats.lagLabel")}</p>
               </div>
-            </div>
 
-            {/* Map Teaser Card (linking to /{locale}/map) */}
-            <div className="bg-surface-elevated/40 hover:bg-surface-elevated/70 group flex flex-col justify-between p-4 transition-colors sm:p-5 lg:col-span-3">
-              <Link href={`/${locale}/map`} className="flex h-full flex-col justify-between gap-3">
+              {/* Item 2: Lifetime License */}
+              <div className="px-3 pt-4 sm:pt-0">
+                <span className="text-muted font-mono text-[10px] font-semibold uppercase">
+                  {t("stats.tagPricing")}
+                </span>
+                <div className="text-text mt-1 font-mono text-2xl font-bold">{t("stats.price")}</div>
+                <p className="text-muted mt-1 text-[11px] leading-snug">{t("stats.priceLabel")}</p>
+              </div>
+
+              {/* Item 3: Provincial Reach */}
+              <div className="px-3 pt-4 sm:pt-0">
+                <span className="text-muted font-mono text-[10px] font-semibold uppercase">
+                  {t("stats.tagCoverage")}
+                </span>
+                <div className="text-text mt-1 font-mono text-2xl font-bold">
+                  {isLoading ? "—" : t("stats.districts", { covered })}
+                </div>
+                <p className="text-muted mt-1 text-[11px] leading-snug">{t("stats.districtsLabel")}</p>
+              </div>
+
+              {/* Item 4: Revenue Tax */}
+              <div className="px-3 pt-4 sm:pt-0">
+                <span className="text-muted font-mono text-[10px] font-semibold uppercase">
+                  {t("stats.tagTax")}
+                </span>
+                <div className="text-text mt-1 font-mono text-2xl font-bold">{t("stats.tax")}</div>
+                <p className="text-muted mt-1 text-[11px] leading-snug">{t("stats.taxLabel")}</p>
+              </div>
+
+              {/* Item 5: Live Directory */}
+              <div className="col-span-2 flex flex-col justify-between gap-2 px-3 pt-4 sm:pt-0 md:col-span-4 lg:col-span-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted/80 font-mono text-[10px] font-semibold tracking-wider uppercase">
-                    {t("mapTeaser.badge")}
-                  </span>
-                  <div className="text-azure flex items-center gap-1.5 font-mono text-[10px]">
+                  <span className="text-azure-text flex items-center gap-1.5 font-mono text-[10px] font-bold tracking-wider uppercase">
                     <span className="bg-azure size-1.5 animate-pulse rounded-full" />
-                    <span>LIVE DIRECTORY</span>
-                  </div>
+                    LIVE DIRECTORY
+                  </span>
+                  <span className="text-muted font-mono text-[10px]">
+                    {shops > 0 ? `${shops} shops` : "25 districts"}
+                  </span>
                 </div>
-
-                <div className="border-hairline bg-canvas relative aspect-[4/2.2] w-full overflow-hidden rounded-[--radius-sm] border">
-                  <Image
-                    src="/map-teaser.png"
-                    alt="Sri Lanka Merchant Telemetry Map Preview"
-                    fill
-                    className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100"
-                    sizes="(max-width: 768px) 100vw, 300px"
-                  />
-                  <div className="from-canvas/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
-                  <div className="text-text/80 absolute bottom-2 left-2 font-mono text-[10px]">
-                    25 SRI LANKAN DISTRICTS
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between gap-2 pt-1">
-                  <div>
-                    <p className="text-text group-hover:text-azure-text text-xs font-semibold transition-colors">
-                      {shops === 0 && !isLoading
-                        ? t("mapTeaser.empty")
-                        : t("mapTeaser.title", { shops, covered })}
-                    </p>
-                    <span className="text-muted text-[11px] group-hover:underline">{t("mapTeaser.cta")}</span>
-                  </div>
-                  <div className="border-hairline text-muted group-hover:text-azure-text group-hover:border-azure/40 flex size-8 shrink-0 items-center justify-center rounded-full border transition-colors">
-                    <ArrowUpRight className="size-4" />
-                  </div>
-                </div>
-              </Link>
+                <Link
+                  href={`/${locale}/map`}
+                  className="bg-azure hover:bg-azure-hover text-primary-foreground flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-xs font-bold shadow-sm transition-colors"
+                >
+                  <span>{t("mapTeaser.cta")}</span>
+                  <ArrowUpRight className="size-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
         </Reveal>

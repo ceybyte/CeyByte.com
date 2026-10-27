@@ -80,9 +80,18 @@ describe("SiteHeader dynamic merchant auth entry", () => {
       isPending: false,
     };
     const html = renderToString(<SiteHeader />);
-
     expect(html).toContain("Dashboard");
     expect(html).toContain('href="/dashboard"');
     expect(html).not.toContain("Sign in");
+  });
+
+  test("renders master brand Logo without CB POS badge in nav", () => {
+    mockSession = { data: null, isPending: false };
+    const html = renderToString(<SiteHeader />);
+
+    // Must NOT contain CB POS badge in the logo
+    expect(html).not.toContain("CB&nbsp;POS");
+    expect(html).toContain('aria-label="CeyByte"');
+    expect(html).toContain("CeyByte");
   });
 });

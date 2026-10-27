@@ -67,7 +67,7 @@ export function LatestReleaseCard({ release, locale }: { release: ReleaseCardDat
             asChild
             variant="primary"
             size="xl"
-            className="w-full shadow-lg transition-all duration-300 hover:brightness-105 sm:w-auto"
+            className="min-h-14 w-full px-4 py-3 text-center text-sm font-bold whitespace-normal shadow-lg transition-all duration-300 hover:brightness-105 sm:w-auto sm:px-8 sm:text-base"
           >
             <a
               href={`/${locale}/download`}
@@ -75,9 +75,10 @@ export function LatestReleaseCard({ release, locale }: { release: ReleaseCardDat
                 e.preventDefault();
                 openGate();
               }}
+              className="flex flex-wrap items-center justify-center gap-2"
             >
-              <Download className="mr-2 size-5" />
-              <span>
+              <Download className="size-5 shrink-0" />
+              <span className="text-center">
                 {t("download.exe")} — {sizeMb} MB
               </span>
             </a>

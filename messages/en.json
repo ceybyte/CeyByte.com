@@ -33,8 +33,8 @@
     "signOut": "Sign out"
   },
   "footer": {
-    "mission": "Free point-of-sale software for Sri Lankan shops, made in Sri Lanka by Ceylon Byte.",
-    "latest": "Latest: v{version} \u00b7 {channel}",
+    "mission": "Open retail technology & software engineered in Sri Lanka by Ceylon Byte.",
+    "latest": "Latest: v{version} · {channel}",
     "col": {
       "software": "Software & Architecture",
       "community": "Community & Ecosystem",
@@ -55,8 +55,9 @@
       "dataSafety": "PDPA data safety",
       "cookies": "Cookie policy"
     },
-    "legalLine": "CB\u00a0POS comes as is, without a warranty. Its tax calculations aren\u2019t certified by the IRD, and keeping backups of your data is up to you.",
-    "copyright": "\u00a9 {year} Ceylon Byte. Made in Sri Lanka.",
+    "legalLine": "CB POS comes as is, without a warranty. Its tax calculations aren’t certified by the IRD, and keeping backups of your data is up to you.",
+    "copyright": "© {year} Ceylon Byte (Pvt) Ltd. All rights reserved.",
+    "engineeredInSL": "ENGINEERED IN SRI LANKA",
     "build": "build {sha}"
   },
   "consent": {

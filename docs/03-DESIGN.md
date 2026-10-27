@@ -127,7 +127,10 @@
   /* radii */
   --radius-none: 0px;
   --radius-sm: 4px;
-  --radius-md: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
 
   /* motion (easing curves live in @theme below) */
   --dur-press: 120ms;
@@ -211,10 +214,12 @@
   --font-sans: var(--font-inter), var(--font-noto-sinhala), var(--font-noto-tamil), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Mono", Consolas, monospace;
 
-  /* radii (only these exist) */
+  /* radii (harmonized design tokens) */
   --radius-none: 0px;
   --radius-sm: 4px;
-  --radius-md: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-full: 9999px;
 
   /* motion */

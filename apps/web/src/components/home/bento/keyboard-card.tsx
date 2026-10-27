@@ -63,7 +63,7 @@ export function KeyboardCard({ className }: { className?: string }) {
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       className={cn(
-        "border-hairline bg-surface focus-visible:ring-azure/50 group relative flex flex-col justify-between overflow-hidden rounded-[--radius-md] border p-6 transition-colors outline-none focus-visible:ring-1 sm:p-8",
+        "border-hairline bg-surface focus-visible:ring-azure/50 group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-6 transition-colors outline-none focus-visible:ring-1 sm:p-8",
         className,
       )}
     >

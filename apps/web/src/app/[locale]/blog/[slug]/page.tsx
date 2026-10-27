@@ -157,10 +157,7 @@ export default async function BlogPostPage({
 
         {/* Article Body */}
         <div className="py-12">
-          <div
-            className="prose prose-invert prose-zinc prose-headings:font-bold prose-headings:tracking-tight prose-a:text-cyan-400 hover:prose-a:text-cyan-300 prose-img:rounded-lg prose-pre:border prose-pre:border-zinc-800 prose-table:border prose-table:border-zinc-800 max-w-none"
-            dangerouslySetInnerHTML={{ __html: post.html }}
-          />
+          <div className="prose-ceybyte max-w-none" dangerouslySetInnerHTML={{ __html: post.html }} />
         </div>
 
         {/* Share Buttons */}

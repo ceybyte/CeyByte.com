@@ -55,7 +55,10 @@
   /* radii */
   --radius-none: 0px;
   --radius-sm: 4px;
-  --radius-md: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
 
   /* motion (easing curves live in @theme below) */
   --dur-press: 120ms;
@@ -67,13 +70,14 @@
   /* layout */
   --gutter: 16px;
   --content-max: 1280px;
-  --header-h: 64px;
+  --header-h: 68px;
   --grid-cell: 64px;
 }
 
 @media (min-width: 768px) {
   :root {
     --gutter: 24px;
+    --header-h: 76px;
   }
 }
 @media (min-width: 1280px) {
@@ -151,10 +155,12 @@
     var(--font-inter), var(--font-noto-sinhala), var(--font-noto-tamil), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Mono", Consolas, monospace;
 
-  /* radii (only these exist) */
+  /* radii (harmonized design tokens) */
   --radius-none: 0px;
   --radius-sm: 4px;
-  --radius-md: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-full: 9999px;
 
   /* motion */
@@ -355,4 +361,296 @@
   --hairline-mid: var(--hairline); /* other strokes */
   --hairline-lo: var(--hairline-grid); /* what recedes */
   --hairline-stroke: 0.9;
+}
+
+/* ==========================================================================
+   Dedicated Prose & Markdown Directive Engine (.prose-ceybyte)
+   Source: 03-DESIGN §9.7 & User Image 5 Fix
+   ========================================================================== */
+.prose-ceybyte {
+  color: var(--text);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+}
+
+.prose-ceybyte p {
+  margin-top: 1.15rem;
+  margin-bottom: 1.15rem;
+  color: #d4d4d8;
+}
+
+.prose-ceybyte h1,
+.prose-ceybyte h2,
+.prose-ceybyte h3,
+.prose-ceybyte h4 {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.prose-ceybyte h1 {
+  font-size: 2rem;
+  line-height: 1.25;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose-ceybyte h2 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin-top: 2.25rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.prose-ceybyte h3 {
+  font-size: 1.2rem;
+  line-height: 1.4;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  color: #fafafa;
+}
+
+.prose-ceybyte h4 {
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose-ceybyte a {
+  color: var(--azure-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--dur-hover) ease-out;
+}
+.prose-ceybyte a:hover {
+  color: #38bdf8;
+}
+
+.prose-ceybyte ul {
+  list-style-type: disc;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.prose-ceybyte ol {
+  list-style-type: decimal;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.prose-ceybyte li {
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+  color: #d4d4d8;
+}
+
+.prose-ceybyte strong {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.prose-ceybyte code:not(pre code) {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.825rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background-color: var(--surface);
+  border: 1px solid var(--hairline);
+  color: var(--azure-text);
+}
+
+.prose-ceybyte pre {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background-color: #18181b;
+  border: 1px solid var(--hairline);
+  overflow-x: auto;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.prose-ceybyte pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  font-size: inherit;
+  color: #e4e4e7;
+}
+
+.prose-ceybyte table {
+  width: 100%;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.prose-ceybyte th {
+  border: 1px solid var(--hairline);
+  background-color: var(--surface-elevated);
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #a1a1aa;
+}
+
+.prose-ceybyte td {
+  border: 1px solid var(--hairline);
+  padding: 0.625rem 0.875rem;
+  color: #d4d4d8;
+}
+
+.prose-ceybyte blockquote {
+  border-left: 3px solid var(--azure);
+  padding-left: 1rem;
+  margin: 1.25rem 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Custom Markdown Directives: Step Cards (:::step) */
+.prose-ceybyte .step-card {
+  position: relative;
+  margin: 1.75rem 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 14px;
+  background-color: var(--surface);
+  border: 1px solid var(--hairline);
+  border-left: 4px solid var(--azure);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.prose-ceybyte .step-card .step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-ceybyte .step-card .step-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  background-color: rgba(3, 147, 221, 0.15);
+  border: 1px solid rgba(3, 147, 221, 0.35);
+  color: var(--azure-text);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.prose-ceybyte .step-card .step-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.prose-ceybyte .step-card .step-body > *:first-child {
+  margin-top: 0;
+}
+.prose-ceybyte .step-card .step-body > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Custom Markdown Directives: Callout Cards (:::callout, :::note, etc) */
+.prose-ceybyte .callout {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  border-left-width: 4px;
+  font-size: 0.875rem;
+}
+
+.prose-ceybyte .callout-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.prose-ceybyte .callout-note {
+  border-left-color: var(--azure);
+  background-color: rgba(3, 147, 221, 0.08);
+}
+.prose-ceybyte .callout-note .callout-header {
+  color: var(--azure-text);
+}
+
+.prose-ceybyte .callout-tip {
+  border-left-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.08);
+}
+.prose-ceybyte .callout-tip .callout-header {
+  color: #34d399;
+}
+
+.prose-ceybyte .callout-warning,
+.prose-ceybyte .callout-warn {
+  border-left-color: #f59e0b;
+  background-color: rgba(245, 158, 11, 0.08);
+}
+.prose-ceybyte .callout-warning .callout-header,
+.prose-ceybyte .callout-warn .callout-header {
+  color: #fbbf24;
+}
+
+.prose-ceybyte .callout-caution,
+.prose-ceybyte .callout-danger {
+  border-left-color: #f43f5e;
+  background-color: rgba(244, 63, 94, 0.08);
+}
+.prose-ceybyte .callout-caution .callout-header,
+.prose-ceybyte .callout-danger .callout-header {
+  color: #fb7185;
+}
+
+.prose-ceybyte .callout-important {
+  border-left-color: #a855f7;
+  background-color: rgba(168, 85, 247, 0.08);
+}
+.prose-ceybyte .callout-important .callout-header {
+  color: #c084fc;
+}
+
+.prose-ceybyte .callout-disclaimer {
+  border-left-color: #71717a;
+  background-color: rgba(113, 113, 122, 0.08);
+}
+.prose-ceybyte .callout-disclaimer .callout-header {
+  color: #a1a1aa;
+}
+
+/* Keyboard shortcut keycaps */
+.prose-ceybyte kbd,
+.prose-ceybyte .kbd-key {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--kbd-text, #f8f9fa);
+  background-color: var(--kbd-bg, #141414);
+  border: 1px solid var(--kbd-border, #3e3e42);
+  border-bottom: 2px solid var(--kbd-edge, #050505);
+  border-radius: 4px;
 }

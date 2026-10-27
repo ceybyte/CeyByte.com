@@ -241,7 +241,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
   };
 
   return (
-    <div className="border-hairline bg-surface-elevated/40 w-full rounded-[--radius-md] border p-6 md:p-8">
+    <div className="border-hairline bg-surface-elevated/40 w-full rounded-2xl border p-6 shadow-2xl md:p-8">
       {/* Top Header & Resume trigger */}
       <div className="border-hairline/60 mb-6 flex flex-wrap items-center justify-between gap-3 border-b pb-4">
         <div className="flex items-center gap-2">
@@ -288,7 +288,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
       </div>
 
       {errorMessage && (
-        <div className="border-error/40 bg-error/10 text-error mb-6 flex items-start gap-2.5 rounded-[--radius-md] border p-3.5 text-xs">
+        <div className="border-error/40 bg-error/10 text-error mb-6 flex items-start gap-2.5 rounded-xl border p-3.5 text-xs">
           <ShieldAlert className="mt-0.5 size-4 shrink-0" />
           <span>{errorMessage}</span>
         </div>
@@ -309,7 +309,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
                     setSelectedPreset(amt);
                     setCustomAmount("");
                   }}
-                  className={`flex h-12 cursor-pointer items-center justify-center rounded-[--radius-sm] border font-mono text-sm font-bold transition-all ${
+                  className={`flex h-12 cursor-pointer items-center justify-center rounded-xl border font-mono text-sm font-bold transition-all ${
                     selectedPreset === amt
                       ? "border-gold bg-gold/15 text-gold"
                       : "border-hairline bg-surface text-text hover:border-azure/40 hover:bg-surface-elevated"
@@ -321,7 +321,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
               <button
                 type="button"
                 onClick={() => setSelectedPreset("custom")}
-                className={`flex h-12 cursor-pointer items-center justify-center rounded-[--radius-sm] border text-sm font-semibold transition-all ${
+                className={`flex h-12 cursor-pointer items-center justify-center rounded-xl border text-sm font-semibold transition-all ${
                   selectedPreset === "custom"
                     ? "border-gold bg-gold/15 text-gold"
                     : "border-hairline bg-surface text-text hover:border-azure/40 hover:bg-surface-elevated"

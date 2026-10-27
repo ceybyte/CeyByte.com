@@ -20,7 +20,7 @@ export function Logo({ size = "md", showProductBadge = true, className }: LogoPr
   return (
     <span
       role="img"
-      aria-label="CeyByte · CB POS"
+      aria-label={showProductBadge ? "CeyByte · CB POS" : "CeyByte"}
       className={cn("inline-flex items-center gap-2 select-none", className)}
     >
       {/* Dark Theme Logo (Default) */}

@@ -5,6 +5,7 @@ import { Check, Download, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Crosshair } from "@/components/brand/crosshair";
 import { Reveal } from "@/components/motion/reveal";
+import { Link } from "@/i18n/routing";
 
 import { useGate } from "@/components/gate/gate-context";
 
@@ -68,13 +69,13 @@ export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps
                 </Button>
 
                 <Button asChild variant="ghost" size="lg">
-                  <a
-                    href="#features"
+                  <Link
+                    href="/features"
                     className="group text-text hover:text-azure-text inline-flex items-center gap-2"
                   >
                     <span>{t("secondary")}</span>
                     <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                  </a>
+                  </Link>
                 </Button>
               </div>
 

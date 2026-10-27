@@ -33,8 +33,8 @@
     "signOut": "ඉවත් වන්න"
   },
   "footer": {
-    "mission": "ශ්‍රී ලාංකික වෙළඳසැල් සඳහා නොමිලේ ලබා දෙන point-of-sale මෘදුකාංගය, Ceylon Byte විසින් ශ්‍රී ලංකාවේදී නිර්මාණය කරන ලදී.",
-    "latest": "Latest: v{version} \u00b7 {channel}",
+    "mission": "Ceylon Byte විසින් ශ්‍රී ලංකාවේදී නිර්මාණය කරන ලද විවෘත සිල්ලර තාක්ෂණය සහ මෘදුකාංග.",
+    "latest": "Latest: v{version} · {channel}",
     "col": {
       "software": "තාක්ෂණය සහ මෘදුකාංගය",
       "community": "ප්‍රජාව සහ පරිසර පද්ධතිය",
@@ -56,7 +56,8 @@
       "cookies": "කුකී ප්‍රතිපත්තිය"
     },
     "legalLine": "CB\u00a0POS ලබා දෙන්නේ කිසිදු වගකීමක් රහිතව පවතින ආකාරයෙන්මය. එහි බදු ගණනය කිරීම් IRD විසින් සහතික කර නැති අතර, ඔබේ දත්තවල උපස්ථ පිටපත් තබා ගැනීම ඔබේ වගකීමකි.",
-    "copyright": "\u00a9 {year} Ceylon Byte.",
+    "copyright": "© {year} Ceylon Byte (Pvt) Ltd. සියලුම හිමිකම් ඇවිරිණි.",
+    "engineeredInSL": "ශ්‍රී ලංකාවේ නිර්මාණය කරන ලදී",
     "build": "build {sha}"
   },
   "consent": {

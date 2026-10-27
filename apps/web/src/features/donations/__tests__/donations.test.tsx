@@ -1,10 +1,17 @@
 import { describe, expect, test } from "bun:test";
 import React from "react";
 import { renderToString } from "react-dom/server";
+import { NextIntlClientProvider } from "next-intl";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { BankDetailsCard } from "../components/BankDetailsCard";
 import { SupportersWall } from "../components/SupportersWall";
 import { TransparencyStrip } from "../components/TransparencyStrip";
+import { DonationFigure } from "../components/DonationFigure";
+import { DonationView } from "../components/DonationView";
 import type { DonationPaymentOption, PublicSupporter } from "../types";
+
+const enMessages = JSON.parse(readFileSync(resolve(process.cwd(), "../../messages/en.json"), "utf-8"));
 
 describe("S09 Donations UI Components", () => {
   const mockPaymentOption: DonationPaymentOption = {
@@ -109,5 +116,31 @@ describe("S09 Donations UI Components", () => {
     expect(html).toContain("14");
     expect(html).toContain("A code-signing certificate");
     expect(html).toContain("Printers, scanners and scales to test with");
+  });
+
+  test("DonationFigure renders isometric hardware slab and pulsing azure node", () => {
+    const html = renderToString(<DonationFigure />);
+    expect(html).toContain("board-slab");
+    expect(html).toContain("node-azure-active");
+    expect(html).toContain("pulse-azure");
+  });
+
+  test("DonationView renders releases-matched container with DonationFigure, no community funding badge, and no yellow gradient line", () => {
+    const html = renderToString(
+      <NextIntlClientProvider locale="en" messages={enMessages}>
+        <DonationView />
+      </NextIntlClientProvider>,
+    );
+
+    // Releases-matched card styling
+    expect(html).toContain("node-azure-active");
+    expect(html).toContain("Commercial Bank");
+
+    // Strictly NO yellow gradient line on top
+    expect(html).not.toContain("via-gold");
+    expect(html).not.toContain("bg-gradient-to-r");
+
+    // Strictly NO "CEYBYTE COMMUNITY FUNDING" badge
+    expect(html).not.toContain("CEYBYTE COMMUNITY FUNDING");
   });
 });

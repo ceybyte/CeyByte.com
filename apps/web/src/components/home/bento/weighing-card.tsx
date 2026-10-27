@@ -21,7 +21,7 @@ export function WeighingCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-[--radius-md] border p-6 transition-colors sm:p-8",
+        "border-hairline bg-surface group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-6 transition-colors sm:p-8",
         className,
       )}
     >
