@@ -19,6 +19,10 @@ export async function rateLimitKey(c: {
 
 export const rateLimit = (binding: RateLimitBinding, opts: { perHour?: number } = {}) =>
   createMiddleware<AppEnv>(async (c, next) => {
+    if (c.env.ENVIRONMENT !== "production") {
+      return next();
+    }
+
     const key = await rateLimitKey(c);
     const { success } = await c.env[binding].limit({ key });
     if (!success) throw new ApiError("RATE_LIMITED", { retryAfter: 60 });
