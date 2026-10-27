@@ -32,6 +32,7 @@ Every UI item also passes the design gates in `CLAUDE.md §7` (hallmark, impecca
 | 11 | P12 Donations | **M2** |
 | 12 | P13 Blog & extras | **M3** |
 | 13 | P14 Brand architecture foundation · P15 Retail experience & design polish | **M3+** |
+| 14 | P16 UI consistency, collapsible map sidebar & version synchronization | **M3+** |
 
 ```mermaid
 gantt
@@ -58,6 +59,7 @@ gantt
   section Brand & Polish
   P14 Brand Foundation  :p14, after p13, 3d
   P15 Retail Polish     :crit, p15, after p14, 3d
+  P16 UI Consistency    :crit, p16, after p15, 3d
 ```
 
 ---
@@ -509,7 +511,34 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ---
 
+## Phase 16 — UI Consistency, Collapsible Map Sidebar & Version Synchronization
 
+**Goal:** Elevate visual consistency across light and dark themes, modernize footer branding and links, allow the map sidebar to be toggled on desktop to view the map full-width, harmonize page hero headers across Releases, Donate, and Feedback with Features, and establish a single source of truth for the latest version.
+
+### 18.1 Light Theme Glow & Footer Modernization
+- [x] Boost light-mode `--glow-azure` token to `rgba(3, 147, 221, 0.22)` in `globals.css` and tune `FinalBannerSection` opacity and blend modes for vivid atmospheric backdrop visibility.
+- [x] Modernize `SiteFooter.tsx`: remove "Merchant portal login" and "GitHub" links; add Facebook link (`https://facebook.com/CeylonByte`); remove `"build dev"` / `{t("build", { sha: GIT_SHA })}` from Row 2.
+- [x] Update slogan across `messages/en.json` ("Digitizing Sri Lanka, Byte by Byte."), `messages/si.json` ("පියවරෙන් පියවර, ඩිජිටල් ශ්‍රී ලංකාවක් කරා."), and `messages/ta.json` ("படிப்படியாக, டிஜிட்டல் இலங்கை நோக்கி.").
+- [x] Update `site-footer.test.tsx`, `mobile-nav.test.tsx`, and `smoke.spec.ts` assertions.
+
+### 18.2 Collapsible Map Sidebar on Desktop
+- [x] Add `isDesktopSidebarOpen` state to `MapShell.tsx` with smooth CSS transition, allowing desktop sidebar to collapse and map to take 100% full screen width.
+- [x] Add `<PanelLeftClose />` collapse button inside sidebar header and floating pill trigger button on map viewport when collapsed.
+- [x] Attach `ResizeObserver` to `MerchantMap` container so map canvas dynamically recalculates projection when toggled.
+
+### 18.3 Full-Width Page Header Unification
+- [x] Modernize `/releases` header: adopt full-width `border-b border-hairline bg-surface/30` hero with `Figure name="branches"`.
+- [x] Modernize `/donate` header: adopt full-width hero with `DonationFigure`.
+- [x] Modernize `/feedback` header: adopt full-width hero with `Figure name="patch"` and integrated action buttons.
+
+### 18.4 Version SSOT & Feedback Form Sync
+- [x] Create `packages/shared/src/version.ts` exporting canonical `LATEST_APP_VERSION = "1.3.0"` and `APP_VERSION_OPTIONS`.
+- [x] Re-export in `apps/web/src/lib/constants.ts` and update `FeedbackSubmitForm.tsx` to dynamically derive options and default to `LATEST_APP_VERSION`.
+
+**Verify:** `bun run format && bun run lint && bun run typecheck && bun scripts/i18n-check.ts && bun run test`.
+**Exit:** 275 tests passing, 0 lint errors, 0 type errors, 100% trilingual key parity. ✅ Met 2026-10-27.
+
+---
 
 ## Ongoing (every sprint)
 
