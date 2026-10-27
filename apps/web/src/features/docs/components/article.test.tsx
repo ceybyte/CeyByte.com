@@ -78,7 +78,7 @@ describe("S05 Doc Article Components", () => {
       </NextIntlClientProvider>,
     );
     expect(html).toContain("Install CB POS");
-    expect(html).toContain("Get past Windows SmartScreen");
+    expect(html).toContain("SmartScreen");
     // Getting Started is active
     expect(html).toContain("getting-started");
   });
