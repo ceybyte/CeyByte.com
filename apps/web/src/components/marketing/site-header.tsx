@@ -24,8 +24,11 @@ export function SiteHeader() {
 
   const navLinks = [
     { href: "/" as const, label: t("product") },
+    { href: "/features" as const, label: t("features") },
     { href: "/map" as const, label: t("map") },
     { href: "/docs" as const, label: t("docs") },
+    { href: "/blog" as const, label: t("blog") },
+    { href: "/feedback" as const, label: t("feedback") },
     { href: "/releases" as const, label: t("releases") },
     { href: "/donate" as const, label: t("donate") },
   ] as const;

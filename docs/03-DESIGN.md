@@ -421,12 +421,17 @@ Lucide React, `strokeWidth={1.5}`, sizes 16 (inline), 20 (buttons), 24 (cards). 
 
 ## 7. Brand elements
 
-### 7.1 Logo — `<Logo />` (`src/components/brand/logo.tsx`)
-- Wordmark: `[CB POS]` in JetBrains Mono 700 (the space is a non-breaking space and keeps its full monospace width), brackets in `--text-muted`, letters in `--text`.
-- **Slash:** the parallelogram slash from the Ceylon Byte CB monogram, drawn as inline SVG and filled with the azure gradient, set between `CB` and `POS` at cap height (replaces the old round status dot). A slow opacity pulse (`animate-pulse-dot`, 2 s) marks it as live; the pulse stops under reduced motion.
-- Sizes: `sm` (16px text, header mobile), `md` (20px, header), `lg` (32px, footer).
-- Clear space: one bracket width on all sides. Never recolour the slash green or gold, and never use the gradient elsewhere in the wordmark.
-- Accessible name: `aria-label="CB POS home"`. The slash is `aria-hidden`.
+### 7.1 Master Brand & Product Architecture — `<Logo />` (`src/components/brand/logo.tsx`)
+- **Brand Hierarchy:** CEYBYTE (Ceylon Byte) is the master technology organisation; **CB POS** is the flagship community-powered retail point-of-sale software. The website branding reflects CeyByte as the author and platform, with CB POS as the product.
+- **Logo Assets:** Official trimmed vector/bitmap marks from `docs/brand/source/ceylon-bytes-cover-{white,black}-1000x200.png`, pre-rendered to crisp WebP (`apps/web/public/brand/ceybyte-logo-{white,black}.webp`).
+- **Product Badge:** Accompanied by a subtle monospace product badge `CB POS` (`bg-azure/10 text-azure-text border-azure/20 font-mono font-semibold rounded`).
+- **Theme Switching:** Dark theme (default) displays white CeyByte cover mark; Light theme displays black CeyByte cover mark via `@custom-variant light`.
+- **Sizes:**
+  - `sm`: height 18px (footer, compact mobile bars)
+  - `md`: height 24px (site header)
+  - `lg`: height 32px (major hero / splash callouts)
+- **Accessible name:** `aria-label="CeyByte · CB POS"`.
+
 
 ### 7.1a Company mark — the CB monogram
 
@@ -752,3 +757,39 @@ Write like a helpful person who knows shops and knows software, talking across t
 | "Support us! Every rupee counts!" | "Giving is entirely optional, and the software is the same either way." |
 
 Full copy is in `06-SCREEN_BLUEPRINTS_AND_COPY.md`.
+
+---
+
+## 12. Retail Domain Architecture & Features Hub Specifications
+
+### 12.1 Brand Architecture: CEYBYTE Master Brand & CB POS
+- **Platform/Master Brand:** CEYBYTE (Ceylon Byte) — the engineering initiative driving Sri Lanka's grassroots digital transformation over 2 years of structural development.
+- **Product:** CB POS — 100% free, community-powered, offline-ready retail point of sale.
+- **Visual Identity:** All primary navigation, brand badges, and footer attribution present CeyByte as the author and ecosystem steward, with CB POS as the software product.
+
+### 12.2 Features Hub (`/features`) — Four Retail Shop Categories
+To serve diverse Sri Lankan retail verticals without clutter, the dedicated `/features` hub organizes capabilities into 4 interactive tabs:
+1. **Grocery & Supermarkets:**
+   - EAN-13 price-embedded weighing scale barcode parser.
+   - Rapid keyboard-only cashiering (`F1`–`F12`) for morning and evening rush queues.
+   - Offline local SQLite database resilient to fiber and 4G signal cuts.
+2. **Pharmacy & Healthcare:**
+   - Medicine search and generic/brand name matching.
+   - Batch number identification and automated expiry alerts before sale.
+   - Prescription customer notes and split payment handling.
+3. **Hardware, Electrical & Auto Parts:**
+   - Multi-tier pricing (retail, wholesale, contractor discounts).
+   - Customer credit (Nayata / Khata) ledger and payment tracking.
+   - 80mm thermal and standard invoice printing.
+4. **Apparel, Footwear & General Retail:**
+   - Size, color, and variant management under single product families.
+   - Custom barcode label generation and tag printing.
+   - Seamless customer return and exchange workflows.
+
+### 12.3 Merchant Privacy & Public Telemetry Contract
+- **No Financial Tracking:** To respect shopkeeper privacy and eliminate IRD surveillance anxieties, public telemetry strips and map pins **strictly never display transaction volumes, turnover, or sales amounts**.
+- **Social Proof Metric:** Only verified shop count, district presence (`{covered}/25`), and voluntary opt-in map coordinates are shown.
+
+### 12.4 Mobile Action Accessibility
+- All modals and drawers on mobile viewports must utilize a sticky bottom container (`sticky bottom-0`) with glassmorphism backdrop and `env(safe-area-inset-bottom)` padding to prevent primary action buttons from being hidden below mobile browser viewports.
+

@@ -16,8 +16,11 @@
   "nav": {
     "ariaLabel": "Main navigation",
     "product": "Product",
+    "features": "Features",
     "map": "Map",
     "docs": "Docs",
+    "blog": "Blog",
+    "feedback": "Feedback",
     "releases": "Releases",
     "donate": "Donate",
     "download": "Download CB\u00a0POS",
@@ -66,18 +69,19 @@
   },
   "home": {
     "hero": {
-      "title": "Keep billing when the internet goes down.",
-      "lead": "CB POS is free point-of-sale software for Sri Lankan shops. It works out VAT and SSCL from the price on your shelf, prints receipts in Sinhala, Tamil or English, and keeps every sale on your own computer.",
-      "cta": "Download CB POS for free",
+      "badge": "CEYBYTE OPEN PLATFORM \u00b7 100% FREE FOR SRI LANKA",
+      "title": "The Free POS for Sri Lankan Shops.",
+      "lead": "No subscriptions. No internet needed. Ready for your counter. CB\u00a0POS is free, resilient point-of-sale software engineered by Ceylon Byte for retail counters across Sri Lanka.",
+      "cta": "Download CB\u00a0POS for free",
       "ctaMeta": "Windows 10 or later · v{version} · {sizeMb} MB",
-      "secondary": "See how it works",
+      "secondary": "Explore Features",
       "assurance": {
-        "1": "No monthly fee, now or later",
+        "1": "100% Free forever (No monthly fee)",
         "2": "Bills without the internet",
         "3": "Your sales stay on your computer"
       },
-      "mockupAlt": "The CB POS sales screen with 1.250 kg of Samba rice in the cart and the bill total in rupees",
-      "mockupLabel": "real CB POS capture"
+      "mockupAlt": "The CB\u00a0POS sales screen with 1.250 kg of Samba rice in the cart and the bill total in rupees",
+      "mockupLabel": "real CB\u00a0POS capture"
     },
     "stats": {
       "lag": "0 ms",
@@ -96,18 +100,31 @@
       "empty": "No CB POS shop in your district yet. Yours could be the first."
     },
     "problem": {
-      "title": "Where a small shop loses money every day",
+      "badge": "THE PROBLEMS WITH TRADITIONAL POS",
+      "title": "Why over 100 Sri Lankan POS systems fail small shops",
       "1": {
-        "title": "The internet drops, and the bill stops.",
-        "body": "When the router blinks, a cloud POS can't save the sale. The queue grows while you wait, and some customers walk out."
+        "title": "The subscription trap that drains shop profits",
+        "body": "Over 100 POS systems in Sri Lanka charge heavy monthly fees or lock you out when payments stop. Your till shouldn't hold your business hostage."
       },
       "2": {
-        "title": "Paying every month, in busy months and slow ones.",
-        "body": "A subscription charges you whether you sold a lot or very little, and your sales history sits on someone else's server."
+        "title": "Fragile cloud webapps that freeze during signal drops",
+        "body": "Most cheap systems are white-labeled foreign webapps. The moment local internet blinks, your billing halts and counter queues stall."
       },
       "3": {
-        "title": "VAT by calculator, weights by guesswork.",
-        "body": "Working VAT back from the MRP by hand, rounding 1.250 kg down to 1 kg, forgetting SSCL. Each slip is small, but they add up by the end of the month."
+        "title": "Enterprise systems with unaffordable pricing",
+        "body": "High-end corporate POS suites cost lakhs in licenses and support contracts, leaving small retail shops, pharmacies, and groceries behind."
+      },
+      "4": {
+        "title": "Proprietary hardware lock-in",
+        "body": "Vendors force you into buying overpriced locked hardware. If a printer fails, your entire counter is out of service for weeks waiting on vendor support."
+      },
+      "5": {
+        "title": "Manual 18% VAT and 2.5% SSCL math errors",
+        "body": "Working tax backwards from MRP shelf prices by calculator creates cashier discrepancies and leaves your shop exposed to tax penalties."
+      },
+      "6": {
+        "title": "English-only software your staff struggles with",
+        "body": "Complicated foreign software leads to cashier errors and slow queues. Sri Lankan shops need software that works naturally in Sinhala, Tamil, and English."
       }
     },
     "solution": {
@@ -193,6 +210,142 @@
       "body": "It's free, it keeps billing without the internet, it works out your VAT, and you can set it up yourself.",
       "cta": "Download CB POS for free",
       "secondary": "Read the setup guide"
+    }
+  },
+  "featuresPage": {
+    "hero": {
+      "badge": "ENGINEERED FOR SRI LANKAN SHOPS",
+      "title": "Every Feature Built for Real Counters",
+      "lead": "Two years of structural engineering to eliminate the subscription trap and handle Sri Lankan retail realities."
+    },
+    "challengeLabel": "Typical Shop Challenge",
+    "solutionLabel": "How CB\u00a0POS Solves It",
+    "categories": {
+      "grocery": {
+        "label": "Grocery & Supermarkets",
+        "headline": "Fast loose-item cashiering and weighing scale integration",
+        "problem": "Morning and evening rush hours cause long queues when weighing scale prices must be entered manually or internet drops freeze billing.",
+        "solution": "EAN-13 price-embedded scale barcode parsing and offline billing that never slows down your cashiers.",
+        "f1_title": "Scale Barcode Parser",
+        "f1_desc": "Instantly decodes price-embedded EAN-13 barcodes from any digital weighing scale.",
+        "f1_tag": "EAN-13",
+        "f2_title": "Keyboard Queue Speed",
+        "f2_desc": "Pure Numpad and F-key cashiering. Add items, apply discounts, and tender in seconds without a mouse.",
+        "f2_tag": "ZERO MOUSE",
+        "f3_title": "Offline Local Engine",
+        "f3_desc": "Local SQLite database ensures tills run without internet lag during fiber or 4G disruptions.",
+        "f3_tag": "SQLITE",
+        "f4_title": "Trilingual Thermal Receipts",
+        "f4_desc": "Print clean 80mm receipts in Sinhala, Tamil, or English for local customer clarity.",
+        "f4_tag": "ESC/POS"
+      },
+      "pharmacy": {
+        "label": "Pharmacy & Healthcare",
+        "headline": "Batch expiry safeguards and fast medicine lookups",
+        "problem": "Tracking expiry dates across thousands of pharmaceutical products manually risks dispensing expired items and stock write-offs.",
+        "solution": "Built-in batch number tracking with automated expiry alerts and quick generic or brand name search.",
+        "f1_title": "Expiry Alert System",
+        "f1_desc": "Visual warnings notify cashiers before scanning items nearing expiration dates.",
+        "f1_tag": "SAFETY",
+        "f2_title": "Brand & Generic Search",
+        "f2_desc": "Fast lookup by chemical formula or brand name directly from the search bar.",
+        "f2_tag": "SEARCH",
+        "f3_title": "Split Payment Options",
+        "f3_desc": "Accept split payments across cash, card, and customer credit on a single receipt.",
+        "f3_tag": "FLEXIBLE",
+        "f4_title": "Prescription Item Notes",
+        "f4_desc": "Record patient names and doctor prescription notes directly on transaction records.",
+        "f4_tag": "AUDIT"
+      },
+      "hardware": {
+        "label": "Hardware & Auto Spares",
+        "headline": "Multi-tier pricing and customer credit ledgers",
+        "problem": "Managing wholesale discounts for contractors and tracking informal customer credit (Nayata) across paper notebooks leads to lost revenue.",
+        "solution": "Structured customer credit tracking with outstanding balances printed on receipts, plus wholesale pricing tiers.",
+        "f1_title": "Tiered Price Levels",
+        "f1_desc": "Assign retail, wholesale, or contractor pricing to any inventory item.",
+        "f1_tag": "TIERED",
+        "f2_title": "Credit Ledger (Nayata)",
+        "f2_desc": "Track customer credit balances and print outstanding dues directly on receipt footers.",
+        "f2_tag": "LEDGER",
+        "f3_title": "Dual-Print Layouts",
+        "f3_desc": "Print 80mm thermal receipts at the counter or full A4 invoices for business customers.",
+        "f3_tag": "A4 & 80MM",
+        "f4_title": "Encrypted USB Backups",
+        "f4_desc": "Automated AES-encrypted daily backups to standard USB flash drives to prevent data loss.",
+        "f4_tag": "BACKUP"
+      },
+      "apparel": {
+        "label": "Apparel & Retail",
+        "headline": "Variant matrix management and rapid tag printing",
+        "problem": "Managing multiple sizes and colors for garments without proper barcodes leads to inventory mismatches and stockout confusion.",
+        "solution": "Variant matrices for clothing and footwear, custom barcode generation, and straightforward customer return workflows.",
+        "f1_title": "Size & Color Matrix",
+        "f1_desc": "Organize garments under unified product families with distinct size and color attributes.",
+        "f1_tag": "VARIANTS",
+        "f2_title": "Customer Exchanges",
+        "f2_desc": "Handle item exchanges and size swaps cleanly without breaking daily sales tallies.",
+        "f2_tag": "RETURNS",
+        "f3_title": "Barcode Tag Generation",
+        "f3_desc": "Generate and print custom barcode stickers for unbranded garments and accessories.",
+        "f3_tag": "BARCODES",
+        "f4_title": "Real-Time Stock Counts",
+        "f4_desc": "Know exactly what sizes remain in stock without closing the shop for physical counts.",
+        "f4_tag": "INVENTORY"
+      }
+    },
+    "matrix": {
+      "badge": "TECHNICAL SPECIFICATION",
+      "title": "How CB\u00a0POS Compares to Sri Lankan Alternatives",
+      "lead": "Engineered structurally over two years to deliver enterprise-grade performance without subscription fees or lock-ins.",
+      "colFeature": "Feature / Capability",
+      "colCbpos": "CB\u00a0POS (CeyByte)",
+      "colTypical": "Typical Local POS (100+)",
+      "colEnterprise": "Enterprise POS Suites",
+      "rows": {
+        "cost": {
+          "feature": "Software Licensing & Monthly Cost",
+          "cbpos": "Rs. 0 / Free Forever (Community-Powered)",
+          "typical": "Rs. 5,000\u201315,000 / month lock-in",
+          "enterprise": "Lakhs upfront + annual AMC"
+        },
+        "offline": {
+          "feature": "Offline Resilience",
+          "cbpos": "Offline-Ready (Local SQLite database)",
+          "typical": "Freezes during internet/signal drops",
+          "enterprise": "Requires dedicated server setup"
+        },
+        "keyboard": {
+          "feature": "Cashiering Input Speed",
+          "cbpos": "Full Numpad & F-keys (Zero mouse needed)",
+          "typical": "Mouse/touch-only (slow in queues)",
+          "enterprise": "Complex multi-step menu navigation"
+        },
+        "tax": {
+          "feature": "Sri Lanka Dual-Tax (VAT & SSCL)",
+          "cbpos": "Automated 18% VAT & 2.5% SSCL reverse-math",
+          "typical": "Manual calculations or missing SSCL",
+          "enterprise": "Costly custom ERP development"
+        },
+        "hardware": {
+          "feature": "Hardware Compatibility",
+          "cbpos": "Any USB thermal printer & scale",
+          "typical": "Locked proprietary hardware required",
+          "enterprise": "Vendor-certified hardware only"
+        },
+        "languages": {
+          "feature": "Trilingual Receipt Output",
+          "cbpos": "Sinhala, Tamil, and English receipts",
+          "typical": "English only",
+          "enterprise": "Expensive localization add-on"
+        },
+        "data": {
+          "feature": "Sales Data Custody & Privacy",
+          "cbpos": "100% on your own PC (Zero cloud tracking)",
+          "typical": "Uploaded to third-party cloud servers",
+          "enterprise": "Self-hosted server maintenance"
+        }
+      }
     }
   },
   "gate": {

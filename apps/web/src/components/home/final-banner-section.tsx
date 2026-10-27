@@ -21,10 +21,21 @@ export function FinalBannerSection() {
       <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
-      {/* Subtle Radial Azure Glow Backdrop */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-25">
-        <div className="bg-azure size-[500px] rounded-full blur-[120px]" />
-      </div>
+      {/* Wide Atmospheric Radial Azure Glow Backdrop */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          background: "radial-gradient(ellipse 90% 70% at 50% 50%, var(--glow-azure) 0%, transparent 75%)",
+        }}
+      />
+      {/* Micro-noise Film Grain Texture Overlay */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-screen"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
 
       <div className="relative z-10 container mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
         <Reveal>

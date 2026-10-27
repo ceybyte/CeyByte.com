@@ -72,7 +72,9 @@ export function KeyboardCard({ className }: { className?: string }) {
           <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
             <KeyboardIcon className="size-5" />
           </div>
-          <span className="text-muted font-mono text-[11px]">ZERO MOUSE DEPENDENCY [B1]</span>
+          <span className="text-muted font-mono text-[11px] font-semibold tracking-wider">
+            KEYBOARD-FIRST CASHIERING
+          </span>
         </div>
 
         <h3 className="text-text mb-3 text-xl font-bold sm:text-2xl">{t("title")}</h3>

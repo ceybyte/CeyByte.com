@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copy, Check, ArrowRight, ShieldAlert, Sparkles, Building2, Search, CheckCircle } from "lucide-react";
+import { Copy, Check, ArrowRight, ShieldAlert, Heart, Building2, Search, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -461,7 +461,7 @@ export function DonationCard({ initialPaymentOptions, copy }: DonationCardProps)
             loading={isSubmitting}
             className="w-full gap-2 text-base font-bold"
           >
-            <Sparkles className="size-4" />
+            <Heart className="size-4" />
             {isSubmitting ? copy.creating : copy.create}
           </Button>
         </form>

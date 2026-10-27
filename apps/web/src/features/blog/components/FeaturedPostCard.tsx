@@ -1,6 +1,5 @@
-import React from "react";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Bookmark } from "lucide-react";
 import type { BlogPost } from "../types";
 
 export interface FeaturedPostCardProps {
@@ -39,7 +38,7 @@ export function FeaturedPostCard({
         <div className="relative flex aspect-[16/9] w-full flex-col justify-between overflow-hidden rounded-xl border border-zinc-800 bg-gradient-to-br from-zinc-950 via-zinc-900 to-cyan-950/30 p-6 md:col-span-5">
           <div className="flex items-center justify-between">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-cyan-300 uppercase">
-              <Sparkles className="h-3 w-3" />
+              <Bookmark className="h-3 w-3" />
               {featuredLabel}
             </span>
             <span className="font-mono text-[11px] text-zinc-500 uppercase">{post.tags[0] || "CB POS"}</span>

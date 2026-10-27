@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MapPin, ExternalLink, Store, Sparkles, ArrowRight, Loader2, AlertTriangle } from "lucide-react";
+import { MapPin, ExternalLink, Store, Award, ArrowRight, Loader2, AlertTriangle } from "lucide-react";
 import type { LatestRelease, MerchantListing } from "../types";
 import { updateListing } from "../api";
 import { toast } from "sonner";
@@ -69,7 +69,7 @@ export function OverviewTab({ locale, listing, latestRelease, onListingUpdated, 
               <h2 className="text-foreground text-2xl font-bold tracking-tight">{listing.shopName}</h2>
               {listing.isSupporter && (
                 <span className="inline-flex items-center gap-1.5 rounded border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-400">
-                  <Sparkles className="h-3 w-3 text-amber-400" />
+                  <Award className="h-3 w-3 text-amber-400" />
                   <span>{copy.supporter.replace("{monthYear}", formattedSupporterDate)}</span>
                 </span>
               )}

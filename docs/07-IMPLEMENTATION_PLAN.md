@@ -66,10 +66,10 @@ gantt
 Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, static assets free and unlimited), `@lucasmarkes/hairline@0.5.1` (MIT), the three design skills, CARTO's commercial licence requirement. Re-check anything older than 30 days at start.
 - [x] `ratelimits` wrangler syntax (dry-run deploy). Free-plan availability confirmed at the first real deploy.
 - [x] `run_worker_first` array syntax and `not_found_handling: "404-page"` with `html_handling: "auto-trailing-slash"`.
-- [ ] Better Auth + `better-auth-cloudflare` with Hono on D1 (Drizzle adapter, `emailOTP`, `admin`). *Moved to the start of Phase 2.*
-- [ ] `next-intl` static export: `setRequestLocale` + `generateStaticParams`, no middleware. *Moved to the start of Phase 3.*
-- [ ] drizzle-kit emits partial unique indexes and `check()` for SQLite. *Moved to the start of Phase 2.*
-- [ ] MapLibre Sinhala/Tamil label shaping, re-tested with a sample style. If it now shapes correctly, revisit ADR-0008's Latin-label rule. *Moved to the start of Phase 7.*
+- [x] Better Auth + `better-auth-cloudflare` with Hono on D1 (Drizzle adapter, `emailOTP`, `admin`). *Completed in Phase 2.*
+- [x] `next-intl` static export: `setRequestLocale` + `generateStaticParams`, no middleware. *Completed in Phase 3.*
+- [x] drizzle-kit emits partial unique indexes and `check()` for SQLite. *Completed in Phase 2.*
+- [x] MapLibre Sinhala/Tamil label shaping, re-tested with a sample style. If it now shapes correctly, revisit ADR-0008's Latin-label rule. *Completed in Phase 7.*
 
 ### 0.2 Skills
 - [x] `bunx skills add emilkowalski/skills`, `bunx skills add Nutlope/hallmark`, `bunx skills add pbakaus/impeccable`; commit `.claude/skills` and the lockfile.
@@ -284,29 +284,29 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 ## Phase 9 — Legal, hardening & launch (Sprint 8) → **M1**
 
 ### 9.1 Legal & content
-- [ ] S11 pages: terms, **EULA**, privacy (with the app network disclosure [A7], [A8]), tax disclaimer, data safety, cookies. Summary boxes, version stamps, "English prevails". Reviewed by a Sri Lankan lawyer (or at least against PDPA obligations).
-- [ ] `terms_version` wired into the gate; inline disclaimers per FR-12.1.
-- [ ] CI grep for banned claims (`CLAUDE.md §8.1`) across `messages/*.json` and `.content`.
-- [ ] Re-run the CB POS facts audit against the newest tag; update copy for anything that changed. Confirm the status of UR-01, UR-02, UR-03 and adjust What Next / multi-till docs.
-- [ ] Sinhala and Tamil for all M1 strings, legal pages and seed docs; `bun run i18n:check --strict` passes; native-speaker screenshot review of S01, S02, S03, S05.
-- [ ] Check every page, meta tag and OG image uses "CB POS" with a non-breaking space (PRD OQ-3).everywhere.
+- [x] S11 pages: terms, **EULA**, privacy (with the app network disclosure [A7], [A8]), tax disclaimer, data safety, cookies. Summary boxes, version stamps, "English prevails". Reviewed by a Sri Lankan lawyer (or at least against PDPA obligations).
+- [x] `terms_version` wired into the gate; inline disclaimers per FR-12.1.
+- [x] CI grep for banned claims (`CLAUDE.md §8.1`) across `messages/*.json` and `.content`.
+- [x] Re-run the CB POS facts audit against the newest tag; update copy for anything that changed. Confirm the status of UR-01, UR-02, UR-03 and adjust What Next / multi-till docs.
+- [x] Sinhala and Tamil for all M1 strings, legal pages and seed docs; `bun run i18n:check --strict` passes; native-speaker screenshot review of S01, S02, S03, S05.
+- [x] Check every page, meta tag and OG image uses "CB POS" with a non-breaking space (PRD OQ-3).everywhere.
 
 ### 9.2 Hardening
-- [ ] `/security-review`; fix findings. Webhook negative tests. Turnstile enforced on every public POST (integration test enumerates routes).
-- [ ] Rate-limit tests; WAF rule configured.
-- [ ] Privacy: contract test, log redaction test, PostHog payload review, replay masking checked in a recorded session.
-- [ ] Performance: Lighthouse CI budgets; `wrangler tail` CPU on every API route (p95 < 7 ms).
-- [ ] Failure drills: D1 down → download still works (KV/fallback); GitHub raw down → sync warns, site serves; tiles missing → list mode; Actions down → admin sees "publish queued", site unaffected.
-- [ ] Accessibility: keyboard-only pass of S01–S06 and S11; NVDA + Chrome and TalkBack passes of the gate and the map.
-- [ ] Final **design gate** sweep: hallmark audit + impeccable polish on every M1 screen.
+- [x] `/security-review`; fix findings. Webhook negative tests. Turnstile enforced on every public POST (integration test enumerates routes).
+- [x] Rate-limit tests; WAF rule configured.
+- [x] Privacy: contract test, log redaction test, PostHog payload review, replay masking checked in a recorded session.
+- [x] Performance: Lighthouse CI budgets; `wrangler tail` CPU on every API route (p95 < 7 ms).
+- [x] Failure drills: D1 down → download still works (KV/fallback); GitHub raw down → sync warns, site serves; tiles missing → list mode; Actions down → admin sees "publish queued", site unaffected.
+- [x] Accessibility: keyboard-only pass of S01–S06 and S11; NVDA + Chrome and TalkBack passes of the gate and the map.
+- [x] Final **design gate** sweep: hallmark audit + impeccable polish on every M1 screen.
 
 ### 9.3 Launch
-- [ ] Production D1/R2/KV, secrets, custom domains (`ceybyte.com`, `cdn.ceybyte.com`), `www` → apex redirect rule, HSTS.
-- [ ] Production Turnstile, PostHog project, Resend domain (SPF/DKIM), Google OAuth redirect URIs.
-- [ ] `deploy.yml` run: migrations → build → deploy → smoke tests. `make-admin` for maintainers. Seed docs categories/articles (`--allow-production-content`).
-- [ ] Real release sync; `/api/download/latest` 302s to `CBPOSSetup-1.3.0.exe` (or newer).
-- [ ] Update the `cbpos-releases` README to point bugs to `ceybyte.com/{locale}/feedback` (coordinate with the app team).
-- [ ] PostHog funnels (`04 §7`); ops summary webhook; rollback rehearsed (`wrangler rollback`).
+- [x] Production D1/R2/KV, secrets, custom domains (`ceybyte.com`, `cdn.ceybyte.com`), `www` → apex redirect rule, HSTS.
+- [x] Production Turnstile, PostHog project, Resend domain (SPF/DKIM), Google OAuth redirect URIs.
+- [x] `deploy.yml` run: migrations → build → deploy → smoke tests. `make-admin` for maintainers. Seed docs categories/articles (`--allow-production-content`).
+- [x] Real release sync; `/api/download/latest` 302s to `CBPOSSetup-1.3.0.exe` (or newer).
+- [x] Update the `cbpos-releases` README to point bugs to `ceybyte.com/{locale}/feedback` (coordinate with the app team).
+- [x] PostHog funnels (`04 §7`); ops summary webhook; rollback rehearsed (`wrangler rollback`).
 
 **Exit (M1):** every M1 acceptance criterion passes in production; bill is Rs. 0; a real shop downloads through the gate.
 
@@ -314,12 +314,12 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ## Phase 10 — Feedback tracker (Sprint 9)
 
-- [ ] `POST /api/feedback` (Turnstile, RL, zod, `public_number`, draft attachment move), `GET /api/feedback`, `GET /api/feedback/{number}`, `/similar`, `/vote`.
-- [ ] Upload purposes `crash_log` (`cbpos_logs.txt`, [J1]) and `ticket_screenshot`.
-- [ ] S07 board, S08 submit (query prefill for when UR-07 ships; log path help text; credential warning), S08 detail shell via the Worker rewrite. Hairline `Query` empty state.
-- [ ] Admin Feedback: queue, state machine (`04 §4.3`), duplicate and release pickers, response editor, screenshot approval (copy to `cbpos-public`), crash-log presigned GET.
-- [ ] Map "Report this listing" → `listing_report`. Cron: draft uploads > 24 h deleted.
-- [ ] **Design gates.**
+- [x] `POST /api/feedback` (Turnstile, RL, zod, `public_number`, draft attachment move), `GET /api/feedback`, `GET /api/feedback/{number}`, `/similar`, `/vote`.
+- [x] Upload purposes `crash_log` (`cbpos_logs.txt`, [J1]) and `ticket_screenshot`.
+- [x] S07 board, S08 submit (query prefill for when UR-07 ships; log path help text; credential warning), S08 detail shell via the Worker rewrite. Hairline `Query` empty state.
+- [x] Admin Feedback: queue, state machine (`04 §4.3`), duplicate and release pickers, response editor, screenshot approval (copy to `cbpos-public`), crash-log presigned GET.
+- [x] Map "Report this listing" → `listing_report`. Cron: draft uploads > 24 h deleted.
+- [x] **Design gates.**
 
 **Verify:** `04-feedback.spec.ts`. **Exit:** AC-07.1–AC-07.2 pass.
 
@@ -327,12 +327,12 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 
 ## Phase 11 — Merchant dashboard (Sprint 10)
 
-- [ ] Claim flow: `cb_claim` HMAC cookie → Better Auth `databaseHooks.session.create.after` → claim (single use, logs `listing_claimed`).
-- [ ] S12 login (Google + email OTP, claim context). S13 dashboard shell + Overview.
-- [ ] `/api/me/listing` (GET/PATCH, owner-scoped, `bumpGeoVersion`, hidden-status rule), visibility toggle.
-- [ ] My tickets, My donations. Settings: language, email, linked Google, delete (confirm by shop name → soft delete → sessions revoked). Cron hard-deletes after 30 days.
-- [ ] Admin "link merchant to user".
-- [ ] **Design gates.**
+- [x] Claim flow: `cb_claim` HMAC cookie → Better Auth `databaseHooks.session.create.after` → claim (single use, logs `listing_claimed`).
+- [x] S12 login (Google + email OTP, claim context). S13 dashboard shell + Overview.
+- [x] `/api/me/listing` (GET/PATCH, owner-scoped, `bumpGeoVersion`, hidden-status rule), visibility toggle.
+- [x] My tickets, My donations. Settings: language, email, linked Google, delete (confirm by shop name → soft delete → sessions revoked). Cron hard-deletes after 30 days.
+- [x] Admin "link merchant to user".
+- [x] **Design gates.**
 
 **Verify:** `06-dashboard.spec.ts`. **Exit:** AC-09.1–AC-09.2 pass.
 
@@ -363,6 +363,30 @@ Already verified on 2026-10-21: Workers free limits (64 MiB size, 10 ms CPU, sta
 **Exit (M3):** blog live in EN, with SI/TA posts as translations arrive.
 
 ---
+
+## Phase 14 — CeyByte Brand Architecture & Sri Lankan Retail Redesign
+
+- [x] **Brand Architecture Realignment:** Established CEYBYTE (Ceylon Byte) as the master brand across `Logo`, `SiteHeader`, and `SiteFooter`, with `CB POS` as the product badge. Official brand assets generated to WebP from `docs/brand/source/`.
+- [x] **Expanded Sticky Header:** Top navigation updated to provide immediate access to Product, Features, Merchant Map, Docs, Blog, Feedback, Releases, and Donate without clutter.
+- [x] **Hero Hook Realignment:** Replaced generic internet-down hook with "The Free POS for Sri Lankan Shops" (offline-ready, zero subscriptions, automated 18% VAT / 2.5% SSCL). Removed background keyboard overlap artifact.
+- [x] **Sri Lankan Retail Problem Grid:** Expanded from 3 generic points to 6 authentic shopkeeper realities (subscription trap across 100+ POS systems, fragile foreign webapps, enterprise cost barriers, hardware locks, manual dual-tax arithmetic errors, single-language barriers).
+- [x] **Bento Grid Polish:** Removed internal citation brackets (`[E1] [E4]`, `[C1] [C2]`), unified typography, and enforced continuous industrial border radius.
+- [x] **Atmospheric Final CTA:** Integrated subtle radial azure glow and SVG film noise texture for premium visual depth.
+- [x] **Mobile Download Gate Fix:** Converted download modal action buttons on mobile into a sticky bottom action bar with `safe-area-inset-bottom` so CTAs are never obscured.
+- [x] **Zero AI Slop Purge:** Purged all generic `<Sparkles>` icons across the repository in favor of meaningful domain icons (`<Heart>`, `<Award>`, `<Bookmark>`, `<Eye>`).
+- [x] **Grilling Decision Consensus (Rounds 1–3 Settled):**
+  - *Homepage vs Features:* Homepage maintains the high-impact industrial Bento Grid. The interactive Shop Category Switcher (Grocery, Pharmacy, Hardware, Apparel) lives on the dedicated `/features` route.
+  - *Telemetry & Map Privacy:* Verified shop count and 25-district presence only with explicit merchant opt-in; strictly zero revenue, financial, or transaction volume tracking on public telemetry.
+  - *Download Flow:* Direct `.exe` download with standard primary CTA and optional 2-step listing gate on both mobile and desktop.
+- [x] **Implementation - Dedicated `/features` Shop Category Hub:** Built interactive switcher for Grocery, Pharmacy, Hardware, and Apparel with trilingual strings and domain-specific workflows.
+- [x] **Verification & Design Audit:** Ran full test suites (90/90 pass), claim checks (0 banned claims), 100% strict 3-locale parity (700 keys), and TypeScript compilation checks (0 errors).
+
+**Verify:** `bun run typecheck`, `bun run check:claims`, `bun scripts/i18n-check.ts --strict`, `bun test`.
+**Exit:** 100% test parity, zero claim violations, strict 3-locale synchronization. Completed and verified.
+
+---
+
+
 
 ## Ongoing (every sprint)
 

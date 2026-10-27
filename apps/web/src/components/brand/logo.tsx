@@ -1,35 +1,60 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { LogoSlash } from "./logo-slash";
 
-const SIZES = { sm: "text-base", md: "text-xl", lg: "text-[2rem]" } as const;
+const SIZES = {
+  sm: { height: 18, width: 106, badge: "text-[10px] px-1.5 py-0.5" },
+  md: { height: 24, width: 142, badge: "text-xs px-2 py-0.5" },
+  lg: { height: 32, width: 189, badge: "text-sm px-2.5 py-0.5" },
+} as const;
 
-type LogoProps = { size?: keyof typeof SIZES; className?: string };
+type LogoProps = {
+  size?: keyof typeof SIZES;
+  showProductBadge?: boolean;
+  className?: string;
+};
 
-// `[CB POS]` wordmark (03-DESIGN §7.1). The azure slash stands where the space is; screen readers get "CB POS".
-export function Logo({ size = "md", className }: LogoProps) {
+// CeyByte Master Brand Logo with CB POS product badge.
+export function Logo({ size = "md", showProductBadge = true, className }: LogoProps) {
+  const config = SIZES[size];
+
   return (
     <span
       role="img"
-      aria-label="CB POS"
-      className={cn(
-        "inline-flex items-center font-mono leading-none font-bold tracking-normal",
-        SIZES[size],
-        className,
-      )}
+      aria-label="CeyByte · CB POS"
+      className={cn("inline-flex items-center gap-2 select-none", className)}
     >
-      <span aria-hidden className="text-muted">
-        [
-      </span>
-      <span aria-hidden className="text-text">
-        CB
-      </span>
-      <LogoSlash className="motion-safe:animate-pulse-dot mx-[0.12em] h-[0.62em] w-auto" />
-      <span aria-hidden className="text-text">
-        POS
-      </span>
-      <span aria-hidden className="text-muted">
-        ]
-      </span>
+      {/* Dark Theme Logo (Default) */}
+      <Image
+        src="/brand/ceybyte-logo-white.webp"
+        alt="CeyByte"
+        width={config.width}
+        height={config.height}
+        priority
+        className="block h-auto w-auto light:hidden"
+        style={{ height: `${config.height}px`, width: "auto" }}
+      />
+      {/* Light Theme Logo */}
+      <Image
+        src="/brand/ceybyte-logo-black.webp"
+        alt="CeyByte"
+        width={config.width}
+        height={config.height}
+        priority
+        className="hidden h-auto w-auto light:block"
+        style={{ height: `${config.height}px`, width: "auto" }}
+      />
+
+      {showProductBadge && (
+        <span
+          className={cn(
+            "bg-azure/10 text-azure-text border-azure/20 inline-flex items-center rounded border font-mono font-semibold tracking-tight",
+            config.badge,
+          )}
+        >
+          CB&nbsp;POS
+        </span>
+      )}
     </span>
   );
 }
+

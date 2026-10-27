@@ -4,7 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { Check, Download, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Crosshair } from "@/components/brand/crosshair";
-import { Figure } from "@/components/brand/figure";
 import { Reveal } from "@/components/motion/reveal";
 
 import { useGate } from "@/components/gate/gate-context";
@@ -34,8 +33,8 @@ export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps
             <Reveal>
               <div className="mb-6 inline-flex items-center gap-2">
                 <span className="bg-azure size-2 animate-pulse rounded-full" />
-                <span className="text-muted font-mono text-xs font-semibold tracking-wider uppercase">
-                  FREE WINDOWS POS · SRI LANKA
+                <span className="text-azure-text font-mono text-xs font-semibold tracking-wider uppercase">
+                  {t("badge")}
                 </span>
               </div>
 
@@ -70,7 +69,7 @@ export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps
 
                 <Button asChild variant="ghost" size="lg">
                   <a
-                    href="#how-it-works"
+                    href="#features"
                     className="group text-text hover:text-azure-text inline-flex items-center gap-2"
                   >
                     <span>{t("secondary")}</span>
@@ -108,17 +107,12 @@ export function HeroSection({ version = "1.3.0", sizeMb = 64 }: HeroSectionProps
 
           {/* Mockup Column (Desktop: cols 7–12) */}
           <div className="relative flex items-center justify-center lg:col-span-6">
-            {/* Hairline Keyboard Figure in Background */}
-            <div className="pointer-events-none absolute -top-12 -right-10 z-0 scale-110 opacity-20 sm:scale-125 sm:opacity-30">
-              <Figure name="keyboard" intensity={0.5} className="w-[420px] sm:w-[540px]" />
-            </div>
-
             {/* Sales Counter Screen Capture Frame with Azure Rim Glow */}
             <Reveal delay={0.15}>
               <div
                 role="img"
                 aria-label={t("mockupAlt")}
-                className="border-azure/40 bg-canvas hover:border-azure relative z-10 w-full max-w-lg overflow-hidden rounded-lg border p-1 shadow-2xl transition-all duration-500 lg:max-w-none"
+                className="border-azure/30 bg-canvas hover:border-azure/60 relative z-10 w-full max-w-lg overflow-hidden rounded-lg border p-1 shadow-[0_0_60px_-15px_var(--glow-azure)] transition-all duration-500 lg:max-w-none"
               >
                 <div aria-hidden="true">
                   {/* Frame Header with Rim Glow */}

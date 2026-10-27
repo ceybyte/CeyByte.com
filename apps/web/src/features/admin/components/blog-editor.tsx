@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Save, Send, Upload, Sparkles } from "lucide-react";
+import { ArrowLeft, Save, Send, Upload, Eye } from "lucide-react";
 import type { AdminBlogPost } from "../api";
 import { presignAdminBlogMedia } from "../api";
 import { toast } from "sonner";
@@ -347,7 +347,7 @@ export function BlogEditor({ post, onSave, onPublish }: BlogEditorProps) {
         <div className="max-h-[800px] overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 backdrop-blur-sm">
           <div className="mb-4 flex items-center justify-between border-b border-zinc-800 pb-3">
             <span className="flex items-center gap-1.5 font-mono text-xs tracking-wider text-cyan-400 uppercase">
-              <Sparkles className="h-3.5 w-3.5" />
+              <Eye className="h-3.5 w-3.5" />
               Live Preview
             </span>
             <span className="font-mono text-[11px] text-zinc-500 uppercase">{locale}</span>

@@ -30,8 +30,8 @@ export function WeighingCard({ className }: { className?: string }) {
           <div className="bg-azure/10 border-azure/20 text-azure flex size-10 items-center justify-center rounded-md border">
             <Scale className="size-5" />
           </div>
-          <span className="text-muted font-mono text-[11px]">
-            EAN-13 SCALE PARSER & ENCRYPTED BACKUPS [D2] [G2]
+          <span className="text-muted font-mono text-[11px] font-semibold tracking-wider">
+            EAN-13 SCALE PARSER & ENCRYPTED BACKUPS
           </span>
         </div>
 
@@ -111,7 +111,7 @@ export function WeighingCard({ className }: { className?: string }) {
           </div>
           <div className="text-primary flex items-center gap-1.5 text-[10px] font-semibold">
             <ShieldCheck className="size-3.5" />
-            <span>PROTECTED [G2]</span>
+            <span>AES-ENCRYPTED</span>
           </div>
         </div>
       </div>

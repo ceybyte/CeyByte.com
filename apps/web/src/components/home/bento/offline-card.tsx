@@ -23,7 +23,9 @@ export function OfflineCard({ className }: { className?: string }) {
           <div className="bg-primary/10 border-primary/20 text-primary flex size-10 items-center justify-center rounded-md border">
             <Database className="size-5" />
           </div>
-          <span className="text-muted font-mono text-[11px]">LOCAL SQLITE [G1]</span>
+          <span className="text-muted font-mono text-[11px] font-semibold tracking-wider">
+            OFFLINE SQLITE ENGINE
+          </span>
         </div>
 
         <h3 className="text-text mb-3 text-xl font-bold sm:text-2xl">{t("title")}</h3>

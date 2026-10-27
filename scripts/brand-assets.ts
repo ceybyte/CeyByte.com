@@ -28,8 +28,17 @@ async function mark(file: string, out: string) {
     .toFile(out);
 }
 
+async function logoCover(file: string, out: string) {
+  await sharp(await trimmed(file))
+    .resize({ height: 72 })
+    .webp({ quality: 95, alphaQuality: 100 })
+    .toFile(out);
+}
+
 await icon(512, "apps/web/src/app/icon.png");
 await icon(180, "apps/web/src/app/apple-icon.png");
 await mark("cb-mark-white-1000.png", "apps/web/public/brand/cb-mark-white.webp");
 await mark("cb-mark-black-1000.png", "apps/web/public/brand/cb-mark-black.webp");
+await logoCover("ceylon-bytes-cover-white-1000x200.png", "apps/web/public/brand/ceybyte-logo-white.webp");
+await logoCover("ceylon-bytes-cover-black-1000x200.png", "apps/web/public/brand/ceybyte-logo-black.webp");
 console.warn("brand assets written");
