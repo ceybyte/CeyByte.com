@@ -40,6 +40,7 @@ jobs:
         with:
           bun-version-file: package.json
       - run: bun install --frozen-lockfile
+      - run: cp apps/api/.dev.vars.example apps/api/.dev.vars
       - run: bun run db:migrate:local
       - run: bun run db:seed:local
       - run: bunx playwright install --with-deps chromium

@@ -49,7 +49,9 @@ export function TurnstileWidget({ onToken, action = "gate" }: TurnstileWidgetPro
     // In development or test without network script (e.g. preview on localhost), provide test token
     if (
       process.env.NODE_ENV !== "production" ||
-      (isLocalhost && (!window.turnstile || SITE_KEY.startsWith("1x")))
+      isLocalhost ||
+      !window.turnstile ||
+      SITE_KEY.startsWith("1x")
     ) {
       onToken("1x00000000000000000000AA");
       return;
