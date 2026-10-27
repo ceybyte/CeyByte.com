@@ -30,7 +30,7 @@ export function Logo({ size = "md", showProductBadge = true, className }: LogoPr
         width={config.width}
         height={config.height}
         priority
-        className="block h-auto w-auto light:hidden"
+        className="light:hidden block h-auto w-auto"
         style={{ height: `${config.height}px`, width: "auto" }}
       />
       {/* Light Theme Logo */}
@@ -40,7 +40,7 @@ export function Logo({ size = "md", showProductBadge = true, className }: LogoPr
         width={config.width}
         height={config.height}
         priority
-        className="hidden h-auto w-auto light:block"
+        className="light:block hidden h-auto w-auto"
         style={{ height: `${config.height}px`, width: "auto" }}
       />
 
@@ -57,4 +57,3 @@ export function Logo({ size = "md", showProductBadge = true, className }: LogoPr
     </span>
   );
 }
-

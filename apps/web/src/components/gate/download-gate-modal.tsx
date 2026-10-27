@@ -385,7 +385,7 @@ export function DownloadGateModal() {
             </div>
 
             {/* Sticky Action Footer on Mobile */}
-            <div className="border-hairline bg-surface/95 sticky bottom-0 -mx-5 -mb-5 mt-4 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm sm:static sm:mx-0 sm:mb-0 sm:border-t-0 sm:bg-transparent sm:p-0 sm:pt-2">
+            <div className="border-hairline bg-surface/95 sticky bottom-0 -mx-5 mt-4 -mb-5 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm sm:static sm:mx-0 sm:mb-0 sm:border-t-0 sm:bg-transparent sm:p-0 sm:pt-2">
               <Button type="submit" variant="primary" size="lg" className="w-full">
                 <span>{t("s1.cta")}</span>
                 <ArrowRight className="size-4" />
@@ -524,7 +524,7 @@ export function DownloadGateModal() {
             <TurnstileWidget onToken={(token) => setTurnstileToken(token)} action="gate" />
 
             {/* Sticky Action Footer on Mobile */}
-            <div className="border-hairline bg-surface/95 sticky bottom-0 -mx-5 -mb-5 mt-4 flex items-center justify-between gap-3 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm sm:static sm:mx-0 sm:mb-0 sm:border-t-0 sm:bg-transparent sm:p-0 sm:pt-2">
+            <div className="border-hairline bg-surface/95 sticky bottom-0 -mx-5 mt-4 -mb-5 flex items-center justify-between gap-3 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm sm:static sm:mx-0 sm:mb-0 sm:border-t-0 sm:bg-transparent sm:p-0 sm:pt-2">
               <Button
                 type="button"
                 variant="secondary"
