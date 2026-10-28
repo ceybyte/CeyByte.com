@@ -125,7 +125,7 @@ export function MapShell() {
         {/* Full-width Hero Header matching Releases, Donate, and Feedback */}
         <section className="border-hairline bg-surface/30 relative overflow-hidden border-b py-10 sm:py-14">
           <div className="pointer-events-none absolute -top-12 -right-12 w-80 opacity-15 sm:w-96">
-            <Figure name="hub" intensity={0.4} />
+            <Figure name="terrain" intensity={0.4} />
           </div>
 
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -182,7 +182,7 @@ export function MapShell() {
       {/* Full-width Hero Header matching Releases, Donate, and Feedback */}
       <section className="border-hairline bg-surface/30 relative overflow-hidden border-b py-10 sm:py-14">
         <div className="pointer-events-none absolute -top-12 -right-12 w-80 opacity-15 sm:w-96">
-          <Figure name="hub" intensity={0.4} />
+          <Figure name="terrain" intensity={0.4} />
         </div>
 
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -215,11 +215,11 @@ export function MapShell() {
       </section>
 
       {/* Map & Directory Shell */}
-      <div className="relative flex h-[750px] min-h-[550px] w-full flex-1 overflow-hidden lg:h-[calc(100vh-var(--header-h,76px)-150px)]">
+      <div className="relative flex h-[700px] min-h-0 min-h-[550px] w-full overflow-hidden lg:h-[calc(100vh-var(--header-h,76px)-160px)]">
         {/* Desktop Left Panel (360px wide) */}
         <aside
           aria-label="Merchant map filters and directory"
-          className="border-hairline bg-surface z-10 hidden w-[360px] shrink-0 flex-col overflow-hidden border-r md:flex"
+          className="border-hairline bg-surface z-10 hidden h-full min-h-0 w-[360px] shrink-0 flex-col overflow-hidden border-r md:flex"
         >
           {/* Compact Top Bar: Search and Filter Toggle */}
           <div className="border-hairline bg-surface flex flex-col border-b">
@@ -351,7 +351,7 @@ export function MapShell() {
         </aside>
 
         {/* Main Map Viewport */}
-        <main className="relative h-full w-full flex-1 overflow-hidden">
+        <div className="relative h-full min-h-0 w-full flex-1 overflow-hidden">
           <MerchantMap
             features={filteredFeatures}
             selectedShopId={selectedShopId}
@@ -436,7 +436,7 @@ export function MapShell() {
               <span>{t("results.inView", { count: countDisplay })}</span>
             </button>
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );

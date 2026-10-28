@@ -63,7 +63,7 @@ export function MerchantList({
       id="merchant-list-content"
       role="region"
       aria-label="Merchant shops list"
-      className="divide-hairline flex-1 divide-y overflow-y-auto"
+      className="divide-hairline min-h-0 flex-1 divide-y overflow-y-auto"
     >
       {features.map((f) => {
         const p = f.properties;

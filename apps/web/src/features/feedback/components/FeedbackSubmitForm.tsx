@@ -180,13 +180,19 @@ export function FeedbackSubmitForm({ locale, initialType = "bug" }: FeedbackSubm
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/docs/receipts`} className="flex items-center gap-1.5 hover:underline">
+                <Link
+                  href={`/${locale}/docs/hardware/receipt-printer`}
+                  className="flex items-center gap-1.5 hover:underline"
+                >
                   <ArrowRight className="h-3.5 w-3.5" />
                   <span>Setting up 58mm & 80mm Receipt Printers</span>
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/docs/tax`} className="flex items-center gap-1.5 hover:underline">
+                <Link
+                  href={`/${locale}/docs/tax/vat-and-sscl`}
+                  className="flex items-center gap-1.5 hover:underline"
+                >
                   <ArrowRight className="h-3.5 w-3.5" />
                   <span>Configuring VAT & SSCL in CB POS</span>
                 </Link>

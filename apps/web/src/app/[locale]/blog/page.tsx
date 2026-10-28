@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Rss } from "lucide-react";
 import { routing } from "@/i18n/routing";
@@ -60,7 +59,7 @@ export default async function BlogIndexPage({ params }: { params: Promise<{ loca
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
+            <a
               href={`/${locale}/blog/rss.xml`}
               target="_blank"
               rel="noopener noreferrer"
@@ -68,7 +67,7 @@ export default async function BlogIndexPage({ params }: { params: Promise<{ loca
             >
               <Rss className="text-azure-text h-4 w-4" />
               <span>{t("rss")}</span>
-            </Link>
+            </a>
           </div>
         </div>
 

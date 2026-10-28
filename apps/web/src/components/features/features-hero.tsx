@@ -6,7 +6,7 @@ export function FeaturesHero() {
   const t = useTranslations("featuresPage");
 
   return (
-    <section className="border-hairline bg-surface/30 relative overflow-hidden border-b py-16 sm:py-24">
+    <section className="border-hairline bg-surface/30 relative overflow-hidden border-b py-14 sm:py-20">
       {/* Background decoration figure */}
       <div className="pointer-events-none absolute -top-12 -right-12 w-80 opacity-15 sm:w-96">
         <Figure name="hub" intensity={0.4} />

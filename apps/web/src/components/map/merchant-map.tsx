@@ -68,6 +68,9 @@ export function MerchantMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
+  const featuresRef = useRef<GeoFeature[]>(features);
+  featuresRef.current = features;
+
   const { resolvedTheme } = useTheme();
   const t = useTranslations("map");
   const tCategories = useTranslations("categories");
@@ -95,7 +98,7 @@ export function MerchantMap({
       const bounds = map.getBounds();
       let visibleCount = 0;
 
-      for (const f of features) {
+      for (const f of featuresRef.current) {
         const [lng, lat] = f.geometry.coordinates;
         if (bounds.contains([lng, lat])) {
           visibleCount++;
@@ -106,12 +109,20 @@ export function MerchantMap({
     } catch {
       // Ignore calculation errors during teardown
     }
-  }, [features, onVisibleCountChange]);
+  }, [onVisibleCountChange]);
 
   // Add source and layers to MapLibre instance
   const setupLayers = useCallback(
     (map: MapLibreMap) => {
-      if (map.getSource("merchants")) {
+      const existing = map.getSource("merchants") as GeoJSONSource | undefined;
+      if (existing) {
+        if (typeof existing.setData === "function") {
+          existing.setData({
+            type: "FeatureCollection",
+            features: featuresRef.current,
+          });
+        }
+        updateVisibleCount();
         return;
       }
 
@@ -119,7 +130,7 @@ export function MerchantMap({
         type: "geojson",
         data: {
           type: "FeatureCollection",
-          features,
+          features: featuresRef.current,
         },
         cluster: true,
         clusterRadius: 50,
@@ -279,7 +290,7 @@ export function MerchantMap({
       map.on("moveend", updateVisibleCount);
       updateVisibleCount();
     },
-    [features, onSelectShop, prefersReducedMotion, getPopupLabels, tCategories, updateVisibleCount],
+    [onSelectShop, prefersReducedMotion, getPopupLabels, tCategories, updateVisibleCount],
   );
 
   // Initialize MapLibre map on mount
@@ -310,6 +321,9 @@ export function MerchantMap({
     });
 
     mapRef.current = map;
+    if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
+      (window as unknown as { __map?: MapLibreMap }).__map = map;
+    }
 
     let layersSetup = false;
     const onReady = () => {
@@ -350,7 +364,12 @@ export function MerchantMap({
       resizeObserver.observe(containerRef.current);
     }
 
+    const timer = setTimeout(() => {
+      map.resize();
+    }, 150);
+
     return () => {
+      clearTimeout(timer);
       resizeObserver.disconnect();
       if (popupRef.current) {
         popupRef.current.remove();
@@ -358,6 +377,24 @@ export function MerchantMap({
       map.remove();
       mapRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setupLayers]);
+
+  // Dynamically update basemap style when theme changes without destroying map instance
+  const isFirstThemeRender = useRef(true);
+  useEffect(() => {
+    if (isFirstThemeRender.current) {
+      isFirstThemeRender.current = false;
+      return;
+    }
+    const map = mapRef.current;
+    if (!map) return;
+    const theme = (resolvedTheme === "light" ? "light" : "dark") as "dark" | "light";
+    const newStyle = buildBasemapStyle(theme);
+    map.setStyle(newStyle);
+    map.once("styledata", () => {
+      setupLayers(map);
+    });
   }, [resolvedTheme, setupLayers]);
 
   // Sync data whenever filtered features change
@@ -467,8 +504,13 @@ export function MerchantMap({
   };
 
   return (
-    <div className="bg-canvas relative h-full w-full overflow-hidden">
-      <div ref={containerRef} className="h-full w-full" aria-label="Interactive map of Sri Lanka" />
+    <div className="bg-canvas relative h-full min-h-0 w-full overflow-hidden">
+      <div
+        id="map"
+        ref={containerRef}
+        className="absolute inset-0 h-full w-full"
+        aria-label="Interactive map of Sri Lanka"
+      />
       <MapControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} onResetBounds={handleResetBounds} />
     </div>
   );

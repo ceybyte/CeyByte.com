@@ -249,7 +249,11 @@ describe("Merchant Map Logic & Coverage", () => {
   it("verifies CSP policy in _headers permits 'unsafe-eval' for MapLibre Web Worker", async () => {
     const fs = await import("fs/promises");
     const path = await import("path");
-    const headersContent = await fs.readFile(path.resolve(process.cwd(), "public/_headers"), "utf8");
+    const headersPath = path.resolve(
+      process.cwd(),
+      process.cwd().endsWith("web") ? "public/_headers" : "apps/web/public/_headers",
+    );
+    const headersContent = await fs.readFile(headersPath, "utf8");
     expect(headersContent).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
     expect(headersContent).toContain("worker-src 'self' blob:");
     expect(headersContent).toContain("connect-src 'self'");

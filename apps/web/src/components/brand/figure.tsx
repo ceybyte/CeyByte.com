@@ -18,6 +18,7 @@ const FIGURES = {
   basket: dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Basket), { ssr: false }),
   query: dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Query), { ssr: false }),
   router: dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Router), { ssr: false }),
+  terrain: dynamic(() => import("@lucasmarkes/hairline/react").then((m) => m.Terrain), { ssr: false }),
 } as const;
 
 export type FigureName = keyof typeof FIGURES;
