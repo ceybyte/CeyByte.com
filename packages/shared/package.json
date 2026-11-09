@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@shikijs/rehype": "^4.5.0",
+    "@shikijs/rehype": "^4.6.0",
     "drizzle-orm": "^0.45",
     "hast-util-to-html": "^9.0.5",
     "hast-util-to-string": "^3.0.1",
